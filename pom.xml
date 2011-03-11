@@ -1,0 +1,46 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.maven</groupId>
+  <artifactId>TemplaTE</artifactId>
+  <packaging>jar</packaging>
+  <name>Templa template engine</name>
+  <version>0.9</version>
+  <description>The core of the templa universe</description>
+  <url>http://templa.jproggy.de</url>
+  <licenses>
+    <license>
+      <name>The Eclipse Software License, Version 2.0</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <!-- scm>
+    <url>http://svn.apache.org/viewcvs.cgi/maven</url>
+  </scm -->
+ <dependencies>
+   <dependency>
+     <groupId>junit</groupId>
+     <artifactId>junit</artifactId>
+     <version>4.0</version>
+     <scope>test</scope>
+   </dependency>
+ </dependencies>
+ <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
