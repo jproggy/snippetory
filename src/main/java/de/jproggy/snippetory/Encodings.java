@@ -1,17 +1,17 @@
-package de.jproggy.templa;
+package de.jproggy.snippetory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import de.jproggy.templa.impl.IncompatibleEncodingException;
-import de.jproggy.templa.impl.TemplaException;
-import de.jproggy.templa.spi.Encoding;
+import de.jproggy.snippetory.impl.IncompatibleEncodingException;
+import de.jproggy.snippetory.impl.SnippetoryException;
+import de.jproggy.snippetory.spi.Encoding;
 
 public enum Encodings implements Encoding {
 
 	xml {
 		@Override
-		public void encode(StringBuilder target, String val) {
+		public void escape(StringBuilder target, String val) {
 			for (int i = 0; i < val.length(); i++) {
 				char c = val.charAt(i);
 				if (c == '<') {
@@ -28,13 +28,13 @@ public enum Encodings implements Encoding {
 			if (html.name().equals(encodingName)) {
 				target.append(value);
 			} else {
-				encode(target, value);
+				escape(target, value);
 			}
 		}
 	},
 	html {
 		@Override
-		public void encode(StringBuilder target, String val) {
+		public void escape(StringBuilder target, String val) {
 			for (int i = 0; i < val.length(); i++) {
 				char c = val.charAt(i);
 				if (c == '<') {
@@ -59,23 +59,23 @@ public enum Encodings implements Encoding {
 			if (xml.name().equals(encodingName)) {
 				target.append(value);
 			} else {
-				encode(target, value);
+				escape(target, value);
 			}
 		}
 	},
 	url {
 		@Override
-		public void encode(StringBuilder target, String val) {
+		public void escape(StringBuilder target, String val) {
 			try {
 				target.append(URLEncoder.encode(val, "utf-8"));
 			} catch (UnsupportedEncodingException e) {
-				throw new TemplaException(e);
+				throw new SnippetoryException(e);
 			}
 		}
 	},
 	string {
 		@Override
-		public void encode(StringBuilder target, String val) {
+		public void escape(StringBuilder target, String val) {
 			for (int i = 0; i < val.length(); i++) {
 				char ch = val.charAt(i);
 				if (ch < 32) {
@@ -120,26 +120,26 @@ public enum Encodings implements Encoding {
 			if (html_string.name().equals(encodingName)) {
 				target.append(value);
 			} else {
-				encode(target, value);
+				escape(target, value);
 			}
 		}
 	},
 	html_string {
 		@Override
-		public void encode(StringBuilder target, String val) {
+		public void escape(StringBuilder target, String val) {
 			try {
 				target.append(URLEncoder.encode(val, "utf-8"));
 			} catch (UnsupportedEncodingException e) {
-				throw new TemplaException(e);
+				throw new SnippetoryException(e);
 			}
 		}
 		@Override
 		public void transcode(StringBuilder target, String value, String encodingName) {
 			if (xml.name().equals(encodingName) || html.name().endsWith(encodingName)) {
-				string.encode(target, value);
+				string.escape(target, value);
 			}
 			else if (string.name().equals(encodingName)) {
-				html.encode(target, value);
+				html.escape(target, value);
 			} 
 			else {
 				super.transcode(target, value, encodingName);
@@ -149,18 +149,18 @@ public enum Encodings implements Encoding {
 	},
 	plain {
 		@Override
-		public void encode(StringBuilder target, String val) {
+		public void escape(StringBuilder target, String val) {
 			target.append(val);
 		}
 	},
 	NULL {
 		@Override
-		public void encode(StringBuilder target, String val) {
+		public void escape(StringBuilder target, String val) {
 			target.append(val);
 		}
 		@Override
 		public void transcode(StringBuilder target, String value, String encodingName) {
-			encode(target, value);
+			escape(target, value);
 		}
 	}
 	;
@@ -168,7 +168,7 @@ public enum Encodings implements Encoding {
 	@Override
 	public void transcode(StringBuilder target, String value, String encodingName) {
 		if (NULL.equals(encodingName)) {
-			encode(target, value);
+			escape(target, value);
 		}
 		throw new IncompatibleEncodingException("can't convert encoding "
 				+ encodingName + " into " + name());

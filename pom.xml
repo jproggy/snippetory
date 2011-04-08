@@ -14,9 +14,9 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-  <!-- scm>
+  <scm>
     <url>http://svn.apache.org/viewcvs.cgi/maven</url>
-  </scm -->
+  </scm>
  <dependencies>
    <dependency>
      <groupId>junit</groupId>
@@ -36,6 +36,23 @@
             <phase>verify</phase>
             <goals>
               <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <keyname>Templa Project</keyname>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.1.2</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar-no-fork</goal>
             </goals>
           </execution>
         </executions>
