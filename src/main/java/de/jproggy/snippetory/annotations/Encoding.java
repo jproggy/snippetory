@@ -1,4 +1,4 @@
-package de.jproggy.templa.annotations;
+package de.jproggy.snippetory.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
