@@ -1,9 +1,10 @@
-package de.jproggy.snippetory.impl;
+package de.jproggy.snippetory.impl.spi;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import de.jproggy.snippetory.impl.RegExSyntax;
 import de.jproggy.snippetory.spi.Syntax;
 
 public class HiddenBlocksSyntax  extends RegExSyntax {
@@ -14,19 +15,20 @@ public class HiddenBlocksSyntax  extends RegExSyntax {
 		String chars = "\\p{Alnum}\\#\\=\\%\\\" ,:;._-";
 		String pref = "(?:\\<\\!\\-\\-|\\/\\*)";
 		String suff = "(?:\\-\\-\\>|\\*\\/)";
+		String lEnd = "(?:\\n|\\r|\\r\\n|\\u0085|\\u2028|\\u2029)";
 		Pattern syntax = Pattern.compile(pref + "s:([\\'" + chars + "]+)" + suff);
 		patterns.put(syntax, TokenType.Syntax);
 
-		Pattern start = Pattern.compile(pref + "t:([\\'" + chars + "]+)" + suff);
+		Pattern start = Pattern.compile(pref + "t\\:([\\'" + chars + "]+)" + suff);
 		patterns.put(start, TokenType.BlockStart);
 
-		start = Pattern.compile("^\\p{Space}" + pref + "t:([" + chars + "]+)" + suff + "\\p{Space}(?:\\n\\r|\\n|\\r|\\r\\n)");
+		start = Pattern.compile("^[ \\t]*" + pref + "t\\:([" + chars + "]+)" + suff + "[ \\t]*" + lEnd, Pattern.MULTILINE);
 		patterns.put(start, TokenType.BlockStart);
 
-		Pattern end = Pattern.compile(pref + "!t:([\\p{Alnum}._-]+)" + suff);
+		Pattern end = Pattern.compile(pref + "\\!t\\:([\\p{Alnum}._-]+)" + suff);
 		patterns.put(end, TokenType.BlockEnd);
 
-		end = Pattern.compile("^\\p{Space}" + pref + "!t:([\\p{Alnum}._-]+)" + suff + "\\p{Space}(?:\\n\\r|\\n|\\r|\\r\\n)");
+		end = Pattern.compile("^[ \\t]*" + pref + "\\!t\\:([\\p{Alnum}._-]+)" + suff + "[ \\t]*" + lEnd, Pattern.MULTILINE);
 		patterns.put(end, TokenType.BlockEnd);
 
 		Pattern field = Pattern.compile("\\{v:([\\'" + chars + "]+)\\}");

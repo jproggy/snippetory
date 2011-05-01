@@ -10,20 +10,22 @@ import java.util.Map;
 import de.jproggy.snippetory.Snippetory;
 import de.jproggy.snippetory.spi.Encoding;
 import de.jproggy.snippetory.spi.Syntax;
+import de.jproggy.snippetory.spi.SyntaxID;
 
 public class SnippetBuilder {
-	private final Locale locale;
-	private String encoding;
-	private Syntax syntax;
-	private Syntax.Parser parser;
+	private Locale _locale;
+	private String _encoding;
+	private Syntax _syntax;
+	private Syntax.Parser _parser;
+	private CharSequence _data;
 
-	public Syntax getSyntax() {
-		if (syntax == null) return Syntax.REGISTRY.getDefault();
-		return syntax;
+	public SnippetBuilder(CharSequence data) {
+		this._data =  data;
 	}
 
-	public void setSyntax(Syntax syntax) {
-		this.syntax = syntax;
+	public SnippetBuilder(CharSequence data, Locale locale) {
+		this._data = data;
+		this._locale = locale;
 	}
 
 	public SnippetBuilder(Locale locale, Encoding encoding) {
@@ -32,14 +34,18 @@ public class SnippetBuilder {
 
 	public SnippetBuilder(Locale locale, String encoding) {
 		super();
-		this.locale = locale;
-		this.encoding = encoding;
+		this._locale = locale;
+		this._encoding = encoding;
+	}
+
+	public Snippetory parse() {
+		return parse(_data);
 	}
 
 	public Snippetory parse(CharSequence data) {
-		parser = getSyntax().parse(data);
-		Map<String, String> attribs = Collections.singletonMap("enc", encoding);
-		Variable root = new Variable(null, null, attribs, "", getLocale());
+		_parser = getSyntax().parse(data);
+		Map<String, String> attribs = Collections.singletonMap("enc", _encoding);
+		Variable root = new Variable(null, null, attribs, "", _locale);
 		Snippetory template = parse(root);
 		root.setTemplate(template);
 		return template;
@@ -48,26 +54,26 @@ public class SnippetBuilder {
 	private Snippetory parse(Variable parent) {
 		List<Object> parts = new ArrayList<Object>();
 		Map<String, Snippetory> children = new HashMap<String, Snippetory>();
-		while (parser.hasNext()) {
-			Token t = parser.next();
+		while (_parser.hasNext()) {
+			Token t = _parser.next();
 			
 			try {
 				switch (t.getType()) {
 				case BlockStart: {
-					Variable var = new Variable(parent, t.getName(), t.getAttributes(), "", getLocale());
+					Variable var = new Variable(parent, t.getName(), t.getAttributes(), "", _locale);
 					parts.add(var);
 					Syntax.Parser old = null;
 					if (t.getAttributes().get("syntax") != null) {
-						old = parser;
+						old = _parser;
 						String s = t.getAttributes().remove("syntax");
-						parser = Syntax.REGISTRY.byName(s).takeOver(old);
+						_parser = Syntax.REGISTRY.byName(s).takeOver(old);
 					}
 					Snippetory template = parse(var);
 					children.put(var.getName(), template);
 					var.setTemplate(template);
 					if (old != null) {
-						old.jumpTo(parser.getPosition());
-						parser = old;
+						old.jumpTo(_parser.getPosition());
+						_parser = old;
 					}
 					break;
 				}
@@ -78,14 +84,14 @@ public class SnippetBuilder {
 					}
 					return new SnippetImpl(parent, parts, children);
 				case Field:
-					parts.add(new Variable(parent, t.getName(), t.getAttributes(), t.getContent(), getLocale()));
+					parts.add(new Variable(parent, t.getName(), t.getAttributes(), t.getContent(), _locale));
 					break;
 				case TemplateData:
 					parts.add(t.getContent());
 					break;
 				case Syntax:
-					setSyntax(Syntax.REGISTRY.byName(t.getName()));
-					parser = getSyntax().takeOver(parser);
+					syntax(Syntax.REGISTRY.byName(t.getName()));
+					_parser = getSyntax().takeOver(_parser);
 					break;
 				}
 			} catch (ParseError e) {
@@ -99,15 +105,34 @@ public class SnippetBuilder {
 		return new SnippetImpl(parent, parts, children);
 	}
 
-	public void setEncoding(String encoding) {
-		this.encoding = encoding;
+
+	private Syntax getSyntax() {
+		if (_syntax == null) return Syntax.REGISTRY.getDefault();
+		return _syntax;
 	}
 
-	public Locale getLocale() {
-		return locale;
+	public SnippetBuilder syntax(SyntaxID syntax) {
+		_syntax = Syntax.REGISTRY.byName(syntax.getName());
+		return this;
 	}
 
-	public String getEncoding() {
-		return encoding;
+	public SnippetBuilder syntax(Syntax syntax) {
+		this._syntax = syntax;
+		return this;
+	}
+
+	public SnippetBuilder encoding(String encoding) {
+		this._encoding = encoding;
+		return this;
+	}
+
+	public SnippetBuilder encoding(Encoding encoding) {
+		this._encoding = encoding.getName();
+		return this;
+	}
+
+	public SnippetBuilder locale(Locale locale) {
+		this._locale = locale;
+		return this;
 	}
 }

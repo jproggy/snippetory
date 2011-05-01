@@ -7,6 +7,10 @@ import java.util.Map;
 import java.util.ServiceLoader;
 
 import de.jproggy.snippetory.Encodings;
+import de.jproggy.snippetory.impl.spi.DateFormater;
+import de.jproggy.snippetory.impl.spi.NumFormat;
+import de.jproggy.snippetory.impl.spi.ShortenFormat;
+import de.jproggy.snippetory.impl.spi.StretchFormat;
 import de.jproggy.snippetory.spi.Configurer;
 
 class Attributes {
@@ -36,6 +40,8 @@ class Attributes {
 		REGISTRY.register("default", Types.DEFAULT);
 		REGISTRY.register("enc", Types.ENCODING);
 		REGISTRY.register("delimiter", Types.DELIMITER);
+		REGISTRY.register("prefix", Types.PREFIX);
+		REGISTRY.register("suffix", Types.SUFFIX);
 		FormatRegistry.INSTANCE.register("stretch", new StretchFormat.Factory());
 		FormatRegistry.INSTANCE.register("shorten", new ShortenFormat.Factory());
 		FormatRegistry.INSTANCE.register("number", new NumFormat.Factory());
@@ -46,6 +52,6 @@ class Attributes {
 		ServiceLoader.load(Configurer.class);  
 	}
 	enum Types {
-		FORMAT, DEFAULT, ENCODING, DELIMITER, 
+		FORMAT, DEFAULT, ENCODING, DELIMITER, PREFIX, SUFFIX
 	}
 }

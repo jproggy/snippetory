@@ -1,11 +1,11 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.apache.maven</groupId>
-  <artifactId>TemplaTE</artifactId>
+  <groupId>de.jproggy</groupId>
+  <artifactId>Snippetory</artifactId>
   <packaging>jar</packaging>
-  <name>Templa template engine</name>
+  <name>Snippetory Template Engine</name>
   <version>0.9</version>
-  <description>The core of the templa universe</description>
+  <description>The not so simple engine</description>
   <url>http://templa.jproggy.de</url>
   <licenses>
     <license>

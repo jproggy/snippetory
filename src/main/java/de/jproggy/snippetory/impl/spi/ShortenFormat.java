@@ -1,4 +1,4 @@
-package de.jproggy.snippetory.impl;
+package de.jproggy.snippetory.impl.spi;
 
 import java.util.Locale;
 
@@ -41,7 +41,7 @@ public class ShortenFormat implements Format {
 		return false;
 	}
 	
-	static class Factory implements FormatFactory {
+	public static class Factory implements FormatFactory {
 		@Override
 		public Format create(String definition) {
 			return new ShortenFormat(definition);

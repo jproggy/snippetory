@@ -25,6 +25,8 @@ public class Variable {
 		return parent;
 	}
 	private String delimiter;
+	private String prefix;
+	private String suffix;
 	private Snippetory template;
 
 	public Snippetory getTemplate() {
@@ -51,40 +53,50 @@ public class Variable {
 			case DELIMITER:
 				delimiter = attribs.get(attr);
 				break;
+			case PREFIX:
+				prefix = attribs.get(attr);
+				if (defaultVal == null) defaultVal = "";
+				break;
+			case SUFFIX:
+				suffix = attribs.get(attr);
+				if (defaultVal == null) defaultVal = "";
+				break;
 			}
 		}
 		this.fragment = fragment;
 	}
 	@Override
 	public String toString() {
-		if (target != null) return target.toString();
-		Object f = tryFormat(defaultVal);
-		if (f instanceof String) {
-			return (String) f;
+		if (target != null) {
+			if (suffix != null) return target.toString() + suffix;
+			return target.toString();
 		}
+		String f = format(defaultVal);
+		if (f != null) return f;
 		return fragment;
 	}
 	
-	private String format(Object value) {
-		value = formatInternal(value);
-		if (parent != null) return parent.format(value);
-		return  String.valueOf(value);
-	}
-	private Object tryFormat(Object value) {
-		value = formatInternal(value);
-		if (parent != null) return parent.tryFormat(value);
-		return  value;
-	}
-	private Object formatInternal(Object value) {
+	private String format(String value) {
 		for (Format f: formats) {
 			if (f.supports(value)) value = f.format(value);
 		}
-		return value;
+		if (parent != null) return parent.format(value);
+		return  String.valueOf(value);
+	}
+	private String toString(Object value) {
+		for (Format f: formats) {
+			if (f.supports(value)) return f.format(value);
+		}
+		if (parent != null) return parent.toString(value);
+		return String.valueOf(value);
 	}
 	private void escape(StringBuilder target, String value) {
 		if (enc ==  null) {
-			if (parent == null)	target.append(value);
-			parent.escape(target, value);
+			if (parent == null)	{
+				target.append(value);
+			} else {
+				parent.escape(target, value);
+			}
 		} else {
 			enc.escape(target, value);
 		}
@@ -96,12 +108,15 @@ public class Variable {
 	}
 	public void append(Object value) {
 		if (target==null) {
-			target = new StringBuilder();
+			target = prefix ==  null ? new StringBuilder() : new StringBuilder(prefix);
 		} else {
 			if (delimiter != null) target.append(delimiter);
 		}
-		Class<? extends Object> valueType = value.getClass();
-		Encoded encoded = valueType.getAnnotation(Encoded.class);
+		Encoded encoded = null;
+		if (value != null) {
+			Class<? extends Object> valueType = value.getClass();
+			encoded = valueType.getAnnotation(Encoded.class);
+		}
 		if (encoded != null) {
 			String otherEnc = encoded.value();
 			if (otherEnc.length() == 0) otherEnc = getEncoding(value);
@@ -112,7 +127,7 @@ public class Variable {
 				target.append(value);
 			}
 		} else {
-			escape(target, format(value));
+			escape(target, format(toString(value)));
 		}
 	}
 	private String getEncoding(Object value) {

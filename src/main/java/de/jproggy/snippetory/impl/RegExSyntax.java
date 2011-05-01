@@ -31,9 +31,9 @@ public abstract class RegExSyntax implements Syntax {
 			String compoundPattern = "";
 			for (Pattern p : patterns.keySet()) {
 				if (compoundPattern.length() > 0 ) compoundPattern += "|";
-				compoundPattern += p.pattern();
+				compoundPattern += "(?:" + p.pattern() + ')';
 			}
-			matcher = Pattern.compile(compoundPattern).matcher(data);
+			matcher = Pattern.compile(compoundPattern, Pattern.MULTILINE).matcher(data);
 			this.data = data;
 			this.chars = chars;
 		}

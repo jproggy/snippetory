@@ -1,4 +1,4 @@
-package de.jproggy.snippetory.impl;
+package de.jproggy.snippetory.impl.spi;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -40,7 +40,7 @@ public class DateFormater implements Format {
 		return false;
 	}
 	
-   static class Factory implements FormatFactory {
+   public static class Factory implements FormatFactory {
 		@Override
 		public Format create(String definition) {
 			return null;
