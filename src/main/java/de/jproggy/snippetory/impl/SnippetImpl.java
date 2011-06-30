@@ -112,10 +112,12 @@ public class SnippetImpl implements Snippetory, Cloneable {
 	@Override
 	public void render(Writer out) throws IOException {
 		out.append(this.toString());
+		out.flush();
 	}
 	
 	@Override
 	public void render(PrintStream out) throws IOException {
 		out.append(toString());
+		out.flush();
 	}
 }
