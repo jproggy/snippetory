@@ -91,6 +91,7 @@ public class Variable {
 		return String.valueOf(value);
 	}
 	private void escape(StringBuilder target, String value) {
+		Encoding enc = getEncoding();
 		if (enc ==  null) {
 			if (parent == null)	{
 				target.append(value);
@@ -118,11 +119,12 @@ public class Variable {
 			encoded = valueType.getAnnotation(Encoded.class);
 		}
 		if (encoded != null) {
+			Encoding myEnc = getEncoding();
 			String otherEnc = encoded.value();
 			if (otherEnc.length() == 0) otherEnc = getEncoding(value);
 			if (otherEnc != null && otherEnc.length() > 0 && 
-					!otherEnc.equals(enc.getName())) {
-				enc.transcode(target, value.toString(), otherEnc);
+					!otherEnc.equals(myEnc.getName())) {
+				myEnc.transcode(target, value.toString(), otherEnc);
 			} else {
 				target.append(value);
 			}
@@ -164,6 +166,6 @@ public class Variable {
 	}
 	@de.jproggy.snippetory.annotations.Encoding
 	public Encoding getEncoding() {
-		return enc;
+		return enc == null && parent != null ? parent.getEncoding() : enc;
 	}
 }
