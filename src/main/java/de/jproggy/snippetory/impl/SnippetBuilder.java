@@ -112,11 +112,11 @@ public class SnippetBuilder {
 	}
 
 	public SnippetBuilder syntax(SyntaxID syntax) {
-		_syntax = Syntax.REGISTRY.byName(syntax.getName());
-		return this;
+		return syntax(Syntax.REGISTRY.byName(syntax.getName()));
 	}
 
 	public SnippetBuilder syntax(Syntax syntax) {
+		if (syntax == null) throw new NullPointerException();
 		this._syntax = syntax;
 		return this;
 	}
