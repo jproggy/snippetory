@@ -75,7 +75,7 @@ public abstract class RegExSyntax implements Syntax {
 		
 		@Override
 		public void jumpTo(int position) {
-			found = matcher.find(position);
+			matcher.region(position, matcher.regionEnd());
 			pos = position;
 		}
 
