@@ -49,7 +49,11 @@ class Attributes {
 		for (Encodings e: Encodings.values()) {
 			EncodingRegistry.INSTANCE.register(e);
 		}
-		ServiceLoader.load(Configurer.class);  
+		for (Configurer c: ServiceLoader.load(Configurer.class)) {
+			// avoid optimize this loop, as iterating is necessary to load the classes
+			// i.e. to initialize the extensions
+			c.getClass();
+		}
 	}
 	enum Types {
 		FORMAT, DEFAULT, ENCODING, DELIMITER, PREFIX, SUFFIX
