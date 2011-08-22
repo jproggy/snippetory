@@ -16,7 +16,7 @@ public class HiddenBlocksSyntax  extends RegExSyntax {
 		String pref = "(?:\\<\\!\\-\\-|\\/\\*)";
 		String suff = "(?:\\-\\-\\>|\\*\\/)";
 		String lEnd = "(?:\\n|\\r|\\r\\n|\\u0085|\\u2028|\\u2029)";
-		Pattern syntax = Pattern.compile(pref + "s:([\\'" + chars + "]+)" + suff);
+		Pattern syntax = Pattern.compile("^[ \\t]*" + pref + "s:([\\'" + chars + "]+)" + suff + "[ \\t]*" + lEnd, Pattern.MULTILINE);
 		patterns.put(syntax, TokenType.Syntax);
 
 		Pattern start = Pattern.compile(pref + "t\\:([\\'" + chars + "]+)" + suff);
