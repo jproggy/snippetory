@@ -6,6 +6,8 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import de.jproggy.snippetory.Snippetory;
 import de.jproggy.snippetory.annotations.Encoded;
@@ -119,5 +121,21 @@ public class SnippetImpl implements Snippetory, Cloneable {
 	public void render(PrintStream out) throws IOException {
 		out.append(toString());
 		out.flush();
+	}
+	
+	@Override
+	public Set<String> names() {
+		Set<String> result =  new TreeSet<String>();
+		for (Object part: parts) {
+			if (part instanceof Variable) {
+				result.add(((Variable)part).getName());
+			}
+		}
+		return result;
+	}
+	
+	@Override
+	public Set<String> regionNames() {
+		return children.keySet();
 	}
 }

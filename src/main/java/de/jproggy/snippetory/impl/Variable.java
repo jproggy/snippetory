@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import de.jproggy.snippetory.Encodings;
 import de.jproggy.snippetory.Snippetory;
 import de.jproggy.snippetory.annotations.Encoded;
 import de.jproggy.snippetory.spi.Encoding;
 import de.jproggy.snippetory.spi.Format;
+import de.jproggy.snippetory.spi.Transcoding;
 
 @Encoded
 public class Variable {
@@ -81,9 +83,12 @@ public class Variable {
 			if (f.supports(value)) value = f.format(value);
 		}
 		if (parent != null) return parent.format(value);
-		return  String.valueOf(value);
+		return value;
 	}
 	private String toString(Object value) {
+		if (value instanceof String) {
+			return (String) value;
+		}
 		for (Format f: formats) {
 			if (f.supports(value)) return f.format(value);
 		}
@@ -113,24 +118,42 @@ public class Variable {
 		} else {
 			if (delimiter != null) target.append(delimiter);
 		}
+		Encoded encoded = analyzeClass(value);
+		if (encoded != null) {
+			String sourceEnc = encoded.value();
+			if (sourceEnc.length() == 0) sourceEnc = getEncoding(value);
+			
+			// normalize empty to null-encoding
+			if (sourceEnc != null && sourceEnc.length() > 0) {
+				sourceEnc = Encodings.NULL.getName();
+			}
+			Encoding myEnc = getEncoding();
+			if (!sourceEnc.equals(myEnc.getName())) {
+				transcode(value, sourceEnc, myEnc);
+			} else {
+				target.append(format(value.toString()));
+			}
+		} else {
+			escape(target, format(toString(value)));
+		}
+	}
+	private Encoded analyzeClass(Object value) {
 		Encoded encoded = null;
 		if (value != null) {
 			Class<? extends Object> valueType = value.getClass();
 			encoded = valueType.getAnnotation(Encoded.class);
 		}
-		if (encoded != null) {
-			Encoding myEnc = getEncoding();
-			String otherEnc = encoded.value();
-			if (otherEnc.length() == 0) otherEnc = getEncoding(value);
-			if (otherEnc != null && otherEnc.length() > 0 && 
-					!otherEnc.equals(myEnc.getName())) {
-				myEnc.transcode(target, value.toString(), otherEnc);
-			} else {
-				target.append(value);
+		return encoded;
+	}
+	private void transcode(Object value, String sourceEnc, Encoding targetEnc) {
+		for (Transcoding overwrite : EncodingRegistry.INSTANCE.getOverwrites(targetEnc)) {
+			if (overwrite.supports(sourceEnc, targetEnc.getName())) {
+				overwrite.transcode(target, format(value.toString()), sourceEnc, targetEnc.getName());
+				return;
 			}
-		} else {
-			escape(target, format(toString(value)));
 		}
+		
+		targetEnc.transcode(target, format(value.toString()), sourceEnc);
 	}
 	private String getEncoding(Object value) {
 		Class<? extends Object> valueType = value.getClass();
@@ -166,6 +189,10 @@ public class Variable {
 	}
 	@de.jproggy.snippetory.annotations.Encoding
 	public Encoding getEncoding() {
-		return enc == null && parent != null ? parent.getEncoding() : enc;
+		if (enc == null) {
+			if (parent != null) return parent.getEncoding();
+			return Encodings.NULL;
+		}
+		return enc;
 	}
 }

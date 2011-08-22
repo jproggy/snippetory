@@ -3,6 +3,7 @@ package de.jproggy.snippetory;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Writer;
+import java.util.Set;
 
 import de.jproggy.snippetory.spi.Encoding;
 
@@ -148,4 +149,18 @@ public interface Snippetory  {
 	 * A convenience method to write to a PrintStream 
 	 */
 	void render(PrintStream out) throws IOException;
+
+	/**
+	 * The names of all locations, to be accessed by the set operation. Can be used to ensure
+	 * to access all existing names. This method belongs to the reflective API and as such
+	 * is only for special use. <br />
+	 * Use with care as it's a more expensive operation.
+	 */
+	Set<String> names();
+	
+	/**
+	 * Delivers the names of the regions. Regions can be accessed by the get operation. This 
+	 * is a subset of the names delivered by <code>names()</code>.
+	 */
+	Set<String> regionNames();
 }
