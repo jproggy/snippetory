@@ -62,15 +62,15 @@ public class BasicTest {
 	
 	@Test
 	public void formatNumber() {
-		Snippetory number = Repo.parse("{v:test number=\"0.00#\"}");
+		Snippetory number = Repo.parse("{v:test number=\"0.00#\"}", Locale.GERMAN);
 		number.set("test", "x");
 		assertEquals("x", number.toString());
 		number.set("test", "123456");
 		assertEquals("123456", number.toString());
 		number.set("test", 1.6);
-		assertEquals("1.60", number.toString());
+		assertEquals("1,60", number.toString());
 		number.set("test", 1.6333);
-		number = Repo.parse("{v:test}");
+		number = Repo.parse("{v:test}", Locale.US);
 		number.set("test", "x");
 		assertEquals("x", number.toString());
 		number.set("test", "123456");
@@ -78,7 +78,7 @@ public class BasicTest {
 		number.set("test", 1.6);
 		assertEquals("1.6", number.toString());
 		number.set("test", 1.6333);
-		assertEquals("1.6333", number.toString());
+		assertEquals("1.633", number.toString());
 		number = Repo.parse("{v:test number='0.00#'}", Locale.GERMANY);
 		number.set("test", 1.55);
 		assertEquals("1,55", number.toString());

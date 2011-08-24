@@ -18,11 +18,11 @@ import de.jproggy.snippetory.impl.SnippetoryException;
 public class Repo {
 	
 	public static Snippetory parse(CharSequence data) {
-		return parse(data, Locale.US);
+		return read(data).parse();
 	}
 
 	public static Snippetory parse(CharSequence data, Locale l) {
-		return new SnippetBuilder(data, l).parse();
+		return read(data).locale(l).parse();
 	}
 
 	public static SnippetBuilder read(CharSequence data) {
