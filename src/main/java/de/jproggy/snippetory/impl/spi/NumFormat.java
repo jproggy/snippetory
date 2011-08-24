@@ -16,8 +16,9 @@ public class NumFormat implements Format {
 	}
 	
 	private static NumberFormat toFormat(String definition, Locale l) {
-		if ("currency".equals(definition)) return DecimalFormat.getCurrencyInstance(l);
 		if ("".equals(definition)) return DecimalFormat.getNumberInstance(l);
+		if ("currency".equals(definition)) return DecimalFormat.getCurrencyInstance(l);
+		if ("int".equals(definition)) return DecimalFormat.getIntegerInstance(l);
 		if ("percent".endsWith(definition)) return DecimalFormat.getPercentInstance(l);
 		if ("JS".equals(definition)) return DecimalFormat.getNumberInstance(Locale.US);
 		return new DecimalFormat(definition, DecimalFormatSymbols.getInstance(l));
