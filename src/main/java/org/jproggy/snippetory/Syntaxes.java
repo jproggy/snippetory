@@ -1,6 +1,6 @@
-package de.jproggy.snippetory;
+package org.jproggy.snippetory;
 
-import de.jproggy.snippetory.spi.SyntaxID;
+import org.jproggy.snippetory.spi.SyntaxID;
 
 public enum Syntaxes implements SyntaxID {
 	XML_ALIKE,

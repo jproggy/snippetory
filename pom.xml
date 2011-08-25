@@ -1,12 +1,12 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>de.jproggy</groupId>
+  <groupId>org.jproggy</groupId>
   <artifactId>Snippetory</artifactId>
   <packaging>jar</packaging>
   <name>Snippetory Template Engine</name>
   <version>0.9</version>
   <description>The not so simple engine</description>
-  <url>http://templa.jproggy.de</url>
+  <url>http://snippetory.jproggy.org</url>
   <licenses>
     <license>
       <name>The Eclipse Software License, Version 2.0</name>

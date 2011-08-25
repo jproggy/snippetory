@@ -1,11 +1,12 @@
-package de.jproggy.snippetory.impl.spi;
+package org.jproggy.snippetory.impl.spi;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import de.jproggy.snippetory.impl.RegExSyntax;
-import de.jproggy.snippetory.spi.Syntax;
+import org.jproggy.snippetory.impl.RegExSyntax;
+import org.jproggy.snippetory.spi.Syntax;
+
 
 public class HiddenBlocksSyntax  extends RegExSyntax {
 

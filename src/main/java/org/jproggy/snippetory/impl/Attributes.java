@@ -1,4 +1,4 @@
-package de.jproggy.snippetory.impl;
+package org.jproggy.snippetory.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,12 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 
-import de.jproggy.snippetory.Encodings;
-import de.jproggy.snippetory.impl.spi.DateFormater;
-import de.jproggy.snippetory.impl.spi.NumFormat;
-import de.jproggy.snippetory.impl.spi.ShortenFormat;
-import de.jproggy.snippetory.impl.spi.StretchFormat;
-import de.jproggy.snippetory.spi.Configurer;
+import org.jproggy.snippetory.Encodings;
+import org.jproggy.snippetory.impl.spi.DateFormater;
+import org.jproggy.snippetory.impl.spi.NumFormat;
+import org.jproggy.snippetory.impl.spi.ShortenFormat;
+import org.jproggy.snippetory.impl.spi.StretchFormat;
+import org.jproggy.snippetory.spi.Configurer;
+
 
 class Attributes {
 	public static class Registry {

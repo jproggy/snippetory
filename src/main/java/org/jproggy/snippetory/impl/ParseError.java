@@ -1,4 +1,4 @@
-package de.jproggy.snippetory.impl;
+package org.jproggy.snippetory.impl;
 
 public class ParseError extends SnippetoryException {
 	private static final long serialVersionUID = 1L;

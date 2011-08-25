@@ -1,4 +1,4 @@
-package de.jproggy.snippetory;
+package org.jproggy.snippetory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,8 +9,9 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.util.Locale;
 
-import de.jproggy.snippetory.impl.SnippetBuilder;
-import de.jproggy.snippetory.impl.SnippetoryException;
+import org.jproggy.snippetory.impl.SnippetBuilder;
+import org.jproggy.snippetory.impl.SnippetoryException;
+
 /**
  * This class offers some methods to ease access on templates. There 
  * @author Sir RotN

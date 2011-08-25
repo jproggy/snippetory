@@ -1,12 +1,13 @@
-package de.jproggy.snippetory.impl.spi;
+package org.jproggy.snippetory.impl.spi;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import de.jproggy.snippetory.spi.Format;
-import de.jproggy.snippetory.spi.FormatFactory;
+import org.jproggy.snippetory.spi.Format;
+import org.jproggy.snippetory.spi.FormatFactory;
+
 
 public class NumFormat implements Format {
 	private final NumberFormat impl;

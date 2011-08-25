@@ -1,9 +1,10 @@
-package de.jproggy.snippetory.impl.spi;
+package org.jproggy.snippetory.impl.spi;
 
 import java.util.Locale;
 
-import de.jproggy.snippetory.spi.Format;
-import de.jproggy.snippetory.spi.FormatFactory;
+import org.jproggy.snippetory.spi.Format;
+import org.jproggy.snippetory.spi.FormatFactory;
+
 
 public class ShortenFormat implements Format {
 	int length;

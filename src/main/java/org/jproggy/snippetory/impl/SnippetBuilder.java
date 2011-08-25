@@ -1,4 +1,4 @@
-package de.jproggy.snippetory.impl;
+package org.jproggy.snippetory.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import de.jproggy.snippetory.Snippetory;
-import de.jproggy.snippetory.spi.Encoding;
-import de.jproggy.snippetory.spi.Syntax;
-import de.jproggy.snippetory.spi.SyntaxID;
+import org.jproggy.snippetory.Snippetory;
+import org.jproggy.snippetory.spi.Encoding;
+import org.jproggy.snippetory.spi.Syntax;
+import org.jproggy.snippetory.spi.SyntaxID;
+
 
 public class SnippetBuilder {
 	private Locale _locale = Locale.getDefault();

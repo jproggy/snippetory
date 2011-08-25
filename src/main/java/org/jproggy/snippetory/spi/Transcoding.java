@@ -1,4 +1,4 @@
-package de.jproggy.snippetory.spi;
+package org.jproggy.snippetory.spi;
 
 
 public interface Transcoding {

@@ -1,4 +1,4 @@
-package de.jproggy.snippetory.spi;
+package org.jproggy.snippetory.spi;
 
 import java.util.Locale;
 

@@ -1,15 +1,15 @@
-package de.jproggy.snippetory.test;
+package org.jproggy.snippetory.test;
 
 import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.Method;
 import java.util.Locale;
 
+import org.jproggy.snippetory.Repo;
+import org.jproggy.snippetory.Snippetory;
+import org.jproggy.snippetory.Syntaxes;
 import org.junit.Test;
 
-import de.jproggy.snippetory.Repo;
-import de.jproggy.snippetory.Snippetory;
-import de.jproggy.snippetory.Syntaxes;
 
 public class BasicTest {
 //	@Test

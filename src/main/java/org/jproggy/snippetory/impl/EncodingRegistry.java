@@ -1,4 +1,4 @@
-package de.jproggy.snippetory.impl;
+package org.jproggy.snippetory.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,9 +6,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.jproggy.snippetory.impl.Attributes.Types;
-import de.jproggy.snippetory.spi.Encoding;
-import de.jproggy.snippetory.spi.Transcoding;
+import org.jproggy.snippetory.impl.Attributes.Types;
+import org.jproggy.snippetory.spi.Encoding;
+import org.jproggy.snippetory.spi.Transcoding;
+
 
 public class EncodingRegistry {
 	private Map<String, Encoding> encodings = new HashMap<String, Encoding>();

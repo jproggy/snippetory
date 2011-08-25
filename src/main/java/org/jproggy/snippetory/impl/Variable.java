@@ -1,4 +1,4 @@
-package de.jproggy.snippetory.impl;
+package org.jproggy.snippetory.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -7,12 +7,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import de.jproggy.snippetory.Encodings;
-import de.jproggy.snippetory.Snippetory;
-import de.jproggy.snippetory.annotations.Encoded;
-import de.jproggy.snippetory.spi.Encoding;
-import de.jproggy.snippetory.spi.Format;
-import de.jproggy.snippetory.spi.Transcoding;
+import org.jproggy.snippetory.Encodings;
+import org.jproggy.snippetory.Snippetory;
+import org.jproggy.snippetory.annotations.Encoded;
+import org.jproggy.snippetory.spi.Encoding;
+import org.jproggy.snippetory.spi.Format;
+import org.jproggy.snippetory.spi.Transcoding;
+
 
 @Encoded
 public class Variable {
@@ -159,7 +160,7 @@ public class Variable {
 		Class<? extends Object> valueType = value.getClass();
 		try {
 			for (Method m : valueType.getMethods()) {
-				Object enc = m.getAnnotation(de.jproggy.snippetory.annotations.Encoding.class);
+				Object enc = m.getAnnotation(org.jproggy.snippetory.annotations.Encoding.class);
 				if (enc !=  null) {
 					if (m.getParameterTypes().length == 0) {
 						if (String.class.equals(m.getReturnType())) {
@@ -187,7 +188,7 @@ public class Variable {
 	public String getName() {
 		return name;
 	}
-	@de.jproggy.snippetory.annotations.Encoding
+	@org.jproggy.snippetory.annotations.Encoding
 	public Encoding getEncoding() {
 		if (enc == null) {
 			if (parent != null) return parent.getEncoding();

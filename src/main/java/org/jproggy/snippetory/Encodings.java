@@ -1,11 +1,12 @@
-package de.jproggy.snippetory;
+package org.jproggy.snippetory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import de.jproggy.snippetory.impl.IncompatibleEncodingException;
-import de.jproggy.snippetory.impl.SnippetoryException;
-import de.jproggy.snippetory.spi.Encoding;
+import org.jproggy.snippetory.impl.IncompatibleEncodingException;
+import org.jproggy.snippetory.impl.SnippetoryException;
+import org.jproggy.snippetory.spi.Encoding;
+
 
 public enum Encodings implements Encoding {
 	/**

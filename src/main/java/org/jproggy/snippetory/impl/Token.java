@@ -1,9 +1,10 @@
-package de.jproggy.snippetory.impl;
+package org.jproggy.snippetory.impl;
 
 import java.util.LinkedHashMap;
 
-import de.jproggy.snippetory.spi.Syntax;
-import de.jproggy.snippetory.spi.Syntax.TokenType;
+import org.jproggy.snippetory.spi.Syntax;
+import org.jproggy.snippetory.spi.Syntax.TokenType;
+
 
 public class Token {
 	private final LinkedHashMap<String, String> attributes = new LinkedHashMap<String, String>();

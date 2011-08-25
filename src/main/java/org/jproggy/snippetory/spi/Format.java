@@ -1,6 +1,6 @@
-package de.jproggy.snippetory.spi;
+package org.jproggy.snippetory.spi;
 
-import de.jproggy.snippetory.impl.FormatRegistry;
+import org.jproggy.snippetory.impl.FormatRegistry;
 
 
 public interface Format {

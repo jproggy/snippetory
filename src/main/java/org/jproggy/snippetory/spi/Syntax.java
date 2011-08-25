@@ -1,12 +1,13 @@
-package de.jproggy.snippetory.spi;
+package org.jproggy.snippetory.spi;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import de.jproggy.snippetory.Syntaxes;
-import de.jproggy.snippetory.impl.Token;
-import de.jproggy.snippetory.impl.spi.HiddenBlocksSyntax;
-import de.jproggy.snippetory.impl.spi.XMLAlikeSyntax;
+import org.jproggy.snippetory.Syntaxes;
+import org.jproggy.snippetory.impl.Token;
+import org.jproggy.snippetory.impl.spi.HiddenBlocksSyntax;
+import org.jproggy.snippetory.impl.spi.XMLAlikeSyntax;
+
 
 public interface Syntax {
 	public class Registry {

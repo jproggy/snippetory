@@ -1,4 +1,4 @@
-package de.jproggy.snippetory.impl.spi;
+package org.jproggy.snippetory.impl.spi;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -8,8 +8,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
-import de.jproggy.snippetory.spi.Format;
-import de.jproggy.snippetory.spi.FormatFactory;
+import org.jproggy.snippetory.spi.Format;
+import org.jproggy.snippetory.spi.FormatFactory;
+
 
 public class DateFormater implements Format {
 	private final DateFormat impl;

@@ -1,4 +1,4 @@
-package de.jproggy.snippetory.impl;
+package org.jproggy.snippetory.impl;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -9,9 +9,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import de.jproggy.snippetory.Snippetory;
-import de.jproggy.snippetory.annotations.Encoded;
-import de.jproggy.snippetory.spi.Encoding;
+import org.jproggy.snippetory.Snippetory;
+import org.jproggy.snippetory.annotations.Encoded;
+import org.jproggy.snippetory.spi.Encoding;
+
 
 @Encoded
 public class SnippetImpl implements Snippetory, Cloneable {
@@ -88,7 +89,7 @@ public class SnippetImpl implements Snippetory, Cloneable {
 		return result.toString();
 	}
 	
-	@de.jproggy.snippetory.annotations.Encoding
+	@org.jproggy.snippetory.annotations.Encoding
 	public String getEncoding() {
 		Encoding e = placeHolder.getEncoding();
 		if (e == null) return null;

@@ -1,12 +1,13 @@
-package de.jproggy.snippetory.impl;
+package org.jproggy.snippetory.impl;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import de.jproggy.snippetory.impl.Attributes.Types;
-import de.jproggy.snippetory.spi.Format;
-import de.jproggy.snippetory.spi.FormatFactory;
+import org.jproggy.snippetory.impl.Attributes.Types;
+import org.jproggy.snippetory.spi.Format;
+import org.jproggy.snippetory.spi.FormatFactory;
+
 
 public class FormatRegistry {
 	private Map<String, FormatFactory> formats = new HashMap<String, FormatFactory>();

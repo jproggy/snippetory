@@ -1,11 +1,12 @@
-package de.jproggy.snippetory;
+package org.jproggy.snippetory;
 
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Writer;
 import java.util.Set;
 
-import de.jproggy.snippetory.spi.Encoding;
+import org.jproggy.snippetory.spi.Encoding;
+
 
 
 /**

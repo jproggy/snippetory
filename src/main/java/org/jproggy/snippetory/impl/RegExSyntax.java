@@ -1,10 +1,11 @@
-package de.jproggy.snippetory.impl;
+package org.jproggy.snippetory.impl;
 
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.jproggy.snippetory.spi.Syntax;
+import org.jproggy.snippetory.spi.Syntax;
+
 
 public abstract class RegExSyntax implements Syntax {
 
