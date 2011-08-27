@@ -1,6 +1,6 @@
 package org.jproggy.snippetory.spi;
 
-import org.jproggy.snippetory.Snippetory;
+import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.impl.IncompatibleEncodingException;
 
 /**
@@ -11,7 +11,7 @@ import org.jproggy.snippetory.impl.IncompatibleEncodingException;
  * By handling those technical issues of the output file within the template definition
  * the handling logic gets more reusable. And simpler to implement. This is a simple but
  * very efficient abstraction layer.<br />
- * As the encoding is inherited throughout the tree of snippets within a {@link Snippetory} 
+ * As the encoding is inherited throughout the tree of snippets within a {@link Template} 
  * a single encoding definition is sufficient for many cases. However, combination of encodings 
  * is common as well. Though, it can be overwritten as often as needed, for entire subtrees
  * or just for single leaf nodes. 

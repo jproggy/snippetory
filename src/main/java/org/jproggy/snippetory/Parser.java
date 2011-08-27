@@ -1,4 +1,4 @@
-package org.jproggy.snippetory.impl;
+package org.jproggy.snippetory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,36 +6,39 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.jproggy.snippetory.Snippetory;
+import org.jproggy.snippetory.impl.ParseError;
+import org.jproggy.snippetory.impl.Region;
+import org.jproggy.snippetory.impl.Token;
+import org.jproggy.snippetory.impl.Location;
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Syntax;
 import org.jproggy.snippetory.spi.SyntaxID;
 
 
-public class SnippetBuilder {
+public class Parser {
 	private Locale _locale = Locale.getDefault();
 	private Syntax _syntax;
-	private Syntax.Parser _parser;
+	private Syntax.Tokenizer _parser;
 	private CharSequence _data;
 	private Map<String, String> _baseAttribs = new HashMap<String, String>();
 
-	public SnippetBuilder(CharSequence data) {
+	public Parser(CharSequence data) {
 		this._data = data;
 		this._baseAttribs.put("date", "");
 		this._baseAttribs.put("number", "");
 	}
 
-	public Snippetory parse() {
+	public Template parse() {
 		_parser = getSyntax().parse(_data);
-		Variable root = new Variable(null, null, _baseAttribs, "", _locale);
-		Snippetory template = parse(root);
+		Location root = new Location(null, null, _baseAttribs, "", _locale);
+		Template template = parse(root);
 		root.setTemplate(template);
 		return template;
 	}
 
-	private Snippetory parse(Variable parent) {
+	private Template parse(Location parent) {
 		List<Object> parts = new ArrayList<Object>();
-		Map<String, Snippetory> children = new HashMap<String, Snippetory>();
+		Map<String, Template> children = new HashMap<String, Template>();
 		while (_parser.hasNext()) {
 			Token t = _parser.next();
 			
@@ -45,15 +48,15 @@ public class SnippetBuilder {
 					if (children.containsKey(t.getName())) {
 						throw new ParseError("duplicate child template " + t.getName(), t);
 					}
-					Variable var = new Variable(parent, t.getName(), t.getAttributes(), "", _locale);
+					Location var = new Location(parent, t.getName(), t.getAttributes(), "", _locale);
 					parts.add(var);
-					Syntax.Parser old = null;
+					Syntax.Tokenizer old = null;
 					if (t.getAttributes().get("syntax") != null) {
 						old = _parser;
 						String s = t.getAttributes().remove("syntax");
 						_parser = Syntax.REGISTRY.byName(s).takeOver(old);
 					}
-					Snippetory template = parse(var);
+					Template template = parse(var);
 					children.put(var.getName(), template);
 					var.setTemplate(template);
 					if (old != null) {
@@ -67,9 +70,9 @@ public class SnippetBuilder {
 						throw new ParseError(t.getName() + " found but " + 
 								(parent == null ? "file end" : parent.getName()) + " expected", t);
 					}
-					return new SnippetImpl(parent, parts, children);
+					return new Region(parent, parts, children);
 				case Field:
-					parts.add(new Variable(parent, t.getName(), t.getAttributes(), t.getContent(), _locale));
+					parts.add(new Location(parent, t.getName(), t.getAttributes(), t.getContent(), _locale));
 					break;
 				case TemplateData:
 					parts.add(t.getContent());
@@ -87,7 +90,7 @@ public class SnippetBuilder {
 		}
 		if (parent.getName() != null)
 			throw new RuntimeException("No end element for " + parent.getName());
-		return new SnippetImpl(parent, parts, children);
+		return new Region(parent, parts, children);
 	}
 
 
@@ -96,30 +99,30 @@ public class SnippetBuilder {
 		return _syntax;
 	}
 
-	public SnippetBuilder syntax(SyntaxID syntax) {
+	public Parser syntax(SyntaxID syntax) {
 		return syntax(Syntax.REGISTRY.byName(syntax.getName()));
 	}
 
-	public SnippetBuilder syntax(Syntax syntax) {
+	public Parser syntax(Syntax syntax) {
 		if (syntax == null) throw new NullPointerException();
 		this._syntax = syntax;
 		return this;
 	}
 
-	public SnippetBuilder encoding(String encoding) {
+	public Parser encoding(String encoding) {
 		return attrib("enc", encoding);
 	}
 
-	public SnippetBuilder encoding(Encoding encoding) {
+	public Parser encoding(Encoding encoding) {
 		return encoding(encoding.getName());
 	}
 
-	public SnippetBuilder locale(Locale locale) {
+	public Parser locale(Locale locale) {
 		this._locale = locale;
 		return this;
 	}
 
-	public SnippetBuilder attrib(String name, String value) {
+	public Parser attrib(String name, String value) {
 		this._baseAttribs.put(name, value);
 		return this;
 	}

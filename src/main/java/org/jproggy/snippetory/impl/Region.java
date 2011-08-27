@@ -9,72 +9,72 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.jproggy.snippetory.Snippetory;
+import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.annotations.Encoded;
 import org.jproggy.snippetory.spi.Encoding;
 
 
 @Encoded
-public class SnippetImpl implements Snippetory, Cloneable {
+public class Region implements Template, Cloneable {
 	private List<Object> parts;
-	private Map<String, Snippetory> children;
-	private final Variable placeHolder; 
+	private Map<String, Template> children;
+	private final Location placeHolder; 
 
-	public SnippetImpl(Variable placeHolder, List<Object> parts, Map<String, Snippetory> children) {
+	public Region(Location placeHolder, List<Object> parts, Map<String, Template> children) {
 		this.parts = parts;
 		this.children = children;
 		this.placeHolder = placeHolder;
 	}
 
 	@Override
-	public Snippetory get(String... path) {
+	public Template get(String... path) {
 		if (path.length == 0) return this;
-		Snippetory t = children.get(path[0]);
+		Template t = children.get(path[0]);
 		for (int i = 1; i < path.length; i++) {
 			t = t.get(path[i]);
 		}
 		return t;
 	}
 	
-	private List<Variable> byName(String name) {
-		List<Variable> result =  new ArrayList<Variable>();
+	private List<Location> byName(String name) {
+		List<Location> result =  new ArrayList<Location>();
 		for (Object part: parts) {
-			if (part instanceof Variable) {
-				if (((Variable)part).getName().equals(name)) result.add((Variable)part);
+			if (part instanceof Location) {
+				if (((Location)part).getName().equals(name)) result.add((Location)part);
 			}
 		}
 		return result;
 	}
 
-	private List<Variable> variables() {
-		List<Variable> result =  new ArrayList<Variable>();
+	private List<Location> locations() {
+		List<Location> result =  new ArrayList<Location>();
 		for (Object part: parts) {
-			if (part instanceof Variable) {
-				result.add((Variable)part);
+			if (part instanceof Location) {
+				result.add((Location)part);
 			}
 		}
 		return result;
 	}
 
 	@Override
-	public SnippetImpl set(String key, Object value) {
-		for (Variable v: byName(key)) {
+	public Region set(String key, Object value) {
+		for (Location v: byName(key)) {
 			v.set(value);
 		}
 		return this;
 	}
 
 	@Override
-	public SnippetImpl append(String key, Object value) {
-		for (Variable v: byName(key)) {
+	public Region append(String key, Object value) {
+		for (Location v: byName(key)) {
 			v.append(value);
 		}
 		return this;
 	}
 	
 	@Override
-	public SnippetImpl clear() {
-		for (Variable v : variables()) {
+	public Region clear() {
+		for (Location v : locations()) {
 			v.clear();
 		}
 		return this;
@@ -108,7 +108,7 @@ public class SnippetImpl implements Snippetory, Cloneable {
 	}
 
 	@Override
-	public void render(Snippetory target, String key) {
+	public void render(Template target, String key) {
 		target.append(key, this);
 	}
 	
@@ -128,8 +128,8 @@ public class SnippetImpl implements Snippetory, Cloneable {
 	public Set<String> names() {
 		Set<String> result =  new TreeSet<String>();
 		for (Object part: parts) {
-			if (part instanceof Variable) {
-				result.add(((Variable)part).getName());
+			if (part instanceof Location) {
+				result.add(((Location)part).getName());
 			}
 		}
 		return result;

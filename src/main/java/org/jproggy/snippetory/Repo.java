@@ -9,7 +9,6 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.util.Locale;
 
-import org.jproggy.snippetory.impl.SnippetBuilder;
 import org.jproggy.snippetory.impl.SnippetoryException;
 
 /**
@@ -18,49 +17,49 @@ import org.jproggy.snippetory.impl.SnippetoryException;
  */
 public class Repo {
 	
-	public static Snippetory parse(CharSequence data) {
+	public static Template parse(CharSequence data) {
 		return read(data).parse();
 	}
 
-	public static Snippetory parse(CharSequence data, Locale l) {
+	public static Template parse(CharSequence data, Locale l) {
 		return read(data).locale(l).parse();
 	}
 
-	public static SnippetBuilder read(CharSequence data) {
-		return new SnippetBuilder(data);
+	public static Parser read(CharSequence data) {
+		return new Parser(data);
 	}
 	
-	public static SnippetBuilder readResource(String name) {
+	public static Parser readResource(String name) {
 		if (name == null) {
 			throw new NullPointerException();
 		}
 		return readResource(name, null);
 	}
 
-	public static SnippetBuilder readResource(String name, ClassLoader test) {
+	public static Parser readResource(String name, ClassLoader test) {
 		if (name == null) {
 			throw new NullPointerException();
 		}
-		return new SnippetBuilder(ToString.resource(name, test));
+		return new Parser(ToString.resource(name, test));
 	}
 	
-	public static SnippetBuilder readFile(String fileName) {
+	public static Parser readFile(String fileName) {
 		if (fileName == null) {
 			throw new NullPointerException();
 		}
-		return new SnippetBuilder(ToString.file(fileName));
+		return new Parser(ToString.file(fileName));
 	}
 
-	public static SnippetBuilder readFile(File fileName) {
-		return new SnippetBuilder(ToString.file(fileName));
+	public static Parser readFile(File fileName) {
+		return new Parser(ToString.file(fileName));
 	}
 	
-	public static SnippetBuilder readStream(InputStream in) {
-		return new SnippetBuilder(ToString.stream(in));
+	public static Parser readStream(InputStream in) {
+		return new Parser(ToString.stream(in));
 	}
 
-	public static SnippetBuilder readReader(Reader in)  {
-		return new SnippetBuilder(ToString.reader(in));
+	public static Parser readReader(Reader in)  {
+		return new Parser(ToString.reader(in));
 	}
 	
 	private static class ToString {

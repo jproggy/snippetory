@@ -13,13 +13,13 @@ public abstract class RegExSyntax implements Syntax {
 	public abstract RegexParser parse(CharSequence data) ;
 
 	@Override
-	public Parser takeOver(Parser data) {
+	public Tokenizer takeOver(Tokenizer data) {
 		RegexParser p = parse(data.getData());
 		p.jumpTo(data.getPosition());
 		return p;
 	}
 
-	protected static class RegexParser implements Syntax.Parser {
+	protected static class RegexParser implements Syntax.Tokenizer {
 		private final Map<Pattern, TokenType> patterns; 
 		private final Matcher matcher;
 		private final CharSequence data;

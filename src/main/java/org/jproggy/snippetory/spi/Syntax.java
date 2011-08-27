@@ -26,7 +26,7 @@ public interface Syntax {
 			return new XMLAlikeSyntax();
 		}
 	}
-	interface Parser {
+	interface Tokenizer {
 		boolean hasNext();
 		Token next();
 		CharSequence getData();
@@ -34,8 +34,8 @@ public interface Syntax {
 		void jumpTo(int position);
 	}
 	
-	Parser parse(CharSequence data);
-	Parser takeOver(Parser data);
+	Tokenizer parse(CharSequence data);
+	Tokenizer takeOver(Tokenizer data);
 	
 	Registry REGISTRY = new Registry();
 	enum TokenType {

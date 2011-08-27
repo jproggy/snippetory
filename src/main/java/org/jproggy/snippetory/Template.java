@@ -44,7 +44,7 @@ import org.jproggy.snippetory.spi.Encoding;
  * @author Sir RotN
  */
 
-public interface Snippetory  {
+public interface Template  {
 
 	/**
 	 * Get further elements out of this repository.
@@ -56,7 +56,7 @@ public interface Snippetory  {
 	 * single instance exists. Though subsequent calls an get on the same instance with
 	 * the same name might clear the instances returned by previous call or not. 
 	 */
-	Snippetory get(String... name);
+	Template get(String... name);
 	
 	/**
 	 * Sets all variables with given name to a String representation of the value.
@@ -67,7 +67,7 @@ public interface Snippetory  {
 	 * 
 	 * @return the Snippetory itself
 	 */
-	Snippetory set(String name, Object value);
+	Template set(String name, Object value);
 	
 	/**
 	 * Appends a String representation of the value to all variables with given name.
@@ -79,14 +79,14 @@ public interface Snippetory  {
 	 * 
 	 * @return the Snippetory itself
 	 */
-	Snippetory append(String name, Object value);
+	Template append(String name, Object value);
 	
 	/**
 	 * removes all data already bound to this instance.
 	 * 
 	 * @return the Snippetory itself
 	 */
-	Snippetory clear();
+	Template clear();
 	
 	/**
 	 * Appends the textual representation of this Snippetory to the location where it
@@ -139,7 +139,7 @@ public interface Snippetory  {
 	 * @param target a Snippetory to append to
 	 * @param name the name of the place where the data should go to.
 	 */
-	void render(Snippetory target, String name);
+	void render(Template target, String name);
 	
 	/**
 	 * A convenience method to write to a Writer 

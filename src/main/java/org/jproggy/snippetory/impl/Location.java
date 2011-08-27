@@ -8,7 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.jproggy.snippetory.Encodings;
-import org.jproggy.snippetory.Snippetory;
+import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.annotations.Encoded;
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Format;
@@ -16,29 +16,29 @@ import org.jproggy.snippetory.spi.Transcoding;
 
 
 @Encoded
-public class Variable {
+public class Location {
 	private final String name;
 	private List<Format> formats = new ArrayList<Format>();
 	private Encoding enc;
 	private String defaultVal;
 	private final String fragment;
 	private StringBuilder target;
-	private final Variable parent;
-	public Variable getParent() {
+	private final Location parent;
+	public Location getParent() {
 		return parent;
 	}
 	private String delimiter;
 	private String prefix;
 	private String suffix;
-	private Snippetory template;
+	private Template template;
 
-	public Snippetory getTemplate() {
+	public Template getTemplate() {
 		return template;
 	}
-	public void setTemplate(Snippetory template) {
+	public void setTemplate(Template template) {
 		this.template = template;
 	}
-	public Variable(Variable parent, String name, Map<String, String> attribs, String fragment, Locale l) {
+	public Location(Location parent, String name, Map<String, String> attribs, String fragment, Locale l) {
 		this.parent = parent;
 		this.name = name;
 		for (String attr: attribs.keySet()) {
