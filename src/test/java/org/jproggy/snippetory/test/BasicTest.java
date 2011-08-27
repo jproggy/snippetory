@@ -3,6 +3,7 @@ package org.jproggy.snippetory.test;
 import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.Locale;
 
 import org.jproggy.snippetory.Repo;
@@ -101,6 +102,15 @@ public class BasicTest {
 		date.set("d1", java.sql.Date.valueOf("2011-10-15"));
 		date.set("d2", java.sql.Date.valueOf("2011-10-06"));
 		assertEquals("Date 1: 15.10.2011 Date 2: 06.10.2011 ", date.toString());
+		date = Repo.parse("<t:test date='short_full'>Date 1: {v:d1 date='sql'} Date 2: {v:d2} </t:test>", Locale.GERMAN).get("test");
+		date.set("d1", java.sql.Date.valueOf("2011-10-15"));
+		date.set("d2", java.sql.Date.valueOf("2011-10-06"));
+		assertEquals("Date 1: 2011-10-15 Date 2: 06.10.11 00:00 Uhr MESZ ", date.toString());
+		date = Repo.read("<t:test>Date 1: {v:d1 date='_medium'} Date 2: {v:d2} </t:test>")
+			.locale(Locale.GERMAN).attrib("date", "long_short").parse().get("test");
+		date.set("d1", new Date(java.sql.Date.valueOf("2011-10-15").getTime() + 3915000l) );
+		date.set("d2", java.sql.Date.valueOf("2011-10-06"));
+		assertEquals("Date 1: 01:05:15 Date 2: 6. Oktober 2011 00:00 ", date.toString());
 	}
 	
 	@Test

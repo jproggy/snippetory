@@ -61,14 +61,15 @@ public class DateFormater implements Format {
 			if ("sql_sql".equals(definition))
 				return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
+			// JS
 			if ("JS_NEW".equals(definition))
 				return new SimpleDateFormat("'new Date('yyyy', 'MM', 'dd')'",
 						Locale.US);
-
 			if ("JS_NEW_FULL".equals(definition))
 				return new SimpleDateFormat(
 						"'new Date('yyyy', 'MM', 'dd', 'MM', 'dd', 'HH', 'mm', 'ss')'",
 						Locale.US);
+			
 			// data by length
 			Integer f = LENGTHS.get(definition);
 			if (f != null) {
@@ -81,7 +82,7 @@ public class DateFormater implements Format {
 			if (f != null) {
 				return DateFormat.getTimeInstance(f, l);
 			}
-
+			//date time by length
 			String[] both = definition.split("_");
 			if (both.length == 2) {
 				f = LENGTHS.get(both[0]);
