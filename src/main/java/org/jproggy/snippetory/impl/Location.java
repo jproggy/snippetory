@@ -83,7 +83,6 @@ public class Location {
 		for (Format f: formats) {
 			if (f.supports(value)) value = f.format(value);
 		}
-		if (parent != null) return parent.format(value);
 		return value;
 	}
 	private String toString(Object value) {
@@ -125,7 +124,7 @@ public class Location {
 			if (sourceEnc.length() == 0) sourceEnc = getEncoding(value);
 			
 			// normalize empty to null-encoding
-			if (sourceEnc != null && sourceEnc.length() > 0) {
+			if (sourceEnc == null || sourceEnc.length() == 0) {
 				sourceEnc = Encodings.NULL.getName();
 			}
 			Encoding myEnc = getEncoding();
