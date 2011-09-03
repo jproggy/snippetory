@@ -20,14 +20,6 @@ public class FormatRegistry {
 		formats.put(name, value);
 	}
 
-	public Format get(String name, String definition) {
-		FormatFactory f = formats.get(name);
-		if (f == null) {
-			return null;
-		}
-		return f.create(definition);
-	}
-
 	public Format get(String name, String definition, Locale l) {
 		FormatFactory f = formats.get(name);
 		if (f == null) {

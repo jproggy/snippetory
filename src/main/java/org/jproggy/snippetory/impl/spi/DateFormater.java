@@ -95,11 +95,6 @@ public class DateFormater implements Format {
 		}
 
 		@Override
-		public Format create(String definition) {
-			return null;
-		}
-
-		@Override
 		public Format create(String definition, Locale l) {
 			return new DateFormater(toFormat(definition, l));
 		}

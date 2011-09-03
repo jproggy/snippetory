@@ -40,10 +40,6 @@ public class NumFormat implements Format {
 	
 	public static class Factory implements FormatFactory {
 		@Override
-		public Format create(String definition) {
-			return null;
-		}
-		@Override
 		public Format create(String definition, Locale l) {
 			return new NumFormat(definition, l);
 		}

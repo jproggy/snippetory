@@ -44,12 +44,8 @@ public class ShortenFormat implements Format {
 	
 	public static class Factory implements FormatFactory {
 		@Override
-		public Format create(String definition) {
-			return new ShortenFormat(definition);
-		}
-		@Override
 		public Format create(String definition, Locale l) {
-			return create(definition);
+			return new ShortenFormat(definition);
 		}
 	}
 }

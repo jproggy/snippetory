@@ -59,12 +59,8 @@ public class StretchFormat implements Format {
 	
 	public static class Factory implements FormatFactory {
 		@Override
-		public Format create(String definition) {
-			return new StretchFormat(definition);
-		}
-		@Override
 		public Format create(String definition, Locale l) {
-			return create(definition);
+			return new StretchFormat(definition);
 		}
 	}
 }
