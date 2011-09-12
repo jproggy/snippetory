@@ -3,10 +3,6 @@ package org.jproggy.snippetory.impl;
 public class SnippetoryException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
-	public SnippetoryException() {
-		super();
-	}
-
 	public SnippetoryException(String message, Throwable cause) {
 		super(message, cause);
 	}
