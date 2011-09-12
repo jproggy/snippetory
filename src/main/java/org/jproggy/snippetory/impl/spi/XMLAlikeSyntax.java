@@ -19,10 +19,10 @@ public class XMLAlikeSyntax extends RegExSyntax {
 		Pattern syntax = Pattern.compile("^[ \\t]*\\<s:([" + chars + "]+)[ \\t]*/\\>[ \t]*" + lEnd, Pattern.MULTILINE);
 		patterns.put(syntax, TokenType.Syntax);
 
-		Pattern start = Pattern.compile("\\<t:([\\'" + chars + "]+)\\>");
+		Pattern start = Pattern.compile("\\<t:([\\'\\\"" + chars + "]+)\\>");
 		patterns.put(start, TokenType.BlockStart);
 
-		start = Pattern.compile("^[ \\t]*\\<t\\:([\\'" + chars + "]+)\\>[ \\t]*" + lEnd, Pattern.MULTILINE);
+		start = Pattern.compile("^[ \\t]*\\<t\\:([\\'\\\"" + chars + "]+)\\>[ \\t]*" + lEnd, Pattern.MULTILINE);
 		patterns.put(start, TokenType.BlockStart);
 
 		Pattern end = Pattern.compile("</t\\:([\\p{Alnum}._-]+)\\>");

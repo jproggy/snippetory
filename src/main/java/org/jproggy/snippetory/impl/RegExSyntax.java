@@ -23,7 +23,7 @@ public abstract class RegExSyntax implements Syntax {
 		private final Map<Pattern, TokenType> patterns; 
 		private final Matcher matcher;
 		private final CharSequence data;
-		private final String chars;
+		private final Pattern vari;
 		private Boolean found;
 		private int pos = 0;
 
@@ -36,7 +36,8 @@ public abstract class RegExSyntax implements Syntax {
 			}
 			matcher = Pattern.compile(compoundPattern, Pattern.MULTILINE).matcher(data);
 			this.data = data;
-			this.chars = chars;
+			vari = Pattern.compile("([\\p{Alnum}._-]+)|(?: ([\\p{Alnum}_]+)=(?:'([\\\"" + 
+					chars + "]*)'|\\\"([\\'" + chars + "]*)\\\"))");
 		}
 
 		@Override
@@ -88,7 +89,6 @@ public abstract class RegExSyntax implements Syntax {
 		}
 
 		protected Token createToken(String varDef, TokenType type) {
-			Pattern vari = Pattern.compile("([\\p{Alnum}._-]+)|(?: ([\\p{Alnum}_]+)=(?:'([\\\"" + chars + "]+)'|\\\"([\\'" + chars + "]+)\\\"))");
 			Matcher m = vari.matcher(varDef);
 			m.find();
 			Token token = new Token(m.group(), matcher.group(), type,

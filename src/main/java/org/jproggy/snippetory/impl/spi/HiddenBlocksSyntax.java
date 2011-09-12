@@ -20,10 +20,10 @@ public class HiddenBlocksSyntax  extends RegExSyntax {
 		Pattern syntax = Pattern.compile("^[ \\t]*" + pref + "s:([\\'" + chars + "]+)" + suff + "[ \\t]*" + lEnd, Pattern.MULTILINE);
 		patterns.put(syntax, TokenType.Syntax);
 
-		Pattern start = Pattern.compile(pref + "t\\:([\\'" + chars + "]+)" + suff);
+		Pattern start = Pattern.compile(pref + "t\\:([\\'\\\"" + chars + "]+)" + suff);
 		patterns.put(start, TokenType.BlockStart);
 
-		start = Pattern.compile("^[ \\t]*" + pref + "t\\:([" + chars + "]+)" + suff + "[ \\t]*" + lEnd, Pattern.MULTILINE);
+		start = Pattern.compile("^[ \\t]*" + pref + "t\\:([\\'\\\"" + chars + "]+)" + suff + "[ \\t]*" + lEnd, Pattern.MULTILINE);
 		patterns.put(start, TokenType.BlockStart);
 
 		Pattern end = Pattern.compile(pref + "\\!t\\:([\\p{Alnum}._-]+)" + suff);
@@ -32,7 +32,7 @@ public class HiddenBlocksSyntax  extends RegExSyntax {
 		end = Pattern.compile("^[ \\t]*" + pref + "\\!t\\:([\\p{Alnum}._-]+)" + suff + "[ \\t]*" + lEnd, Pattern.MULTILINE);
 		patterns.put(end, TokenType.BlockEnd);
 
-		Pattern field = Pattern.compile("\\{v:([\\'" + chars + "]+)\\}");
+		Pattern field = Pattern.compile("\\{v:([\\'\\\"" + chars + "]+)\\}");
 		patterns.put(field, TokenType.Field);
 		return new RegexParser(data, patterns, chars);
 	}

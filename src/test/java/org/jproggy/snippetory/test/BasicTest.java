@@ -99,11 +99,23 @@ public class BasicTest {
 		date = Repo.parse("{v:test date='medium'}", Locale.GERMAN);
 		date.set("test", java.sql.Date.valueOf("2011-10-15"));
 		assertEquals("15.10.2011", date.toString());
+		date = Repo.parse("{v:test date=''}", Locale.GERMAN);
+		date.set("test", java.sql.Date.valueOf("2011-10-15"));
+		assertEquals("15.10.2011", date.toString());
+		date = Repo.parse("{v:test date=\"\"}", Locale.GERMAN);
+		date.set("test", java.sql.Date.valueOf("2011-10-15"));
+		assertEquals("15.10.2011", date.toString());
+		date = Repo.parse("<t:test date=''></t:test>", Locale.GERMAN);
+		date.set("test", java.sql.Date.valueOf("2011-10-15"));
+		assertEquals("15.10.2011", date.toString());
+		date = Repo.parse("<t:test date=\"\"></t:test>", Locale.GERMAN);
+		date.set("test", java.sql.Date.valueOf("2011-10-15"));
+		assertEquals("15.10.2011", date.toString());
 		date = Repo.parse("<t:test date='medium'>Date 1: {v:d1} Date 2: {v:d2} </t:test>", Locale.GERMAN).get("test");
 		date.set("d1", java.sql.Date.valueOf("2011-10-15"));
 		date.set("d2", java.sql.Date.valueOf("2011-10-06"));
 		assertEquals("Date 1: 15.10.2011 Date 2: 06.10.2011 ", date.toString());
-		date = Repo.parse("<t:test date='short_full'>Date 1: {v:d1 date='sql'} Date 2: {v:d2} </t:test>", Locale.GERMAN).get("test");
+		date = Repo.parse("<t:test date=\"short_full\">Date 1: {v:d1 date='sql'} Date 2: {v:d2} </t:test>", Locale.GERMAN).get("test");
 		date.set("d1", java.sql.Date.valueOf("2011-10-15"));
 		date.set("d2", java.sql.Date.valueOf("2011-10-06"));
 		assertEquals("Date 1: 2011-10-15 Date 2: 06.10.11 00:00 Uhr MESZ ", date.toString());
@@ -188,33 +200,53 @@ public class BasicTest {
 		t2.get("test").append("test", "hallo").render();
 		assertEquals("in and hallo and around", t2.toString());
 	}
-	
+
 	@Test
 	public void hiddenBlox() {
 		Template t1 = Repo.read("/*t:test*/ i++; /*!t:test*/")
 				.syntax(Syntaxes.HIDDEN_BLOCKS).parse();
-		assertEquals(" i++; ", t1.get("test").toString());		
-		Template t2 = Repo.read("<!--t:test url='utf-8' */ i++; /*!t:test-->")
+		assertEquals(" i++; ", t1.get("test").toString());
+		Template t2 = Repo.read("<!--t:test enc='url' */ i++; /*!t:test-->")
 				.syntax(Syntaxes.HIDDEN_BLOCKS).parse();
-		assertEquals(" i++; ", t2.get("test").toString());		
+		assertEquals(" i++; ", t2.get("test").toString());
 		Template t3 = Repo.read("/*t:test--> i++; <!--!t:test*/")
 				.syntax(Syntaxes.HIDDEN_BLOCKS).parse();
-		assertEquals(" i++; ", t3.get("test").toString());		
+		assertEquals(" i++; ", t3.get("test").toString());
 		Template t4 = Repo.read("<!--t:test--> i++; <!--!t:test-->")
 				.syntax(Syntaxes.HIDDEN_BLOCKS).parse();
-		assertEquals(" i++; ", t4.get("test").toString());		
+		assertEquals(" i++; ", t4.get("test").toString());
+		Template t5 = Repo.read("/*t:test stretch=\"10\"*/ i++; /*!t:test*/")
+				.syntax(Syntaxes.HIDDEN_BLOCKS).parse();
+		t5.get("test").render();
+		assertEquals(" i++;     ", t5.toString());
+		Template t6 = Repo.read("<!--t:test date='' */ i++; /*!t:test-->")
+				.syntax(Syntaxes.HIDDEN_BLOCKS).parse();
+		t6.get("test").render();
+		assertEquals(" i++; ", t6.toString());
 	}
+
 	@Test
 	public void lineRemoval() {
 		Template t1 = Repo.parse(" \n <t:test>  \n  i++; \n\r  </t:test>  \n ");
 		t1.append("test", t1.get("test"));
-		assertEquals(" \n  i++; \n\r ", t1.toString());		
+		assertEquals(" \n  i++; \n\r ", t1.toString());
 	}
+
 	@Test
 	public void lineRemovalHB() {
 		Template t1 = Repo.read("  /*t:test*/  \n i++; \n   /*!t:test*/  \n")
 				.syntax(Syntaxes.HIDDEN_BLOCKS).parse();
 		t1.append("test", t1.get("test"));
-		assertEquals(" i++; \n", t1.toString());		
+		assertEquals(" i++; \n", t1.toString());
+		Template t7 = Repo.read("  /*t:test shorten='4-'-->  \n i++; \n   <!--!t:test*/  \n")
+				.syntax(Syntaxes.HIDDEN_BLOCKS).parse();
+		t7.get("test").render();
+		t7.get("test").render();
+		assertEquals(" i+- i+-", t7.toString());
+		Template t8 = Repo.read("<!--t:test-->{v:test stretch='8r'}\n <!--!t:test-->\n")
+				.syntax(Syntaxes.HIDDEN_BLOCKS).parse();
+		t8.get("test").append("test", "12345").append("test", "123").render();
+		t8.get("test").set("test", "test").render();
+		assertEquals("   12345     123\n    test\n", t8.toString());
 	}
 }
