@@ -6,14 +6,14 @@ import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.Locale;
 
+import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.Repo;
-import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.Syntaxes;
+import org.jproggy.snippetory.Template;
 import org.junit.Test;
 
-
 public class BasicTest {
-//	@Test
+	@Test
 	public void encoding() throws Exception {
 		Template html = Repo.parse("{v:test enc='html'}");
 		html.set("test", "<");
@@ -22,7 +22,8 @@ public class BasicTest {
 		assertEquals("&lt;-", html.toString());
 		html.set("test", ">'");
 		assertEquals(">'", html.toString());
-		Template plain = Repo.parse("{v:test enc='plain'}");
+		Template plain = Repo.read("{v:test}")
+		  .encoding(Encodings.plain).parse();
 		plain.set("test", "<");
 		assertEquals("<", plain.toString());
 		plain.append("test", "-");
@@ -40,7 +41,7 @@ public class BasicTest {
 		assertEquals(">'&lt;", html.toString());
 		html.append("test", string);
 		string.append("test", html);
-		assertEquals(">>\\\'&lt;>", string.toString());
+		assertEquals(">>'&lt;>", string.toString());
 		string.append("test", plain);
 		string.append("test", string);
 	}
@@ -130,18 +131,47 @@ public class BasicTest {
 	}
 	
 	@Test
-	public void x() throws Exception {
-		Method def = Template.class.getMethod("render", Template.class, String.class);
-		 Template method = Repo.parse("{v:type} {v:name}(<t:param delimiter=', '>{v:type} param{v:i}</t:param>)");
-		  method.set("type", def.getReturnType().getSimpleName())
-		        .set("name", def.getName());
+	public void indexDemo() throws Exception {
+		  Method def = Template.class.getMethod("render", Template.class, String.class);
+		  
+		  // In a real world application we wouldn't have the template definition inside
+		  // the code. Repo provides methods to read this from class path, file, Reader 
+		  // and so on.
+		  Template method = Repo.read(
+		  
+		  	  // The mock data 'Template' and 'render' ensures to compile while the mark
+		  	  // up code is hidden in comments
+		  	  //         |------|                      |-----|
+		      "/*t:type*/Template/*!t:type*/ /*t:name*/render/*!t:name*/" + 
+
+		      // Inside this block we use the xml variant of syntax. Then the entire block
+		      // appears as a comment to a compiler. 
+		  	  //             meta data        repeated area
+		  	  //          |------------|   |-----------------|
+		      "(/*t:param delimiter=', '-->{v:type} param{v:i}<!--!t:param*/);"      
+		  )
+		  // --> The US locale is typically a good choice for machine readable output.
+		  .locale(Locale.US)
+		  // switch over to another syntax. This could be done in template two. 
+		  // Even multiple times.
+		  .syntax(Syntaxes.HIDDEN_BLOCKS)
+		  // After configuration we finally parse the template
+		  .parse();
+		  
+		  String typeName = def.getReturnType().getSimpleName();
+		  
+		  // bind parent data
+		  method.set("type", typeName).set("name", def.getName());
+		  
 		  for (int i = 0; i < def.getParameterTypes().length; i++) {
-		    method.get("param")
-		          .set("type", def.getParameterTypes()[i].getSimpleName())
-		          .set("i", i)
-		          .render();
+		    String paramType = def.getParameterTypes()[i].getSimpleName();
+		    
+		    // bind child data
+		    method.get("param").set("type", paramType).set("i", i).render();
+
 		  }
-		  method.render(System.out);
+		  assertEquals("void render(Template param0, String param1);", 
+				  method.toString());
 	}
 	
 	@Test
