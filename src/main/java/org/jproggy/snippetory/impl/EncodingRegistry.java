@@ -6,11 +6,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jproggy.snippetory.impl.Attributes.Types;
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Transcoding;
 
-
+/**
+ * Handles registration of encoding and transcoding overwrites.
+ * See <a href="http://www.jproggy.org/snippetory/Encodings.html">offical documentation</a>
+ * for additional information
+ * @author B. Ebertz
+ */
 public class EncodingRegistry {
 	private Map<String, Encoding> encodings = new HashMap<String, Encoding>();
 	private Map<String, Collection<Transcoding>> overwrites = new HashMap<String, Collection<Transcoding>>();
@@ -19,7 +23,6 @@ public class EncodingRegistry {
 	}
 
 	public void register(Encoding value) {
-		Attributes.REGISTRY.register(value.getName(), Types.FORMAT);
 		encodings.put(value.getName(), value);
 	}
 
