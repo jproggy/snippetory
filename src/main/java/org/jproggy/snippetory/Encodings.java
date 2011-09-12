@@ -7,7 +7,10 @@ import org.jproggy.snippetory.impl.IncompatibleEncodingException;
 import org.jproggy.snippetory.impl.SnippetoryException;
 import org.jproggy.snippetory.spi.Encoding;
 
-
+/**
+ * Provides direct access to the predefined encodings.
+ * @author B. Ebertz
+ */
 public enum Encodings implements Encoding {
 	/**
 	 * It's assumed that Snippetory is used in a modern Unicode based environment. Though,
