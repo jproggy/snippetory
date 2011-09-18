@@ -10,11 +10,12 @@ import org.jproggy.snippetory.spi.Encoding;
 
 
 /**
- * The Snippetory is the central interface of the Snippetory Template Engine. A Snippetory
- * has two faces. It's a template or a snippet. It describes how an data is bound to create 
- * an output. However, it's a repository of snippets as well. This introduces new 
- * possibilities of (re-)usage to template code. Any Snippetory can reuses as needed
- * and combined with any other Snippetory. As simple as calling a method.<br /> 
+ * The Template is the central interface of the Snippetory Template Engine. 
+ * A Template has two faces. It's a template or a snippet. It describes how an 
+ * data is bound to create an output. However, it's a repository of snippets as 
+ * well. This introduces new possibilities of (re-)usage to template code. Any 
+ * Template can be reused as needed and combined with any other Template. As 
+ * simple as calling a method.<br /> 
  * <br />
  * It abstracts from most technical issues of the output by handling several
  * typical issues when generating textual languages interpreted by other machines
@@ -41,7 +42,7 @@ import org.jproggy.snippetory.spi.Encoding;
  * 
  * @see Repo
  * 
- * @author Sir RotN
+ * @author B. Ebertz
  */
 
 public interface Template  {
@@ -65,7 +66,7 @@ public interface Template  {
 	 * All matching formats and encodings are used, with exception of Templates.
 	 * Templates are never formatted or encoded.
 	 * 
-	 * @return the Snippetory itself
+	 * @return the Template itself
 	 */
 	Template set(String name, Object value);
 	
@@ -77,26 +78,26 @@ public interface Template  {
 	 * All matching formats and encodings are used in the order of definition, w
 	 * Templates are never formatted or encoded.
 	 * 
-	 * @return the Snippetory itself
+	 * @return the Template itself
 	 */
 	Template append(String name, Object value);
 	
 	/**
 	 * removes all data already bound to this instance.
 	 * 
-	 * @return the Snippetory itself
+	 * @return the Template itself
 	 */
 	Template clear();
 	
 	/**
-	 * Appends the textual representation of this Snippetory to the location where it
-	 * was created. (I.e. got from)
+	 * Appends the textual representation of this Template to the location where 
+	 * it was created. (I.e. got from)
 	 * This works pretty fine for the really simple cases.
 	 */
 	void render();
 	
 	/**
-	 * Appends the textual representation of this Snippetory to sibling of the location 
+	 * Appends the textual representation of this Template to sibling of the location 
 	 * where it was created. (I.e. got from)
 	 * This will be used when handling several variants of presentations within a list.
 	 * To avoid sorting of elements by variant it has to be ensured that all variants
@@ -129,14 +130,14 @@ public interface Template  {
 	void render(String siblingName);
 	
 	/**
-	 * Appends the textual representation of this Snippetory to an arbitrary location.
+	 * Appends the textual representation of this Template to an arbitrary location.
 	 * This allows even to mix data from different files. Quite similar to
 	 * <pre>
 	 * target.append(name, thisOne);
 	 * </pre>
 	 * however an interceptor gets more information what's going on.
 	 * 
-	 * @param target a Snippetory to append to
+	 * @param target a Template to append to
 	 * @param name the name of the place where the data should go to.
 	 */
 	void render(Template target, String name);
