@@ -1,4 +1,4 @@
-package org.jproggy.snippetory;
+package org.jproggy.snippetory.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,31 +6,21 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.jproggy.snippetory.impl.ParseError;
-import org.jproggy.snippetory.impl.Region;
-import org.jproggy.snippetory.impl.Token;
-import org.jproggy.snippetory.impl.Location;
-import org.jproggy.snippetory.spi.Encoding;
+import org.jproggy.snippetory.Template;
+import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.spi.Syntax;
-import org.jproggy.snippetory.spi.SyntaxID;
 
 
-public class Parser {
-	private Locale _locale = Locale.getDefault();
-	private Syntax _syntax;
+public class TemplateBuilder {
+	private Syntax tempSyntax;
 	private Syntax.Tokenizer _parser;
-	private CharSequence _data;
-	private Map<String, String> _baseAttribs = new HashMap<String, String>();
+	private TemplateContext _ctx;
 
-	public Parser(CharSequence data) {
-		this._data = data;
-		this._baseAttribs.put("date", "");
-		this._baseAttribs.put("number", "");
-	}
-
-	public Template parse() {
-		_parser = getSyntax().parse(_data);
-		Location root = new Location(null, null, _baseAttribs, "", _locale);
+	public Template parse(TemplateContext ctx) {
+		_ctx = ctx;
+		_parser = getSyntax().parse(ctx.getData());
+		tempSyntax = ctx.getSyntax();
+		Location root = new Location(null, null, ctx.getBaseAttribs(), "", ctx.getLocale());
 		Template template = parse(root);
 		root.setTemplate(template);
 		return template;
@@ -46,9 +36,11 @@ public class Parser {
 				switch (t.getType()) {
 				case BlockStart: {
 					if (children.containsKey(t.getName())) {
-						throw new ParseError("duplicate child template " + t.getName(), t);
+						throw new ParseError("duplicate child template " +
+								t.getName(), t);
 					}
-					Location var = new Location(parent, t.getName(), t.getAttributes(), "", _locale);
+					Location var = new Location(parent, t.getName(), 
+							t.getAttributes(), "", getLocale());
 					parts.add(var);
 					Syntax.Tokenizer old = null;
 					if (t.getAttributes().get("syntax") != null) {
@@ -72,13 +64,14 @@ public class Parser {
 					}
 					return new Region(parent, parts, children);
 				case Field:
-					parts.add(new Location(parent, t.getName(), t.getAttributes(), t.getContent(), _locale));
+					parts.add(new Location(parent, t.getName(), 
+							t.getAttributes(), t.getContent(), getLocale()));
 					break;
 				case TemplateData:
 					parts.add(t.getContent());
 					break;
 				case Syntax:
-					syntax(Syntax.REGISTRY.byName(t.getName()));
+					setSyntax(Syntax.REGISTRY.byName(t.getName()));
 					_parser = getSyntax().takeOver(_parser);
 					break;
 				}
@@ -93,37 +86,19 @@ public class Parser {
 		return new Region(parent, parts, children);
 	}
 
+	private Locale getLocale() {
+		return _ctx.getLocale();
+	}
+
+
+	private void setSyntax(Syntax s) {
+		if (s == null) throw new NullPointerException();
+		tempSyntax = s;
+	}
+
 
 	private Syntax getSyntax() {
-		if (_syntax == null) return Syntax.REGISTRY.getDefault();
-		return _syntax;
-	}
-
-	public Parser syntax(SyntaxID syntax) {
-		return syntax(Syntax.REGISTRY.byName(syntax.getName()));
-	}
-
-	public Parser syntax(Syntax syntax) {
-		if (syntax == null) throw new NullPointerException();
-		this._syntax = syntax;
-		return this;
-	}
-
-	public Parser encoding(String encoding) {
-		return attrib("enc", encoding);
-	}
-
-	public Parser encoding(Encoding encoding) {
-		return encoding(encoding.getName());
-	}
-
-	public Parser locale(Locale locale) {
-		this._locale = locale;
-		return this;
-	}
-
-	public Parser attrib(String name, String value) {
-		this._baseAttribs.put(name, value);
-		return this;
+		if (tempSyntax == null) return Syntax.REGISTRY.getDefault();
+		return tempSyntax;
 	}
 }

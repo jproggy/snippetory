@@ -21,7 +21,7 @@ import org.jproggy.snippetory.impl.SnippetoryException;
 /**
  * Whenever you work with Snippetory things start here. The Repo(sitory) provides access to different
  * sources of template code. May it be the simple String within your code, a file or a stream got from
- * an url. Repo will help you create the parser, and after configuration, the parser will provide
+ * an url. Repo will help you create the TemplateContext, and after configuration, the TemplateContext will provide
  * the template.   
  * <p>
  * For Strings there are even short cuts to directly parse the template.
@@ -44,48 +44,48 @@ public class Repo {
 		return read(data).locale(l).parse();
 	}
 
-	public static Parser read(CharSequence data) {
-		return new Parser(data);
+	public static TemplateContext read(CharSequence data) {
+		return new TemplateContext(data);
 	}
 	
 	/**
-	 * The data for the parser is searched on class path
+	 * The data for the TemplateContext is searched on class path
 	 */
-	public static Parser readResource(String name) {
+	public static TemplateContext readResource(String name) {
 		if (name == null) {
 			throw new NullPointerException();
 		}
 		return readResource(name, null);
 	}
 
-	public static Parser readResource(String name, ClassLoader test) {
+	public static TemplateContext readResource(String name, ClassLoader test) {
 		if (name == null) {
 			throw new NullPointerException();
 		}
-		return new Parser(ToString.resource(name, test));
+		return new TemplateContext(ToString.resource(name, test));
 	}
 	
-	public static Parser readFile(String fileName) {
+	public static TemplateContext readFile(String fileName) {
 		if (fileName == null) {
 			throw new NullPointerException();
 		}
-		return new Parser(ToString.file(fileName));
+		return new TemplateContext(ToString.file(fileName));
 	}
 
-	public static Parser readFile(File fileName) {
-		return new Parser(ToString.file(fileName));
+	public static TemplateContext readFile(File fileName) {
+		return new TemplateContext(ToString.file(fileName));
 	}
 	
 	/**
 	 * 
 	 * @param in 
 	 */
-	public static Parser readStream(InputStream in) {
-		return new Parser(ToString.stream(in));
+	public static TemplateContext readStream(InputStream in) {
+		return new TemplateContext(ToString.stream(in));
 	}
 
-	public static Parser readReader(Reader in)  {
-		return new Parser(ToString.reader(in));
+	public static TemplateContext readReader(Reader in)  {
+		return new TemplateContext(ToString.reader(in));
 	}
 	
 	private static class ToString {
