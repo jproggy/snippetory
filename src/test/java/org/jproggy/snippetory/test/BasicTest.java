@@ -9,6 +9,7 @@ import java.util.Locale;
 import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.Repo;
 import org.jproggy.snippetory.Syntaxes;
+import static org.jproggy.snippetory.Syntaxes.HIDDEN_BLOCKS;
 import org.jproggy.snippetory.Template;
 import org.junit.Test;
 
@@ -22,8 +23,7 @@ public class BasicTest {
 		assertEquals("&lt;-", html.toString());
 		html.set("test", ">'");
 		assertEquals(">'", html.toString());
-		Template plain = Repo.read("{v:test}")
-		  .encoding(Encodings.plain).parse();
+		Template plain = Encodings.plain.parse("{v:test}");
 		plain.set("test", "<");
 		assertEquals("<", plain.toString());
 		plain.append("test", "-");
@@ -203,24 +203,18 @@ public class BasicTest {
 
 	@Test
 	public void hiddenBlox() {
-		Template t1 = Repo.read("/*t:test*/ i++; /*!t:test*/")
-				.syntax(Syntaxes.HIDDEN_BLOCKS).parse();
+		Template t1 = HIDDEN_BLOCKS.parse("/*t:test*/ i++; /*!t:test*/");
 		assertEquals(" i++; ", t1.get("test").toString());
-		Template t2 = Repo.read("<!--t:test enc='url' */ i++; /*!t:test-->")
-				.syntax(Syntaxes.HIDDEN_BLOCKS).parse();
+		Template t2 = HIDDEN_BLOCKS.parse("<!--t:test enc='url' */ i++; /*!t:test-->");
 		assertEquals(" i++; ", t2.get("test").toString());
-		Template t3 = Repo.read("/*t:test--> i++; <!--!t:test*/")
-				.syntax(Syntaxes.HIDDEN_BLOCKS).parse();
+		Template t3 = HIDDEN_BLOCKS.parse("/*t:test--> i++; <!--!t:test*/");
 		assertEquals(" i++; ", t3.get("test").toString());
-		Template t4 = Repo.read("<!--t:test--> i++; <!--!t:test-->")
-				.syntax(Syntaxes.HIDDEN_BLOCKS).parse();
+		Template t4 = HIDDEN_BLOCKS.parse("<!--t:test--> i++; <!--!t:test-->");
 		assertEquals(" i++; ", t4.get("test").toString());
-		Template t5 = Repo.read("/*t:test stretch=\"10\"*/ i++; /*!t:test*/")
-				.syntax(Syntaxes.HIDDEN_BLOCKS).parse();
+		Template t5 = HIDDEN_BLOCKS.parse("/*t:test stretch=\"10\"*/ i++; /*!t:test*/");
 		t5.get("test").render();
 		assertEquals(" i++;     ", t5.toString());
-		Template t6 = Repo.read("<!--t:test date='' */ i++; /*!t:test-->")
-				.syntax(Syntaxes.HIDDEN_BLOCKS).parse();
+		Template t6 = HIDDEN_BLOCKS.parse("<!--t:test date='' */ i++; /*!t:test-->");
 		t6.get("test").render();
 		assertEquals(" i++; ", t6.toString());
 	}
@@ -234,17 +228,14 @@ public class BasicTest {
 
 	@Test
 	public void lineRemovalHB() {
-		Template t1 = Repo.read("  /*t:test*/  \n i++; \n   /*!t:test*/  \n")
-				.syntax(Syntaxes.HIDDEN_BLOCKS).parse();
+		Template t1 = HIDDEN_BLOCKS.parse("  /*t:test*/  \n i++; \n   /*!t:test*/  \n");
 		t1.append("test", t1.get("test"));
 		assertEquals(" i++; \n", t1.toString());
-		Template t7 = Repo.read("  /*t:test shorten='4-'-->  \n i++; \n   <!--!t:test*/  \n")
-				.syntax(Syntaxes.HIDDEN_BLOCKS).parse();
+		Template t7 = HIDDEN_BLOCKS.parse("  /*t:test shorten='4-'-->  \n i++; \n   <!--!t:test*/  \n");
 		t7.get("test").render();
 		t7.get("test").render();
 		assertEquals(" i+- i+-", t7.toString());
-		Template t8 = Repo.read("<!--t:test-->{v:test stretch='8r'}\n <!--!t:test-->\n")
-				.syntax(Syntaxes.HIDDEN_BLOCKS).parse();
+		Template t8 = HIDDEN_BLOCKS.parse("<!--t:test-->{v:test stretch='8r'}\n <!--!t:test-->\n");
 		t8.get("test").append("test", "12345").append("test", "123").render();
 		t8.get("test").set("test", "test").render();
 		assertEquals("   12345     123\n    test\n", t8.toString());
