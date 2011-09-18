@@ -1,3 +1,10 @@
+/*****************************************************************************
+ * Copyright (c) 2011 B. Ebertz                                              *
+ * All rights reserved. This program and the accompanying materials          *
+ * are made available under the terms of the Eclipes Public License v1.0     *
+ * which accompanies this distribution, and is available at                  *
+ * http://www.eclipse.org/legal/epl-v10.html                                 *
+ *****************************************************************************/
 package org.jproggy.snippetory;
 
 import java.io.File;
@@ -12,11 +19,23 @@ import java.util.Locale;
 import org.jproggy.snippetory.impl.SnippetoryException;
 
 /**
- * This class offers some methods to ease access on templates. There 
- * @author Sir RotN
+ * Whenever you work with Snippetory things start here. The Repo(sitory) provides access to different
+ * sources of template code. May it be the simple String within your code, a file or a stream got from
+ * an url. Repo will help you create the parser, and after configuration, the parser will provide
+ * the template.   
+ * <p>
+ * For Strings there are even short cuts to directly parse the template.
+ * </p>
+ * @author B. Ebertz 
  */
 public class Repo {
 	
+	
+	/**
+	 * The really short short cut for the simple jobs. This helps
+	 * to scale from a very low level, where character hurts. At least for 
+	 * playing around it's very handy.    
+	 */
 	public static Template parse(CharSequence data) {
 		return read(data).parse();
 	}
@@ -29,6 +48,9 @@ public class Repo {
 		return new Parser(data);
 	}
 	
+	/**
+	 * The data for the parser is searched on class path
+	 */
 	public static Parser readResource(String name) {
 		if (name == null) {
 			throw new NullPointerException();
@@ -54,6 +76,10 @@ public class Repo {
 		return new Parser(ToString.file(fileName));
 	}
 	
+	/**
+	 * 
+	 * @param in 
+	 */
 	public static Parser readStream(InputStream in) {
 		return new Parser(ToString.stream(in));
 	}
