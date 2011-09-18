@@ -8,15 +8,9 @@
 package org.jproggy.snippetory;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.StringWriter;
 import java.util.Locale;
-
-import org.jproggy.snippetory.engine.SnippetoryException;
 
 /**
  * Whenever you work with Snippetory things start here. The Repo(sitory) provides access to different
@@ -33,47 +27,38 @@ public class Repo {
 	
 	/**
 	 * The really short short cut for the simple jobs. This helps
-	 * to scale from a very low level, where character hurts. At least for 
+	 * to scale from a very low level, where any character hurts. At least for 
 	 * playing around it's very handy.    
 	 */
 	public static Template parse(CharSequence data) {
-		return read(data).parse();
+		return new TemplateContext().data(data).parse();
 	}
 
 	public static Template parse(CharSequence data, Locale l) {
-		return read(data).locale(l).parse();
+		return new TemplateContext().data(data).locale(l).parse();
 	}
 
 	public static TemplateContext read(CharSequence data) {
-		return new TemplateContext(data);
+		return new TemplateContext().data(data);
 	}
 	
 	/**
 	 * The data for the TemplateContext is searched on class path
 	 */
 	public static TemplateContext readResource(String name) {
-		if (name == null) {
-			throw new NullPointerException();
-		}
-		return readResource(name, null);
+		return new TemplateContext().readResource(name);
 	}
 
 	public static TemplateContext readResource(String name, ClassLoader test) {
-		if (name == null) {
-			throw new NullPointerException();
-		}
-		return new TemplateContext(ToString.resource(name, test));
+		return new TemplateContext().readResource(name, test);
 	}
 	
 	public static TemplateContext readFile(String fileName) {
-		if (fileName == null) {
-			throw new NullPointerException();
-		}
-		return new TemplateContext(ToString.file(fileName));
+		return new TemplateContext().readFile(fileName);
 	}
 
 	public static TemplateContext readFile(File fileName) {
-		return new TemplateContext(ToString.file(fileName));
+		return new TemplateContext().readFile(fileName);
 	}
 	
 	/**
@@ -81,76 +66,10 @@ public class Repo {
 	 * @param in 
 	 */
 	public static TemplateContext readStream(InputStream in) {
-		return new TemplateContext(ToString.stream(in));
+		return new TemplateContext().readStream(in);
 	}
 
 	public static TemplateContext readReader(Reader in)  {
-		return new TemplateContext(ToString.reader(in));
-	}
-	
-	private static class ToString {
-		public static String resource(String name, ClassLoader test) {
-			if (test != null) {
-				InputStream in = test.getResourceAsStream(name);
-				if (in == null) return resource(name, null);
-				return stream(in);
-			}
-			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			if (loader == null) { 
-				loader = Repo.class.getClassLoader();
-			}
-			if (loader == null) { 
-				loader = ClassLoader.getSystemClassLoader();
-			}
-			return stream(loader.getResourceAsStream(name));
-		}
-		
-		public static String file(String fileName) {
-			try {
-				return stream(new FileInputStream(fileName));
-			} catch (IOException e) {
-				throw new SnippetoryException(e);
-			}
-		}
-		
-		public static String file(File in) {
-			if (in == null) {
-				return null;
-			}
-			try {
-				return stream(new FileInputStream(in));
-			} catch (IOException e) {
-				throw new SnippetoryException(e);
-			}
-		}
-		
-		public static String stream(InputStream in) {
-			if (in == null) {
-				return null;
-			}
-			try {
-				return reader(new InputStreamReader(in, "utf-8"));
-			} catch (IOException e) {
-				throw new SnippetoryException(e);
-			}
-		}
-
-		public static String reader(Reader in)  {
-			if (in == null) {
-				return null;
-			}
-			try {
-				char[] buffer = new char[255];
-				StringWriter s = new StringWriter();
-				int c;
-				while ((c = in.read(buffer)) == buffer.length) {
-					s.write(buffer);
-				}
-				if (c > 0) s.write(buffer, 0, c);
-				return s.toString();
-			} catch (IOException e) {
-				throw new SnippetoryException(e);
-			}
-		}
+		return new TemplateContext().readReader(in);
 	}
 }
