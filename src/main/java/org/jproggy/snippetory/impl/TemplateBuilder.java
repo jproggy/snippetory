@@ -18,8 +18,8 @@ public class TemplateBuilder {
 
 	public Template parse(TemplateContext ctx) {
 		_ctx = ctx;
-		_parser = getSyntax().parse(ctx.getData());
 		tempSyntax = ctx.getSyntax();
+		_parser = getSyntax().parse(ctx.getData());
 		Location root = new Location(null, null, ctx.getBaseAttribs(), "", ctx.getLocale());
 		Template template = parse(root);
 		root.setTemplate(template);

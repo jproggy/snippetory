@@ -11,7 +11,7 @@ import org.jproggy.snippetory.spi.SyntaxID;
 
 public class TemplateContext {
 	private Locale locale = Locale.getDefault();
-	private Syntax syntax;
+	private Syntax syntax = Syntax.REGISTRY.getDefault();
 	private CharSequence data;
 	private Map<String, String> baseAttribs = new HashMap<String, String>();
 
