@@ -15,7 +15,7 @@ public enum Syntaxes implements SyntaxID {
 	 * This is the default syntax. It is used if no syntax is defined. It
 	 * looks like this: 
 	 * <p>
-	 * <t:name default='def'>{v:other_name}</t:name>
+	 * &lt;t:name default='def'>{v:other_name}&lt;/t:name>
 	 * </p>
 	 * It integrates fine in xml-based formats and is very visible in many others.
 	 * It provides low risk of incompatibility to a certain output format.
