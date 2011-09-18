@@ -34,4 +34,12 @@ public enum Syntaxes implements SyntaxID {
 	HIDDEN_BLOCKS;
 	
 	public String getName() { return name(); }
+	
+	public TemplateContext context() {
+		return new TemplateContext().syntax(this);
+	}
+	
+	public Template parse(CharSequence data) {
+		return context().data(data).parse();
+	}
 }

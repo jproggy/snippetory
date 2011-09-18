@@ -222,4 +222,12 @@ public enum Encodings implements Encoding {
 	public String getName() {
 		return name();
 	}
+	
+	public TemplateContext context() {
+		return new TemplateContext().encoding(this);
+	}
+	
+	public Template parse(CharSequence data) {
+		return context().data(data).parse();
+	}
 }
