@@ -1,4 +1,4 @@
-package org.jproggy.snippetory.impl;
+package org.jproggy.snippetory.engine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,10 +7,10 @@ import java.util.Map;
 import java.util.ServiceLoader;
 
 import org.jproggy.snippetory.Encodings;
-import org.jproggy.snippetory.impl.spi.DateFormater;
-import org.jproggy.snippetory.impl.spi.NumFormat;
-import org.jproggy.snippetory.impl.spi.ShortenFormat;
-import org.jproggy.snippetory.impl.spi.StretchFormat;
+import org.jproggy.snippetory.engine.spi.DateFormater;
+import org.jproggy.snippetory.engine.spi.NumFormat;
+import org.jproggy.snippetory.engine.spi.ShortenFormat;
+import org.jproggy.snippetory.engine.spi.StretchFormat;
 import org.jproggy.snippetory.spi.Configurer;
 
 

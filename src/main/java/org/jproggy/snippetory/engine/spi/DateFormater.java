@@ -1,4 +1,4 @@
-package org.jproggy.snippetory.impl.spi;
+package org.jproggy.snippetory.engine.spi;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

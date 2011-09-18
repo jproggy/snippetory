@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jproggy.snippetory.Syntaxes;
-import org.jproggy.snippetory.impl.Token;
-import org.jproggy.snippetory.impl.spi.HiddenBlocksSyntax;
-import org.jproggy.snippetory.impl.spi.XMLAlikeSyntax;
+import org.jproggy.snippetory.engine.Token;
+import org.jproggy.snippetory.engine.spi.HiddenBlocksSyntax;
+import org.jproggy.snippetory.engine.spi.XMLAlikeSyntax;
 
 
 public interface Syntax {

@@ -1,4 +1,4 @@
-package org.jproggy.snippetory.impl;
+package org.jproggy.snippetory.engine;
 
 import java.util.Map;
 import java.util.regex.Matcher;

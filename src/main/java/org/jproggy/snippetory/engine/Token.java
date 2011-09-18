@@ -1,4 +1,4 @@
-package org.jproggy.snippetory.impl;
+package org.jproggy.snippetory.engine;
 
 import java.util.LinkedHashMap;
 

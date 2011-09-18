@@ -1,4 +1,4 @@
-package org.jproggy.snippetory.impl;
+package org.jproggy.snippetory.engine;
 
 public class SnippetoryException extends RuntimeException {
 	private static final long serialVersionUID = 1L;

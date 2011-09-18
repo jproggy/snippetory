@@ -3,8 +3,8 @@ package org.jproggy.snippetory;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import org.jproggy.snippetory.impl.IncompatibleEncodingException;
-import org.jproggy.snippetory.impl.SnippetoryException;
+import org.jproggy.snippetory.engine.IncompatibleEncodingException;
+import org.jproggy.snippetory.engine.SnippetoryException;
 import org.jproggy.snippetory.spi.Encoding;
 
 /**

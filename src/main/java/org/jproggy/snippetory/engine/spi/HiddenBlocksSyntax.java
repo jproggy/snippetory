@@ -1,10 +1,10 @@
-package org.jproggy.snippetory.impl.spi;
+package org.jproggy.snippetory.engine.spi;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.jproggy.snippetory.impl.RegExSyntax;
+import org.jproggy.snippetory.engine.RegExSyntax;
 import org.jproggy.snippetory.spi.Syntax;
 
 

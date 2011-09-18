@@ -16,7 +16,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.util.Locale;
 
-import org.jproggy.snippetory.impl.SnippetoryException;
+import org.jproggy.snippetory.engine.SnippetoryException;
 
 /**
  * Whenever you work with Snippetory things start here. The Repo(sitory) provides access to different

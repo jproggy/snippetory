@@ -1,7 +1,7 @@
 package org.jproggy.snippetory.spi;
 
 import org.jproggy.snippetory.Template;
-import org.jproggy.snippetory.impl.IncompatibleEncodingException;
+import org.jproggy.snippetory.engine.IncompatibleEncodingException;
 
 /**
  * The purpose of an encoding is to ensure the syntactical correctness of an output by 

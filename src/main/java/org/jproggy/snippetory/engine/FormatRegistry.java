@@ -1,10 +1,10 @@
-package org.jproggy.snippetory.impl;
+package org.jproggy.snippetory.engine;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.jproggy.snippetory.impl.Attributes.Types;
+import org.jproggy.snippetory.engine.Attributes.Types;
 import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.FormatFactory;
 
