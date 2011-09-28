@@ -39,7 +39,7 @@ public interface Syntax {
 	
 	Registry REGISTRY = new Registry();
 	enum TokenType {
-		BlockStart, BlockEnd, Field, Syntax, TemplateData
+		BlockStart, BlockEnd, Field, Syntax, TemplateData, Comment
 	}
 
 }

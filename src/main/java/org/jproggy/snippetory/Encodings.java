@@ -228,6 +228,6 @@ public enum Encodings implements Encoding {
 	}
 	
 	public Template parse(CharSequence data) {
-		return context().data(data).parse();
+		return context().parse(data);
 	}
 }

@@ -13,27 +13,30 @@ public class HiddenBlocksSyntax  extends RegExSyntax {
 	@Override
 	public RegexParser parse(CharSequence data) {
 		Map<Pattern, TokenType> patterns = new HashMap<Pattern, Syntax.TokenType>();
-		String chars = "\\p{Alnum}\\#\\=\\%\\\" ,:;._-";
+
 		String pref = "(?:\\<\\!\\-\\-|\\/\\*)";
-		String suff = "(?:\\-\\-\\>|\\*\\/)";
-		String lEnd = "(?:\\n|\\r|\\r\\n|\\u0085|\\u2028|\\u2029)";
-		Pattern syntax = Pattern.compile("^[ \\t]*" + pref + "s:([\\'" + chars + "]+)" + suff + "[ \\t]*" + lEnd, Pattern.MULTILINE);
+		String suff = ")[ \\t]*(?:\\-\\-\\>|\\*\\/)";
+		Pattern syntax = Pattern.compile(
+				LINE_START + pref + "s:(" + NAME + suff + LINE_END, Pattern.MULTILINE);
 		patterns.put(syntax, TokenType.Syntax);
 
-		Pattern start = Pattern.compile(pref + "t\\:([\\'\\\"" + chars + "]+)" + suff);
+		Pattern start = Pattern.compile(
+				pref + "t\\:(" + NAME + ATTRIBUTES + suff);
 		patterns.put(start, TokenType.BlockStart);
 
-		start = Pattern.compile("^[ \\t]*" + pref + "t\\:([\\'\\\"" + chars + "]+)" + suff + "[ \\t]*" + lEnd, Pattern.MULTILINE);
+		start = Pattern.compile(
+				LINE_START + pref + "t\\:(" + NAME + ATTRIBUTES + suff + LINE_END, Pattern.MULTILINE);
 		patterns.put(start, TokenType.BlockStart);
 
-		Pattern end = Pattern.compile(pref + "\\!t\\:([\\p{Alnum}._-]+)" + suff);
+		Pattern end = Pattern.compile(pref + "\\!t\\:(" + NAME + suff);
 		patterns.put(end, TokenType.BlockEnd);
 
-		end = Pattern.compile("^[ \\t]*" + pref + "\\!t\\:([\\p{Alnum}._-]+)" + suff + "[ \\t]*" + lEnd, Pattern.MULTILINE);
+		end = Pattern.compile(
+				LINE_START + pref + "\\!t\\:(" + NAME + suff + LINE_END, Pattern.MULTILINE);
 		patterns.put(end, TokenType.BlockEnd);
 
-		Pattern field = Pattern.compile("\\{v:([\\'\\\"" + chars + "]+)\\}");
+		Pattern field = Pattern.compile("\\{v\\:(" + NAME + ATTRIBUTES + ")[ \\t]*\\}");
 		patterns.put(field, TokenType.Field);
-		return new RegexParser(data, patterns, chars);
+		return new RegexParser(data, patterns);
 	}
 }

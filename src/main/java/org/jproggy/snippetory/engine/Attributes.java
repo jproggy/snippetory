@@ -43,6 +43,7 @@ class Attributes {
 		REGISTRY.register("delimiter", Types.DELIMITER);
 		REGISTRY.register("prefix", Types.PREFIX);
 		REGISTRY.register("suffix", Types.SUFFIX);
+		REGISTRY.register("backward", Types.BACKWARD);
 		FormatRegistry.INSTANCE.register("stretch", new StretchFormat.Factory());
 		FormatRegistry.INSTANCE.register("shorten", new ShortenFormat.Factory());
 		FormatRegistry.INSTANCE.register("number", new NumFormat.Factory());
@@ -57,6 +58,6 @@ class Attributes {
 		}
 	}
 	enum Types {
-		FORMAT, DEFAULT, ENCODING, DELIMITER, PREFIX, SUFFIX
+		FORMAT, DEFAULT, ENCODING, DELIMITER, PREFIX, SUFFIX, BACKWARD
 	}
 }

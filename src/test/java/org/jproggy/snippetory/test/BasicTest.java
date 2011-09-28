@@ -1,16 +1,21 @@
 package org.jproggy.snippetory.test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.Locale;
 
+import junit.framework.Assert;
+
 import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.Repo;
 import org.jproggy.snippetory.Syntaxes;
+import org.jproggy.snippetory.TemplateContext;
+
 import static org.jproggy.snippetory.Syntaxes.HIDDEN_BLOCKS;
 import org.jproggy.snippetory.Template;
+import org.jproggy.snippetory.engine.ParseError;
 import org.junit.Test;
 
 public class BasicTest {
@@ -119,8 +124,8 @@ public class BasicTest {
 		date.set("d1", java.sql.Date.valueOf("2011-10-15"));
 		date.set("d2", java.sql.Date.valueOf("2011-10-06"));
 		assertEquals("Date 1: 2011-10-15 Date 2: 06.10.11 00:00 Uhr MESZ ", date.toString());
-		date = Repo.read("<t:test>Date 1: {v:d1 date='_medium'} Date 2: {v:d2} </t:test>")
-			.locale(Locale.GERMAN).attrib("date", "long_short").parse().get("test");
+		date = new TemplateContext().locale(Locale.GERMAN).attrib("date", "long_short")
+		  .parse("<t:test>Date 1: {v:d1 date='_medium'} Date 2: {v:d2} </t:test>").get("test");
 		date.set("d1", new Date(java.sql.Date.valueOf("2011-10-15").getTime() + 3915000l) );
 		date.set("d2", java.sql.Date.valueOf("2011-10-06"));
 		assertEquals("Date 1: 01:05:15 Date 2: 6. Oktober 2011 00:00 ", date.toString());
@@ -149,8 +154,14 @@ public class BasicTest {
 		  // In a real world application we wouldn't have the template definition inside
 		  // the code. Repo provides methods to read this from class path, file, Reader 
 		  // and so on.
-		  Template method = Repo.read(
-		  
+		  // switch over to another syntax. This could be done in template two. 
+		  // Even multiple times.
+		  Template method = Syntaxes.HIDDEN_BLOCKS.context()
+		  // --> The US locale is typically a good choice for machine readable output.
+		  .locale(Locale.US)
+		  // After configuration we finally parse the template
+		  .parse(
+				  
 		  	  // The mock data 'Template' and 'render' ensures to compile while the mark
 		  	  // up code is hidden in comments
 		  	  //         |------|                      |-----|
@@ -161,14 +172,7 @@ public class BasicTest {
 		  	  //             meta data        repeated area
 		  	  //          |------------|   |-----------------|
 		      "(/*t:param delimiter=', '-->{v:type} param{v:i}<!--!t:param*/);"      
-		  )
-		  // --> The US locale is typically a good choice for machine readable output.
-		  .locale(Locale.US)
-		  // switch over to another syntax. This could be done in template two. 
-		  // Even multiple times.
-		  .syntax(Syntaxes.HIDDEN_BLOCKS)
-		  // After configuration we finally parse the template
-		  .parse();
+		  );
 		  
 		  String typeName = def.getReturnType().getSimpleName();
 		  
@@ -205,7 +209,7 @@ public class BasicTest {
 	public void hiddenBlox() {
 		Template t1 = HIDDEN_BLOCKS.parse("/*t:test*/ i++; /*!t:test*/");
 		assertEquals(" i++; ", t1.get("test").toString());
-		Template t2 = HIDDEN_BLOCKS.parse("<!--t:test enc='url' */ i++; /*!t:test-->");
+		Template t2 = HIDDEN_BLOCKS.parse("<!--t:test enc='url'*/ i++; /*!t:test-->");
 		assertEquals(" i++; ", t2.get("test").toString());
 		Template t3 = HIDDEN_BLOCKS.parse("/*t:test--> i++; <!--!t:test*/");
 		assertEquals(" i++; ", t3.get("test").toString());
@@ -214,7 +218,7 @@ public class BasicTest {
 		Template t5 = HIDDEN_BLOCKS.parse("/*t:test stretch=\"10\"*/ i++; /*!t:test*/");
 		t5.get("test").render();
 		assertEquals(" i++;     ", t5.toString());
-		Template t6 = HIDDEN_BLOCKS.parse("<!--t:test date='' */ i++; /*!t:test-->");
+		Template t6 = HIDDEN_BLOCKS.parse("<!--t:test date=''*/ i++; /*!t:test-->");
 		t6.get("test").render();
 		assertEquals(" i++; ", t6.toString());
 	}
@@ -239,5 +243,43 @@ public class BasicTest {
 		t8.get("test").append("test", "12345").append("test", "123").render();
 		t8.get("test").set("test", "test").render();
 		assertEquals("   12345     123\n    test\n", t8.toString());
+	}
+	
+	@Test
+	public void attributeEscaping() {
+		Template t = Repo.parse("{v:x delimiter='\\''\tprefix=\"\\\"\" suffix='\\\\'}");
+		t.append("x", "1").append("x", 2).append("x", "3");
+		assertEquals("\"1'2'3\\", t.toString());
+	}
+	
+	@Test
+	public void backward() {
+		Template t = Repo.parse("<a href='test.html'>Here</a> " +
+				"<t:test_bw backward=\"href='(.*)'\" enc=\"url\">" +
+				"{v:path delimiter='/'}/{v:file}.html" +
+				"</t:test_bw>");
+		t.get("test_bw").append("path", "x s").append("path", "xy+z").set("file", "tesst").render();
+		assertEquals("<a href='x+s/xy%2Bz/tesst.html'>Here</a> ", t.toString());
+		
+		try {
+			Repo.parse("lsdfkjsdfl {v:x backward='test'}" );
+			Assert.fail();
+		} catch (ParseError e) {
+			assertTrue(e.getMessage().contains("target not found"));
+			assertTrue(e.getMessage().contains("test"));
+			assertTrue(e.getMessage().contains("{v:x backward='test'}"));
+		}
+		
+		Template t2 = Repo.parse("Hello world{v:x backward='Hello' default='Liahallo'}{v:x backward='world' default='Welt'}");
+		assertEquals("Liahallo Welt", t2.toString());
+		
+		try {
+			Repo.parse("Hello world{v:x backward='world' default='Welt'}{v:x backward='Hello' default='Liahallo'}");
+			fail();
+		} catch(ParseError e) {
+			assertTrue(e.getMessage().contains("target not found"));
+			assertTrue(e.getMessage().contains("Hello"));
+			assertTrue(e.getMessage().contains("{v:x backward='Hello' default='Liahallo'}"));
+		}
 	}
 }

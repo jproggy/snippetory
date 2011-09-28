@@ -40,6 +40,6 @@ public enum Syntaxes implements SyntaxID {
 	}
 	
 	public Template parse(CharSequence data) {
-		return context().data(data).parse();
+		return context().parse(data);
 	}
 }
