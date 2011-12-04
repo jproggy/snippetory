@@ -4,20 +4,36 @@
   <artifactId>Snippetory</artifactId>
   <packaging>jar</packaging>
   <name>Snippetory Template Engine</name>
-  <version>0.9</version>
-  <description>The not so simple engine</description>
-  <url>http://snippetory.jproggy.org</url>
+  <version>0.9.1</version>
+  <description>
+    Snippetory is a template engine for java with an integrated repository 
+    for organizing and reusing the template code. Logic and presentation are separated by 
+    an abstraction layer with support for different technologies and a powerful formatting 
+    engine.
+  </description>
+  <url>http://www.jproggy.org/snippetory/</url>
   <licenses>
     <license>
-      <name>The Eclipse Software License, Version 2.0</name>
+      <name>The Eclipse Software License, Version 1.0</name>
       <url>http://www.eclipse.org/legal/epl-v10.html</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
   <scm>
-    <url>http://svn.apache.org/viewcvs.cgi/maven</url>
+    <url>http://snippetory.svn.sourceforge.net/viewvc/snippetory/tags/0.9.1</url>
+    <connection>scm:svn:https://snippetory.svn.sourceforge.net/svnroot/snippetory/tags/0.9.1</connection>
   </scm>
- <dependencies>
+  <developers>
+    <developer>
+      <id>Sir RotN</id>
+      <name>Bernd Ebertz</name>
+      <email>bebertz@jproggy.org</email>
+    </developer>
+  </developers>
+   <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  <dependencies>
    <dependency>
      <groupId>junit</groupId>
      <artifactId>junit</artifactId>
@@ -25,8 +41,43 @@
      <scope>test</scope>
    </dependency>
  </dependencies>
+ <distributionManagement>
+   <repository>
+     <id>ext</id>
+     <name>Nexus Release Repository</name>
+     <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+   </repository>
+ </distributionManagement>
  <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.1.2</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.8</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
@@ -42,20 +93,6 @@
         <configuration>
           <keyname>Templa Project</keyname>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>2.1.2</version>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>jar-no-fork</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
