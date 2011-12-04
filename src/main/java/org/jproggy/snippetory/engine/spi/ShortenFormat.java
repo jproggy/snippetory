@@ -25,6 +25,9 @@ public class ShortenFormat implements Format {
 		if (length == 0) {
 			throw new IllegalArgumentException("no length defined");
 		}
+		if (length < suffix.length()) {
+			throw new IllegalArgumentException("Suffix too long");
+		}
 	}
 
 
