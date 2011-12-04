@@ -9,16 +9,16 @@ import org.jproggy.snippetory.spi.Syntax;
 
 public abstract class RegExSyntax implements Syntax {
 	protected static final String LINE_END = 
-		"[ \t]*(?:\\n|\\r|\\r\\n|\\u0085|\\u2028|\\u2029)";
+		"[ \\t]*(?>(?>\\r\\n?)|\\n|\\u0085|\\u2028|\\u2029|\\Z)";
 	protected static final String LINE_START = "^[ \\t]*";
-	protected final static String ESCAPES = "\\\\\\\\|\\\\'|\\\\\"|\\n|\\r|\\b|\\t|\\f";
+	protected final static String ESCAPES = "\\\\\\\\|\\\\'|\\\\\"|\\\\n|\\\\r|\\\\b|\\\\t|\\\\f";
 	protected static final String NAME = "[\\p{Alnum}\\#\\._-]+";
 	protected static final String ATTRIBUTES = 
-		"(?:[ \t]+" + NAME + "=(?:\\'(?:" + ESCAPES + "|[^\\\\'])*\\'|\\\"(?:" + ESCAPES + 
+		"(?:[ \\t]+" + NAME + "=(?:\\'(?:" + ESCAPES + "|[^\\\\'])*\\'|\\\"(?:" + ESCAPES + 
 		"|[^\\\\\"])*\\\"))*";
 	protected static final String CONTENT = 
-		"(" + NAME + ")|[ \\t]+(" + NAME + ")=(?:\\'((?:" + ESCAPES + 
-		"|[^\\'])*)\\'|\\\"((?:" + ESCAPES + "|[^\"])*)\\\")"; 
+		"(" + NAME + ")|[ \\t]+(" + NAME + ")=(?>\\'((?>" + ESCAPES + 
+		"|[^\\'])*)\\'|\\\"((?>" + ESCAPES + "|[^\\\\\"])*)\\\")"; 
 
 	@Override
 	public abstract RegexParser parse(CharSequence data) ;

@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import junit.framework.Assert;
 
@@ -225,14 +227,79 @@ public class BasicTest {
 
 	@Test
 	public void lineRemoval() {
-		Template t1 = Repo.parse(" \n <t:test>  \n  i++; \n\r  </t:test>  \n ");
-		t1.append("test", t1.get("test"));
-		assertEquals(" \n  i++; \n\r ", t1.toString());
+		Template t1 = Repo.parse(" \n <t:test>  \n  i++; \r\n  </t:test>  \n ");
+		assertEquals("  i++; \r\n", t1.get("test").toString());
+		t1.get("test").render();
+		assertEquals(" \n  i++; \r\n ", t1.toString());
+		
+		t1 = Repo.parse(" <t:test>  \n  i++; \r\n  </t:test> ");
+		assertEquals("  i++; \r\n", t1.get("test").toString());
+		t1.get("test").render();
+		assertEquals("  i++; \r\n", t1.toString());
+		
+		t1 = Repo.parse(" <t:test>  x\n  i++; \r\n  </t:test> ");
+		assertEquals("  x\n  i++; \r\n", t1.get("test").toString());
+		t1.get("test").render();
+		assertEquals("   x\n  i++; \r\n", t1.toString());
+		
+		t1 = Repo.parse(" \r <t:test>  \r  i++; \r  </t:test>  \r ");
+		assertEquals("  i++; \r", t1.get("test").toString());
+		t1.get("test").render();
+		assertEquals(" \r  i++; \r ", t1.toString());
+		
+		t1 = Repo.parse(" \r<t:test>\r  i++; \r</t:test> \r ");
+		assertEquals("  i++; \r", t1.get("test").toString());
+		t1.get("test").render();
+		assertEquals(" \r  i++; \r ", t1.toString());
+		
+		t1 = Repo.parse(" \r<t:test>  \r  i++; \r  </t:test> \r ");
+		assertEquals("  i++; \r", t1.get("test").toString());
+		t1.get("test").render();
+		assertEquals(" \r  i++; \r ", t1.toString());
+		
+		t1 = Repo.parse(" \r <t:test>\r  i++; \r</t:test>  \r ");
+		assertEquals("  i++; \r", t1.get("test").toString());
+		t1.get("test").render();
+		assertEquals(" \r  i++; \r ", t1.toString());
+		
+		t1 = Repo.parse(" \r\n <t:test>  \r\n  i++; \r\n  </t:test>  \r\n ");
+		assertEquals("  i++; \r\n", t1.get("test").toString());
+		t1.get("test").render();
+		assertEquals(" \r\n  i++; \r\n ", t1.toString());
+		
+		t1 = Repo.parse(" \r\n  <t:test>\r\n  i++; \r\n  </t:test>\r\n ");
+		assertEquals("  i++; \r\n", t1.get("test").toString());
+		t1.get("test").render();
+		assertEquals(" \r\n  i++; \r\n ", t1.toString());
+		
+		t1 = Repo.parse(" \r\n\t<t:test>\t\r\n  i++; \r\n\t</t:test>\r\n ");
+		assertEquals("  i++; \r\n", t1.get("test").toString());
+		t1.get("test").render();
+		assertEquals(" \r\n  i++; \r\n ", t1.toString());
+
+		t1 = Repo.parse(" \r\n<t:test>  \r\n  i++; \r\n</t:test>  \r\n ");
+		assertEquals("  i++; \r\n", t1.get("test").toString());
+		t1.get("test").render();
+		assertEquals(" \r\n  i++; \r\n ", t1.toString());
+
+		t1 = Repo.parse(" \r\n<t:test>\r\n  i++; \r\n</t:test>\r\n ");
+		assertEquals("  i++; \r\n", t1.get("test").toString());
+		t1.get("test").render();
+		assertEquals(" \r\n  i++; \r\n ", t1.toString());
 	}
 
 	@Test
 	public void lineRemovalHB() {
 		Template t1 = HIDDEN_BLOCKS.parse("  /*t:test*/  \n i++; \n   /*!t:test*/  \n");
+		t1.append("test", t1.get("test"));
+		assertEquals(" i++; \n", t1.toString());
+		t1 = HIDDEN_BLOCKS.parse("/*t:test*/\n i++; \n/*!t:test*/\n");
+		t1.append("test", t1.get("test"));
+		assertEquals(" i++; \n", t1.toString());
+		t1 = HIDDEN_BLOCKS.parse("/*t:test*/  \n i++; \n   /*!t:test*/\n");
+		t1.append("test", t1.get("test"));
+		assertEquals(" i++; \n", t1.toString());
+		t1 = HIDDEN_BLOCKS.parse("  /*t:test*/\n i++; \n/*!t:test*/  ");
 		t1.append("test", t1.get("test"));
 		assertEquals(" i++; \n", t1.toString());
 		Template t7 = HIDDEN_BLOCKS.parse("  /*t:test shorten='4-'-->  \n i++; \n   <!--!t:test*/  \n");
@@ -250,6 +317,9 @@ public class BasicTest {
 		Template t = Repo.parse("{v:x delimiter='\\''\tprefix=\"\\\"\" suffix='\\\\'}");
 		t.append("x", "1").append("x", 2).append("x", "3");
 		assertEquals("\"1'2'3\\", t.toString());
+		t = Repo.parse("{v:x delimiter='\\n'\tprefix=\"\\t\" suffix='\\r\'}");
+		t.append("x", "1").append("x", 2).append("x", "3");
+		assertEquals("\t1\n2\n3\r", t.toString());
 	}
 	
 	@Test
