@@ -1,22 +1,21 @@
 package org.jproggy.snippetory.test;
 
-import static org.junit.Assert.*;
+import static org.jproggy.snippetory.Syntaxes.HIDDEN_BLOCKS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import junit.framework.Assert;
 
 import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.Repo;
 import org.jproggy.snippetory.Syntaxes;
-import org.jproggy.snippetory.TemplateContext;
-
-import static org.jproggy.snippetory.Syntaxes.HIDDEN_BLOCKS;
 import org.jproggy.snippetory.Template;
+import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.engine.ParseError;
 import org.junit.Test;
 

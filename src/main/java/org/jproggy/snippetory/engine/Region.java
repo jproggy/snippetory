@@ -32,8 +32,9 @@ public class Region implements Template, Cloneable {
 		Template t = children.get(path[0]);
 		for (int i = 1; i < path.length; i++) {
 			t = t.get(path[i]);
+			if (t == null) return null;
 		}
-		return t;
+		return t.clear();
 	}
 	
 	private List<Location> byName(String name) {
@@ -99,7 +100,6 @@ public class Region implements Template, Cloneable {
 	@Override
 	public void render() {
 		placeHolder.append(this);
-		clear();
 	}
 
 	@Override
