@@ -11,6 +11,7 @@ import org.jproggy.snippetory.engine.spi.DateFormater;
 import org.jproggy.snippetory.engine.spi.NumFormat;
 import org.jproggy.snippetory.engine.spi.ShortenFormat;
 import org.jproggy.snippetory.engine.spi.StretchFormat;
+import org.jproggy.snippetory.engine.spi.ToggleFormat;
 import org.jproggy.snippetory.spi.Configurer;
 
 
@@ -48,6 +49,7 @@ class Attributes {
 		FormatRegistry.INSTANCE.register("shorten", new ShortenFormat.Factory());
 		FormatRegistry.INSTANCE.register("number", new NumFormat.Factory());
 		FormatRegistry.INSTANCE.register("date", new DateFormater.Factory());
+		FormatRegistry.INSTANCE.register("toggle", new ToggleFormat.Factory());
 		for (Encodings e: Encodings.values()) {
 			EncodingRegistry.INSTANCE.register(e);
 		}

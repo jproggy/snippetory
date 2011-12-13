@@ -351,4 +351,33 @@ public class BasicTest {
 			assertTrue(e.getMessage().contains("{v:x backward='Hello' default='Liahallo'}"));
 		}
 	}
+	
+	@Test
+	public void toggle() {
+		Template t = Repo.parse("<t:test>{v:x toggle='1;2;3'}. {v:x toggle='unpair;pair'}\n</t:test>");
+		t.get("test").render();
+		t.get("test").render();
+		t.get("test").render();
+		assertEquals("1. unpair\n2. pair\n3. unpair\n", t.toString());
+		t.clear();
+		t.get("test").render();
+		t.get("test").render();
+		t.get("test").render();
+		assertEquals("1. pair\n2. unpair\n3. pair\n", t.toString());
+		t.clear();
+		t.get("test").set("x", 1).render();
+		t.get("test").set("x", 2).render();
+		t.get("test").set("x", 3).render();
+		assertEquals("1. unpair\n2. pair\n3. unpair\n", t.toString());
+		t.clear();
+		t.get("test").set("x", 1).render();
+		t.get("test").set("x", 2).render();
+		t.get("test").set("x", 3).render();
+		assertEquals("1. unpair\n2. pair\n3. unpair\n", t.toString());
+		t.clear();
+		t.get("test").set("x", 1).render();
+		t.get("test").set("x", 0).render();
+		t.get("test").set("x", -1).render();
+		assertEquals("1. unpair\n2. pair\n3. unpair\n", t.toString());
+	}
 }
