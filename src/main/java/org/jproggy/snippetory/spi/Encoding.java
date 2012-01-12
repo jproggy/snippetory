@@ -25,7 +25,7 @@ public interface Encoding {
 	 * @param target result of the action has to be appended to target.
 	 * @param val has be escaped
 	 */
-	void escape(StringBuilder target, String val);
+	void escape(StringBuilder target, CharSequence val);
 	
 	/**
 	 * Sometimes it's possible to combine data encoded in different ways after applying 
@@ -47,7 +47,7 @@ public interface Encoding {
 	 * @throws IncompatibleEncodingException if the encoding can't be taken as is and can't
 	 * be decoded.
 	 */
-	void transcode(StringBuilder target, String value, String encodingName) throws IncompatibleEncodingException;
+	void transcode(StringBuilder target, CharSequence value, String encodingName) throws IncompatibleEncodingException;
 	
 	/**
 	 * The identifier for registering and retrieval of this Encoding  

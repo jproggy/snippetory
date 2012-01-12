@@ -53,7 +53,7 @@ public class StretchFormat implements Format {
 
 	@Override
 	public boolean supports(Object value) {
-		if (value instanceof String) return true;
+		if (value instanceof CharSequence) return true;
 		return false;
 	}
 	

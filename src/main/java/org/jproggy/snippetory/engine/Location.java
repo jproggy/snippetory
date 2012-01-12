@@ -1,32 +1,26 @@
 package org.jproggy.snippetory.engine;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.jproggy.snippetory.EncodedData;
 import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.Template;
-import org.jproggy.snippetory.annotations.Encoded;
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.Transcoding;
 
 
-@Encoded
 public class Location {
 	private final String name;
-	private List<Format> formats = new ArrayList<Format>();
+	private final Format[] formats;
 	private Encoding enc;
 	private String defaultVal;
 	private final String fragment;
 	private StringBuilder target;
 	private final Location parent;
-	public Location getParent() {
-		return parent;
-	}
 	private String delimiter;
 	private String prefix;
 	private String suffix;
@@ -41,6 +35,7 @@ public class Location {
 	public Location(Location parent, String name, Map<String, String> attribs, String fragment, Locale l) {
 		this.parent = parent;
 		this.name = name;
+		List<Format> formats = new ArrayList<Format>();
 		for (String attr: attribs.keySet()) {
 			switch (Attributes.REGISTRY.type(attr))
 			{
@@ -66,27 +61,32 @@ public class Location {
 				break;
 			}
 		}
+		this.formats = formats.toArray(new Format[formats.size()]);
 		this.fragment = fragment;
 	}
 	@Override
 	public String toString() {
+		return toCharSequence().toString();
+	}
+
+	public CharSequence toCharSequence() {
 		if (target != null) {
 			if (suffix != null) return target.toString() + suffix;
-			return target.toString();
+			return target;
 		}
-		String f = format(defaultVal);
+		CharSequence f = format(defaultVal);
 		if (f != null) return f;
 		return fragment;
 	}
 	
-	private String format(String value) {
+	private CharSequence format(CharSequence value) {
 		for (Format f: formats) {
 			if (f.supports(value)) value = f.format(value);
 		}
 		return value;
 	}
-	private String toString(Object value) {
-		if (value instanceof String) {
+	private CharSequence toString(Object value) {
+		if (value instanceof CharSequence) {
 			return (String) value;
 		}
 		for (Format f: formats) {
@@ -95,19 +95,7 @@ public class Location {
 		if (parent != null) return parent.toString(value);
 		return String.valueOf(value);
 	}
-	private void escape(StringBuilder target, String value) {
-		Encoding enc = getEncoding();
-		if (enc ==  null) {
-			if (parent == null)	{
-				target.append(value);
-			} else {
-				parent.escape(target, value);
-			}
-		} else {
-			enc.escape(target, value);
-		}
-	}
-	
+
 	public void set(Object value) {
 		clear();
 		append(value);
@@ -118,67 +106,39 @@ public class Location {
 		} else {
 			if (delimiter != null) target.append(delimiter);
 		}
-		Encoded encoded = analyzeClass(value);
-		if (encoded != null) {
-			String sourceEnc = encoded.value();
-			if (sourceEnc.length() == 0) sourceEnc = getEncoding(value);
-			
-			// normalize empty to null-encoding
-			if (sourceEnc == null || sourceEnc.length() == 0) {
-				sourceEnc = Encodings.NULL.getName();
-			}
-			Encoding myEnc = getEncoding();
-			if (!sourceEnc.equals(myEnc.getName())) {
-				transcode(value, sourceEnc, myEnc);
-			} else {
-				target.append(format(value.toString()));
-			}
+		if (value instanceof EncodedData) {
+			handleEncodedData((EncodedData)value);
 		} else {
-			escape(target, format(toString(value)));
+			getEncoding().escape(target, format(toString(value)));
 		}
 	}
-	private Encoded analyzeClass(Object value) {
-		Encoded encoded = null;
-		if (value != null) {
-			Class<? extends Object> valueType = value.getClass();
-			encoded = valueType.getAnnotation(Encoded.class);
+	private void handleEncodedData(EncodedData value) {
+		String sourceEnc = value.getEncoding();
+		
+		// normalize empty to null-encoding
+		if (sourceEnc == null || sourceEnc.length() == 0) {
+			sourceEnc = Encodings.NULL.getName();
 		}
-		return encoded;
+		Encoding myEnc = getEncoding();
+		if (!sourceEnc.equals(myEnc.getName())) {
+			transcode(value, sourceEnc, myEnc);
+		} else {
+			CharSequence formated = format(value.toCharSequence());
+			if (formated instanceof Region) {
+				((Region)formated).append(target);
+			} else {
+				target.append(formated);
+			}
+		}
 	}
-	private void transcode(Object value, String sourceEnc, Encoding targetEnc) {
+	private void transcode(EncodedData value, String sourceEnc, Encoding targetEnc) {
 		for (Transcoding overwrite : EncodingRegistry.INSTANCE.getOverwrites(targetEnc)) {
 			if (overwrite.supports(sourceEnc, targetEnc.getName())) {
 				overwrite.transcode(target, format(value.toString()), sourceEnc, targetEnc.getName());
 				return;
 			}
 		}
-		
 		targetEnc.transcode(target, format(value.toString()), sourceEnc);
-	}
-	private String getEncoding(Object value) {
-		Class<? extends Object> valueType = value.getClass();
-		try {
-			for (Method m : valueType.getMethods()) {
-				Object enc = m.getAnnotation(org.jproggy.snippetory.annotations.Encoding.class);
-				if (enc !=  null) {
-					if (m.getParameterTypes().length == 0) {
-						if (String.class.equals(m.getReturnType())) {
-							return (String)m.invoke(value);
-						}
-						if (Encoding.class.isAssignableFrom(m.getReturnType())) {
-							Encoding encoding = (Encoding)m.invoke(value);
-							if (encoding == null) return null;
-							return encoding.getName();
-						}
-					}
-				}
-			}
-		} catch (IllegalAccessException e) {
-			throw new SnippetoryException(e);
-		} catch (InvocationTargetException e) {
-			throw new SnippetoryException(e);
-		}
-		return null;
 	}
 	public void clear() {
 		target = null;
@@ -187,11 +147,16 @@ public class Location {
 	public String getName() {
 		return name;
 	}
-	@org.jproggy.snippetory.annotations.Encoding
+	public Location getParent() {
+		return parent;
+	}
 	public Encoding getEncoding() {
 		if (enc == null) {
-			if (parent != null) return parent.getEncoding();
-			return Encodings.NULL;
+			if (parent != null) {
+				enc = parent.getEncoding();
+			} else {
+				enc = Encodings.NULL;
+			}
 		}
 		return enc;
 	}

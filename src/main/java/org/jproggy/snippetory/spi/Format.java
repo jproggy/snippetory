@@ -9,7 +9,7 @@ public interface Format {
 	/**
 	 * may only be called for supported values.
 	 */
-	String format(Object value);
+	CharSequence format(Object value);
 	
 	/**
 	 * Many formats only apply to a special type or even specific

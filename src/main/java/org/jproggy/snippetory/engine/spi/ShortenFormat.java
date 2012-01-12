@@ -33,7 +33,7 @@ public class ShortenFormat implements Format {
 
 	@Override
 	public String format(Object value) {
-		String s = (String)value;
+		String s = value.toString();
 		if (s.length() <= length) return s; 
 		return s.substring(0, length - suffix.length()) + suffix;
 	}
@@ -41,7 +41,7 @@ public class ShortenFormat implements Format {
 
 	@Override
 	public boolean supports(Object value) {
-		if (value instanceof String) return true;
+		if (value instanceof CharSequence) return true;
 		return false;
 	}
 	

@@ -45,7 +45,7 @@ import org.jproggy.snippetory.spi.Encoding;
  * @author B. Ebertz
  */
 
-public interface Template  {
+public interface Template extends EncodedData  {
 
 	/**
 	 * Get further elements out of this repository.

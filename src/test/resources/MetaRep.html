@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Structured Page</title>
+  <style type="text/css">
+  th, td, h1{font-family: 'Frugal Sans', Arial, sans-serif; }
+  .err {color: red; }
+  th {text-align: left; background-cfolor: #77bbff; 
+      padding: 2mm 0 0 1mm ; border-bottom:1mm solid #77bbff; 
+      border-right:0; border-top:0;
+      } 
+  td { text-align: left; }
+  .label {padding-right: 1cm; border-bottom: 1px dotted #666;}
+  .space { width: 1cm;}
+  .button { background-color: white; font-weight: bolder; padding:1mm 2mm; border:1mm solid #77bbff;
+          border-radius: 10px;  }
+  h1 { border: 1mm solid #77bbff; border-right:0; border-radius: 1cm 0 0 1cm; padding: 5mm 10mm 5mm 8mm;
+      float: right; } 
+  </style>
+</head>
+<body>
+  <t:page>
+  <center>
+  <form action="{v:target enc='url'}" >
+  <table width="600">
+    <tr>
+    <td colspan="3"><h1>{v:title}</h1></td>
+    </tr>
+    <t:section>
+    <tr>
+      <th colspan="3" class="head">{v:title}</th>
+    </tr>
+    <t:attribute>
+    <tr>
+      <td class="space"></td>
+      <td class="label">{v:label}</td>
+      <td>
+      <t:control><input type="text" /></t:control>
+      <t:msg><span class="err">{v:error}</span></t:msg>
+      </td>
+    </tr>
+    </t:attribute>
+    <t:description>
+    <tr>
+      <td class="space"></td>
+      <td colspan="2">{v:description}</td>
+    </tr>
+    </t:description>
+    <t:controls>
+    <!-- As controls are embedded to an addition section I'm free to mock for better 
+         presentation ... -->
+    <tr>
+      <td class="space"></td>
+      <td class="label">Field 2</td>
+      <td>
+        <t:checkbox>
+        <label>
+          <input type="checkbox" name="{v:name}" value="{v:value}" />
+          {v:label}
+        </label><br />
+        </t:checkbox>
+        <t:selected_checkbox>
+        <label>
+          <input type="checkbox" name="{v:name}" value="{v:value}" checked="checked" />
+          {v:label}
+        </label><br />
+        </t:selected_checkbox>
+        <label><input type="checkbox" name="r2" />Choice 2</label><br /> 
+        <label><input type="checkbox" name="r2" />Choice 3</label>  
+      </td>
+    </tr>
+    <!-- ... or write just the components for compacter representation -->
+    <t:text><input type="text" name="{v:name}" value="{v:value}" /></t:text>
+    <t:select>
+      <select name="{v:name}">
+        <option>Please select...</option>
+        <t:option><option id="{v:value}">{v:label}</option></t:option>
+        <t:selected_option><option selected="selected" id="{v:value}">{v:label}</option></t:selected_option>
+      </select>
+    </t:select>
+    </t:controls>
+    <tr>
+      <td colspan="3">&nbsp;</td>
+    </tr>
+    </t:section>
+    <tr>
+      <td colspan="3" style="text-align: right;"><input type="submit" value="Back"/></td>
+    </tr>
+   </table>
+  </form>
+  </center>
+  </t:page>
+</body>
+</html>
