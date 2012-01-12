@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.jproggy.snippetory.EncodedData;
 import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.Template;
+import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.Transcoding;

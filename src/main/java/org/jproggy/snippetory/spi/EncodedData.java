@@ -1,4 +1,4 @@
-package org.jproggy.snippetory;
+package org.jproggy.snippetory.spi;
 
 
 public interface EncodedData {

@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import java.io.Writer;
 import java.util.Set;
 
+import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Encoding;
 
 
