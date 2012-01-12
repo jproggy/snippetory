@@ -7,10 +7,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import org.jproggy.snippetory.EncodedData;
 import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.Repo;
 import org.jproggy.snippetory.Template;
+import org.jproggy.snippetory.spi.EncodedData;
 
 public class Page implements EncodedData {
 	private final Template template;
