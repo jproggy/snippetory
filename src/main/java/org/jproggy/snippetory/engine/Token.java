@@ -15,7 +15,7 @@ public class Token {
 	
 	public Token(String name, String content, TokenType type, int position) {
 		super();
-		this.name = name;
+		this.name = name == null ? null : name.intern();
 		this.content = content;
 		this.type = type;
 		this.position = position;
