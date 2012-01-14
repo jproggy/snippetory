@@ -2,6 +2,7 @@ package org.jproggy.snippetory.engine.spi;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -26,10 +27,8 @@ public class NumFormat implements Format {
 	}
 
 	@Override
-	public String format(Object value) {
-		String f = impl.format(value);
-		f.replaceAll(" ", "\u0160"); // ensure number are shown without break
-		return f;
+	public CharSequence format(Object value) {
+		return impl.format(value, new StringBuffer(), new FieldPosition(0));
 	}
 
 	@Override

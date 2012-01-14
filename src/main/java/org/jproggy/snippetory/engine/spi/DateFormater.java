@@ -1,6 +1,7 @@
 package org.jproggy.snippetory.engine.spi;
 
 import java.text.DateFormat;
+import java.text.FieldPosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,10 +30,10 @@ public class DateFormater implements Format {
 	}
 
 	@Override
-	public String format(Object value) {
+	public CharSequence format(Object value) {
 		if (value instanceof Calendar)
 			return format(((Calendar) value).getTime());
-		return impl.format(value);
+		return impl.format(value, new StringBuffer(), new FieldPosition(0));
 	}
 
 	@Override
