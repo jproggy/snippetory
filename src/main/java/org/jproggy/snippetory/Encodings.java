@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import org.jproggy.snippetory.engine.IncompatibleEncodingException;
+import org.jproggy.snippetory.engine.Region;
 import org.jproggy.snippetory.engine.SnippetoryException;
 import org.jproggy.snippetory.spi.Encoding;
 
@@ -43,7 +44,7 @@ public enum Encodings implements Encoding {
 			if (plain.name().equals(encodingName)) {
 				escape(target, value);
 			} else {
-				target.append(value);
+				append(target, value);
 			}
 		}
 	},
@@ -82,7 +83,7 @@ public enum Encodings implements Encoding {
 			if (plain.name().equals(encodingName)) {
 				escape(target, value);
 			} else {
-				target.append(value);
+				append(target, value);
 			}
 		}
 	},
@@ -148,7 +149,7 @@ public enum Encodings implements Encoding {
 		@Override
 		public void transcode(StringBuilder target, CharSequence value, String encodingName) {
 			if (html_string.name().equals(encodingName) || NULL.name().equals(encodingName)) {
-				target.append(value);
+				append(target, value);
 			} else {
 				escape(target, value);
 			}
@@ -188,7 +189,7 @@ public enum Encodings implements Encoding {
 	plain {
 		@Override
 		public void escape(StringBuilder target, CharSequence val) {
-			target.append(val);
+			append(target, val);
 		}
 	},
 	/**
@@ -198,7 +199,7 @@ public enum Encodings implements Encoding {
 	NULL {
 		@Override
 		public void escape(StringBuilder target, CharSequence val) {
-			target.append(val);
+			append(target, val);
 		}
 		@Override
 		public void transcode(StringBuilder target, CharSequence value, String encodingName) {
@@ -210,7 +211,7 @@ public enum Encodings implements Encoding {
 	@Override
 	public void transcode(StringBuilder target, CharSequence value, String encodingName) {
 		if (NULL.name().equals(encodingName)) {
-			target.append(value);
+			append(target, value);
 		}
 		if (plain.name().equals(encodingName)) {
 			escape(target, value);
@@ -229,5 +230,12 @@ public enum Encodings implements Encoding {
 	
 	public Template parse(CharSequence data) {
 		return context().parse(data);
+	}
+	private static void append(StringBuilder target, CharSequence value) {
+		if (value instanceof Region) {
+			((Region)value).append(target);
+		} else {
+			target.append(value);
+		}
 	}
 }

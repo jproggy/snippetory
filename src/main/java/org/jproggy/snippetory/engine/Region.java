@@ -12,15 +12,13 @@ import java.util.TreeSet;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.spi.Encoding;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-
 public class Region implements Template, Cloneable, CharSequence {
 	private Object[] parts;
 	private Map<String, Template> children;
-	private final Location placeHolder; 
+	private final Location placeHolder;
 
-	public Region(Location placeHolder, List<Object> parts, Map<String, Template> children) {
+	public Region(Location placeHolder, List<Object> parts,
+			Map<String, Template> children) {
 		this.parts = parts.toArray();
 		this.children = children;
 		this.placeHolder = placeHolder;
@@ -28,67 +26,72 @@ public class Region implements Template, Cloneable, CharSequence {
 
 	@Override
 	public Template get(String... path) {
-		if (path.length == 0) return this;
+		if (path.length == 0)
+			return this;
 		Template t = children.get(path[0]);
-		if (t == null) return null;
+		if (t == null)
+			return null;
 		for (int i = 1; i < path.length; i++) {
 			t = t.get(path[i]);
-			if (t == null) return null;
+			if (t == null)
+				return null;
 		}
 		return t.clear();
 	}
-	
+
 	private Iterable<Location> byName(final String name) {
 		return new PartFilter() {
 			@Override
 			public boolean fits(Location part) {
 				return part.getName().equals(name);
-			}			
+			}
 		};
 	}
 
 	private Iterable<Location> locations() {
-		return new PartFilter() {
-			@Override
-			public boolean fits(Location part) {
-				return true;
-			}			
-		};
+		return new PartFilter();
 	}
-	
-	private abstract class PartFilter implements Iterable<Location> {
+
+	private class PartFilter implements Iterable<Location> {
 		public Iterator<Location> iterator() {
 			return new Iterator<Location>() {
 				int pos = 0;
-				Location recent =  init();
+				Location recent = init();
+
 				@Override
 				public boolean hasNext() {
 					return recent != null;
 				}
+
 				private Location init() {
 					while (pos < parts.length) {
 						Object part = parts[pos++];
-						if (part instanceof Location && fits((Location)part)) {
-							return (Location)part;
+						if (part instanceof Location) {
+							Location loc = (Location) part;
+							if (fits(loc)) return loc;
 						}
 					}
 					return null;
 				}
+
 				public Location next() {
-					Location next =  recent;
+					Location next = recent;
 					recent = init();
 					return next;
 				}
-				public void remove() { throw new UnsupportedOperationException(); }
+
+				public void remove() {
+					throw new UnsupportedOperationException();
+				}
 			};
 		}
-		public abstract boolean fits(Location part);
-	};
 
+		public boolean fits(Location part) { return true; }
+	};
 
 	@Override
 	public Region set(String key, Object value) {
-		for (Location v: byName(key)) {
+		for (Location v : byName(key)) {
 			v.set(value);
 		}
 		return this;
@@ -96,12 +99,12 @@ public class Region implements Template, Cloneable, CharSequence {
 
 	@Override
 	public Region append(String key, Object value) {
-		for (Location v: byName(key)) {
+		for (Location v : byName(key)) {
 			v.append(value);
 		}
 		return this;
 	}
-	
+
 	@Override
 	public Region clear() {
 		for (Location v : locations()) {
@@ -109,32 +112,37 @@ public class Region implements Template, Cloneable, CharSequence {
 		}
 		return this;
 	}
-	
+
 	@Override
 	public CharSequence toCharSequence() {
 		return this;
 	}
 
-	void append(StringBuilder result) {
-		for (Object part : parts) {
-			if (part instanceof Location) {
-				result.append(((Location)part).toCharSequence());
-			} else {
-				result.append(part);
+	public void append(Appendable result) {
+		try {
+			for (Object part : parts) {
+				if (part instanceof Location) {
+					result.append(((Location) part).toCharSequence());
+				} else {
+					result.append((String) part);
+				}
 			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
 	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder();
-		append(result);
-		return result.toString();
+		StringBuilder s = new StringBuilder();
+		append(s);
+		return s.toString();
 	}
 
 	public String getEncoding() {
 		Encoding e = placeHolder.getEncoding();
-		if (e == null) return null;
+		if (e == null)
+			return null;
 		return e.getName();
 	}
 
@@ -152,50 +160,63 @@ public class Region implements Template, Cloneable, CharSequence {
 	public void render(Template target, String key) {
 		target.append(key, this);
 	}
-	
+
 	@Override
 	public void render(Writer out) throws IOException {
-		out.append(this.toString());
+		append(out);
 		out.flush();
 	}
-	
+
 	@Override
 	public void render(PrintStream out) throws IOException {
-		out.append(toString());
+		append(out);
 		out.flush();
 	}
-	
+
 	@Override
 	public Set<String> names() {
-		Set<String> result =  new TreeSet<String>();
-		for (Object part: parts) {
+		Set<String> result = new TreeSet<String>();
+		for (Object part : parts) {
 			if (part instanceof Location) {
-				result.add(((Location)part).getName());
+				result.add(((Location) part).getName());
 			}
 		}
 		return result;
 	}
-	
+
 	@Override
 	public Set<String> regionNames() {
 		return children.keySet();
 	}
 	
+	private CharSequence recentCS = null;
+	private int csIndex = -1;
+	private int recentStart = 0;
 	@Override
 	public char charAt(int index) {
-		throw new NotImplementedException();
+		if (index < recentStart) {
+			recentStart = 0;
+			recentCS = null;
+			csIndex = -1;
+		}
+		while ((recentCS == null || (index - recentStart) >= recentCS.length()) && csIndex + 1 < parts.length) {
+			if (recentCS != null) {
+				recentStart += recentCS.length();
+			}
+			csIndex++;
+			recentCS = toCharSequence(csIndex);
+		}
+		return recentCS.charAt(index - recentStart);
 	}
-	
+
+	private CharSequence toCharSequence(int index) {
+		Object p = parts[index];
+		return p instanceof Location ? ((Location)p).toCharSequence() : (String)p;
+	}
 	@Override
 	public int length() {
 		int l = 0;
-		for (Object part : parts) {
-			if (part instanceof Location) {
-				l += ((Location)part).toCharSequence().length();
-			} else {
-				l += part.toString().length();
-			}
-		}
+		for (int i = 0; i < parts.length; i++) l += toCharSequence(i).length(); 
 		return l;
 	}
 	
