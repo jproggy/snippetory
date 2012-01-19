@@ -32,6 +32,17 @@ public class Location {
 	public void setTemplate(Template template) {
 		this.template = template;
 	}
+	Location(Location parent, Location template) {
+		this.name = template.name;
+		this.formats = template.formats;
+		this.enc = template.enc;
+		this.defaultVal = template.defaultVal;
+		this.fragment = template.fragment;
+		this.parent = parent;
+		this.delimiter = template.delimiter;
+		this.prefix = template.prefix;
+		this.suffix = template.suffix;
+	}
 	public Location(Location parent, String name, Map<String, String> attribs, String fragment, Locale l) {
 		this.parent = parent;
 		this.name = name;

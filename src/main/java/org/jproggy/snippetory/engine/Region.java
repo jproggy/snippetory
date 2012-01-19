@@ -24,6 +24,21 @@ public class Region implements Template, Cloneable, CharSequence {
 		this.placeHolder = placeHolder;
 	}
 
+	private Region(Location placeHolder, Region template) {
+		this.placeHolder = placeHolder;
+		this.children = template.children;
+		this.parts = new Object[template.parts.length];
+		for (int i = 0; i < parts.length; i++) {
+			Object p = template.parts[i]; 
+			if (p instanceof String) {
+				parts[i] = p;
+			} else {
+				parts[i] = new Location(placeHolder, (Location)p);
+			}
+		}
+		placeHolder.setTemplate(this);
+	}
+
 	@Override
 	public Template get(String... path) {
 		if (path.length == 0)
@@ -31,14 +46,17 @@ public class Region implements Template, Cloneable, CharSequence {
 		Template t = children.get(path[0]);
 		if (t == null)
 			return null;
+		if (path.length == 1) {
+			return new Region(byName(path[0]).iterator().next(), (Region)t);
+		}
 		for (int i = 1; i < path.length; i++) {
 			t = t.get(path[i]);
 			if (t == null)
 				return null;
 		}
-		return t.clear();
+		return t;
 	}
-
+	
 	private Iterable<Location> byName(final String name) {
 		return new PartFilter() {
 			@Override
