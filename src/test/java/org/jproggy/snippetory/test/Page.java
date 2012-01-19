@@ -62,9 +62,10 @@ public class Page implements EncodedData {
 		public Section addSelectionAttrib(String name, Collection<?> values, Object selected) {
 			Template attrib = getAttrib(name);
 			Template control = section.get("controls", "select");
+			control.set("name", name);
 			for (Object value : values) {
 				String type = value.equals(selected) ? "selected_option" : "option";
-				Template option = control.get(type).set("name", name).set("value", value).set("label", labels.getString(value.toString()));
+				Template option = control.get(type).set("value", value).set("label", labels.getString(value.toString()));
 				option.render("option");
 			}
 			control.render(attrib, "control");
