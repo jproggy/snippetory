@@ -32,13 +32,12 @@ public class TemplateBuilder {
 		TemplateBuilder builder = new TemplateBuilder(ctx, data);
 		Location root = new Location(null, null, ctx.getBaseAttribs(), "", ctx.getLocale());
 		Template template = builder.parse(root);
-		root.setTemplate(template);
 		return template;
 	}
 
-	private Template parse(Location parent) {
+	private Region parse(Location parent) {
 		List<Object> parts = new ArrayList<Object>();
-		Map<String, Template> children = new HashMap<String, Template>();
+		Map<String, Region> children = new HashMap<String, Region>();
 		while (_parser.hasNext()) {
 			Token t = _parser.next();
 			
@@ -49,16 +48,15 @@ public class TemplateBuilder {
 					String end = handleBackward(parts, t);
 					Location placeHolder = placeHolder(parent, t);
 					parts.add(placeHolder);
-					Template template = parse(placeHolder);
+					Region template = parse(placeHolder);
 					children.put(placeHolder.getName(), template);
-					placeHolder.setTemplate(template);
 					if (end != null) parts.add(end);
 					break;
 				}
 				case BlockEnd:
 					if (parent.getName() == null || !parent.getName().equals(t.getName())) {
 						throw new ParseError(t.getName() + " found but " + 
-								(parent == null ? "file end" : parent.getName()) + " expected", t);
+								(parent.getName() == null ? "file end" : parent.getName()) + " expected", t);
 					}
 					return new Region(parent, parts, children);
 				case Field:
@@ -117,7 +115,7 @@ public class TemplateBuilder {
 				t.getAttributes(), t.getContent(), getLocale());
 	}
 
-	private void checkNameUnique(Map<String, Template> children, Token t) {
+	private void checkNameUnique(Map<String, Region> children, Token t) {
 		if (children.containsKey(t.getName())) {
 			throw new ParseError("duplicate child template " +
 					t.getName(), t);

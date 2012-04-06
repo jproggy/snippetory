@@ -10,22 +10,27 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.jproggy.snippetory.Template;
+import org.jproggy.snippetory.engine.chars.CharSequences;
 import org.jproggy.snippetory.spi.Encoding;
 
-public class Region implements Template, Cloneable, CharSequence {
+public class Region extends CharSequences implements Template, Cloneable {
 	private Object[] parts;
-	private Map<String, Template> children;
-	private final Location placeHolder;
+	private Map<String, ? extends Template> children;
+	private final Metadata md;
+	private Template parent;
 
 	public Region(Location placeHolder, List<Object> parts,
-			Map<String, Template> children) {
+			Map<String, Region> children) {
 		this.parts = parts.toArray();
 		this.children = children;
-		this.placeHolder = placeHolder;
+		this.md = placeHolder.md;
+		for (Region child: children.values()) {
+			child.setParent(this);
+		}
 	}
 
-	private Region(Location placeHolder, Region template) {
-		this.placeHolder = placeHolder;
+	private Region(Region template) {
+		this.md = template.md;
 		this.children = template.children;
 		this.parts = new Object[template.parts.length];
 		for (int i = 0; i < parts.length; i++) {
@@ -33,10 +38,9 @@ public class Region implements Template, Cloneable, CharSequence {
 			if (p instanceof String) {
 				parts[i] = p;
 			} else {
-				parts[i] = new Location(placeHolder, (Location)p);
+				parts[i] = new Location((Location)p);
 			}
 		}
-		placeHolder.setTemplate(this);
 	}
 
 	@Override
@@ -47,7 +51,9 @@ public class Region implements Template, Cloneable, CharSequence {
 		if (t == null)
 			return null;
 		if (path.length == 1) {
-			return new Region(byName(path[0]).iterator().next(), (Region)t);
+			Region copy = new Region((Region)t);
+			copy.setParent(this);
+			return copy;
 		}
 		for (int i = 1; i < path.length; i++) {
 			t = t.get(path[i]);
@@ -136,7 +142,7 @@ public class Region implements Template, Cloneable, CharSequence {
 		return this;
 	}
 
-	public void append(Appendable result) {
+	public <T extends Appendable> T appendTo(T result) {
 		try {
 			for (Object part : parts) {
 				if (part instanceof Location) {
@@ -148,17 +154,16 @@ public class Region implements Template, Cloneable, CharSequence {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+		return result;
 	}
 
 	@Override
 	public String toString() {
-		StringBuilder s = new StringBuilder();
-		append(s);
-		return s.toString();
+		return appendTo(new StringBuilder()).toString();
 	}
 
 	public String getEncoding() {
-		Encoding e = placeHolder.getEncoding();
+		Encoding e = md.enc;
 		if (e == null)
 			return null;
 		return e.getName();
@@ -166,12 +171,12 @@ public class Region implements Template, Cloneable, CharSequence {
 
 	@Override
 	public void render() {
-		placeHolder.append(this);
+		render(md.name);
 	}
 
 	@Override
 	public void render(String target) {
-		render(placeHolder.getParent().getTemplate(), target);
+		render(getParent(), target);
 	}
 
 	@Override
@@ -181,13 +186,13 @@ public class Region implements Template, Cloneable, CharSequence {
 
 	@Override
 	public void render(Writer out) throws IOException {
-		append(out);
+		appendTo(out);
 		out.flush();
 	}
 
 	@Override
 	public void render(PrintStream out) throws IOException {
-		append(out);
+		appendTo(out);
 		out.flush();
 	}
 
@@ -207,61 +212,22 @@ public class Region implements Template, Cloneable, CharSequence {
 		return children.keySet();
 	}
 	
-	private CharSequence recentCS = null;
-	private int csIndex = -1;
-	private int recentStart = 0;
-	@Override
-	public char charAt(int index) {
-		if (index < recentStart) {
-			recentStart = 0;
-			recentCS = null;
-			csIndex = -1;
-		}
-		while ((recentCS == null || (index - recentStart) >= recentCS.length()) && csIndex + 1 < parts.length) {
-			if (recentCS != null) {
-				recentStart += recentCS.length();
-			}
-			csIndex++;
-			recentCS = toCharSequence(csIndex);
-		}
-		return recentCS.charAt(index - recentStart);
+	public Template getParent() {
+		return parent;
+	}
+	
+	public void setParent(Template parent) {
+		this.parent = parent;
 	}
 
-	private CharSequence toCharSequence(int index) {
+	@Override
+	protected CharSequence part(int index) {
 		Object p = parts[index];
 		return p instanceof Location ? ((Location)p).toCharSequence() : (String)p;
 	}
-	@Override
-	public int length() {
-		int l = 0;
-		for (int i = 0; i < parts.length; i++) l += toCharSequence(i).length(); 
-		return l;
-	}
 	
 	@Override
-	public CharSequence subSequence(int start, int end) {
-		return new MyCharSeq(start, end);
-	}
-	
-	private class MyCharSeq implements CharSequence {
-		private final int start, end;
-		public MyCharSeq(int start, int end) {
-			this.start = start;
-			this.end = end;
-		}
-		@Override
-		public char charAt(int index) {
-			return Region.this.charAt(index + start);
-		}
-		
-		@Override
-		public int length() {
-			return end - start;
-		}
-		
-		@Override
-		public CharSequence subSequence(int start, int end) {
-			return new MyCharSeq(start + this.start, end + this.start);
-		}
+	protected int partCount() {
+		return parts.length;
 	}
 }

@@ -1,5 +1,6 @@
 package org.jproggy.snippetory;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -27,7 +28,7 @@ public enum Encodings implements Encoding {
 	 */
 	xml {
 		@Override
-		public void escape(StringBuilder target, CharSequence val) {
+		public void escape(Appendable target, CharSequence val) throws IOException {
 			for (int i = 0; i < val.length(); i++) {
 				char c = val.charAt(i);
 				if (c == '<') {
@@ -40,7 +41,7 @@ public enum Encodings implements Encoding {
 			}
 		}
 		@Override
-		public void transcode(StringBuilder target, CharSequence value, String encodingName) {
+		public void transcode(Appendable target, CharSequence value, String encodingName) throws IOException {
 			if (plain.name().equals(encodingName)) {
 				escape(target, value);
 			} else {
@@ -58,7 +59,7 @@ public enum Encodings implements Encoding {
 	 */
 	html {
 		@Override
-		public void escape(StringBuilder target, CharSequence val) {
+		public void escape(Appendable target, CharSequence val) throws IOException {
 			for (int i = 0; i < val.length(); i++) {
 				char c = val.charAt(i);
 				if (c == '<') {
@@ -79,7 +80,7 @@ public enum Encodings implements Encoding {
 			}
 		}
 		@Override
-		public void transcode(StringBuilder target, CharSequence value, String encodingName) {
+		public void transcode(Appendable target, CharSequence value, String encodingName) throws IOException {
 			if (plain.name().equals(encodingName)) {
 				escape(target, value);
 			} else {
@@ -92,7 +93,7 @@ public enum Encodings implements Encoding {
 	 */
 	url {
 		@Override
-		public void escape(StringBuilder target, CharSequence val) {
+		public void escape(Appendable target, CharSequence val) throws IOException {
 			try {
 				target.append(URLEncoder.encode(val.toString(), "utf-8"));
 			} catch (UnsupportedEncodingException e) {
@@ -106,7 +107,7 @@ public enum Encodings implements Encoding {
 	 */
 	string {
 		@Override
-		public void escape(StringBuilder target, CharSequence val) {
+		public void escape(Appendable target, CharSequence val) throws IOException {
 			for (int i = 0; i < val.length(); i++) {
 				char ch = val.charAt(i);
 				if (ch < 32) {
@@ -147,7 +148,7 @@ public enum Encodings implements Encoding {
 			}
 		}
 		@Override
-		public void transcode(StringBuilder target, CharSequence value, String encodingName) {
+		public void transcode(Appendable target, CharSequence value, String encodingName) throws IOException {
 			if (html_string.name().equals(encodingName) || NULL.name().equals(encodingName)) {
 				append(target, value);
 			} else {
@@ -161,13 +162,13 @@ public enum Encodings implements Encoding {
 	 */
 	html_string {
 		@Override
-		public void escape(StringBuilder target, CharSequence val) {
+		public void escape(Appendable target, CharSequence val) throws IOException {
 			StringBuilder tmp = new StringBuilder();
 			string.escape(tmp, val);
 			html.escape(target, tmp.toString());
 		}
 		@Override
-		public void transcode(StringBuilder target, CharSequence value, String encodingName) {
+		public void transcode(Appendable target, CharSequence value, String encodingName) throws IOException {
 			if (xml.name().equals(encodingName) || html.name().endsWith(encodingName)) {
 				string.escape(target, value);
 			}
@@ -188,7 +189,7 @@ public enum Encodings implements Encoding {
 	 */
 	plain {
 		@Override
-		public void escape(StringBuilder target, CharSequence val) {
+		public void escape(Appendable target, CharSequence val) throws IOException {
 			append(target, val);
 		}
 	},
@@ -198,18 +199,18 @@ public enum Encodings implements Encoding {
 	 */
 	NULL {
 		@Override
-		public void escape(StringBuilder target, CharSequence val) {
+		public void escape(Appendable target, CharSequence val) throws IOException {
 			append(target, val);
 		}
 		@Override
-		public void transcode(StringBuilder target, CharSequence value, String encodingName) {
+		public void transcode(Appendable target, CharSequence value, String encodingName) throws IOException {
 			escape(target, value);
 		}
 	}
 	;
 
 	@Override
-	public void transcode(StringBuilder target, CharSequence value, String encodingName) {
+	public void transcode(Appendable target, CharSequence value, String encodingName) throws IOException {
 		if (NULL.name().equals(encodingName)) {
 			append(target, value);
 		}
@@ -231,9 +232,9 @@ public enum Encodings implements Encoding {
 	public Template parse(CharSequence data) {
 		return context().parse(data);
 	}
-	private static void append(StringBuilder target, CharSequence value) {
+	private static void append(Appendable target, CharSequence value) throws IOException {
 		if (value instanceof Region) {
-			((Region)value).append(target);
+			((Region)value).appendTo(target);
 		} else {
 			target.append(value);
 		}
