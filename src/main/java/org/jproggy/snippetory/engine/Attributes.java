@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 
 import org.jproggy.snippetory.Encodings;
+import org.jproggy.snippetory.engine.spi.CaseFormater;
 import org.jproggy.snippetory.engine.spi.DateFormater;
 import org.jproggy.snippetory.engine.spi.NumFormat;
 import org.jproggy.snippetory.engine.spi.ShortenFormat;
@@ -50,6 +51,7 @@ class Attributes {
 		FormatRegistry.INSTANCE.register("number", new NumFormat.Factory());
 		FormatRegistry.INSTANCE.register("date", new DateFormater.Factory());
 		FormatRegistry.INSTANCE.register("toggle", new ToggleFormat.Factory());
+		FormatRegistry.INSTANCE.register("case", new CaseFormater());
 		for (Encodings e: Encodings.values()) {
 			EncodingRegistry.INSTANCE.register(e);
 		}
