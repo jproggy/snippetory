@@ -2,6 +2,7 @@ package org.jproggy.snippetory;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.jproggy.snippetory.engine.NoDataException;
 import org.jproggy.snippetory.engine.SnippetoryException;
 import org.jproggy.snippetory.engine.TemplateBuilder;
 import org.jproggy.snippetory.spi.Encoding;
@@ -171,32 +173,28 @@ public class TemplateContext {
 			if (loader == null) {
 				loader = ClassLoader.getSystemClassLoader();
 			}
-			return stream(loader.getResourceAsStream(name));
+			InputStream stream = loader.getResourceAsStream(name);
+			if (stream == null) throw new NoDataException("Ressource " + name + " not found");
+			return stream(stream);
 		}
 
 		public static String file(String fileName) {
 			try {
 				return stream(new FileInputStream(fileName));
-			} catch (IOException e) {
-				throw new SnippetoryException(e);
+			} catch (FileNotFoundException e) {
+				throw new NoDataException(e);
 			}
 		}
 
 		public static String file(File in) {
-			if (in == null) {
-				return null;
-			}
 			try {
 				return stream(new FileInputStream(in));
-			} catch (IOException e) {
-				throw new SnippetoryException(e);
+			} catch (FileNotFoundException e) {
+				throw new NoDataException(e);
 			}
 		}
 
 		public static String stream(InputStream in) {
-			if (in == null) {
-				return null;
-			}
 			try {
 				return reader(new InputStreamReader(in, "utf-8"));
 			} catch (IOException e) {
@@ -205,9 +203,6 @@ public class TemplateContext {
 		}
 
 		public static String reader(Reader in) {
-			if (in == null) {
-				return null;
-			}
 			try {
 				char[] buffer = new char[255];
 				StringWriter s = new StringWriter();

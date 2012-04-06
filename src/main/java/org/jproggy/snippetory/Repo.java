@@ -48,7 +48,7 @@ public class Repo {
 	 * The data for the TemplateContext is searched on class path
 	 */
 	public static TemplateContext readResource(String name) {
-		return new TemplateContext(ToString.resource(name, null));
+		return readResource(name, null);
 	}
 
 	public static TemplateContext readResource(String name, ClassLoader test) {
