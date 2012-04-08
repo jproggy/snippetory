@@ -4,11 +4,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jproggy.snippetory.Syntaxes;
+import org.jproggy.snippetory.engine.TemplateBuilder;
 import org.jproggy.snippetory.engine.Token;
 import org.jproggy.snippetory.engine.spi.HiddenBlocksSyntax;
 import org.jproggy.snippetory.engine.spi.XMLAlikeSyntax;
 
-
+/**
+ * A syntax defines the way how Snippetory markup is determined and understood.
+ * For this job it provides an {@link Tokenizer} which in turn does the real work
+ * to chop the template data into handy tokens.  
+ * 
+ * @author B. Ebertz
+ */
 public interface Syntax {
 	public class Registry {
 		private Map<String, Syntax> reg =  new HashMap<String, Syntax>();
@@ -27,19 +34,57 @@ public interface Syntax {
 		}
 	}
 	interface Tokenizer {
+	    /**
+	     * Returns <tt>true</tt> if more tokens have been recognized. (In other
+	     * words, returns <tt>true</tt> if <tt>next</tt> would return a valid token
+	     * rather than throwing an exception or returning an invalid token.)
+	     *
+	     * @return <tt>true</tt> if the tokenizer has recognized more tokens.
+	     */
 		boolean hasNext();
+	    /**
+	     * Returns the next token found in the input data as long as <tt>hasNext</tt>
+	     * has returned <tt>true</tt> immediately before this call.
+	     * 
+	     * @return the next element in the iteration.
+	     */
 		Token next();
+		/**
+		 * @return the entire input data this tokenizer is working on.
+		 */
 		CharSequence getData();
+		/**
+		 * 
+		 * @return the start position of the token the <tt>next</tt> method will provide
+		 * by it's next call. Or <tt>getData().length()</tt> if no further token present. 
+		 */
 		int getPosition();
+		/**
+		 * set the position where next token is expected to start. This method is mainly 
+		 * for handing over a template from one syntax to another.
+		 * @param position start position of the next token
+		 */
 		void jumpTo(int position);
 	}
 	
+	/**
+	 * transform input data to a stream of token. Those tokens can be used by low level tools
+	 * like the {@link TemplateBuilder}.
+	 * @param data template to be parsed as character data.
+	 * @return a tokenizer providing the token stream
+	 */
 	Tokenizer parse(CharSequence data);
+	/**
+	 * similar to <tt>parse</tt> but additionally preserves parse position
+	 * @param data a tokenizer, that already parsed a portion of the data.
+	 * @return a tokenizer providing the token stream
+	 */
 	Tokenizer takeOver(Tokenizer data);
 	
+	/**
+	 * To be able select a syntax via the <a href="/snippetory/Syntax.html#Syntax">syntax selector</a>
+	 * it has to be registered. 
+	 */
 	Registry REGISTRY = new Registry();
-	enum TokenType {
-		BlockStart, BlockEnd, Field, Syntax, TemplateData, Comment
-	}
 
 }

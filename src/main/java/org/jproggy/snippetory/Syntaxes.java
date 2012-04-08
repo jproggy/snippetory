@@ -35,10 +35,18 @@ public enum Syntaxes implements SyntaxID {
 	
 	public String getName() { return name(); }
 	
+	/**
+	 *  a template context pre-configured for selected syntax 
+	 */
 	public TemplateContext context() {
 		return new TemplateContext().syntax(this);
 	}
 	
+	/**
+	 * parse with selected syntax
+	 * @param data input data to parse
+	 * @return the template for the parsed data
+	 */
 	public Template parse(CharSequence data) {
 		return context().parse(data);
 	}

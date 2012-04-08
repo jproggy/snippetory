@@ -28,6 +28,11 @@ import org.jproggy.snippetory.spi.SyntaxID;
  * subclass and use a different parsing mechanism or place an additional layer
  * of interceptors.
  * 
+ * <p><strong>Caution:</strong> As the TemplateContext is a mutable construct it has to
+ * be considered single threaded! Only reuse over several threads if able to ensure
+ * it's not changed after first usage! 
+ * </p>
+ * 
  * @author B. Ebertz
  */
 public class TemplateContext {

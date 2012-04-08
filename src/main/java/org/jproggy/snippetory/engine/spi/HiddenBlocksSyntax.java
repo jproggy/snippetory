@@ -5,14 +5,14 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.jproggy.snippetory.engine.RegExSyntax;
-import org.jproggy.snippetory.spi.Syntax;
+import org.jproggy.snippetory.engine.Token.TokenType;
 
 
 public class HiddenBlocksSyntax  extends RegExSyntax {
 
 	@Override
 	public RegexParser parse(CharSequence data) {
-		Map<Pattern, TokenType> patterns = new LinkedHashMap<Pattern, Syntax.TokenType>();
+		Map<Pattern, TokenType> patterns = new LinkedHashMap<Pattern, TokenType>();
 
 		String pref = "(?:\\<\\!\\-\\-|\\/\\*)";
 		String suff = ")[ \\t]*(?:\\-\\-\\>|\\*\\/)";

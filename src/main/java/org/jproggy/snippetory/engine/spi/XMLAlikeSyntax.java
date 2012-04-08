@@ -5,15 +5,15 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.jproggy.snippetory.engine.RegExSyntax;
-import org.jproggy.snippetory.spi.Syntax;
+import org.jproggy.snippetory.engine.Token.TokenType;
 
 
 public class XMLAlikeSyntax extends RegExSyntax {
 	@Override
 	public RegexParser parse(CharSequence data) {
-		Map<Pattern, TokenType> patterns = new LinkedHashMap<Pattern, Syntax.TokenType>();
+		Map<Pattern, TokenType> patterns = new LinkedHashMap<Pattern, TokenType>();
 		
-		Pattern syntax = Pattern.compile("(?://|<!|--| |\\t)*\\<s:(" + NAME + ")[ \\t]*/\\>(?:-->| |\\t)*" + LINE_END, Pattern.MULTILINE);
+		Pattern syntax = Pattern.compile("(?://|<!|--|#|\\'|rem| |\\t)*\\<s:(" + NAME + ")[ \\t]*/\\>(?:-->| |\\t)*" + LINE_END, Pattern.MULTILINE);
 		patterns.put(syntax, TokenType.Syntax);
 
 		Pattern start = Pattern.compile(LINE_START + "\\<t\\:(" + NAME + ATTRIBUTES + ")[ \\t]*\\>" + LINE_END, Pattern.MULTILINE);

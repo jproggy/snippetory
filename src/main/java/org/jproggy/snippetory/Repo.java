@@ -18,6 +18,11 @@ import org.jproggy.snippetory.spi.SyntaxID;
  * <p>
  * For Strings there are even short cuts to directly parse the template.
  * </p>
+ * However this is rather for simple usage like tests or examples. Whenever things
+ * get complicated consider use of {@link org.jproggy.snippetory.TemplateContext}
+ * 
+ * @see org.jproggy.snippetory.TemplateContext TemplateContext
+ * @see Template
  * 
  * @author B. Ebertz
  */

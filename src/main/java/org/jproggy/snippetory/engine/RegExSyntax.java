@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jproggy.snippetory.engine.Token.TokenType;
 import org.jproggy.snippetory.spi.Syntax;
 
 
