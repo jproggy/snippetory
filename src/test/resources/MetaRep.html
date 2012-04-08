@@ -4,19 +4,33 @@
 <head>
   <title>Structured Page</title>
   <style type="text/css">
-  th, td, h1{font-family: 'Frugal Sans', Arial, sans-serif; }
+  th, td, h1 {font-family: 'Frugal Sans', Arial, sans-serif; }
   .err {color: red; }
-  th {text-align: left; background-cfolor: #77bbff; 
-      padding: 2mm 0 0 1mm ; border-bottom:1mm solid #77bbff; 
-      border-right:0; border-top:0;
-      } 
+  th {
+    text-align: left; 
+    background-cfolor: #77bbff; 
+    padding: 2mm 0 0 1mm ; 
+    border-bottom:1mm solid #77bbff; 
+    border-right:0; 
+    border-top:0;
+  } 
   td { text-align: left; }
   .label {padding-right: 1cm; border-bottom: 1px dotted #666;}
   .space { width: 1cm;}
-  .button { background-color: white; font-weight: bolder; padding:1mm 2mm; border:1mm solid #77bbff;
-          border-radius: 10px;  }
-  h1 { border: 1mm solid #77bbff; border-right:0; border-radius: 1cm 0 0 1cm; padding: 5mm 10mm 5mm 8mm;
-      float: right; } 
+  .button { 
+    background-color: white; 
+    font-weight: bolder; 
+    padding:1mm 2mm; 
+    border:1mm solid #77bbff;
+    border-radius: 10px;  
+  }
+  h1 { 
+    border: 1mm solid #77bbff; 
+    border-right:0; 
+    border-radius: 1cm 0 0 1cm; 
+    padding: 5mm 10mm 5mm 8mm;
+    float: right; 
+  } 
   </style>
 </head>
 <body>
@@ -25,7 +39,7 @@
   <form action="{v:target enc='url'}" >
   <table width="600">
     <tr>
-    <td colspan="3"><h1>{v:title}</h1></td>
+      <td colspan="3"><h1>{v:title}</h1></td>
     </tr>
     <t:section>
     <tr>
