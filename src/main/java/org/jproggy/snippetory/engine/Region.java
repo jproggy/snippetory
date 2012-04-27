@@ -67,7 +67,7 @@ public class Region extends CharSequences implements Template, Cloneable {
 		return new PartFilter() {
 			@Override
 			public boolean fits(Location part) {
-				return part.getName().equals(name);
+				return name.equals(part.getName());
 			}
 		};
 	}
@@ -200,7 +200,7 @@ public class Region extends CharSequences implements Template, Cloneable {
 	public Set<String> names() {
 		Set<String> result = new TreeSet<String>();
 		for (Object part : parts) {
-			if (part instanceof Location) {
+			if (part instanceof Location && ((Location) part).getName()  != null) {
 				result.add(((Location) part).getName());
 			}
 		}

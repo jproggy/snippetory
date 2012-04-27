@@ -13,23 +13,29 @@ public class XMLAlikeSyntax extends RegExSyntax {
 	public RegexParser parse(CharSequence data) {
 		Map<Pattern, TokenType> patterns = new LinkedHashMap<Pattern, TokenType>();
 		
-		Pattern syntax = Pattern.compile("(?://|<!|--|#|\\'|rem| |\\t)*\\<s:(" + NAME + ")[ \\t]*/\\>(?:-->| |\\t)*" + LINE_END, Pattern.MULTILINE);
-		patterns.put(syntax, TokenType.Syntax);
+		patterns.put(SYNTAX_SELECTOR, TokenType.Syntax);
 
-		Pattern start = Pattern.compile(LINE_START + "\\<t\\:(" + NAME + ATTRIBUTES + ")[ \\t]*\\>" + LINE_END, Pattern.MULTILINE);
+		Pattern start = Pattern.compile(
+				LINE_START + "\\<t\\:(" + NAME + "(?:\\s+" + ATTRIBUTE + ")*)\\s*\\>" + LINE_END, Pattern.MULTILINE);
 		patterns.put(start, TokenType.BlockStart);
 
-		start = Pattern.compile("\\<t:(" + NAME + ATTRIBUTES + ")[ \\t]*\\>");
+		start = Pattern.compile("\\<t:(" + NAME + "(?:\\s+" + ATTRIBUTE + ")*)\\s*\\>");
 		patterns.put(start, TokenType.BlockStart);
 
-		Pattern end = Pattern.compile(LINE_START + "</t\\:(" + NAME + ")\\>" + LINE_END, Pattern.MULTILINE);
+		Pattern end = Pattern.compile(
+				LINE_START + "</t\\:(" + NAME + ")\\>" + LINE_END, Pattern.MULTILINE);
 		patterns.put(end, TokenType.BlockEnd);
 
 		end = Pattern.compile("</t\\:(" + NAME + ")\\>");
 		patterns.put(end, TokenType.BlockEnd);
 
-		Pattern field = Pattern.compile("\\{v\\:(" + NAME + ATTRIBUTES + ")[ \\t]*\\}", Pattern.MULTILINE);
+		Pattern field = Pattern.compile(
+				"\\{v\\:(" + NAME + "(?:\\s+" + ATTRIBUTE + ")*)[ \\t]*\\}", Pattern.MULTILINE);
 		patterns.put(field, TokenType.Field);
+
+		Pattern nameless = Pattern.compile(
+				"\\{v\\:\\s*(" + ATTRIBUTE + "(?:\\s+" + ATTRIBUTE + ")*)\\s*\\}", Pattern.MULTILINE);
+		patterns.put(nameless, TokenType.Field);
 		return new RegexParser(data, patterns);
 	}
 }

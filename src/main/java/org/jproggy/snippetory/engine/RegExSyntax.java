@@ -13,13 +13,15 @@ public abstract class RegExSyntax implements Syntax {
 		"[ \\t]*(?>(?>\\r\\n?)|\\n|\\u0085|\\u2028|\\u2029|\\Z)";
 	protected static final String LINE_START = "^[ \\t]*";
 	protected final static String ESCAPES = "\\\\\\\\|\\\\'|\\\\\"|\\\\n|\\\\r|\\\\b|\\\\t|\\\\f";
-	protected static final String NAME = "[\\p{Alnum}\\#\\._-]+";
-	protected static final String ATTRIBUTES = 
-		"(?:[ \\t]+" + NAME + "=(?:\\'(?:" + ESCAPES + "|[^\\\\'])*\\'|\\\"(?:" + ESCAPES + 
-		"|[^\\\\\"])*\\\"))*";
+	protected static final String NAME = "[\\p{javaJavaIdentifierPart}\\#\\.-]+";
+	protected static final String ATTRIBUTE = 
+		NAME + "=(?:\\'(?:" + ESCAPES + "|[^\\\\'])*\\'|\\\"(?:" + ESCAPES + 
+		"|[^\\\\\"])*\\\")";
 	protected static final String CONTENT = 
-		"(" + NAME + ")|[ \\t]+(" + NAME + ")=(?>\\'((?>" + ESCAPES + 
-		"|[^\\'])*)\\'|\\\"((?>" + ESCAPES + "|[^\\\\\"])*)\\\")"; 
+		"(" + NAME + ")=(?>\\'((?>" + ESCAPES + 
+		"|[^\\'])*)\\'|\\\"((?>" + ESCAPES + "|[^\\\\\"])*)\\\")|(" + NAME + ")"; 
+	protected static final Pattern SYNTAX_SELECTOR = Pattern.compile(
+			LINE_START + "[ \\t]*(?://|/\\*|<!--|<|--|#|\\'|rem)(?:s|S|Syntax):(" + NAME + ")(?:\\*/|-|/|>| |\\t)*" + LINE_END, Pattern.MULTILINE);
 
 	@Override
 	public abstract RegexParser parse(CharSequence data) ;
@@ -78,6 +80,9 @@ public abstract class RegExSyntax implements Syntax {
 			String content = getContent();
 			pos = matcher.end();
 			TokenType type = analyze(matcher.group());
+			if (type == TokenType.Comment) {
+				return new Token(null, matcher.group(), type, matcher.start());
+			}
 			if (type == TokenType.BlockEnd) {
 				return new Token(content, matcher.group(), type, matcher.start());
 			}
@@ -100,21 +105,26 @@ public abstract class RegExSyntax implements Syntax {
 		private static final Pattern vari = Pattern.compile(CONTENT);
 		protected Token createToken(String varDef, TokenType type) {
 			Matcher m = vari.matcher(varDef);
-			m.find();
-			Token token = new Token(m.group(), matcher.group(), type,
-					matcher.start());
+			boolean first =  true;
+			Token token = null;
 			while (m.find()) {
-				if (m.group(1) != null)
-					throw new IllegalArgumentException("don't understand "
-							+ varDef);
-				if (Attributes.REGISTRY.type(m.group(2)) == null) {
-					throw new IllegalArgumentException("unkown attribute name "
-							+ m.group(2));
+				if (first) {
+					token = new Token(m.group(), matcher.group(), type,
+							matcher.start());
+					first = false;
+					if (m.group(4) != null || type == TokenType.BlockStart) continue;
 				}
-				String value = m.group(3);
-				if (value == null) value = m.group(4);
+				if (m.group(4) != null)
+					throw new ParseError("don't understand "
+							+ varDef, token);
+				if (Attributes.REGISTRY.type(m.group(1)) == null) {
+					throw new ParseError("unkown attribute name "
+							+ m.group(1), token);
+				}
+				String value = m.group(2);
+				if (value == null) value = m.group(3);
 				value = decode(value, token);
-				token.getAttributes().put(m.group(2), value);
+				token.getAttributes().put(m.group(1), value);
 			}
 			return token;
 		}
