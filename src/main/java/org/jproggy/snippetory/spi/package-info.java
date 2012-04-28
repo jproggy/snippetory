@@ -11,18 +11,10 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
  *******************************************************************************/
 
-package org.jproggy.snippetory.spi;
-
 /**
- * SyntaxID is typically implemented by an enum used to identify a named {@link Syntax}. 
- * However, to be able to use a Syntax it has to be registered via the 
- * {@link Syntax.Registry#register(SyntaxID, Syntax) Syntax.REGISTRY.register} method.
- * 
- * @author B. Ebertz
+ * The Service provider interface contains classes enabling the user to extend and configure the behavior
+ * of the Snippetory engine. Those extensions can be packaged into jar files and loaded by
+ * the {@link java.util.ServiceLoader} mechanism. See {@link org.jproggy.snippetory.spi.Configurer} for further
+ * information.
  */
-public interface SyntaxID {
-	/**
-	 * @return a name identifying the syntax uniquely. 
-	 */
-	String getName();
-}
+package org.jproggy.snippetory.spi;

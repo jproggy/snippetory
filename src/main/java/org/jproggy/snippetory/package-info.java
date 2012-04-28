@@ -11,18 +11,15 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
  *******************************************************************************/
 
-package org.jproggy.snippetory.spi;
-
 /**
- * SyntaxID is typically implemented by an enum used to identify a named {@link Syntax}. 
- * However, to be able to use a Syntax it has to be registered via the 
- * {@link Syntax.Registry#register(SyntaxID, Syntax) Syntax.REGISTRY.register} method.
- * 
- * @author B. Ebertz
+ * The classes necessary for the work with the Snippetory Template Engine.
+ * This package contains all classes that are intended to be the interface for the
+ * usage of the template engine. I.e. reading the templates, composing the texts,
+ * binding the data and so on.
+ * <p>
+ * In most cases it should be fine to start with {@link org.jproggy.snippetory.Repo Repo} and select proposals
+ * of your IDE. The fluent interface offers great guidance here.
+ * </p>
+ * <p>At some point you will have to deal with several {@link org.jproggy.snippetory.Template Templates}</p>
  */
-public interface SyntaxID {
-	/**
-	 * @return a name identifying the syntax uniquely. 
-	 */
-	String getName();
-}
+package org.jproggy.snippetory;
