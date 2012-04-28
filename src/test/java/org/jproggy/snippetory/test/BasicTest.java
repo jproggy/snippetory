@@ -354,7 +354,7 @@ public class BasicTest {
 	
 	@Test
 	public void toggle() {
-		Template t = Repo.parse("<t:test>{v:x toggle='1;2;3'}. {v:x toggle='unpair;pair'}\n</t:test>");
+		Template t = Repo.parse("<t:test>{v:toggle='1;2;3'}. {v: toggle='unpair;pair'}\n</t:test>");
 		t.get("test").render();
 		t.get("test").render();
 		t.get("test").render();
@@ -364,7 +364,7 @@ public class BasicTest {
 		t.get("test").render();
 		t.get("test").render();
 		assertEquals("1. pair\n2. unpair\n3. pair\n", t.toString());
-		t.clear();
+		t = Repo.parse("<t:test>{v:x toggle='1;2;3'}. {v:x toggle='unpair;pair'}\n</t:test>");
 		t.get("test").set("x", 1).render();
 		t.get("test").set("x", 2).render();
 		t.get("test").set("x", 3).render();
