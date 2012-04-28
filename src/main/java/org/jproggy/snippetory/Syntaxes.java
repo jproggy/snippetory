@@ -21,6 +21,7 @@ public enum Syntaxes implements SyntaxID {
 	 * It provides low risk of incompatibility to a certain output format.
 	 */
 	XML_ALIKE,
+	C_COMMENTS,
 	
 	/**
 	 * This syntax allows template markup, that is invisible to the parser

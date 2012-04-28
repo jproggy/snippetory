@@ -6,6 +6,7 @@ import java.util.Map;
 import org.jproggy.snippetory.Syntaxes;
 import org.jproggy.snippetory.engine.TemplateBuilder;
 import org.jproggy.snippetory.engine.Token;
+import org.jproggy.snippetory.engine.spi.CComments;
 import org.jproggy.snippetory.engine.spi.HiddenBlocksSyntax;
 import org.jproggy.snippetory.engine.spi.XMLAlikeSyntax;
 
@@ -22,6 +23,7 @@ public interface Syntax {
 		private Registry() {
 			register(Syntaxes.HIDDEN_BLOCKS, new HiddenBlocksSyntax());
 			register(Syntaxes.XML_ALIKE, new XMLAlikeSyntax());
+			register(Syntaxes.C_COMMENTS, new CComments());
 		}
 		public void register(SyntaxID name, Syntax syntax) {
 			reg.put(name.getName(), syntax);
