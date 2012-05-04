@@ -13,8 +13,20 @@
 
 package org.jproggy.snippetory.spi;
 
+import org.jproggy.snippetory.engine.EncodingRegistry;
 
+/**
+ * Combines character data as payload with information about it's encoding 
+ * as additional meta data.
+ * 
+ * @author B. Ebertz
+ */
 public interface EncodedData {
+	/**
+	 * The encoding is represented by it's name. The name can be resolved 
+	 * by calling {@link EncodingRegistry.get }.
+	 * @return 
+	 */
 	String getEncoding();
 	
 	/**

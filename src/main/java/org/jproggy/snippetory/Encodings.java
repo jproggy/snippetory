@@ -23,7 +23,14 @@ import org.jproggy.snippetory.engine.SnippetoryException;
 import org.jproggy.snippetory.spi.Encoding;
 
 /**
- * Provides direct access to the predefined encodings.
+ * Provides direct access to the predefined encodings. Even though the functionality of identifying an 
+ * format and the default implementation for this format are done nearby, the Snippetory template engine
+ * always uses implementation, that's registered. This allows to overwrite to default implementation
+ * and still use this enum to identify a format. 
+ * <br />
+ * All default implementations defined here respect <code>NULL</code> as a wild card that never
+ * has to be transcoded.
+ *   
  * @author B. Ebertz
  */
 public enum Encodings implements Encoding {
@@ -102,7 +109,8 @@ public enum Encodings implements Encoding {
 		}
 	},
 	/**
-	 * Applies url encoding to the data
+	 * Applies url encoding to the data. 
+	 * The character encoding is utf-8.
 	 */
 	url {
 		@Override
@@ -115,8 +123,9 @@ public enum Encodings implements Encoding {
 		}
 	},
 	/**
-	 * Most C-based languages have almost the same rules. This fits at least Java and
-	 * JavaScript.
+	 * Most C-based languages have almost the same rules. This implementation
+	 * fits at least Java and JavaScript.
+	 * 
 	 */
 	string {
 		@Override
@@ -233,6 +242,11 @@ public enum Encodings implements Encoding {
 		throw new IncompatibleEncodingException("can't convert encoding "
 				+ encodingName + " into " + name());
 	}
+	
+	/**
+	 * the name is used to identify a format. There may exist different implementations for
+	 * the same format. 
+	 */
 	@Override
 	public String getName() {
 		return name();

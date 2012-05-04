@@ -48,6 +48,10 @@ public class EncodingRegistry {
 		values.add(overwrite);
 	}
 
+	/**
+	 * Resolve Encoding by name
+	 * @return the registered encoding or null if none
+	 */
 	public Encoding get(String name) {
 		return encodings.get(name);
 	}

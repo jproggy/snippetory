@@ -20,15 +20,31 @@ import java.util.LinkedHashMap;
  * the perspective of a syntax to parse this Snippetory template. As Snippetory
  * works with a simple syntax scheme there's only a small number of different purposes
  * such a token can fulfill. They are defined in the enum {@link TokenType}. 
- * 
+ * <br />
  *  A token consists of the portion of template code it represents, the start position of
  *  this code, the token type and some data that's depends on token type.
  * 
  * @author B. Ebertz
  */
 public class Token {
+	/**
+	 * The token type classifies he meaning of a template element. 
+	 * 
+	 * @author B. Ebertz
+	 */
 	public enum TokenType {
-		BlockStart, BlockEnd, Field, Syntax, TemplateData, Comment
+		// start of a region
+		BlockStart,
+		// end of a region
+		BlockEnd, 
+		// represents a location
+		Field,
+		// a syntax selector
+		Syntax,
+		// will be copied to output format
+		TemplateData,
+		// is ignored
+		Comment
 	}
 
 	private final LinkedHashMap<String, String> attributes = new LinkedHashMap<String, String>();
@@ -52,16 +68,31 @@ public class Token {
 		return attributes;
 	}
 
+	/**
+	 * Not every TokenType has a name in any case. 
+	 * For instance the name of a field is optional and 
+	 * comment has no name at all
+	 * 
+	 * @return the name  of the element represented by this token 
+	 *         or null or empty string if none.
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * The token type categorizes different meanings of the elements 
+	 * represented by the tokens.
+	 * 
+	 * @return the token type recognized for the represented element
+	 */
 	public TokenType getType() {
 		return type;
 	}
 
 	/**
-	 *  as it's taken from template data 
+	 *  The complete piece of template code representing this token. This
+	 *  can be used to re-assemble the original template from a token stream   
 	 */
 	public String getContent() {
 		return content;

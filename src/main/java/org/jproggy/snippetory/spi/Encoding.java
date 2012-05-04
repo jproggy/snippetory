@@ -16,6 +16,7 @@ package org.jproggy.snippetory.spi;
 import java.io.IOException;
 
 import org.jproggy.snippetory.Template;
+import org.jproggy.snippetory.engine.EncodingRegistry;
 import org.jproggy.snippetory.engine.IncompatibleEncodingException;
 
 /**
@@ -32,6 +33,10 @@ import org.jproggy.snippetory.engine.IncompatibleEncodingException;
  * or just for single leaf nodes. 
  */
 public interface Encoding {
+	/**
+	 * Register Encodings here.
+	 */
+	EncodingRegistry REGISTRY = EncodingRegistry.INSTANCE;
 	
 	/**
 	 * will escape the content of val appropriate to the supported output format and append
