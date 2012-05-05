@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!-----------------------------------------------------------------------------
+  Copyright (c) 2011-2012 JProggy.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the Eclipse Public License v1.0
+  which accompanies this distribution, and is available at
+  http://www.eclipse.org/legal/epl-v10.html
+ 
+  EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN 
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR 
+  IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, 
+  NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
+ ------------------------------------------------------------------------------------->
+ 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Structured Page</title>
+  <style type="text/css">
+  th, td, h1 {font-family: 'Frugal Sans', Arial, sans-serif; }
+  .err {color: red; }
+  th {
+    text-align: left; 
+    background-cfolor: #77bbff; 
+    padding: 2mm 0 0 1mm ; 
+    border-bottom:1mm solid #77bbff; 
+    border-right:0; 
+    border-top:0;
+  } 
+  td { text-align: left; }
+  .label {padding-right: 1cm; border-bottom: 1px dotted #666;}
+  .space { width: 1cm;}
+  .button { 
+    background-color: white; 
+    font-weight: bolder; 
+    padding:1mm 2mm; 
+    border:1mm solid #77bbff;
+    border-radius: 10px;  
+  }
+  h1 { 
+    border: 1mm solid #77bbff; 
+    border-right:0; 
+    border-radius: 1cm 0 0 1cm; 
+    padding: 5mm 10mm 5mm 8mm;
+    float: right; 
+  } 
+  </style>
+</head>
+<body>
+  <center>
+  <form action="dataSink.do" >
+  <table width="600">
+    <tr>
+      <td colspan="3"><h1>Data to enter</h1></td>
+    </tr>
+    <tr>
+      <th colspan="3" class="head">Section 1</th>
+    </tr>
+    <tr>
+      <td class="space"></td>
+      <td class="label">Field 1</td>
+      <td>
+      <input type="text" name="field11" value="val1" />
+      
+      </td>
+    </tr>
+    <tr>
+      <td class="space"></td>
+      <td class="label">Field 2</td>
+      <td>
+      <input type="text" name="field12" value="val2" />
+      <span class="err">Error messages might be red</span>
+      </td>
+    </tr>
+    <tr>
+      <td class="space"></td>
+      <td class="label">Field 3</td>
+      <td>
+      <input type="text" name="field13" value="" />
+      
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3">&nbsp;</td>
+    </tr>
+    <tr>
+      <th colspan="3" class="head">Section 2</th>
+    </tr>
+    <tr>
+      <td class="space"></td>
+      <td class="label">Field 1</td>
+      <td>
+      <input type="text" name="field21" value="" />
+      
+      </td>
+    </tr>
+    <tr>
+      <td class="space"></td>
+      <td class="label">Field 2</td>
+      <td>
+              <label>
+          <input type="checkbox" name="field22" value="choice1" checked="checked" />
+          Choice 1
+        </label><br />
+        <label>
+          <input type="checkbox" name="field22" value="choice2" checked="checked" />
+          Choice 3
+        </label><br />
+        <label>
+          <input type="checkbox" name="field22" value="choice3" />
+          Choice 2
+        </label><br />
+
+      
+      </td>
+    </tr>
+    <tr>
+      <td class="space"></td>
+      <td class="label">Field 3</td>
+      <td>
+            <select name="field23">
+        <option>Please select...</option>
+        <option id="opt1">Option 1</option><option selected="selected" id="opt2">Option 2</option><option id="opt3">Option 3</option>
+        
+      </select>
+
+      
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3">&nbsp;</td>
+    </tr>
+    <tr>
+      <th colspan="3" class="head">Description</th>
+    </tr>
+    <tr>
+      <td class="space"></td>
+      <td colspan="2">Well structured means:  <ul><li>Same Element many times</li><li>Not too many different elements</li></ul></td>
+    </tr>
+    <tr>
+      <td colspan="3">&nbsp;</td>
+    </tr>
+    <tr>
+      <td colspan="3" style="text-align: right;"><input type="submit" value="Back"/></td>
+    </tr>
+   </table>
+  </form>
+  </center>
+</body>
+</html>

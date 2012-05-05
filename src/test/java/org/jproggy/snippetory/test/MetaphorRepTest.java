@@ -20,6 +20,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import junit.framework.Assert;
+
 import org.jproggy.snippetory.Repo;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.test.Page.Section;
@@ -74,7 +76,7 @@ public class MetaphorRepTest {
 		section3.addDescription(explanation).render();
 		
 		// finally put it all out
-		page.render(System.out);
+		Assert.assertEquals(Repo.readResource("MRResult.htm").parse().toString(), page.toString());
 		
 	}
 }

@@ -115,6 +115,12 @@ public class Page implements EncodedData {
 			return section.toCharSequence();
 		}
 	}
+	
+	@Override
+	public String toString() {
+		page.render();
+		return template.toString();
+	}
 
 	@Override
 	public String getEncoding() {
