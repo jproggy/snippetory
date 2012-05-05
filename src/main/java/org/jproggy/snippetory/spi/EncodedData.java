@@ -15,6 +15,8 @@ package org.jproggy.snippetory.spi;
 
 import org.jproggy.snippetory.engine.EncodingRegistry;
 
+
+
 /**
  * Combines character data as payload with information about it's encoding 
  * as additional meta data.
@@ -24,12 +26,13 @@ import org.jproggy.snippetory.engine.EncodingRegistry;
 public interface EncodedData {
 	/**
 	 * The encoding is represented by it's name. The name can be resolved 
-	 * by calling {@link EncodingRegistry.get }.
+	 * by  {@link EncodingRegistry#get(String) Encoding.REGISTRY.get(String)}.
 	 * @return 
 	 */
 	String getEncoding();
 	
 	/**
+	 * Convert to a char sequence.
 	 * This methods is added, because a toString method might be more expensive
 	 * in many cases. This method allows to return a StringBuilder instead of a String.
 	 * This might avoid copying the data from the StringBuilder into a String. 

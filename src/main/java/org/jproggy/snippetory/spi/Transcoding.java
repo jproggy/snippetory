@@ -16,6 +16,11 @@ package org.jproggy.snippetory.spi;
 import java.io.IOException;
 
 
+/**
+ * 
+ * 
+ * @author B. Ebertz
+ */
 public interface Transcoding {
 	void transcode(Appendable target, CharSequence value, String sourceEncoding, 
 			String targetEncoding) throws IOException;

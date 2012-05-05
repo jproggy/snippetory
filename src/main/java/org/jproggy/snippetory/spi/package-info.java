@@ -16,5 +16,9 @@
  * of the Snippetory engine. Those extensions can be packaged into jar files and loaded by
  * the {@link java.util.ServiceLoader} mechanism. See {@link org.jproggy.snippetory.spi.Configurer} for further
  * information.
+ * <br />
+ * The classes {@link org.jproggy.snippetory.spi.Format}, {@link org.jproggy.snippetory.spi.Syntax}, and
+ * {@link org.jproggy.snippetory.spi.Encoding} contain a REGISTRY attribute to allow extensions as well
+ * as overriding default behavior.
  */
 package org.jproggy.snippetory.spi;

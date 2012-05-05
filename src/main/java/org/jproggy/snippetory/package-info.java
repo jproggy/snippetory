@@ -20,6 +20,8 @@
  * In most cases it should be fine to start with {@link org.jproggy.snippetory.Repo Repo} and select proposals
  * of your IDE. The fluent interface offers great guidance here.
  * </p>
- * <p>At some point you will have to deal with several {@link org.jproggy.snippetory.Template Templates}</p>
+ * <p>
+ * At some point you will have to deal with several {@link org.jproggy.snippetory.Template Templates}
+ * </p>
  */
 package org.jproggy.snippetory;

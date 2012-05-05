@@ -13,16 +13,31 @@
 
 package org.jproggy.snippetory.engine.chars;
 
-
+/**
+ * CharSequences is a helper class to implement 'CompoundCharSequences' i.e.
+ * CharSequences consisting of several parts. 
+ * <br />
+ * 
+ * @author B. Ebertz
+ */
 public abstract class CharSequences implements CharSequence {
 	private CharSequence recentCS = null;
 	private int csIndex = -1;
 	private int recentStart = 0;
 	
+	/**
+	 * the number of distinct parts connected by this instance 
+	 */
 	protected abstract int partCount();
 	
+	/**
+	 * provide one of the parts
+	 */
 	protected abstract CharSequence part(int index);
 	
+	/**
+	 * there are some optimizations for subsequent calls of charAt with increasing index.
+	 */
 	@Override
 	public char charAt(int index) {
 		if (index < recentStart) {
