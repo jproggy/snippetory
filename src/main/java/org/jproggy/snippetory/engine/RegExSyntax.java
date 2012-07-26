@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.engine.Token.TokenType;
 import org.jproggy.snippetory.spi.Syntax;
 
@@ -37,11 +38,11 @@ public abstract class RegExSyntax implements Syntax {
 			LINE_START + "[ \\t]*(?://|/\\*|<!--|<|--|#|\\'|rem)(?:s|S|Syntax):(" + NAME + ")(?:\\*/|-|/|>| |\\t)*" + LINE_END, Pattern.MULTILINE);
 
 	@Override
-	public abstract RegexParser parse(CharSequence data) ;
+	public abstract RegexParser parse(CharSequence data, TemplateContext ctx) ;
 
 	@Override
 	public Tokenizer takeOver(Tokenizer data) {
-		RegexParser p = parse(data.getData());
+		RegexParser p = parse(data.getData(), data.getContext());
 		p.jumpTo(data.getPosition());
 		return p;
 	}
@@ -52,8 +53,9 @@ public abstract class RegExSyntax implements Syntax {
 		private final CharSequence data;
 		private Boolean found;
 		private int pos = 0;
+		private final TemplateContext context;
 
-		public RegexParser(CharSequence data, Map<Pattern, TokenType> patterns) {
+		public RegexParser(CharSequence data, TemplateContext ctx, Map<Pattern, TokenType> patterns) {
 			this.patterns = patterns;
 			String compoundPattern = "";
 			for (Pattern p : patterns.keySet()) {
@@ -62,6 +64,7 @@ public abstract class RegExSyntax implements Syntax {
 			}
 			matcher = Pattern.compile(compoundPattern, Pattern.MULTILINE).matcher(data);
 			this.data = data;
+			this.context = ctx;
 		}
 
 		@Override
@@ -201,6 +204,11 @@ public abstract class RegExSyntax implements Syntax {
 				if (e.getKey().matcher(element).matches()) return e.getValue();
 			}
 			return null;
+		}
+
+		@Override
+		public TemplateContext getContext() {
+			return context;
 		}
 	}
 }

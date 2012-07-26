@@ -26,9 +26,7 @@ import junit.framework.Assert;
 
 import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.Repo;
-import org.jproggy.snippetory.Syntaxes;
 import org.jproggy.snippetory.Template;
-import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.engine.ParseError;
 import org.junit.Test;
 
@@ -138,8 +136,8 @@ public class BasicTest {
 		date.set("d1", java.sql.Date.valueOf("2011-10-15"));
 		date.set("d2", java.sql.Date.valueOf("2011-10-06"));
 		assertEquals("Date 1: 2011-10-15 Date 2: 06.10.11 00:00 Uhr MESZ ", date.toString());
-		date = new TemplateContext().locale(Locale.GERMAN).attrib("date", "long_short")
-		  .parse("<t:test>Date 1: {v:d1 date='_medium'} Date 2: {v:d2} </t:test>").get("test");
+		date = Repo.read("<t:test>Date 1: {v:d1 date='_medium'} Date 2: {v:d2} </t:test>")
+				.locale(Locale.GERMAN).attrib("date", "long_short").parse().get("test");
 		date.set("d1", new Date(java.sql.Date.valueOf("2011-10-15").getTime() + 3915000l) );
 		date.set("d2", java.sql.Date.valueOf("2011-10-06"));
 		assertEquals("Date 1: 01:05:15 Date 2: 6. Oktober 2011 00:00 ", date.toString());
@@ -170,11 +168,7 @@ public class BasicTest {
 		  // and so on.
 		  // switch over to another syntax. This could be done in template two. 
 		  // Even multiple times.
-		  Template method = Syntaxes.HIDDEN_BLOCKS.context()
-		  // --> The US locale is typically a good choice for machine readable output.
-		  .locale(Locale.US)
-		  // After configuration we finally parse the template
-		  .parse(
+		  Template method = Repo.read(
 				  
 		  	  // The mock data 'Template' and 'render' ensures to compile while the mark
 		  	  // up code is hidden in comments
@@ -186,7 +180,11 @@ public class BasicTest {
 		  	  //             meta data        repeated area
 		  	  //          |------------|   |-----------------|
 		      "(/*t:param delimiter=', '-->{v:type} param{v:i}<!--!t:param*/);"      
-		  );
+		  ).syntax(HIDDEN_BLOCKS)
+		  // --> The US locale is typically a good choice for machine readable output.
+		  .locale(Locale.US)
+		  // After configuration we finally parse the template
+		  .parse();
 		  
 		  String typeName = def.getReturnType().getSimpleName();
 		  

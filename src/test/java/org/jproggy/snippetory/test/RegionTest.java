@@ -98,7 +98,7 @@ public class RegionTest {
 
 	@Test
 	public void test100000() {
-		testN(61000);
+		testN(35000);
 	}
 
 	@Test

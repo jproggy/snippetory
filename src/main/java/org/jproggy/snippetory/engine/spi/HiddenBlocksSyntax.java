@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.engine.RegExSyntax;
 import org.jproggy.snippetory.engine.Token.TokenType;
 
@@ -24,7 +25,7 @@ import org.jproggy.snippetory.engine.Token.TokenType;
 public class HiddenBlocksSyntax  extends RegExSyntax {
 
 	@Override
-	public RegexParser parse(CharSequence data) {
+	public RegexParser parse(CharSequence data, TemplateContext ctx) {
 		Map<Pattern, TokenType> patterns = new LinkedHashMap<Pattern, TokenType>();
 
 		String pref = "(?:\\<\\!\\-\\-|\\/\\*)";
@@ -51,6 +52,6 @@ public class HiddenBlocksSyntax  extends RegExSyntax {
 
 		Pattern nameless = Pattern.compile("\\{v\\:[ \\t]*(" + ATTRIBUTE + ATTRIBUTES + ")[ \\t]*\\}");
 		patterns.put(nameless, TokenType.Field);
-		return new RegexParser(data, patterns);
+		return new RegexParser(data, ctx, patterns);
 	}
 }

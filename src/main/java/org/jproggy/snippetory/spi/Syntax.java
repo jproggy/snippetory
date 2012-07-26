@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jproggy.snippetory.Syntaxes;
+import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.engine.TemplateBuilder;
 import org.jproggy.snippetory.engine.Token;
 import org.jproggy.snippetory.engine.spi.CComments;
@@ -80,6 +81,8 @@ public interface Syntax {
 		 * @param position start position of the next token
 		 */
 		void jumpTo(int position);
+		
+		TemplateContext getContext();
 	}
 	
 	/**
@@ -88,7 +91,7 @@ public interface Syntax {
 	 * @param data template to be parsed as character data.
 	 * @return a tokenizer providing the token stream
 	 */
-	Tokenizer parse(CharSequence data);
+	Tokenizer parse(CharSequence data, TemplateContext ctx);
 	/**
 	 * similar to <tt>parse</tt> but additionally preserves parse position
 	 * @param data a tokenizer, that already parsed a portion of the data.

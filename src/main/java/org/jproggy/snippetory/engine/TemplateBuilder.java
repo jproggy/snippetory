@@ -39,7 +39,7 @@ public class TemplateBuilder {
 	protected TemplateBuilder(TemplateContext ctx, CharSequence data) {
 		this.ctx = ctx;
 		tempSyntax = ctx.getSyntax();
-		parser = getSyntax().parse(data);
+		parser = getSyntax().parse(data, ctx);
 	}
 	
 	public static Template parse(TemplateContext ctx, CharSequence data) {
