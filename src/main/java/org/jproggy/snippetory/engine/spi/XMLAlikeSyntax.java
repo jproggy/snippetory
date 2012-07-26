@@ -29,10 +29,10 @@ public class XMLAlikeSyntax extends RegExSyntax {
 		patterns.put(SYNTAX_SELECTOR, TokenType.Syntax);
 
 		Pattern start = Pattern.compile(
-				LINE_START + "\\<t\\:(" + NAME + "(?:\\s+" + ATTRIBUTE + ")*)\\s*\\>" + LINE_END, Pattern.MULTILINE);
+				LINE_START + "\\<t\\:(" + NAME + ATTRIBUTES + ")\\s*\\>" + LINE_END, Pattern.MULTILINE);
 		patterns.put(start, TokenType.BlockStart);
 
-		start = Pattern.compile("\\<t:(" + NAME + "(?:\\s+" + ATTRIBUTE + ")*)\\s*\\>");
+		start = Pattern.compile("\\<t:(" + NAME + ATTRIBUTES + ")\\s*\\>");
 		patterns.put(start, TokenType.BlockStart);
 
 		Pattern end = Pattern.compile(
@@ -43,11 +43,11 @@ public class XMLAlikeSyntax extends RegExSyntax {
 		patterns.put(end, TokenType.BlockEnd);
 
 		Pattern field = Pattern.compile(
-				"\\{v\\:(" + NAME + "(?:\\s+" + ATTRIBUTE + ")*)[ \\t]*\\}", Pattern.MULTILINE);
+				"\\{v\\:(" + NAME + ATTRIBUTES + ")[ \\t]*\\}", Pattern.MULTILINE);
 		patterns.put(field, TokenType.Field);
 
 		Pattern nameless = Pattern.compile(
-				"\\{v\\:\\s*(" + ATTRIBUTE + "(?:\\s+" + ATTRIBUTE + ")*)\\s*\\}", Pattern.MULTILINE);
+				"\\{v\\:\\s*(" + ATTRIBUTE + ATTRIBUTES + ")\\s*\\}", Pattern.MULTILINE);
 		patterns.put(nameless, TokenType.Field);
 		return new RegexParser(data, patterns);
 	}

@@ -29,14 +29,14 @@ public class HiddenBlocksSyntax  extends RegExSyntax {
 
 		String pref = "(?:\\<\\!\\-\\-|\\/\\*)";
 		String suff = ")[ \\t]*(?:\\-\\-\\>|\\*\\/)";
-		patterns.put(SYNTAX_SELECTOR, TokenType.Syntax);
 
+		patterns.put(SYNTAX_SELECTOR, TokenType.Syntax);
 		Pattern start = Pattern.compile(
-				LINE_START + pref + "t\\:(" + NAME + "(?:[ \t]*" + ATTRIBUTE + ")*" + suff + LINE_END, Pattern.MULTILINE);
+				LINE_START + pref + "t\\:(" + NAME + ATTRIBUTES + suff + LINE_END, Pattern.MULTILINE);
 		patterns.put(start, TokenType.BlockStart);
 
 		start = Pattern.compile(
-				pref + "t\\:(" + NAME + "(?:[ \t]*" + ATTRIBUTE + ")*" + suff);
+				pref + "t\\:(" + NAME + ATTRIBUTES + suff);
 		patterns.put(start, TokenType.BlockStart);
 
 		Pattern end = Pattern.compile(
@@ -46,10 +46,10 @@ public class HiddenBlocksSyntax  extends RegExSyntax {
 		end = Pattern.compile(pref + "\\!t\\:(" + NAME + suff);
 		patterns.put(end, TokenType.BlockEnd);
 
-		Pattern field = Pattern.compile("\\{v\\:(" + NAME + "(?:[ \t]*" + ATTRIBUTE + ")*)[ \\t]*\\}");
+		Pattern field = Pattern.compile("\\{v\\:(" + NAME + ATTRIBUTES + ")[ \\t]*\\}");
 		patterns.put(field, TokenType.Field);
 
-		Pattern nameless = Pattern.compile("\\{v\\:[ \\t]*(" + ATTRIBUTE + "(?:[ \t]*" + ATTRIBUTE + ")*)[ \\t]*\\}");
+		Pattern nameless = Pattern.compile("\\{v\\:[ \\t]*(" + ATTRIBUTE + ATTRIBUTES + ")[ \\t]*\\}");
 		patterns.put(nameless, TokenType.Field);
 		return new RegexParser(data, patterns);
 	}

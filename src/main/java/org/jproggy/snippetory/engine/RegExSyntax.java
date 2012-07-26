@@ -28,8 +28,8 @@ public abstract class RegExSyntax implements Syntax {
 	protected final static String ESCAPES = "\\\\\\\\|\\\\'|\\\\\"|\\\\n|\\\\r|\\\\b|\\\\t|\\\\f";
 	protected static final String NAME = "[\\p{javaJavaIdentifierPart}\\#\\.-]+";
 	protected static final String ATTRIBUTE = 
-		NAME + "=(?:\\'(?:" + ESCAPES + "|[^\\\\'])*\\'|\\\"(?:" + ESCAPES + 
-		"|[^\\\\\"])*\\\")";
+		NAME + "=(?:\\'(?:" + ESCAPES + "|[^\\\\'])*\\'|\\\"(?:" + ESCAPES + "|[^\\\\\"])*\\\")";
+	protected static final String ATTRIBUTES = "(?:\\s+" + ATTRIBUTE + ")*";
 	protected static final String CONTENT = 
 		"(" + NAME + ")=(?>\\'((?>" + ESCAPES + 
 		"|[^\\'])*)\\'|\\\"((?>" + ESCAPES + "|[^\\\\\"])*)\\\")|(" + NAME + ")"; 
