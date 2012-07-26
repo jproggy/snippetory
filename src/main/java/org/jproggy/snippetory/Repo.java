@@ -135,6 +135,11 @@ public class Repo {
 			return (TemplateContext)super.syntax(syntax);
 		}
 		
+		
+		@Override
+		public void setUrlResolver(	UrlResolver urlResolver) {
+			throw new UnsupportedOperationException("UrlResolver can't be set here");
+		}
 		public Template parse() {
 			return parse(data);
 		}

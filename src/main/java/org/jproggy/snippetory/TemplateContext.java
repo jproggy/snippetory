@@ -51,6 +51,7 @@ import org.jproggy.snippetory.spi.SyntaxID;
 public class TemplateContext implements Cloneable {
 	private Locale locale = Locale.getDefault();
 	private Syntax syntax = Syntax.REGISTRY.getDefault();
+	private UrlResolver urlResolver;
 	
 	/**
 	 * Omit initialization here to ensure TemplateContext to be cheap in default behavior
@@ -94,6 +95,19 @@ public class TemplateContext implements Cloneable {
 		if (syntax == null)
 			throw new NullPointerException();
 		this.syntax = syntax;
+	}
+	
+	public TemplateContext urlResolver(UrlResolver urlResolver) {
+		setUrlResolver(urlResolver);
+		return this;
+	}
+	
+	public void setUrlResolver(UrlResolver urlResolver) {
+		this.urlResolver = urlResolver;
+	}
+	
+	public UrlResolver getUrlResolver() {
+		return urlResolver;
 	}
 
 	public TemplateContext encoding(String encoding) {
@@ -144,49 +158,16 @@ public class TemplateContext implements Cloneable {
 	public void setBaseAttribs(Map<String, String> baseAttribs) {
 		this.baseAttribs = baseAttribs;
 	}
+	
+	public Template createTemplate(String url) {
+		if (urlResolver == null) {
+			throw new IllegalStateException("Need UrlResolver to find Template. Please set one");
+		}
+		return parse(urlResolver.resolve(url));
+	}
 
-	public Template parse(CharSequence data) {
+	protected Template parse(CharSequence data) {
 		return TemplateBuilder.parse(this, data);
-	}
-
-	/**
-	 * The data for the TemplateContext is searched on class path
-	 */
-	public Template parseResource(String name) {
-		return parseResource(name, null);
-	}
-
-	public Template parseResource(String name, ClassLoader test) {
-		if (name == null) {
-			throw new NullPointerException();
-		}
-		return parse(ToString.resource(name, test));
-	}
-
-	public Template parseFile(String fileName) {
-		if (fileName == null) {
-			throw new NullPointerException();
-		}
-		return parse(ToString.file(fileName));
-	}
-
-	public Template parseFile(File fileName) {
-		if (fileName == null) {
-			throw new NullPointerException();
-		}
-		return parse(ToString.file(fileName));
-	}
-
-	/**
-	 * 
-	 * @param in
-	 */
-	public Template parseStream(InputStream in) {
-		return parse(ToString.stream(in));
-	}
-
-	public Template parseReader(Reader in) {
-		return parse(ToString.reader(in));
 	}
 
 	static class ToString {
