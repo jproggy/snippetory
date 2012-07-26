@@ -27,9 +27,4 @@ public class ParseError extends SnippetoryException {
 	private static String toMessage(Token at) {
 		return "Error while parsing " + at.getContent() + " at position " + at.getPosition();
 	}
-
-	@Override
-	public String getMessage() {
-		return super.getMessage();
-	}
 }

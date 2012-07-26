@@ -13,16 +13,18 @@
 
 package org.jproggy.snippetory.engine;
 
+import java.util.List;
+
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Format;
 
 class Metadata {
-	public Metadata(String name, Format[] formats, Encoding enc,
+	public Metadata(String name, List<Format> formats, Encoding enc,
 			String defaultVal, String fragment, String delimiter,
 			String prefix, String suffix, Metadata parent) {
 		super();
 		this.name = name;
-		this.formats = formats;
+		this.formats = formats.toArray(new Format[formats.size()]);
 		this.enc = enc;
 		this.defaultVal = defaultVal;
 		this.fragment = fragment;
@@ -31,6 +33,7 @@ class Metadata {
 		this.suffix = suffix;
 		this.parent = parent;
 	}
+
 	final String name;
 	final Format[] formats;
 	final Encoding enc;
@@ -40,18 +43,19 @@ class Metadata {
 	final String prefix;
 	final String suffix;
 	final Metadata parent;
-	
+
 	CharSequence format(CharSequence value) {
-		for (Format f: formats) {
+		for (Format f : formats) {
 			if (f.supports(value)) value = f.format(value);
 		}
 		return value;
 	}
+
 	CharSequence toString(Object value) {
 		if (value instanceof CharSequence) {
 			return (String) value;
 		}
-		for (Format f: formats) {
+		for (Format f : formats) {
 			if (f.supports(value)) return f.format(value);
 		}
 		if (parent != null) return parent.toString(value);

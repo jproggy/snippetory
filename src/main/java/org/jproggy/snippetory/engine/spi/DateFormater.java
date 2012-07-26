@@ -28,7 +28,7 @@ import org.jproggy.snippetory.spi.FormatFactory;
 
 public class DateFormater implements Format {
 	private final DateFormat impl;
-	private static Map<String, Integer> LENGTHS = new TreeMap<String, Integer>(
+	private static final Map<String, Integer> LENGTHS = new TreeMap<String, Integer>(
 			String.CASE_INSENSITIVE_ORDER);
 
 	static {
@@ -59,10 +59,6 @@ public class DateFormater implements Format {
 	}
 
 	public static class Factory implements FormatFactory {
-		public Factory() {
-			super();
-		}
-
 		private DateFormat toFormat(String definition, Locale l) {
 			if ("".equals(definition))
 				return DateFormat.getDateInstance(DateFormat.DEFAULT, l);
@@ -84,13 +80,17 @@ public class DateFormater implements Format {
 						"'new Date('yyyy', 'MM', 'dd', 'MM', 'dd', 'HH', 'mm', 'ss')'",
 						Locale.US);
 			
+			return evaluateLengths(definition, l);
+		}
+
+		private DateFormat evaluateLengths(String definition, Locale l) {
 			// data by length
 			Integer f = LENGTHS.get(definition);
 			if (f != null) {
 				return DateFormat.getDateInstance(f, l);
 			}
 			// time by length
-			if (definition.startsWith("_")) {
+			if (definition.charAt(0) == '_') {
 				f = LENGTHS.get(definition.substring(1));
 			}
 			if (f != null) {

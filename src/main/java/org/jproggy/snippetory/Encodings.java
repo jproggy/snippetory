@@ -23,32 +23,41 @@ import org.jproggy.snippetory.engine.SnippetoryException;
 import org.jproggy.snippetory.spi.Encoding;
 
 /**
- * Provides direct access to the predefined encodings. Even though the functionality of identifying an 
- * format and the default implementation for this format are done nearby, the Snippetory template engine
- * always uses implementation, that's registered. This allows to overwrite to default implementation
- * and still use this enum to identify a format. 
- * <br />
- * All default implementations defined here respect <code>NULL</code> as a wild card that never
- * has to be transcoded.
- *   
+ * Provides direct access to the predefined encodings. Even though the
+ * functionality of identifying an format and the default implementation for
+ * this format are done nearby, the Snippetory template engine always uses
+ * implementation, that's registered. This allows to overwrite to default
+ * implementation and still use this enum to identify a format. <br />
+ * All default implementations defined here respect <code>NULL</code> as a wild
+ * card that never has to be transcoded.
+ * 
  * @author B. Ebertz
  */
 public enum Encodings implements Encoding {
 	/**
-	 * It's assumed that Snippetory is used in a modern Unicode based environment. Though,
-	 * only a minimal escaping is done: 
+	 * It's assumed that Snippetory is used in a modern Unicode based
+	 * environment. Though, only a minimal escaping is done:
 	 * <table width="150">
-	 * <tr><td>&lt;</td><td>--></td><td>&amp;lt;</td></tr>
-	 * <tr><td>&amp;</td><td>--></td><td>&ampamp;</td></tr>
+	 * <tr>
+	 * <td>&lt;</td>
+	 * <td>--></td>
+	 * <td>&amp;lt;</td>
+	 * </tr>
+	 * <tr>
+	 * <td>&amp;</td>
+	 * <td>--></td>
+	 * <td>&ampamp;</td>
+	 * </tr>
 	 * </table>
 	 * <br />
-	 * As xml is a compound format, i.e. it can contain other formats, almost each other 
-	 * will be placed within without any transcoding. Only on plain text the normal escaping
-	 * is applied.
+	 * As xml is a compound format, i.e. it can contain other formats, almost
+	 * each other will be placed within without any transcoding. Only on plain
+	 * text the normal escaping is applied.
 	 */
 	xml {
 		@Override
-		public void escape(Appendable target, CharSequence val) throws IOException {
+		public void escape(Appendable target, CharSequence val)
+				throws IOException {
 			for (int i = 0; i < val.length(); i++) {
 				char c = val.charAt(i);
 				if (c == '<') {
@@ -60,8 +69,10 @@ public enum Encodings implements Encoding {
 				}
 			}
 		}
+
 		@Override
-		public void transcode(Appendable target, CharSequence value, String encodingName) throws IOException {
+		public void transcode(Appendable target, CharSequence value,
+				String encodingName) throws IOException {
 			if (plain.name().equals(encodingName)) {
 				escape(target, value);
 			} else {
@@ -69,17 +80,18 @@ public enum Encodings implements Encoding {
 			}
 		}
 	},
-	
+
 	/**
-	 * html is derived from xml. It just converts line breaks to &lt;br />-tags to enable
-	 * transporting of simple formatting within the data bound. Be aware: this applies 
-	 * to data bound, not to some kind of source code like in html pages, so we do not 
-	 * break with the good practice of separating the layout of source code and it's 
-	 * resulting appearance.
+	 * html is derived from xml. It just converts line breaks to &lt;br />-tags
+	 * to enable transporting of simple formatting within the data bound. Be
+	 * aware: this applies to data bound, not to some kind of source code like
+	 * in html pages, so we do not break with the good practice of separating
+	 * the layout of source code and it's resulting appearance.
 	 */
 	html {
 		@Override
-		public void escape(Appendable target, CharSequence val) throws IOException {
+		public void escape(Appendable target, CharSequence val)
+				throws IOException {
 			for (int i = 0; i < val.length(); i++) {
 				char c = val.charAt(i);
 				if (c == '<') {
@@ -99,8 +111,10 @@ public enum Encodings implements Encoding {
 				}
 			}
 		}
+
 		@Override
-		public void transcode(Appendable target, CharSequence value, String encodingName) throws IOException {
+		public void transcode(Appendable target, CharSequence value,
+				String encodingName) throws IOException {
 			if (plain.name().equals(encodingName)) {
 				escape(target, value);
 			} else {
@@ -109,12 +123,12 @@ public enum Encodings implements Encoding {
 		}
 	},
 	/**
-	 * Applies url encoding to the data. 
-	 * The character encoding is utf-8.
+	 * Applies url encoding to the data. The character encoding is utf-8.
 	 */
 	url {
 		@Override
-		public void escape(Appendable target, CharSequence val) throws IOException {
+		public void escape(Appendable target, CharSequence val)
+				throws IOException {
 			try {
 				target.append(URLEncoder.encode(val.toString(), "utf-8"));
 			} catch (UnsupportedEncodingException e) {
@@ -129,7 +143,8 @@ public enum Encodings implements Encoding {
 	 */
 	string {
 		@Override
-		public void escape(Appendable target, CharSequence val) throws IOException {
+		public void escape(Appendable target, CharSequence val)
+				throws IOException {
 			for (int i = 0; i < val.length(); i++) {
 				char ch = val.charAt(i);
 				if (ch < 32) {
@@ -164,14 +179,21 @@ public enum Encodings implements Encoding {
 					case '"':
 					case '\\':
 						target.append('\\');
+						break;
+					default:
+						// ignore no practical meaning
+						break;
 					}
 					target.append(ch);
 				}
 			}
 		}
+
 		@Override
-		public void transcode(Appendable target, CharSequence value, String encodingName) throws IOException {
-			if (html_string.name().equals(encodingName) || NULL.name().equals(encodingName)) {
+		public void transcode(Appendable target, CharSequence value,
+				String encodingName) throws IOException {
+			if (html_string.name().equals(encodingName)
+					|| NULL.name().equals(encodingName)) {
 				append(target, value);
 			} else {
 				escape(target, value);
@@ -179,60 +201,69 @@ public enum Encodings implements Encoding {
 		}
 	},
 	/**
-	 * In JavaScript I've sometimes data that is transported in a string before it's 
-	 * displayed as html.
+	 * In JavaScript I've sometimes data that is transported in a string before
+	 * it's displayed as html.
 	 */
 	html_string {
 		@Override
-		public void escape(Appendable target, CharSequence val) throws IOException {
+		public void escape(Appendable target, CharSequence val)
+				throws IOException {
 			StringBuilder tmp = new StringBuilder();
 			string.escape(tmp, val);
 			html.escape(target, tmp.toString());
 		}
+
 		@Override
-		public void transcode(Appendable target, CharSequence value, String encodingName) throws IOException {
-			if (xml.name().equals(encodingName) || html.name().endsWith(encodingName)) {
+		public void transcode(Appendable target, CharSequence value,
+				String encodingName) throws IOException {
+			if (xml.name().equals(encodingName)
+					|| html.name().endsWith(encodingName)) {
 				string.escape(target, value);
-			}
-			else if (string.name().equals(encodingName)) {
-				// I don't expect this to have practical use. But it adds additional risk
+			} else if (string.name().equals(encodingName)) {
+				// I don't expect this to have practical use. But it adds
+				// additional risk
 				// so breaking seems right.
-				throw new IncompatibleEncodingException("Can't check if content might be html");
-			} 
-			else {
+				throw new IncompatibleEncodingException(
+						"Can't check if content might be html");
+			} else {
 				super.transcode(target, value, encodingName);
 			}
-			
+
 		}
 	},
 	/**
-	 * Plain text. You will get an IllegalEncodingExcption if you try to bind encoded data 
-	 * to it.
+	 * Plain text. You will get an IllegalEncodingExcption if you try to bind
+	 * encoded data to it.
 	 */
 	plain {
 		@Override
-		public void escape(Appendable target, CharSequence val) throws IOException {
+		public void escape(Appendable target, CharSequence val)
+				throws IOException {
 			append(target, val);
 		}
 	},
 	/**
-	 * The wild card encoding. Fits to any other, any other fits to this. Sometimes it's 
-	 * necessary to work around the checks. But in general you should not use it.
+	 * The wild card encoding. Fits to any other, any other fits to this.
+	 * Sometimes it's necessary to work around the checks. But in general you
+	 * should not use it.
 	 */
 	NULL {
 		@Override
-		public void escape(Appendable target, CharSequence val) throws IOException {
+		public void escape(Appendable target, CharSequence val)
+				throws IOException {
 			append(target, val);
 		}
+
 		@Override
-		public void transcode(Appendable target, CharSequence value, String encodingName) throws IOException {
+		public void transcode(Appendable target, CharSequence value,
+				String encodingName) throws IOException {
 			escape(target, value);
 		}
-	}
-	;
+	};
 
 	@Override
-	public void transcode(Appendable target, CharSequence value, String encodingName) throws IOException {
+	public void transcode(Appendable target, CharSequence value,
+			String encodingName) throws IOException {
 		if (NULL.name().equals(encodingName)) {
 			append(target, value);
 		}
@@ -242,26 +273,28 @@ public enum Encodings implements Encoding {
 		throw new IncompatibleEncodingException("can't convert encoding "
 				+ encodingName + " into " + name());
 	}
-	
+
 	/**
-	 * the name is used to identify a format. There may exist different implementations for
-	 * the same format. 
+	 * the name is used to identify a format. There may exist different
+	 * implementations for the same format.
 	 */
 	@Override
 	public String getName() {
 		return name();
 	}
-	
+
 	public TemplateContext context() {
 		return new TemplateContext().encoding(this);
 	}
-	
+
 	public Template parse(CharSequence data) {
 		return context().parse(data);
 	}
-	private static void append(Appendable target, CharSequence value) throws IOException {
+
+	private static void append(Appendable target, CharSequence value)
+			throws IOException {
 		if (value instanceof Region) {
-			((Region)value).appendTo(target);
+			((Region) value).appendTo(target);
 		} else {
 			target.append(value);
 		}

@@ -32,27 +32,27 @@ import org.jproggy.snippetory.spi.Syntax;
  */
 public class TemplateBuilder {
 	private Syntax tempSyntax;
-	private Syntax.Tokenizer _parser;
-	private final TemplateContext _ctx;
+	private Syntax.Tokenizer parser;
+	private final TemplateContext ctx;
 
-	private TemplateBuilder(TemplateContext ctx, CharSequence data) {
-		_ctx = ctx;
+	protected TemplateBuilder(TemplateContext ctx, CharSequence data) {
+		this.ctx = ctx;
 		tempSyntax = ctx.getSyntax();
-		_parser = getSyntax().parse(data);
+		parser = getSyntax().parse(data);
 	}
 	
 	public static Template parse(TemplateContext ctx, CharSequence data) {
 		TemplateBuilder builder = new TemplateBuilder(ctx, data);
 		Location root = new Location(null, null, ctx.getBaseAttribs(), "", ctx.getLocale());
-		Template template = builder.parse(root);
-		return template;
+		return builder.parse(root);
 	}
 
 	private Region parse(Location parent) {
 		List<Object> parts = new ArrayList<Object>();
 		Map<String, Region> children = new HashMap<String, Region>();
-		while (_parser.hasNext()) {
-			Token t = _parser.next();
+		Token t = null;
+		while (parser.hasNext()) {
+			t = parser.next();
 			
 			try {
 				switch (t.getType()) {
@@ -67,10 +67,7 @@ public class TemplateBuilder {
 					break;
 				}
 				case BlockEnd:
-					if (parent.getName() == null || !parent.getName().equals(t.getName())) {
-						throw new ParseError(t.getName() + " found but " + 
-								(parent.getName() == null ? "file end" : parent.getName()) + " expected", t);
-					}
+					verifyName(parent, t);
 					return new Region(parent, parts, children);
 				case Field:
 					String end = handleBackward(parts, t);
@@ -82,11 +79,13 @@ public class TemplateBuilder {
 					break;
 				case Syntax:
 					setSyntax(Syntax.REGISTRY.byName(t.getName()));
-					_parser = getSyntax().takeOver(_parser);
+					parser = getSyntax().takeOver(parser);
 					break;
 				case Comment:
 					// comments are simply ignored.
 					break;
+				default:
+					throw new SnippetoryException("Unknown token type: " + t.getType());
 				}
 			} catch (ParseError e) {
 				throw e;
@@ -94,9 +93,20 @@ public class TemplateBuilder {
 				throw new ParseError(e, t);
 			}
 		}
-		if (parent.getName() != null)
-			throw new RuntimeException("No end element for " + parent.getName());
+		verifyRootNode(parent, t);
 		return new Region(parent, parts, children);
+	}
+
+	private void verifyRootNode(Location parent, Token t) {
+		if (parent.getName() != null)
+			throw new ParseError("No end element for " + parent.getName(), t);
+	}
+
+	private void verifyName(Location parent, Token t) {
+		if (parent.getName() == null || !parent.getName().equals(t.getName())) {
+			throw new ParseError(t.getName() + " found but " + 
+					(parent.getName() == null ? "file end" : parent.getName()) + " expected", t);
+		}
 	}
 
 	private String handleBackward(List<Object> parts, Token t) {
@@ -142,7 +152,7 @@ public class TemplateBuilder {
 	}
 
 	private Locale getLocale() {
-		return _ctx.getLocale();
+		return ctx.getLocale();
 	}
 
 

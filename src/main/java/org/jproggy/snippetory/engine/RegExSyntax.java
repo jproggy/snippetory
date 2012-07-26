@@ -115,9 +115,9 @@ public abstract class RegExSyntax implements Syntax {
 			return t;
 		}
 
-		private static final Pattern vari = Pattern.compile(CONTENT);
+		private static final Pattern VARI = Pattern.compile(CONTENT);
 		protected Token createToken(String varDef, TokenType type) {
-			Matcher m = vari.matcher(varDef);
+			Matcher m = VARI.matcher(varDef);
 			boolean first =  true;
 			Token token = null;
 			while (m.find()) {
@@ -180,7 +180,9 @@ public abstract class RegExSyntax implements Syntax {
 				} else {
 					if (val.charAt(i) == '\\') {
 						bsFound = true;
-					} else result.append(val.charAt(i));
+					} else {
+						result.append(val.charAt(i));
+					}
 				}
 			}
 			return result.toString();

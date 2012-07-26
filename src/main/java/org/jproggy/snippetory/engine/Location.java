@@ -25,27 +25,27 @@ import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.Transcoding;
 
-
 public class Location {
 	final Metadata md;
 	private StringBuilder target;
-	
+
 	Location(Location template) {
 		this.md = template.md;
 	}
-	
-	public Location(Location parent, String name, Map<String, String> attribs, String fragment, Locale l) {
+
+	public Location(Location parent, String name, Map<String, String> attribs,
+			String fragment, Locale l) {
 		List<Format> formats = new ArrayList<Format>();
 		String defaultVal = null;
 		String delimiter = null;
 		String prefix = null;
 		String suffix = null;
 		Encoding enc = parent == null ? Encodings.NULL : parent.getEncoding();
-		for (String attr: attribs.keySet()) {
-			switch (Attributes.REGISTRY.type(attr))
-			{
+		for (String attr : attribs.keySet()) {
+			switch (Attributes.REGISTRY.type(attr)) {
 			case FORMAT:
-				formats.add(FormatRegistry.INSTANCE.get(attr, attribs.get(attr), l));
+				formats.add(FormatRegistry.INSTANCE.get(attr,
+						attribs.get(attr), l));
 				break;
 			case DEFAULT:
 				defaultVal = attribs.get(attr);
@@ -58,41 +58,43 @@ public class Location {
 				break;
 			case PREFIX:
 				prefix = attribs.get(attr);
-				if (defaultVal == null) defaultVal = "";
+				if (defaultVal == null)
+					defaultVal = "";
 				break;
 			case SUFFIX:
 				suffix = attribs.get(attr);
-				if (defaultVal == null) defaultVal = "";
+				if (defaultVal == null)
+					defaultVal = "";
+				break;
+			default:
+				// ignore no practical meaning
 				break;
 			}
 		}
-		md = new Metadata(name, formats.toArray(new Format[formats.size()])
-				, enc, defaultVal, fragment, delimiter, prefix, suffix, parent == null ? null :parent.md);
+		md = new Metadata(name, formats, enc, defaultVal, fragment, delimiter,
+				prefix, suffix, parent == null ? null : parent.md);
 	}
-	
+
 	@Override
 	public String toString() {
 		return toCharSequence().toString();
 	}
-	
+
 	public CharSequence toCharSequence() {
 		if (target != null) {
-			if (md.suffix != null) return target.toString() + md.suffix;
+			if (md.suffix != null)
+				return target.toString() + md.suffix;
 			return target;
 		}
 		CharSequence f;
-		if (md.defaultVal != null) {
-			f = md.format(md.defaultVal);
-		} else {
-			f = md.format(md.defaultVal);
-			if (f != null) {
-				try {
-					StringBuilder r = new StringBuilder();
-					getEncoding().escape(r, f);
-					return r;
-				} catch (IOException e) {
-					throw new SnippetoryException(e);
-				}
+		f = md.format(md.defaultVal);
+		if (md.defaultVal == null && f != null) {
+			try {
+				StringBuilder r = new StringBuilder();
+				getEncoding().escape(r, f);
+				return r;
+			} catch (IOException e) {
+				throw new SnippetoryException(e);
 			}
 		}
 		if (f != null) {
@@ -100,59 +102,64 @@ public class Location {
 		}
 		return md.fragment;
 	}
-	
+
 	public void set(Object value) {
 		clear();
 		append(value);
 	}
-	
+
 	public void append(Object value) {
 		try {
 			if (target == null) {
-				target = md.prefix ==  null ? new StringBuilder() : new StringBuilder(md.prefix);
+				target = md.prefix == null ? new StringBuilder()
+						: new StringBuilder(md.prefix);
 			} else {
-				if (md.delimiter != null) target.append(md.delimiter);
+				if (md.delimiter != null)
+					target.append(md.delimiter);
 			}
 			if (value instanceof EncodedData) {
-				handleEncodedData((EncodedData)value);
+				handleEncodedData((EncodedData) value);
 			} else {
 				getEncoding().escape(target, md.format(md.toString(value)));
 			}
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new SnippetoryException(e);
 		}
 	}
-	
+
 	private void handleEncodedData(EncodedData value) throws IOException {
 		String sourceEnc = value.getEncoding();
-		
+
 		// normalize empty to null-encoding
 		if (sourceEnc == null || sourceEnc.length() == 0) {
 			sourceEnc = Encodings.NULL.getName();
 		}
 		Encoding myEnc = getEncoding();
-		if (!sourceEnc.equals(myEnc.getName())) {
-			transcode(value, sourceEnc, myEnc);
-		} else {
+		if (sourceEnc.equals(myEnc.getName())) {
 			CharSequence formated = md.format(value.toCharSequence());
 			if (formated instanceof Region) {
-				((Region)formated).appendTo(target);
+				((Region) formated).appendTo(target);
 			} else {
 				target.append(formated);
 			}
+		} else {
+			transcode(value, sourceEnc, myEnc);
 		}
 	}
-	
-	private void transcode(EncodedData value, String sourceEnc, Encoding targetEnc) throws IOException {
-		for (Transcoding overwrite : EncodingRegistry.INSTANCE.getOverwrites(targetEnc)) {
+
+	private void transcode(EncodedData value, String sourceEnc,
+			Encoding targetEnc) throws IOException {
+		for (Transcoding overwrite : EncodingRegistry.INSTANCE
+				.getOverwrites(targetEnc)) {
 			if (overwrite.supports(sourceEnc, targetEnc.getName())) {
-				overwrite.transcode(target, md.format(value.toString()), sourceEnc, targetEnc.getName());
+				overwrite.transcode(target, md.format(value.toString()),
+						sourceEnc, targetEnc.getName());
 				return;
 			}
 		}
 		targetEnc.transcode(target, md.format(value.toString()), sourceEnc);
 	}
-	
+
 	public void clear() {
 		target = null;
 	}
@@ -160,7 +167,7 @@ public class Location {
 	public String getName() {
 		return md.name;
 	}
-	
+
 	public Encoding getEncoding() {
 		return md.enc;
 	}

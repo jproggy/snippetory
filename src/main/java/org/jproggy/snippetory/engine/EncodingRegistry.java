@@ -28,7 +28,7 @@ import org.jproggy.snippetory.spi.Transcoding;
  * for additional information
  * @author B. Ebertz
  */
-public class EncodingRegistry {
+public final class EncodingRegistry {
 	private Map<String, Encoding> encodings = new HashMap<String, Encoding>();
 	private Map<String, Collection<Transcoding>> overwrites = new HashMap<String, Collection<Transcoding>>();
 

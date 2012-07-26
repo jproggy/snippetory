@@ -60,7 +60,9 @@ public class StretchFormat implements Format {
 	private static String blanks = "                       ";
 
 	private String blank(int i) {
-		while (blanks.length() < i) blanks += blanks;
+		while (blanks.length() < i) {
+			blanks += blanks;
+		}
 		return blanks.substring(0, i);
 	}
 

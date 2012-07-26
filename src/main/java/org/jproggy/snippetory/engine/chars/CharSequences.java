@@ -58,7 +58,9 @@ public abstract class CharSequences implements CharSequence {
 	@Override
 	public int length() {
 		int l = 0;
-		for (int i = 0; i < partCount(); i++) l += part(i).length(); 
+		for (int i = 0; i < partCount(); i++) {
+			l += part(i).length(); 
+		}
 		return l;
 	}
 	

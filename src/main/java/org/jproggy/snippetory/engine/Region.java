@@ -27,13 +27,14 @@ import org.jproggy.snippetory.engine.chars.CharSequences;
 import org.jproggy.snippetory.spi.Encoding;
 
 public class Region extends CharSequences implements Template, Cloneable {
-	private Object[] parts;
-	private Map<String, ? extends Template> children;
+	private final Object[] parts;
+	private final Map<String, ? extends Template> children;
 	private final Metadata md;
 	private Template parent;
 
 	public Region(Location placeHolder, List<Object> parts,
 			Map<String, Region> children) {
+		super();
 		this.parts = parts.toArray();
 		this.children = children;
 		this.md = placeHolder.md;
@@ -43,6 +44,7 @@ public class Region extends CharSequences implements Template, Cloneable {
 	}
 
 	private Region(Region template) {
+		super();
 		this.md = template.md;
 		this.children = template.children;
 		this.parts = new Object[template.parts.length];
@@ -165,7 +167,7 @@ public class Region extends CharSequences implements Template, Cloneable {
 				}
 			}
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new SnippetoryException(e);
 		}
 		return result;
 	}

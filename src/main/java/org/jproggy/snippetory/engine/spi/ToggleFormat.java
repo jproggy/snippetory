@@ -22,9 +22,9 @@ public class ToggleFormat implements Format {
 	private int count = 1;
 	private final String[] values;
 
-	public ToggleFormat(String[] values) {
+	public ToggleFormat(String definition) {
 		super();
-		this.values = values;
+		this.values = definition.split(";");
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class ToggleFormat implements Format {
 	public static class Factory implements FormatFactory {
 		@Override
 		public Format create(String definition, Locale l) {
-			return new ToggleFormat(definition.split(";"));
+			return new ToggleFormat(definition);
 		}
 	}
 

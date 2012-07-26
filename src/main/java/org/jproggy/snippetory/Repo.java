@@ -40,6 +40,9 @@ import org.jproggy.snippetory.spi.SyntaxID;
  * @author B. Ebertz
  */
 public class Repo {
+	private Repo() {
+		super();
+	}
 	/**
 	 * The really short short cut for the simple jobs. This helps to scale from
 	 * a very low level, where any character hurts. At least for playing around
@@ -97,6 +100,7 @@ public class Repo {
 		private final CharSequence data;
 
 		private TemplateContext(CharSequence data) {
+			super();
 			this.data = data;
 		}
 		

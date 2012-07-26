@@ -177,6 +177,8 @@ public class TemplateContext {
 	}
 
 	static class ToString {
+		private ToString() {}
+		
 		public static String resource(String name, ClassLoader test) {
 			if (test != null) {
 				InputStream in = test.getResourceAsStream(name);

@@ -31,11 +31,11 @@ import org.jproggy.snippetory.spi.Configurer;
 
 class Attributes {
 	public static class Registry {
-		private Map<String, Types> attribs = new HashMap<String, Types>();
+		private final Map<String, Types> attribs = new HashMap<String, Types>();
 		private Registry() {}
 		public void register(String name, Types value) {
 			Types old = attribs.get(name);
-			if (old != null && old != value) {
+			if (old != null && old.equals(value)) {
 				throw new SnippetoryException("attribute " + name + " alreadeay defined oterhwise.");
 			}
 			attribs.put(name, value);
