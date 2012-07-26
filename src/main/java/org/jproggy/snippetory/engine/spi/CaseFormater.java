@@ -25,71 +25,53 @@ public class CaseFormater implements FormatFactory {
 		if ("upper".equals(definition)) return new Upper();
 		if ("lower".equals(definition)) return new Lower();
 		if ("firstUpper".equals(definition)) return new FirstUpper();
-		if ("camelizeUpper".equals(definition)) return new CamelizeUpper();
-		if ("camelizeLower".equals(definition)) return new CamelizeLower();
+		if ("camelizeUpper".equals(definition)) return new Camelize(false);
+		if ("camelizeLower".equals(definition)) return new Camelize(true);
 		throw new IllegalArgumentException("defintion " + definition + " unknown.");
 	}
 	
-	private static class Upper implements Format {
+	private static abstract class StringFormat implements Format {
+		@Override
+		public boolean supports(Object value) {
+			return value instanceof String;
+		}
+	}
+	
+	private static class Upper extends StringFormat {
 		@Override
 		public CharSequence format(Object value) {
 			return ((String)value).toUpperCase();
 		}
-		@Override
-		public boolean supports(Object value) {
-			return value instanceof String;
-		}
 	}
 	
-	private static class Lower implements Format {
+	private static class Lower extends StringFormat {
 		@Override
 		public CharSequence format(Object value) {
 			return ((String)value).toLowerCase();
 		}
-		@Override
-		public boolean supports(Object value) {
-			return value instanceof String;
-		}
 	}
 	
-	private static class FirstUpper implements Format {
+	private static class FirstUpper extends StringFormat {
 		@Override
 		public CharSequence format(Object value) {
 			String s = (String)value;
 			return s.substring(0, 1).toUpperCase() + s.substring(1);
 		}
-		@Override
-		public boolean supports(Object value) {
-			return value instanceof String;
-		}
 	}
 	
-	private static class CamelizeUpper implements Format {
+	private static class Camelize extends StringFormat {
+		public Camelize(boolean lower) {
+			super();
+			this.lower = lower;
+		}
+		private final boolean lower;
 		@Override
 		public CharSequence format(Object value) {
 			String s = (String)value;
 			String[] vals = s.split("_|-");
 			StringBuilder result = new StringBuilder();
 			for (String val: vals) {
-				result.append(val.substring(0, 1).toUpperCase());
-				if (val.length() > 1) result.append(val.substring(1));
-			}
-			return result;
-		}
-		@Override
-		public boolean supports(Object value) {
-			return value instanceof String;
-		}
-	}
-	
-	private static class CamelizeLower implements Format {
-		@Override
-		public CharSequence format(Object value) {
-			String s = (String)value;
-			String[] vals = s.split("_|-");
-			StringBuilder result = new StringBuilder();
-			for (String val: vals) {
-				if (result.length() == 0) {
+				if (result.length() == 0 && lower) {
 					result.append(val.substring(0, 1).toLowerCase());
 				} else {
 					result.append(val.substring(0, 1).toUpperCase());
@@ -97,10 +79,6 @@ public class CaseFormater implements FormatFactory {
 				if (val.length() > 1) result.append(val.substring(1).toLowerCase());
 			}
 			return result;
-		}
-		@Override
-		public boolean supports(Object value) {
-			return value instanceof String;
 		}
 	}
 }
