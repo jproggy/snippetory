@@ -14,6 +14,7 @@
 package org.jproggy.snippetory.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +49,13 @@ public class RegionTest {
 		assertEquals('i', region.charAt(8));
 		assertEquals('y', region.charAt(4));
 		assertEquals('e', region.charAt(1));
+		assertEquals(9, region.length());
+		try {
+			region.charAt(9);
+			fail();
+		} catch (Exception e) {
+			// ignore --> expected
+		}
 		parts = Arrays.asList((Object)"test", "", "yagni", "", "jproggy");
 		region = new Region(placeHolder, parts, Collections.EMPTY_MAP);
 		assertEquals('y', region.charAt(4));
@@ -90,7 +98,7 @@ public class RegionTest {
 
 	@Test
 	public void test100000() {
-		testN(65000);
+		testN(61000);
 	}
 
 	@Test
