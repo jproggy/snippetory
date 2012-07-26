@@ -16,10 +16,10 @@ package org.jproggy.snippetory.engine;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.jproggy.snippetory.Encodings;
+import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Format;
@@ -34,7 +34,7 @@ public class Location {
 	}
 
 	public Location(Location parent, String name, Map<String, String> attribs,
-			String fragment, Locale l) {
+			String fragment, TemplateContext ctx) {
 		List<Format> formats = new ArrayList<Format>();
 		String defaultVal = null;
 		String delimiter = null;
@@ -45,7 +45,7 @@ public class Location {
 			switch (Attributes.REGISTRY.type(attr)) {
 			case FORMAT:
 				formats.add(FormatRegistry.INSTANCE.get(attr,
-						attribs.get(attr), l));
+						attribs.get(attr), ctx));
 				break;
 			case DEFAULT:
 				defaultVal = attribs.get(attr);

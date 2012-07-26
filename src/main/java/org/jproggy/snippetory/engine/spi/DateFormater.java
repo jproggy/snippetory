@@ -22,6 +22,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.FormatFactory;
 
@@ -109,8 +110,8 @@ public class DateFormater implements Format {
 		}
 
 		@Override
-		public Format create(String definition, Locale l) {
-			return new DateFormater(toFormat(definition, l));
+		public Format create(String definition, TemplateContext ctx) {
+			return new DateFormater(toFormat(definition, ctx.getLocale()));
 		}
 	}
 }

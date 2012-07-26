@@ -35,7 +35,7 @@ public class RegionTest {
 	@SuppressWarnings("unchecked")
 	@Test 
 	public void charAtTest() {
-		Location placeHolder = new Location(null, "", Collections.EMPTY_MAP, "", Locale.US);
+		Location placeHolder = new Location(null, "", Collections.EMPTY_MAP, "", null);
 		List<Object> parts = Arrays.asList((Object)"", "test", "yagni");
 		Region region = new Region(placeHolder, parts, Collections.EMPTY_MAP);
 		assertEquals('t', region.charAt(0));

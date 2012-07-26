@@ -13,7 +13,7 @@
 
 package org.jproggy.snippetory.spi;
 
-import java.util.Locale;
+import org.jproggy.snippetory.TemplateContext;
 
 /**
  * To be able to use a format in Snippetory one has to register FormatFactory able to create
@@ -29,5 +29,5 @@ public interface FormatFactory {
 	 * @param locale the locale defined for the template
 	 * @return the format that will be assigned to the location
 	 */
-	Format create(String definition, Locale locale);	
+	Format create(String definition, TemplateContext ctx);	
 }

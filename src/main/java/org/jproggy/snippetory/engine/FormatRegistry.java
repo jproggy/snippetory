@@ -14,9 +14,9 @@
 package org.jproggy.snippetory.engine;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
+import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.engine.Attributes.Types;
 import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.FormatFactory;
@@ -33,12 +33,12 @@ public final class FormatRegistry {
 		formats.put(name, value);
 	}
 
-	public Format get(String name, String definition, Locale l) {
+	public Format get(String name, String definition, TemplateContext ctx) {
 		FormatFactory f = formats.get(name);
 		if (f == null) {
 			return null;
 		}
-		return f.create(definition, l);
+		return f.create(definition, ctx);
 	}
 
 	public static final FormatRegistry INSTANCE = new FormatRegistry();

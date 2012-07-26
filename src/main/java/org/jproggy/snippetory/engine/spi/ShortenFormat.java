@@ -13,8 +13,7 @@
 
 package org.jproggy.snippetory.engine.spi;
 
-import java.util.Locale;
-
+import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.FormatFactory;
 
@@ -60,7 +59,7 @@ public class ShortenFormat implements Format {
 	
 	public static class Factory implements FormatFactory {
 		@Override
-		public Format create(String definition, Locale l) {
+		public Format create(String definition, TemplateContext ctx) {
 			return new ShortenFormat(definition);
 		}
 	}

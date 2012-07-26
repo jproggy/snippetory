@@ -13,15 +13,14 @@
 
 package org.jproggy.snippetory.engine.spi;
 
-import java.util.Locale;
-
+import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.FormatFactory;
 
 public class CaseFormater implements FormatFactory {
 
 	@Override
-	public Format create(String definition, Locale l) {
+	public Format create(String definition, TemplateContext ctx) {
 		if ("upper".equals(definition)) return new Upper();
 		if ("lower".equals(definition)) return new Lower();
 		if ("firstUpper".equals(definition)) return new FirstUpper();

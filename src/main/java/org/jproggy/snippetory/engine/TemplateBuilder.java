@@ -16,7 +16,6 @@ package org.jproggy.snippetory.engine;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,7 +43,7 @@ public class TemplateBuilder {
 	
 	public static Template parse(TemplateContext ctx, CharSequence data) {
 		TemplateBuilder builder = new TemplateBuilder(ctx.clone(), data);
-		Location root = new Location(null, null, ctx.getBaseAttribs(), "", ctx.getLocale());
+		Location root = new Location(null, null, ctx.getBaseAttribs(), "", ctx);
 		return builder.parse(root);
 	}
 
@@ -136,7 +135,7 @@ public class TemplateBuilder {
 
 	private Location location(Location parent, Token t) {
 		return new Location(parent, t.getName(), 
-				t.getAttributes(), t.getContent(), getLocale());
+				t.getAttributes(), t.getContent(), ctx);
 	}
 
 	private void checkNameUnique(Map<String, Region> children, Token t) {
@@ -148,14 +147,9 @@ public class TemplateBuilder {
 
 	private Location placeHolder(Location parent, Token t) {
 		Location var = new Location(parent, t.getName(), 
-				t.getAttributes(), "", getLocale());
+				t.getAttributes(), "", ctx);
 		return var;
 	}
-
-	private Locale getLocale() {
-		return ctx.getLocale();
-	}
-
 
 	private void setSyntax(Syntax s) {
 		if (s == null) throw new NullPointerException();

@@ -19,6 +19,7 @@ import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.FormatFactory;
 
@@ -52,8 +53,8 @@ public class NumFormat implements Format {
 	
 	public static class Factory implements FormatFactory {
 		@Override
-		public Format create(String definition, Locale l) {
-			return new NumFormat(definition, l);
+		public Format create(String definition, TemplateContext ctx) {
+			return new NumFormat(definition, ctx.getLocale());
 		}
 	}
 }
