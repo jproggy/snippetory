@@ -43,7 +43,7 @@ public class TemplateBuilder {
 	}
 	
 	public static Template parse(TemplateContext ctx, CharSequence data) {
-		TemplateBuilder builder = new TemplateBuilder(ctx, data);
+		TemplateBuilder builder = new TemplateBuilder(ctx.clone(), data);
 		Location root = new Location(null, null, ctx.getBaseAttribs(), "", ctx.getLocale());
 		return builder.parse(root);
 	}

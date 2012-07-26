@@ -48,7 +48,7 @@ import org.jproggy.snippetory.spi.SyntaxID;
  * 
  * @author B. Ebertz
  */
-public class TemplateContext {
+public class TemplateContext implements Cloneable {
 	private Locale locale = Locale.getDefault();
 	private Syntax syntax = Syntax.REGISTRY.getDefault();
 	
@@ -65,6 +65,16 @@ public class TemplateContext {
 		map.put("date", "");
 		map.put("number", "");
 		DEFAULT_ATTRIBUTES = Collections.unmodifiableMap(map);
+	}
+	
+	public TemplateContext clone() {
+		try {
+			TemplateContext result = (TemplateContext)super.clone();
+			if (baseAttribs != null) result.baseAttribs = new HashMap<String, String>(baseAttribs);
+			return result;
+		} catch (CloneNotSupportedException e) {
+			throw new SnippetoryException(e);
+		}
 	}
 
 	public TemplateContext syntax(SyntaxID syntax) {
@@ -109,11 +119,14 @@ public class TemplateContext {
 
 	public TemplateContext attrib(String name, String value) {
 		if (baseAttribs == null) {
-			// if not initialized copy defaults
-			baseAttribs = new LinkedHashMap<String, String>(DEFAULT_ATTRIBUTES);
+			initBaseAttribs();
 		}
 		this.baseAttribs.put(name, value);
 		return this;
+	}
+
+	protected void initBaseAttribs() {
+		baseAttribs = new LinkedHashMap<String, String>(DEFAULT_ATTRIBUTES);
 	}
 
 	/**
