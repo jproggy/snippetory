@@ -30,6 +30,7 @@ import org.jproggy.snippetory.spi.Configurer;
 
 
 class Attributes {
+	static final String BACKWARD = "backward";
 	public static class Registry {
 		private final Map<String, Types> attribs = new HashMap<String, Types>();
 		private Registry() {}
@@ -58,7 +59,7 @@ class Attributes {
 		REGISTRY.register("delimiter", Types.DELIMITER);
 		REGISTRY.register("prefix", Types.PREFIX);
 		REGISTRY.register("suffix", Types.SUFFIX);
-		REGISTRY.register("backward", Types.BACKWARD);
+		REGISTRY.register(BACKWARD, Types.BACKWARD);
 		FormatRegistry.INSTANCE.register("stretch", new StretchFormat.Factory());
 		FormatRegistry.INSTANCE.register("shorten", new ShortenFormat.Factory());
 		FormatRegistry.INSTANCE.register("number", new NumFormat.Factory());

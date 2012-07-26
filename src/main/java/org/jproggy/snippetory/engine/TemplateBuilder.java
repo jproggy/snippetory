@@ -31,6 +31,7 @@ import org.jproggy.snippetory.spi.Syntax;
  * @author B. Ebertz
  */
 public class TemplateBuilder {
+	private static final String BACKWARD = Attributes.BACKWARD;
 	private Syntax tempSyntax;
 	private Syntax.Tokenizer parser;
 	private final TemplateContext ctx;
@@ -111,8 +112,8 @@ public class TemplateBuilder {
 
 	private String handleBackward(List<Object> parts, Token t) {
 		String end = null;
-		if (t.getAttributes().containsKey("backward")) {
-			String target = t.getAttributes().get("backward");
+		if (t.getAttributes().containsKey(BACKWARD)) {
+			String target = t.getAttributes().get(BACKWARD);
 			String value = (String)parts.get(parts.size() - 1);
 			Matcher m = Pattern.compile(target).matcher(value);
 			if (m.find()) {
@@ -128,7 +129,7 @@ public class TemplateBuilder {
 			} else {
 				throw new ParseError("target not found: " + target, t);
 			}
-			t.getAttributes().remove("backward");
+			t.getAttributes().remove(BACKWARD);
 		}
 		return end;
 	}
