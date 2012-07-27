@@ -218,15 +218,17 @@ public class TemplateContext implements Cloneable {
 
 		public static String reader(Reader in) {
 			try {
-				char[] buffer = new char[255];
-				StringWriter s = new StringWriter();
-				int c;
-				while ((c = in.read(buffer)) == buffer.length) {
-					s.write(buffer);
+				try {
+					char[] buffer = new char[255];
+					StringWriter s = new StringWriter();
+					int c;
+					while ((c = in.read(buffer)) > 0) {
+						s.write(buffer, 0, c);
+					}
+					return s.toString();
+				} finally {
+					in.close();
 				}
-				if (c > 0)
-					s.write(buffer, 0, c);
-				return s.toString();
 			} catch (IOException e) {
 				throw new SnippetoryException(e);
 			}

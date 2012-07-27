@@ -44,14 +44,19 @@ public class Repo {
 		super();
 	}
 	/**
-	 * The really short short cut for the simple jobs. This helps to scale from
-	 * a very low level, where any character hurts. At least for playing around
-	 * it's very handy.
+	 * Short cut method for parsing a string into a template. With default syntax,
+	 * null encoding and no locale support. <br />
+	 * This is sometimes usefull for very short and simple templates replacing
+	 * a complex string concatination.
 	 */
 	public static Template parse(CharSequence data) {
 		return new TemplateContext(data).parse();
 	}
 
+	/**
+	 * Short cut method for parsing a string into a template. With default syntax,
+	 * null encoding, but supporting a locale for formatting.
+	 */
 	public static Template parse(CharSequence data, Locale l) {
 		return new TemplateContext(data).locale(l).parse();
 	}
@@ -85,13 +90,25 @@ public class Repo {
 	}
 
 	/**
+	 * Reads the complete content of the stream considering it to utf-8
+	 * encoded. Once read the stream is closed.
 	 * 
-	 * @param in
+	 * @param in a stream providing data representing a Snippetory 
+	 * template.
+	 * @return a TemplateContext containing the data of the stream.
 	 */
 	public static TemplateContext readStream(InputStream in) {
 		return new TemplateContext(ToString.stream(in));
 	}
 
+	/**
+	 * reads the complete data of the reader. Once read the reader
+	 * is closed.
+	 * 
+	 * @param in a stream providing data representing a Snippetory 
+	 * template.
+	 * @return a TemplateContext containing the data of the stream.
+	 */
 	public static TemplateContext readReader(Reader in) {
 		return new TemplateContext(ToString.reader(in));
 	}
