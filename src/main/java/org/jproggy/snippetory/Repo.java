@@ -113,6 +113,11 @@ public class Repo {
 		return new TemplateContext(ToString.reader(in));
 	}
 	
+	/**
+	 * Repo uses a special TemplateContext that replaces the functionality
+	 * of configuring a UrlResolver by the ability to keep the data provided
+	 * during initialization. 
+	 */
 	public static class TemplateContext extends org.jproggy.snippetory.TemplateContext {
 		private final CharSequence data;
 
@@ -152,9 +157,12 @@ public class Repo {
 			return (TemplateContext)super.syntax(syntax);
 		}
 		
-		
+		/**
+		 * @deprecated Çonfiguring the resolver is not allowed within Repo.
+		 */
 		@Override
-		public void setUrlResolver(	UrlResolver urlResolver) {
+		@Deprecated
+		public void setUriResolver(	UriResolver urlResolver) {
 			throw new UnsupportedOperationException("UrlResolver can't be set here");
 		}
 		public Template parse() {

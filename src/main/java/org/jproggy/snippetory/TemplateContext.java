@@ -42,8 +42,8 @@ import org.jproggy.snippetory.spi.SyntaxID;
  * of interceptors.
  * 
  * <p><strong>Caution:</strong> As the TemplateContext is a mutable construct it has to
- * be considered single threaded! Only reuse over several threads if able to ensure
- * it's not changed after first usage! 
+ * be considered single threaded! For reuse over several threads one would need to
+ * ensure immutability. However, the clone method allows fast creation of copies. 
  * </p>
  * 
  * @author B. Ebertz
@@ -51,7 +51,7 @@ import org.jproggy.snippetory.spi.SyntaxID;
 public class TemplateContext implements Cloneable {
 	private Locale locale = Locale.getDefault();
 	private Syntax syntax = Syntax.REGISTRY.getDefault();
-	private UrlResolver urlResolver;
+	private UriResolver uriResolver;
 	
 	/**
 	 * Omit initialization here to ensure TemplateContext to be cheap in default behavior
@@ -97,17 +97,17 @@ public class TemplateContext implements Cloneable {
 		this.syntax = syntax;
 	}
 	
-	public TemplateContext urlResolver(UrlResolver urlResolver) {
-		setUrlResolver(urlResolver);
+	public TemplateContext uriResolver(UriResolver uriResolver) {
+		setUriResolver(uriResolver);
 		return this;
 	}
 	
-	public void setUrlResolver(UrlResolver urlResolver) {
-		this.urlResolver = urlResolver;
+	public void setUriResolver(UriResolver uriResolver) {
+		this.uriResolver = uriResolver;
 	}
 	
-	public UrlResolver getUrlResolver() {
-		return urlResolver;
+	public UriResolver getUriResolver() {
+		return uriResolver;
 	}
 
 	public TemplateContext encoding(String encoding) {
@@ -159,11 +159,15 @@ public class TemplateContext implements Cloneable {
 		this.baseAttribs = baseAttribs;
 	}
 	
-	public Template createTemplate(String url) {
-		if (urlResolver == null) {
+	/**
+	 * Get the Template identified by the uri. The uri is resolved by the configured uri resolver.
+	 * Thus configuring a UriRelover is mandatory, 
+	 */
+	public Template getTemplate(String uri) {
+		if (uriResolver == null) {
 			throw new IllegalStateException("Need UrlResolver to find Template. Please set one");
 		}
-		return parse(urlResolver.resolve(url));
+		return parse(uriResolver.resolve(uri, this));
 	}
 
 	protected Template parse(CharSequence data) {
