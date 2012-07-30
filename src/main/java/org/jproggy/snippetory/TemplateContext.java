@@ -226,7 +226,7 @@ public class TemplateContext implements Cloneable {
 					char[] buffer = new char[255];
 					StringWriter s = new StringWriter();
 					int c;
-					while ((c = in.read(buffer)) > 0) {
+					while ((c = in.read(buffer)) >= 0) {
 						s.write(buffer, 0, c);
 					}
 					return s.toString();
