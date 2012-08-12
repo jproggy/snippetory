@@ -25,7 +25,7 @@ import org.jproggy.snippetory.spi.Encoding;
 
 /**
  * The Template is the central interface of the Snippetory Template Engine. 
- * A Template has two faces. It's a template or a snippet. It describes how an 
+ * A Template has two faces. It's a template or a snippet. It describes how 
  * data is bound to create an output. However, it's a repository of snippets as 
  * well. This introduces new possibilities of (re-)usage to template code. Any 
  * Template can be reused as needed and combined with any other Template. As 
@@ -67,9 +67,9 @@ public interface Template extends EncodedData  {
 	 * @param name the path within the repository. This might consist of several elements.
 	 * 
 	 * @return a clean instance of the child template identified by the name  or null if 
-	 * there is none with this name. It's undefined if this is a new copy or if only a
+	 * there is no child template with this name. It's undefined if this is a new copy or if only a
 	 * single instance exists. Though subsequent calls an get on the same instance with
-	 * the same name might clear the instances returned by previous call or not. 
+	 * the same name might clear the instances returned by previous call or not.
 	 */
 	Template get(String... name);
 	
@@ -77,8 +77,9 @@ public interface Template extends EncodedData  {
 	 * Sets all variables with given name to a String representation of the value.
 	 * Exact value might differ according to different meta data associated with
 	 * each of these variables. Eventually set or appended data is overwritten.
-	 * All matching formats and encodings are used, with exception of Templates.
-	 * Templates are never formatted or encoded.
+	 * All matching formats and encodings are used. However, there is some
+	 * special handling for the interface (@link EncodedData). In this case the
+	 * provided encoding in determined to calculate the correct transcoding.
 	 * 
 	 * @return the Template itself
 	 */
@@ -89,8 +90,9 @@ public interface Template extends EncodedData  {
 	 * The exact value might differ according to different meta data associated with
 	 * each of these variables. Eventually set or appended data is kept and new data 
 	 * is appended behind the last character.
-	 * All matching formats and encodings are used in the order of definition, w
-	 * Templates are never formatted or encoded.
+	 * All matching formats and encodings are used. However, there is some
+	 * special handling for the interface (@link EncodedData). In this case the
+	 * provided encoding in determined to calculate the correct transcoding.
 	 * 
 	 * @return the Template itself
 	 */
@@ -111,7 +113,7 @@ public interface Template extends EncodedData  {
 	void render();
 	
 	/**
-	 * Appends the textual representation of this Template to sibling of the location 
+	 * Appends the textual representation of this Template to a sibling of the location 
 	 * where it was created. (I.e. got from)
 	 * This will be used when handling several variants of presentations within a list.
 	 * To avoid sorting of elements by variant it has to be ensured that all variants
@@ -120,6 +122,7 @@ public interface Template extends EncodedData  {
 	 *  A template:
 	 *  <pre>
 	 *  &lt;ul>
+	 *   {v:target}
 	 *   &lt;t:debit>  &lt;li class="debit"> {v:action} : {v:value} &lt;/li> &lt;/t:debit>
 	 *   &lt;t:credit> &lt;li class="credit">{v:action} : {v:value} &lt;/li> &lt;/t:credit>
 	 *  &lt;/ul>
@@ -128,13 +131,13 @@ public interface Template extends EncodedData  {
 	 *  <pre>
 	 *   for (Booking b: bookings) {
 	 *     if (b.isCredit()) {
-	 *       snip.get("credit").set("action", b.getAction()).set("value", b.getValue()).render("credit");
+	 *       snip.get("credit").set("action", b.getAction()).set("value", b.getValue()).render("target");
 	 *     } else {
-	 *       snip.get("debit").set("action", b.getAction()).set("value", b.getValue()).render("credit");
+	 *       snip.get("debit").set("action", b.getAction()).set("value", b.getValue()).render("target");
 	 *     }
 	 *   }
 	 *  </pre>
-	 * using render() instead of render("credit") in the "debit" line would show all debits
+	 * using render() instead of render("target0") in the "debit" line would show all debits
 	 * first and all credits afterwards. But in the example it's ensured that all data is written
 	 * to the same location, though, the order stays as defined.
 	 * 

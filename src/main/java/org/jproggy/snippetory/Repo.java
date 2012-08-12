@@ -46,8 +46,8 @@ public class Repo {
 	/**
 	 * Short cut method for parsing a string into a template. With default syntax,
 	 * null encoding and no locale support. <br />
-	 * This is sometimes usefull for very short and simple templates replacing
-	 * a complex string concatination.
+	 * This is sometimes useful for very short and simple templates replacing
+	 * a complex string concatenation.
 	 */
 	public static Template parse(CharSequence data) {
 		return new TemplateContext(data).parse();
@@ -158,7 +158,7 @@ public class Repo {
 		}
 		
 		/**
-		 * @deprecated Çonfiguring the resolver is not allowed within Repo.
+		 * @deprecated Configuring the resolver is not allowed within Repo.
 		 */
 		@Override
 		@Deprecated
