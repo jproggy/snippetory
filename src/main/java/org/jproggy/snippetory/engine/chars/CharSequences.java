@@ -20,7 +20,7 @@ package org.jproggy.snippetory.engine.chars;
  * 
  * @author B. Ebertz
  */
-public abstract class CharSequences implements CharSequence {
+public abstract class CharSequences implements CharSequence, SelfAppender {
 	private CharSequence recentCS = null;
 	private int csIndex = -1;
 	private int recentStart = 0;

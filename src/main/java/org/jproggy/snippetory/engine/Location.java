@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.TemplateContext;
+import org.jproggy.snippetory.engine.chars.SelfAppender;
 import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Format;
@@ -137,8 +138,8 @@ public class Location {
 		Encoding myEnc = getEncoding();
 		if (sourceEnc.equals(myEnc.getName())) {
 			CharSequence formated = md.format(value.toCharSequence());
-			if (formated instanceof Region) {
-				((Region) formated).appendTo(target);
+			if (formated instanceof SelfAppender) {
+				((SelfAppender) formated).appendTo(target);
 			} else {
 				target.append(formated);
 			}

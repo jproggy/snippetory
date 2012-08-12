@@ -20,6 +20,8 @@ import java.net.URLEncoder;
 import org.jproggy.snippetory.engine.IncompatibleEncodingException;
 import org.jproggy.snippetory.engine.Region;
 import org.jproggy.snippetory.engine.SnippetoryException;
+import org.jproggy.snippetory.engine.chars.SelfAppender;
+import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Encoding;
 
 /**
@@ -290,10 +292,24 @@ public enum Encodings implements Encoding {
 	public Template parse(CharSequence data) {
 		return context().parse(data);
 	}
+	
+	/**
+	 * Marks the data to be encoded according to specified encodinng.
+	 */
+	public EncodedData wrap(final CharSequence data) {
+	  return new EncodedData() {
+	    public String getEncoding() {
+	      return name();
+	    }
+	    public CharSequence toCharSequence() {
+	      return data;
+	    }
+	  };
+	}
 
 	private static void append(Appendable target, CharSequence value)
 			throws IOException {
-		if (value instanceof Region) {
+		if (value instanceof SelfAppender) {
 			((Region) value).appendTo(target);
 		} else {
 			target.append(value);
