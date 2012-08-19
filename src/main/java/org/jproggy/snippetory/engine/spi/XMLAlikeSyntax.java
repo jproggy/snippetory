@@ -33,14 +33,14 @@ public class XMLAlikeSyntax extends RegExSyntax {
 				LINE_START + "\\<t\\:(" + NAME + ATTRIBUTES + ")\\s*\\>" + LINE_END, Pattern.MULTILINE);
 		patterns.put(start, TokenType.BlockStart);
 
-		start = Pattern.compile("\\<t:(" + NAME + ATTRIBUTES + ")\\s*\\>");
+		start = Pattern.compile("\\<t:(" + NAME + ATTRIBUTES + ")\\s*\\>", Pattern.MULTILINE);
 		patterns.put(start, TokenType.BlockStart);
 
 		Pattern end = Pattern.compile(
 				LINE_START + "</t\\:(" + NAME + ")\\>" + LINE_END, Pattern.MULTILINE);
 		patterns.put(end, TokenType.BlockEnd);
 
-		end = Pattern.compile("</t\\:(" + NAME + ")\\>");
+		end = Pattern.compile("</t\\:(" + NAME + ")\\>", Pattern.MULTILINE);
 		patterns.put(end, TokenType.BlockEnd);
 
 		Pattern field = Pattern.compile(
