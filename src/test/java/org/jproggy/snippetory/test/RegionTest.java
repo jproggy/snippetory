@@ -25,18 +25,24 @@ import java.util.Locale;
 import org.jproggy.snippetory.Repo;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.engine.Location;
+import org.jproggy.snippetory.engine.NamespaceContributor;
 import org.jproggy.snippetory.engine.Region;
+import org.jproggy.snippetory.engine.TemplateFragment;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 public class RegionTest {
+	
+	private static TemplateFragment tf(String v) {
+		return new TemplateFragment(v);
+	}
 	@SuppressWarnings("unchecked")
 	@Test 
 	public void charAtTest() {
 		Location placeHolder = new Location(null, "", Collections.EMPTY_MAP, "", null);
-		List<Object> parts = Arrays.asList((Object)"", "test", "yagni");
+		List<NamespaceContributor> parts = Arrays.asList((NamespaceContributor)tf(""), tf("test"), tf("yagni"));
 		Region region = new Region(placeHolder, parts, Collections.EMPTY_MAP);
 		assertEquals('t', region.charAt(0));
 		assertEquals('e', region.charAt(1));
@@ -56,7 +62,7 @@ public class RegionTest {
 		} catch (Exception e) {
 			// ignore --> expected
 		}
-		parts = Arrays.asList((Object)"test", "", "yagni", "", "jproggy");
+		parts = Arrays.asList((NamespaceContributor)tf("test"), tf(""), tf("yagni"), tf(""), tf("jproggy"));
 		region = new Region(placeHolder, parts, Collections.EMPTY_MAP);
 		assertEquals('y', region.charAt(4));
 		assertEquals('y', region.charAt(15));

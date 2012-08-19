@@ -16,7 +16,6 @@ package org.jproggy.snippetory.engine;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Writer;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,15 +26,15 @@ import org.jproggy.snippetory.engine.chars.CharSequences;
 import org.jproggy.snippetory.spi.Encoding;
 
 public class Region extends CharSequences implements Template, Cloneable {
-	private final Object[] parts;
+	private final NamespaceContributor[] parts;
 	private final Map<String, ? extends Template> children;
 	private final Metadata md;
 	private Template parent;
 
-	public Region(Location placeHolder, List<Object> parts,
+	public Region(Location placeHolder, List<NamespaceContributor> parts,
 			Map<String, Region> children) {
 		super();
-		this.parts = parts.toArray();
+		this.parts = parts.toArray(new NamespaceContributor[parts.size()]);
 		this.children = children;
 		this.md = placeHolder.md;
 		for (Region child: children.values()) {
@@ -47,14 +46,9 @@ public class Region extends CharSequences implements Template, Cloneable {
 		super();
 		this.md = template.md;
 		this.children = template.children;
-		this.parts = new Object[template.parts.length];
+		this.parts = new NamespaceContributor[template.parts.length];
 		for (int i = 0; i < parts.length; i++) {
-			Object p = template.parts[i]; 
-			if (p instanceof String) {
-				parts[i] = p;
-			} else {
-				parts[i] = new Location((Location)p);
-			}
+			parts[i] =  template.parts[i].clone();
 		}
 	}
 
@@ -78,75 +72,25 @@ public class Region extends CharSequences implements Template, Cloneable {
 		return t;
 	}
 	
-	private Iterable<Location> byName(final String name) {
-		return new PartFilter() {
-			@Override
-			public boolean fits(Location part) {
-				return name.equals(part.getName());
-			}
-		};
-	}
-
-	private Iterable<Location> locations() {
-		return new PartFilter();
-	}
-
-	private class PartFilter implements Iterable<Location> {
-		public Iterator<Location> iterator() {
-			return new Iterator<Location>() {
-				int pos = 0;
-				Location recent = init();
-
-				@Override
-				public boolean hasNext() {
-					return recent != null;
-				}
-
-				private Location init() {
-					while (pos < parts.length) {
-						Object part = parts[pos++];
-						if (part instanceof Location) {
-							Location loc = (Location) part;
-							if (fits(loc)) return loc;
-						}
-					}
-					return null;
-				}
-
-				public Location next() {
-					Location next = recent;
-					recent = init();
-					return next;
-				}
-
-				public void remove() {
-					throw new UnsupportedOperationException();
-				}
-			};
-		}
-
-		public boolean fits(Location part) { return true; }
-	};
-
 	@Override
 	public Region set(String key, Object value) {
-		for (Location v : byName(key)) {
-			v.set(value);
+		for (NamespaceContributor v : parts) {
+			v.set(key, value);
 		}
 		return this;
 	}
 
 	@Override
 	public Region append(String key, Object value) {
-		for (Location v : byName(key)) {
-			v.append(value);
+		for (NamespaceContributor v : parts) {
+			v.append(key, value);
 		}
 		return this;
 	}
 
 	@Override
 	public Region clear() {
-		for (Location v : locations()) {
+		for (NamespaceContributor v : parts) {
 			v.clear();
 		}
 		return this;
@@ -159,12 +103,8 @@ public class Region extends CharSequences implements Template, Cloneable {
 
 	public <T extends Appendable> T appendTo(T result) {
 		try {
-			for (Object part : parts) {
-				if (part instanceof Location) {
-					result.append(((Location) part).toCharSequence());
-				} else {
-					result.append((String) part);
-				}
+			for (NamespaceContributor part : parts) {
+				result.append(part.toCharSequence());
 			}
 		} catch (IOException e) {
 			throw new SnippetoryException(e);
@@ -214,10 +154,8 @@ public class Region extends CharSequences implements Template, Cloneable {
 	@Override
 	public Set<String> names() {
 		Set<String> result = new TreeSet<String>();
-		for (Object part : parts) {
-			if (part instanceof Location && ((Location) part).getName()  != null) {
-				result.add(((Location) part).getName());
-			}
+		for (NamespaceContributor part : parts) {
+			result.addAll(part.names());
 		}
 		return result;
 	}
@@ -237,8 +175,7 @@ public class Region extends CharSequences implements Template, Cloneable {
 
 	@Override
 	protected CharSequence part(int index) {
-		Object p = parts[index];
-		return p instanceof Location ? ((Location)p).toCharSequence() : (String)p;
+		return parts[index].toCharSequence();
 	}
 	
 	@Override

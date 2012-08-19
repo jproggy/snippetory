@@ -15,8 +15,10 @@ package org.jproggy.snippetory.engine;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.TemplateContext;
@@ -26,7 +28,7 @@ import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.Transcoding;
 
-public class Location {
+public class Location implements NamespaceContributor {
 	final Metadata md;
 	private StringBuilder target;
 
@@ -104,12 +106,12 @@ public class Location {
 		return md.fragment;
 	}
 
-	public void set(Object value) {
+	private void set(Object value) {
 		clear();
 		append(value);
 	}
 
-	public void append(Object value) {
+	private void append(Object value) {
 		try {
 			if (target == null) {
 				target = md.prefix == null ? new StringBuilder()
@@ -171,5 +173,31 @@ public class Location {
 
 	public Encoding getEncoding() {
 		return md.enc;
+	}
+
+	@Override
+	public void set(String name, Object value) {
+		if (name.equals(md.name)) set(value);
+		
+	}
+
+	@Override
+	public void append(String name, Object value) {
+		if (name.equals(md.name)) append(value);
+		
+	}
+
+	@Override
+	public Set<String> names() {
+		return Collections.singleton(md.name);
+	}
+
+	@Override
+	public Location clone() {
+		try {
+			return (Location)super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new SnippetoryException(e);
+		}
 	}
 }

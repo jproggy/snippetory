@@ -48,7 +48,7 @@ public class TemplateBuilder {
 	}
 
 	private Region parse(Location parent, Token parentDef) {
-		List<Object> parts = new ArrayList<Object>();
+		List<NamespaceContributor> parts = new ArrayList<NamespaceContributor>();
 		Map<String, Region> children = new HashMap<String, Region>();
 		Token t = null;
 		while (parser.hasNext()) {
@@ -58,7 +58,7 @@ public class TemplateBuilder {
 				switch (t.getType()) {
 				case BlockStart: {
 					checkNameUnique(children, t);
-					String end = handleBackward(parts, t);
+					TemplateFragment end = handleBackward(parts, t);
 					Location placeHolder = placeHolder(parent, t);
 					parts.add(placeHolder);
 					Region template = parse(placeHolder, t);
@@ -70,12 +70,12 @@ public class TemplateBuilder {
 					verifyName(parent, t);
 					return new Region(parent, parts, children);
 				case Field:
-					String end = handleBackward(parts, t);
+					TemplateFragment end = handleBackward(parts, t);
 					parts.add(location(parent, t));
 					if (end != null) parts.add(end);
 					break;
 				case TemplateData:
-					parts.add(t.getContent());
+					parts.add(new TemplateFragment(t.getContent()));
 					break;
 				case Syntax:
 					setSyntax(Syntax.REGISTRY.byName(t.getName()));
@@ -110,11 +110,11 @@ public class TemplateBuilder {
 		}
 	}
 
-	private String handleBackward(List<Object> parts, Token t) {
-		String end = null;
+	private TemplateFragment handleBackward(List<NamespaceContributor> parts, Token t) {
+		TemplateFragment end = null;
 		if (t.getAttributes().containsKey(BACKWARD)) {
 			String target = t.getAttributes().get(BACKWARD);
-			String value = (String)parts.get(parts.size() - 1);
+			TemplateFragment value = (TemplateFragment)parts.get(parts.size() - 1);
 			Matcher m = Pattern.compile(target).matcher(value);
 			if (m.find()) {
 				int group = 0;
@@ -123,8 +123,8 @@ public class TemplateBuilder {
 				} else if (m.groupCount() > 1) {
 					throw new ParseError("only one match group allowed: " + target, t);
 				}
-				parts.set(parts.size() - 1, value.substring(0, m.start(group)));
-				end = value.substring(m.end(group));
+				parts.set(parts.size() - 1, value.start(m.start(group)));
+				end = value.end(m.end(group));
 				if (m.find()) throw new ParseError("backward target ambigous " + target, t);
 			} else {
 				throw new ParseError("target not found: " + target, t);
