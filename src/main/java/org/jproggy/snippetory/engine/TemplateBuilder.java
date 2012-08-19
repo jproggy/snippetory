@@ -44,10 +44,10 @@ public class TemplateBuilder {
 	public static Template parse(TemplateContext ctx, CharSequence data) {
 		TemplateBuilder builder = new TemplateBuilder(ctx.clone(), data);
 		Location root = new Location(null, null, ctx.getBaseAttribs(), "", ctx);
-		return builder.parse(root);
+		return builder.parse(root, null);
 	}
 
-	private Region parse(Location parent) {
+	private Region parse(Location parent, Token parentDef) {
 		List<Object> parts = new ArrayList<Object>();
 		Map<String, Region> children = new HashMap<String, Region>();
 		Token t = null;
@@ -61,7 +61,7 @@ public class TemplateBuilder {
 					String end = handleBackward(parts, t);
 					Location placeHolder = placeHolder(parent, t);
 					parts.add(placeHolder);
-					Region template = parse(placeHolder);
+					Region template = parse(placeHolder, t);
 					children.put(placeHolder.getName(), template);
 					if (end != null) parts.add(end);
 					break;
@@ -103,6 +103,7 @@ public class TemplateBuilder {
 	}
 
 	private void verifyName(Location parent, Token t) {
+		if (t.getName() == null || t.getName().length() == 0) return;
 		if (parent.getName() == null || !parent.getName().equals(t.getName())) {
 			throw new ParseError(t.getName() + " found but " + 
 					(parent.getName() == null ? "file end" : parent.getName()) + " expected", t);

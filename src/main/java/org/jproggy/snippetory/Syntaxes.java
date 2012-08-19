@@ -35,6 +35,7 @@ public enum Syntaxes implements SyntaxID {
 	 */
 	XML_ALIKE,
 	C_COMMENTS,
+	FLUYT,
 	
 	/**
 	 * This syntax allows template markup, that is invisible to the parser

@@ -21,6 +21,7 @@ import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.engine.TemplateBuilder;
 import org.jproggy.snippetory.engine.Token;
 import org.jproggy.snippetory.engine.spi.CComments;
+import org.jproggy.snippetory.engine.spi.FluytSyntax;
 import org.jproggy.snippetory.engine.spi.HiddenBlocksSyntax;
 import org.jproggy.snippetory.engine.spi.XMLAlikeSyntax;
 
@@ -38,6 +39,7 @@ public interface Syntax {
 			register(Syntaxes.HIDDEN_BLOCKS, new HiddenBlocksSyntax());
 			register(Syntaxes.XML_ALIKE, new XMLAlikeSyntax());
 			register(Syntaxes.C_COMMENTS, new CComments());
+			register(Syntaxes.FLUYT, new FluytSyntax());
 		}
 		public void register(SyntaxID name, Syntax syntax) {
 			reg.put(name.getName(), syntax);
