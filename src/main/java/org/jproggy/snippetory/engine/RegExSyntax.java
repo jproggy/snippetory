@@ -142,6 +142,10 @@ public abstract class RegExSyntax implements Syntax {
 				value = decode(value, token);
 				token.getAttributes().put(m.group(1), value);
 			}
+			if (token == null) {
+				// no name, no attributes
+				return new Token(null, matcher.group(), type, matcher.start());
+			}
 			return token;
 		}
 		

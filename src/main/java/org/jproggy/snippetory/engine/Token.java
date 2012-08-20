@@ -105,4 +105,8 @@ public class Token {
 	public int getPosition() {
 		return position;
 	}
+	
+	public String toString() {
+		return type + ": " + content;
+	}
 }

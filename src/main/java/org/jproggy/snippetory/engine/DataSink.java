@@ -2,7 +2,7 @@ package org.jproggy.snippetory.engine;
 
 import java.util.Set;
 
-public interface NamespaceContributor extends Cloneable {
+public interface DataSink {
 	
 	/**
 	 * Sets all variables with given name to a String representation of the value.
@@ -37,9 +37,9 @@ public interface NamespaceContributor extends Cloneable {
 	 */
 	Set<String> names();
 	
-	NamespaceContributor clone();
+	DataSink clone();
 	
 	void clear();
 	
-	CharSequence toCharSequence();
+	CharSequence format();
 }

@@ -28,7 +28,7 @@ import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.Transcoding;
 
-public class Location implements NamespaceContributor {
+public class Location implements DataSink, Cloneable {
 	final Metadata md;
 	private StringBuilder target;
 
@@ -80,10 +80,10 @@ public class Location implements NamespaceContributor {
 
 	@Override
 	public String toString() {
-		return toCharSequence().toString();
+		return format().toString();
 	}
 
-	public CharSequence toCharSequence() {
+	public CharSequence format() {
 		if (target != null) {
 			if (md.suffix != null)
 				return target.toString() + md.suffix;
@@ -111,7 +111,7 @@ public class Location implements NamespaceContributor {
 		append(value);
 	}
 
-	private void append(Object value) {
+	protected void append(Object value) {
 		try {
 			if (target == null) {
 				target = md.prefix == null ? new StringBuilder()

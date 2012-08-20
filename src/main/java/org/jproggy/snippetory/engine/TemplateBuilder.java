@@ -48,8 +48,10 @@ public class TemplateBuilder {
 	}
 
 	private Region parse(Location parent, Token parentDef) {
-		List<NamespaceContributor> parts = new ArrayList<NamespaceContributor>();
+		List<DataSink> parts = new ArrayList<DataSink>();
 		Map<String, Region> children = new HashMap<String, Region>();
+		List<List<DataSink>> partsStack = new ArrayList<List<DataSink>>();
+		List<Location> locationStack = new ArrayList<Location>();
 		Token t = null;
 		while (parser.hasNext()) {
 			t = parser.next();
@@ -60,13 +62,31 @@ public class TemplateBuilder {
 					checkNameUnique(children, t);
 					TemplateFragment end = handleBackward(parts, t);
 					Location placeHolder = placeHolder(parent, t);
-					parts.add(placeHolder);
-					Region template = parse(placeHolder, t);
-					children.put(placeHolder.getName(), template);
+					if (t.getName() == null) {
+						partsStack.add(parts);
+						parts = new ArrayList<DataSink>();
+						locationStack.add(placeHolder);
+					} else {
+						parts.add(placeHolder);
+						Region template = parse(placeHolder, t);
+						children.put(placeHolder.getName(), template);
+					}
 					if (end != null) parts.add(end);
 					break;
 				}
 				case BlockEnd:
+					if (t.getName() == null && !partsStack.isEmpty()) {
+						int last = partsStack.size() - 1;
+						ConditionalRegion r = new ConditionalRegion(locationStack.get(last), parts);
+						locationStack.remove(last);
+						parts = partsStack.get(last);
+						partsStack.remove(last);
+						parts.add(r);
+						break;
+					}
+					if (!partsStack.isEmpty()) {
+						throw new ParseError(partsStack.size() + " unclosed conditional regions detected", t);
+					}
 					verifyName(parent, t);
 					return new Region(parent, parts, children);
 				case Field:
@@ -93,6 +113,9 @@ public class TemplateBuilder {
 				throw new ParseError(e, t);
 			}
 		}
+		if (!partsStack.isEmpty()) {
+			throw new ParseError(partsStack.size() + " unclosed conditional regions detected", t);
+		}
 		verifyRootNode(parent, t);
 		return new Region(parent, parts, children);
 	}
@@ -110,7 +133,7 @@ public class TemplateBuilder {
 		}
 	}
 
-	private TemplateFragment handleBackward(List<NamespaceContributor> parts, Token t) {
+	private TemplateFragment handleBackward(List<DataSink> parts, Token t) {
 		TemplateFragment end = null;
 		if (t.getAttributes().containsKey(BACKWARD)) {
 			String target = t.getAttributes().get(BACKWARD);
@@ -140,6 +163,7 @@ public class TemplateBuilder {
 	}
 
 	private void checkNameUnique(Map<String, Region> children, Token t) {
+		if (t.getName() == null) return;
 		if (children.containsKey(t.getName())) {
 			throw new ParseError("duplicate child template " +
 					t.getName(), t);

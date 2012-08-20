@@ -19,22 +19,20 @@ import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.jproggy.snippetory.Template;
-import org.jproggy.snippetory.engine.chars.CharSequences;
 import org.jproggy.snippetory.spi.Encoding;
 
-public class Region extends CharSequences implements Template, Cloneable {
-	private final NamespaceContributor[] parts;
+public class Region implements Template, Cloneable, CharSequence {
 	private final Map<String, ? extends Template> children;
 	private final Metadata md;
 	private Template parent;
+	private DataSinks data;
 
-	public Region(Location placeHolder, List<NamespaceContributor> parts,
+	public Region(Location placeHolder, List<DataSink> parts,
 			Map<String, Region> children) {
 		super();
-		this.parts = parts.toArray(new NamespaceContributor[parts.size()]);
+		this.data = new DataSinks(parts);
 		this.children = children;
 		this.md = placeHolder.md;
 		for (Region child: children.values()) {
@@ -46,10 +44,7 @@ public class Region extends CharSequences implements Template, Cloneable {
 		super();
 		this.md = template.md;
 		this.children = template.children;
-		this.parts = new NamespaceContributor[template.parts.length];
-		for (int i = 0; i < parts.length; i++) {
-			parts[i] =  template.parts[i].clone();
-		}
+		this.data = template.data.clone();
 	}
 
 	@Override
@@ -74,42 +69,29 @@ public class Region extends CharSequences implements Template, Cloneable {
 	
 	@Override
 	public Region set(String key, Object value) {
-		for (NamespaceContributor v : parts) {
-			v.set(key, value);
-		}
+		data.set(key, value);
 		return this;
 	}
 
 	@Override
 	public Region append(String key, Object value) {
-		for (NamespaceContributor v : parts) {
-			v.append(key, value);
-		}
+		data.append(key, value);
 		return this;
 	}
 
 	@Override
 	public Region clear() {
-		for (NamespaceContributor v : parts) {
-			v.clear();
-		}
+		data.clear();
 		return this;
 	}
 
 	@Override
 	public CharSequence toCharSequence() {
-		return this;
+		return data;
 	}
 
 	public <T extends Appendable> T appendTo(T result) {
-		try {
-			for (NamespaceContributor part : parts) {
-				result.append(part.toCharSequence());
-			}
-		} catch (IOException e) {
-			throw new SnippetoryException(e);
-		}
-		return result;
+		return data.appendTo(result);
 	}
 
 	@Override
@@ -153,11 +135,7 @@ public class Region extends CharSequences implements Template, Cloneable {
 
 	@Override
 	public Set<String> names() {
-		Set<String> result = new TreeSet<String>();
-		for (NamespaceContributor part : parts) {
-			result.addAll(part.names());
-		}
-		return result;
+		return data.names();
 	}
 
 	@Override
@@ -174,12 +152,17 @@ public class Region extends CharSequences implements Template, Cloneable {
 	}
 
 	@Override
-	protected CharSequence part(int index) {
-		return parts[index].toCharSequence();
+	public int length() {
+		return data.length();
 	}
-	
+
 	@Override
-	protected int partCount() {
-		return parts.length;
+	public char charAt(int index) {
+		return data.charAt(index);
+	}
+
+	@Override
+	public CharSequence subSequence(int start, int end) {
+		return data.subSequence(start, end);
 	}
 }

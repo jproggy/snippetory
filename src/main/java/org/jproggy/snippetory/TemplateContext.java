@@ -35,11 +35,18 @@ import org.jproggy.snippetory.spi.Syntax;
 import org.jproggy.snippetory.spi.SyntaxID;
 
 /**
- * The TemplateContext represents the configuration how templates are parsed. It
+ * <p>The TemplateContext represents the configuration how templates are parsed. It
  * provides a fluent interface for inline creation as well as a bean interface
  * for convenient injection. Using the injection variant it's also easy to use a
  * subclass and use a different parsing mechanism or place an additional layer
  * of interceptors.
+ * </p>
+ * 
+ * <p>In fact the TemplatCcontext is desinged to be extended to be integrated into 
+ * your global data. For example some applictions configure presentation attributes
+ * like numberformating at user level. In this case you can easily add the user
+ * to the TemplateContext and replace the numb Formatter by one the values the user.
+ * </p>
  * 
  * <p><strong>Caution:</strong> As the TemplateContext is a mutable construct it has to
  * be considered single threaded! For reuse over several threads one would need to

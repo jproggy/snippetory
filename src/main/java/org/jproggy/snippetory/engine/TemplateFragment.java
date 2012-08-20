@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.jproggy.snippetory.engine.chars.SelfAppender;
 
-public class TemplateFragment implements NamespaceContributor, CharSequence, SelfAppender {
+public class TemplateFragment implements DataSink, CharSequence, SelfAppender {
 	private final String data;
 	
 	public TemplateFragment(String data) {
@@ -75,7 +75,7 @@ public class TemplateFragment implements NamespaceContributor, CharSequence, Sel
 	}
 	
 	@Override
-	public CharSequence toCharSequence() {
+	public CharSequence format() {
 		return this;
 	}
 }
