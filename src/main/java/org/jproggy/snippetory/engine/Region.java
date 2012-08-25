@@ -108,7 +108,13 @@ public class Region implements Template, Cloneable, CharSequence {
 
 	@Override
 	public void render() {
+		// ignore render calls on root node as they don't make any sense.
+		if (isRoot()) return;
 		render(md.name);
+	}
+
+	private boolean isRoot() {
+		return getParent() == null;
 	}
 
 	@Override
