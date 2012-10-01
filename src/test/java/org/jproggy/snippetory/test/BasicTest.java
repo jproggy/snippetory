@@ -205,6 +205,7 @@ public class BasicTest {
 	@Test
 	public void childTempates() {
 		Template t1 = Repo.parse("in<t:test> and out</t:test> and around");
+		t1.render();
 		assertEquals("in and around", t1.toString());
 		t1.append("test", t1.get("test"));
 		assertEquals("in and out and around", t1.toString());
@@ -215,6 +216,13 @@ public class BasicTest {
 		Template t2 = Repo.parse("<t:outer>in<t:test> and {v:test}</t:test> and around</t:outer>").get("outer");
 		t2.get("test").append("test", "hallo").render();
 		assertEquals("in and hallo and around", t2.toString());
+	}
+
+	@Test
+	public void syntaxSwitch() {
+		Template t1 = Repo.parse(" {v:test} \n <s:C_COMMENTS />  \n /*${test}*/ \r\n  /*Syntax:FLUYT*/  \n $test ");
+		t1.set("test", "blub");
+		assertEquals(" blub \n blub \r\n blub ", t1.toString());
 	}
 
 	@Test
@@ -283,11 +291,17 @@ public class BasicTest {
 	@Test
 	public void attributeEscaping() {
 		Template t = Repo.parse("{v:x delimiter='\\''\tprefix=\"\\\"\" suffix='\\\\'}");
+		assertEquals("", t.toString());
 		t.append("x", "1").append("x", 2).append("x", "3");
 		assertEquals("\"1'2'3\\", t.toString());
 		t = Repo.parse("{v:x delimiter='\\n'\tprefix=\"\\t\" suffix='\\r\'}");
+		assertEquals("", t.toString());
 		t.append("x", "1").append("x", 2).append("x", "3");
 		assertEquals("\t1\n2\n3\r", t.toString());
+		t = Repo.parse("{v:x default='\\b'\tprefix=\"\\f\" suffix='xx'}");
+		assertEquals("\b", t.toString());
+		t.append("x", "1").append("x", 2).append("x", "3");
+		assertEquals("\f123xx", t.toString());
 	}
 	
 	@Test

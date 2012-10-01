@@ -25,9 +25,12 @@ public class FluytTest {
  		assertEquals("", t5.toString());
 		t5.get("test").render();
 		assertEquals(" i++;     ", t5.toString());
-//		Template t6 = FLUYT.parse("<!--t:test date=''*/ i++; /*!t:test-->");
-//		t6.get("test").render();
-//		assertEquals(" i++; ", t6.toString());
+		Template t6 = FLUYT.parse("$test(date=''){ i++; }$");
+		t6.get("test").render();
+		assertEquals(" i++; ", t6.toString());
+		Template t7 = FLUYT.parse("$test()bla");
+		t7.set("test", "xy");
+		assertEquals("xybla", t7.toString());
 	}
 
 

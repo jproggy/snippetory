@@ -24,8 +24,8 @@ import java.util.Locale;
 
 import org.jproggy.snippetory.Repo;
 import org.jproggy.snippetory.Template;
-import org.jproggy.snippetory.engine.Location;
 import org.jproggy.snippetory.engine.DataSink;
+import org.jproggy.snippetory.engine.Location;
 import org.jproggy.snippetory.engine.Region;
 import org.jproggy.snippetory.engine.TemplateFragment;
 import org.junit.Assert;
@@ -56,6 +56,19 @@ public class RegionTest {
 		assertEquals('y', region.charAt(4));
 		assertEquals('e', region.charAt(1));
 		assertEquals(9, region.length());
+		assertEquals("testyagni", region.toString());
+		CharSequence child = region.subSequence(2, 6);
+		assertEquals('s', child.charAt(0));
+		assertEquals('t', child.charAt(1));
+		assertEquals('y', child.charAt(2));
+		assertEquals('a', child.charAt(3));
+		assertEquals(4, child.length());
+		assertEquals("stya", child.toString());
+		child = child.subSequence(1, 3);
+		assertEquals('t', child.charAt(0));
+		assertEquals('y', child.charAt(1));
+		assertEquals(2, child.length());
+		assertEquals("ty", child.toString());
 		try {
 			region.charAt(9);
 			fail();

@@ -45,7 +45,7 @@ public class FluytSyntax extends RegExSyntax {
 		patterns.put(end, TokenType.BlockEnd);
 
 		Pattern field = Pattern.compile(
-				"\\$((?:" + NAME + ")(?:" + ATTRIBUTES + ")?)", Pattern.MULTILINE);
+				"\\$((?:" + NAME + ")(?:" + ATTRIBUTES + "|\\(\\))?)", Pattern.MULTILINE);
 		patterns.put(field, TokenType.Field);
 
 		Pattern nameless = Pattern.compile(
