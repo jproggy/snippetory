@@ -61,17 +61,14 @@ public class Location implements DataSink, Cloneable {
 				break;
 			case PREFIX:
 				prefix = attribs.get(attr);
-				if (defaultVal == null)
-					defaultVal = "";
+				if (defaultVal == null)	defaultVal = "";
 				break;
 			case SUFFIX:
 				suffix = attribs.get(attr);
-				if (defaultVal == null)
-					defaultVal = "";
+				if (defaultVal == null)	defaultVal = "";
 				break;
 			default:
-				// ignore no practical meaning
-				break;
+				throw new SnippetoryException("Attribute " + attr + " has unknown type " + Attributes.REGISTRY.type(attr));
 			}
 		}
 		md = new Metadata(name, formats, enc, defaultVal, fragment, delimiter,
@@ -195,7 +192,9 @@ public class Location implements DataSink, Cloneable {
 	@Override
 	public Location clone() {
 		try {
-			return (Location)super.clone();
+			Location clone = (Location)super.clone();
+			clone.clear();
+			return clone;
 		} catch (CloneNotSupportedException e) {
 			throw new SnippetoryException(e);
 		}

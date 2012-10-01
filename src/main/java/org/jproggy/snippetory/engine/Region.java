@@ -21,9 +21,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jproggy.snippetory.Template;
+import org.jproggy.snippetory.engine.chars.SelfAppender;
 import org.jproggy.snippetory.spi.Encoding;
 
-public class Region implements Template, Cloneable, CharSequence {
+public class Region implements Template, Cloneable, CharSequence, SelfAppender {
 	private final Map<String, ? extends Template> children;
 	private final Metadata md;
 	private Template parent;
@@ -87,7 +88,7 @@ public class Region implements Template, Cloneable, CharSequence {
 
 	@Override
 	public CharSequence toCharSequence() {
-		return data;
+		return this;
 	}
 
 	public <T extends Appendable> T appendTo(T result) {

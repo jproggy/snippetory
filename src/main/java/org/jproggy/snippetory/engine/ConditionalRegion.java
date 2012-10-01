@@ -18,8 +18,9 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
 	
 	protected ConditionalRegion(ConditionalRegion template) {
 		super(template);
-		names = template.names;
 		formatter = template.formatter.clone();
+		names = names();
+		appendMe =  false;
 	}
 
 	@Override
@@ -50,8 +51,8 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
 	}
 
 	@Override
-	public DataSinks clone() {
-		return super.clone();
+	public ConditionalRegion clone() {
+		return new ConditionalRegion(this);
 	}
 
 	@Override

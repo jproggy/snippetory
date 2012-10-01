@@ -6,8 +6,9 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.jproggy.snippetory.engine.chars.CharSequences;
+import org.jproggy.snippetory.engine.chars.SelfAppender;
 
-public class DataSinks extends CharSequences implements DataSink {
+public class DataSinks extends CharSequences implements DataSink, SelfAppender {
 	private final DataSink[] parts;
 
 	public DataSinks(List<DataSink> parts) {

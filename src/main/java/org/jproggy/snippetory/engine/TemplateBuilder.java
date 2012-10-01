@@ -44,10 +44,10 @@ public class TemplateBuilder {
 	public static Template parse(TemplateContext ctx, CharSequence data) {
 		TemplateBuilder builder = new TemplateBuilder(ctx.clone(), data);
 		Location root = new Location(null, null, ctx.getBaseAttribs(), "", ctx);
-		return builder.parse(root, null);
+		return builder.parse(root);
 	}
 
-	private Region parse(Location parent, Token parentDef) {
+	private Region parse(Location parent) {
 		List<DataSink> parts = new ArrayList<DataSink>();
 		Map<String, Region> children = new HashMap<String, Region>();
 		List<List<DataSink>> partsStack = new ArrayList<List<DataSink>>();
@@ -68,7 +68,7 @@ public class TemplateBuilder {
 						locationStack.add(placeHolder);
 					} else {
 						parts.add(placeHolder);
-						Region template = parse(placeHolder, t);
+						Region template = parse(placeHolder);
 						children.put(placeHolder.getName(), template);
 					}
 					if (end != null) parts.add(end);
@@ -78,6 +78,9 @@ public class TemplateBuilder {
 					if (t.getName() == null && !partsStack.isEmpty()) {
 						int last = partsStack.size() - 1;
 						ConditionalRegion r = new ConditionalRegion(locationStack.get(last), parts);
+						if (r.names().isEmpty()) {
+							throw new ParseError("Conditional region needs to contain at least one named location, or will never be rendered", t);
+						}
 						locationStack.remove(last);
 						parts = partsStack.get(last);
 						partsStack.remove(last);
