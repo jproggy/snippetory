@@ -30,17 +30,17 @@ public class XMLAlikeSyntax extends RegExSyntax {
 		patterns.put(SYNTAX_SELECTOR, TokenType.Syntax);
 
 		Pattern start = Pattern.compile(
-				LINE_START + "\\<t\\:(" + NAME + ATTRIBUTES + ")\\s*\\>" + LINE_END, Pattern.MULTILINE);
+				LINE_START + "\\<t\\:((?:" + NAME + ")?" + ATTRIBUTES + ")\\s*\\>" + LINE_END, Pattern.MULTILINE);
 		patterns.put(start, TokenType.BlockStart);
 
-		start = Pattern.compile("\\<t:(" + NAME + ATTRIBUTES + ")\\s*\\>", Pattern.MULTILINE);
+		start = Pattern.compile("\\<t:((?:" + NAME + ")?" + ATTRIBUTES + ")\\s*\\>", Pattern.MULTILINE);
 		patterns.put(start, TokenType.BlockStart);
 
 		Pattern end = Pattern.compile(
-				LINE_START + "</t\\:(" + NAME + ")\\>" + LINE_END, Pattern.MULTILINE);
+				LINE_START + "</t\\:(" + NAME + ")?\\>" + LINE_END, Pattern.MULTILINE);
 		patterns.put(end, TokenType.BlockEnd);
 
-		end = Pattern.compile("</t\\:(" + NAME + ")\\>", Pattern.MULTILINE);
+		end = Pattern.compile("</t\\:(" + NAME + ")?\\>", Pattern.MULTILINE);
 		patterns.put(end, TokenType.BlockEnd);
 
 		Pattern field = Pattern.compile(

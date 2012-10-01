@@ -29,22 +29,22 @@ public class HiddenBlocksSyntax  extends RegExSyntax {
 		Map<Pattern, TokenType> patterns = new LinkedHashMap<Pattern, TokenType>();
 
 		String pref = "(?:\\<\\!\\-\\-|\\/\\*)";
-		String suff = ")[ \\t]*(?:\\-\\-\\>|\\*\\/)";
+		String suff = "[ \\t]*(?:\\-\\-\\>|\\*\\/)";
 
 		patterns.put(SYNTAX_SELECTOR, TokenType.Syntax);
 		Pattern start = Pattern.compile(
-				LINE_START + pref + "t\\:(" + NAME + ATTRIBUTES + suff + LINE_END, Pattern.MULTILINE);
+				LINE_START + pref + "t\\:(" + NAME + ATTRIBUTES + ")?" + suff + LINE_END, Pattern.MULTILINE);
 		patterns.put(start, TokenType.BlockStart);
 
 		start = Pattern.compile(
-				pref + "t\\:(" + NAME + ATTRIBUTES + suff);
+				pref + "t\\:(" + NAME + ATTRIBUTES + ")?" + suff);
 		patterns.put(start, TokenType.BlockStart);
 
 		Pattern end = Pattern.compile(
-				LINE_START + pref + "\\!t\\:(" + NAME + suff + LINE_END, Pattern.MULTILINE);
+				LINE_START + pref + "\\!t\\:(" + NAME + ")?" + suff + LINE_END, Pattern.MULTILINE);
 		patterns.put(end, TokenType.BlockEnd);
 
-		end = Pattern.compile(pref + "\\!t\\:(" + NAME + suff);
+		end = Pattern.compile(pref + "\\!t\\:(" + NAME + ")?" + suff);
 		patterns.put(end, TokenType.BlockEnd);
 
 		Pattern field = Pattern.compile("\\{v\\:(" + NAME + ATTRIBUTES + ")[ \\t]*\\}");
