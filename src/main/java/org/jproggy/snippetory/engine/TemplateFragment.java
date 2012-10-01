@@ -69,7 +69,8 @@ public class TemplateFragment implements DataSink, CharSequence, SelfAppender {
 		// cloning is not necessary. One instance is enough
 		return this;
 	}
-	
+
+	@Override
 	public void clear() {
 		// is immutable --> nothing to clear
 	}

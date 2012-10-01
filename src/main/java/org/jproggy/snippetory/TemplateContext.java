@@ -42,9 +42,9 @@ import org.jproggy.snippetory.spi.SyntaxID;
  * of interceptors.
  * </p>
  * 
- * <p>In fact the TemplatCcontext is desinged to be extended to be integrated into 
- * your global data. For example some applictions configure presentation attributes
- * like numberformating at user level. In this case you can easily add the user
+ * <p>In fact the TemplatCcontext is designed to be extended to be integrated into 
+ * your global data. For example some applications configure presentation attributes
+ * like number formating at user level. In this case you can easily add the user
  * to the TemplateContext and replace the numb Formatter by one the values the user.
  * </p>
  * 
@@ -56,7 +56,8 @@ import org.jproggy.snippetory.spi.SyntaxID;
  * @author B. Ebertz
  */
 public class TemplateContext implements Cloneable {
-	private Locale locale = Locale.getDefault();
+	public static Locale TECH = new Locale("en", "US", "tech");
+	private Locale locale = TECH;
 	private Syntax syntax = Syntax.REGISTRY.getDefault();
 	private UriResolver uriResolver;
 	
