@@ -94,5 +94,10 @@ public abstract class CharSequences implements CharSequence, SelfAppender {
 		public CharSequence subSequence(int start, int end) {
 			return new MyCharSeq(start + this.start, end + this.start);
 		}
+		
+		@Override
+		public String toString() {
+			return CharSequences.this.toString().substring(start, end);
+		}
 	}
 }
