@@ -20,7 +20,7 @@ import java.util.Set;
 
 import org.jproggy.snippetory.Template;
 
-public class TemplateWrapper implements Template {
+public abstract class TemplateWrapper implements Template, CharSequence {
 	protected final Template wrapped;
 	
 	public TemplateWrapper(Template template) {
@@ -32,12 +32,15 @@ public class TemplateWrapper implements Template {
 	}
 
 	public CharSequence toCharSequence() {
-		return wrapped.toCharSequence();
+		return this;
 	}
 
 	public Template get(String... name) {
-		return wrapped.get(name);
+		if (name.length == 0) return this;
+		return wrap(wrapped.get(name));
 	}
+	
+	protected abstract Template wrap(Template toBeWrapped);
 
 	public Template set(String name, Object value) {
 		wrapped.set(name, value);
@@ -80,5 +83,21 @@ public class TemplateWrapper implements Template {
 
 	public Set<String> regionNames() {
 		return wrapped.regionNames();
+	}
+	
+	public int length() {
+		return wrapped.toCharSequence().length();
+	}
+	
+	public char charAt(int index) {
+		return wrapped.toCharSequence().charAt(index);
+	}
+
+	public CharSequence subSequence(int start, int end) {
+		return wrapped.toCharSequence().subSequence(start, end);
+	}
+	
+	public String toString() {
+		return wrapped.toString();
 	}
 }
