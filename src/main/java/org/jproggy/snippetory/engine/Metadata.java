@@ -53,7 +53,7 @@ class Metadata {
 
 	CharSequence toString(Object value) {
 		if (value instanceof CharSequence) {
-			return (String) value;
+			return (CharSequence) value;
 		}
 		for (Format f : formats) {
 			if (f.supports(value)) return f.format(value);
