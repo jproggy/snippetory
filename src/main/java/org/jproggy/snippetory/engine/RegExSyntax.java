@@ -125,10 +125,10 @@ public abstract class RegExSyntax implements Syntax {
 			Token token = null;
 			while (m.find()) {
 				if (first) {
-					token = new Token(m.group(), matcher.group(), type,
+					token = new Token(m.group(4), matcher.group(), type,
 							matcher.start());
 					first = false;
-					if (m.group(4) != null || type == TokenType.BlockStart) continue;
+					if (m.group(4) != null) continue;
 				}
 				if (m.group(4) != null)
 					throw new ParseError("don't understand "
