@@ -129,11 +129,22 @@ public class TemplateBuilder {
 	}
 
 	private void verifyName(Location parent, Token t) {
-		if (t.getName() == null || t.getName().length() == 0) return;
-		if (parent.getName() == null || !parent.getName().equals(t.getName())) {
-			throw new ParseError(t.getName() + " found but " + 
-					(parent.getName() == null ? "file end" : parent.getName()) + " expected", t);
+		if (parent.getName() == null || 
+				!(empty(t.getName()) || sameName(parent, t))) {
+			throw new ParseError(t.getName() + " found but " +	name(parent) + " expected", t);
 		}
+	}
+
+	private String name(Location parent) {
+		return parent.getName() == null ? "file end" : parent.getName();
+	}
+
+	private boolean sameName(Location parent, Token t) {
+		return parent.getName().equals(t.getName());
+	}
+	
+	private boolean empty(String val) {
+		return val == null || val.isEmpty();
 	}
 
 	private TemplateFragment handleBackward(List<DataSink> parts, Token t) {
@@ -151,7 +162,7 @@ public class TemplateBuilder {
 				}
 				parts.set(parts.size() - 1, value.start(m.start(group)));
 				end = value.end(m.end(group));
-				if (m.find()) throw new ParseError("backward target ambigous " + target, t);
+				if (m.find()) throw new ParseError("backward target ambigous: " + target, t);
 			} else {
 				throw new ParseError("target not found: " + target, t);
 			}
