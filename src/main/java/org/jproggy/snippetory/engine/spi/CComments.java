@@ -50,14 +50,15 @@ public class CComments   extends RegExSyntax {
 		Map<Pattern, TokenType> patterns = new LinkedHashMap<Pattern, TokenType>();
 
 		patterns.put(SYNTAX_SELECTOR, TokenType.Syntax);
-		String cbs = "\\/\\*\\s*";
-		String cbe = "\\s*\\*\\/";
+		String commentBlockStart = "\\/\\*\\s*";
+		String commentBlockEnd = "\\s*\\*\\/";
 
-		String pre = cbs + "\\$\\{\\s*";
-		String suff = "\\s*\\}" + cbe;
+		String pre = commentBlockStart + "\\$\\{\\s*";
+		String suff = "\\s*\\}" + commentBlockEnd;
 
 		Pattern mock_default = Pattern.compile(
-				pre +"(" + NAME + "(?:\\s+" + ATTRIBUTE + ")*)" + cbe + "((?:(?!/\\*).)*)" + cbs + suff, Pattern.MULTILINE);
+				pre +"(" + NAME + "(?:\\s+" + ATTRIBUTE + ")*)" + commentBlockEnd + 
+				"((?:(?!/\\*).)*)" + commentBlockStart + suff, Pattern.MULTILINE);
 		patterns.put(mock_default, TokenType.Field);
 
 		Pattern start = Pattern.compile(
@@ -66,14 +67,15 @@ public class CComments   extends RegExSyntax {
 		patterns.put(start, TokenType.BlockStart);
 
 		start = Pattern.compile(
-				pre + "(" + NAME + "(?:\\s+" + ATTRIBUTE + ")*)" + cbe, Pattern.MULTILINE);
+				pre + "(" + NAME + "(?:\\s+" + ATTRIBUTE + ")*)" + commentBlockEnd, Pattern.MULTILINE);
 		patterns.put(start, TokenType.BlockStart);
 
 		Pattern end = Pattern.compile(
 				LINE_START + "\\/\\/\\s*(" + NAME + ")\\s*\\}" + LINE_END, Pattern.MULTILINE);
 		patterns.put(end, TokenType.BlockEnd);
 
-		end = Pattern.compile(cbs + "(" + NAME + ")\\s*\\}" + cbe, Pattern.MULTILINE);
+		end = Pattern.compile(commentBlockStart + "(" + NAME + ")\\s*\\}" + 
+					commentBlockEnd, Pattern.MULTILINE);
 		patterns.put(end, TokenType.BlockEnd);
 		
 		Pattern comment = Pattern.compile(
