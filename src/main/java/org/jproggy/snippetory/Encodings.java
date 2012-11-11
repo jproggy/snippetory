@@ -14,12 +14,10 @@
 package org.jproggy.snippetory;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import org.jproggy.snippetory.engine.IncompatibleEncodingException;
-import org.jproggy.snippetory.engine.Region;
-import org.jproggy.snippetory.engine.SnippetoryException;
+import org.jproggy.snippetory.engine.chars.EncodedContainer;
 import org.jproggy.snippetory.engine.chars.SelfAppender;
 import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Encoding;
@@ -38,7 +36,7 @@ import org.jproggy.snippetory.spi.Encoding;
 public enum Encodings implements Encoding {
 	/**
 	 * It's assumed that Snippetory is used in a modern Unicode based
-	 * environment. Though, only a minimal escaping is done:
+	 * environment. Only a minimal escaping is done:
 	 * <table width="150">
 	 * <tr>
 	 * <td>&lt;</td>
@@ -131,11 +129,7 @@ public enum Encodings implements Encoding {
 		@Override
 		public void escape(Appendable target, CharSequence val)
 				throws IOException {
-			try {
-				target.append(URLEncoder.encode(val.toString(), "utf-8"));
-			} catch (UnsupportedEncodingException e) {
-				throw new SnippetoryException(e);
-			}
+			target.append(URLEncoder.encode(val.toString(), "utf-8"));
 		}
 	},
 	/**
@@ -211,8 +205,8 @@ public enum Encodings implements Encoding {
 		public void escape(Appendable target, CharSequence val)
 				throws IOException {
 			StringBuilder tmp = new StringBuilder();
-			string.escape(tmp, val);
-			html.escape(target, tmp.toString());
+			html.escape(tmp, val);
+			string.escape(target, tmp.toString());
 		}
 
 		@Override
@@ -263,17 +257,20 @@ public enum Encodings implements Encoding {
 		}
 	};
 
+	protected abstract void escape(Appendable target, CharSequence val)
+			throws IOException;
+	
 	@Override
 	public void transcode(Appendable target, CharSequence value,
 			String encodingName) throws IOException {
 		if (NULL.name().equals(encodingName)) {
 			append(target, value);
-		}
-		if (plain.name().equals(encodingName)) {
+		} else if (plain.name().equals(encodingName)) {
 			escape(target, value);
+		} else {
+			throw new IncompatibleEncodingException("can't convert encoding "
+					+ encodingName + " into " + name());
 		}
-		throw new IncompatibleEncodingException("can't convert encoding "
-				+ encodingName + " into " + name());
 	}
 
 	/**
@@ -297,20 +294,13 @@ public enum Encodings implements Encoding {
 	 * Marks the data to be encoded according to specified encodinng.
 	 */
 	public EncodedData wrap(final CharSequence data) {
-	  return new EncodedData() {
-	    public String getEncoding() {
-	      return name();
-	    }
-	    public CharSequence toCharSequence() {
-	      return data;
-	    }
-	  };
+	  return new EncodedContainer(data, getName());
 	}
 
 	private static void append(Appendable target, CharSequence value)
 			throws IOException {
 		if (value instanceof SelfAppender) {
-			((Region) value).appendTo(target);
+			((SelfAppender) value).appendTo(target);
 		} else {
 			target.append(value);
 		}
