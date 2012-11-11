@@ -16,14 +16,23 @@ package org.jproggy.snippetory.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.Repo;
 import org.jproggy.snippetory.Template;
+import org.jproggy.snippetory.TemplateContext;
+import org.jproggy.snippetory.UriResolver;
 import org.jproggy.snippetory.engine.DataSink;
 import org.jproggy.snippetory.engine.Location;
 import org.jproggy.snippetory.engine.Region;
@@ -92,6 +101,54 @@ public class RegionTest {
 		}
 	}
 
+	@Test
+	public void read() throws MalformedURLException {
+		TemplateContext context = new TemplateContext().uriResolver(UriResolver.directories("src/test/resources"));
+		context.getTemplate("testTable.htm");
+		context.uriResolver(UriResolver.directories(new File("src/test/resources")));
+		context.getTemplate("testTable.htm");
+		context.uriResolver(UriResolver.url(new File("src/test/resources").toURI().toURL()));
+		context.getTemplate("testTable.htm");
+	}
+	
+	@Test
+	public void calendar() throws IOException {
+		Date day = Date.valueOf("1979-02-02");
+	    Template month = Repo.readResource("calendar.html").encoding(Encodings.html).locale(Locale.GERMAN).parse();
+	    month.set("day", day);
+	    Calendar dayCounter = getStart(day);
+	    Calendar end = getEnd(day);
+	    while (dayCounter.before(end)) {
+	    	Template week = month.get("week");
+	    	for (int i = 1; i <= 7; i++) {
+	    		week.get("day").set("day", dayCounter).render();
+	    		dayCounter.add(Calendar.DAY_OF_YEAR, 1);
+	    	}
+	    	week.render();
+	    }
+	    month.render(new FileWriter("src/test/resources/calendarOut.html"));
+	}
+
+	private Calendar getStart(Date day) {
+		Calendar result =  Calendar.getInstance();
+		result.setTime(day);
+		int daysOfMonth = result.get(Calendar.DAY_OF_MONTH);
+		result.add(Calendar.DAY_OF_YEAR, daysOfMonth * -1);
+		int daysOfWeek = result.get(Calendar.DAY_OF_WEEK) - result.getFirstDayOfWeek();
+		if (daysOfWeek < 0) daysOfWeek += 7;
+		result.add(Calendar.DAY_OF_YEAR, daysOfWeek * -1);
+		return result;
+	}
+
+	private Calendar getEnd(Date day) {
+		Calendar result =  Calendar.getInstance();
+		result.setTime(day);
+		int days = result.getActualMaximum(Calendar.DAY_OF_MONTH) - result.get(Calendar.DAY_OF_MONTH);
+		result.add(Calendar.DAY_OF_YEAR, days);
+		days = result.getActualMaximum(Calendar.DAY_OF_WEEK) - result.get(Calendar.DAY_OF_WEEK);
+		result.add(Calendar.DAY_OF_YEAR, days);
+		return result;
+	}
 	@Test
 	public void test100() {
 		testN(100);
