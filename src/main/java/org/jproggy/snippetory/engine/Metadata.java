@@ -15,18 +15,19 @@ package org.jproggy.snippetory.engine;
 
 import java.util.List;
 
+import org.jproggy.snippetory.spi.CharDataSupport;
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Format;
+import org.jproggy.snippetory.spi.VoidFormat;
 
 class Metadata {
 	public Metadata(String name, List<Format> formats, Encoding enc,
-			String defaultVal, String fragment, String delimiter,
+			 String fragment, String delimiter,
 			String prefix, String suffix, Metadata parent) {
 		super();
 		this.name = name;
 		this.formats = formats.toArray(new Format[formats.size()]);
 		this.enc = enc;
-		this.defaultVal = defaultVal;
 		this.fragment = fragment;
 		this.delimiter = delimiter;
 		this.prefix = prefix;
@@ -37,30 +38,46 @@ class Metadata {
 	final String name;
 	final Format[] formats;
 	final Encoding enc;
-	final String defaultVal;
 	final String fragment;
 	final String delimiter;
 	final String prefix;
 	final String suffix;
 	final Metadata parent;
 
-	CharSequence format(CharSequence value) {
+	Object format(Object value) {
 		for (Format f : formats) {
 			if (f.supports(value)) value = f.format(value);
 		}
 		return value;
 	}
 
-	CharSequence toString(Object value) {
-		if (value instanceof CharSequence) {
-			return (String) value;
-		}
+	Object toCharData(Object value) {
+		if (isCharData(value)) return  value;
 		for (Format f : formats) {
-			if (f.supports(value)) return f.format(value);
+			if (f.supports(value)) {
+				value = f.format(value);
+				if (isCharData(value)) return  value;
+			}
 		}
-		if (parent != null) return parent.toString(value);
+		if (parent != null) return parent.toCharData(value);
 		if (value == null) return "";
 		return String.valueOf(value);
+	}
+
+	private boolean isCharData(Object value) {
+		return CharDataSupport.isCharData(value);
+	}
+
+	Object formatVoid() {
+		for (Format f : formats) {
+			if (f instanceof VoidFormat) return ((VoidFormat)f).formatVoid();
+		}
+		return null;
+	}
+
+	public CharSequence getFallback() {
+		if (prefix != null || suffix != null) return "";
+		return fragment;
 	}
 
 }

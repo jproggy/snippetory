@@ -29,7 +29,7 @@ import org.jproggy.snippetory.engine.IncompatibleEncodingException;
  * very efficient abstraction layer.<br />
  * As the encoding is inherited throughout the tree of snippets within a {@link Template} 
  * a single encoding definition is sufficient for many cases. However, combination of encodings 
- * is common as well. Though, it can be overwritten as often as needed, for entire subtrees
+ * is common as well. This is why it can be overwritten as often as needed, for entire subtrees
  * or just for single leaf nodes. 
  */
 public interface Encoding {
@@ -37,15 +37,6 @@ public interface Encoding {
 	 * Register Encodings here.
 	 */
 	EncodingRegistry REGISTRY = EncodingRegistry.INSTANCE;
-	
-	/**
-	 * will escape the content of val appropriate to the supported output format and append
-	 * the result to target.
-
-	 * @param target result of the action has to be appended to target.
-	 * @param val has be escaped
-	 */
-	void escape(Appendable target, CharSequence val) throws IOException;
 	
 	/**
 	 * Sometimes it's possible to combine data encoded in different ways after applying 

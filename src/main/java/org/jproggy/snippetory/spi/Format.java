@@ -33,7 +33,7 @@ public interface Format {
 	/**
 	 * may only be called for supported values.
 	 */
-	CharSequence format(Object value);
+	Object format(Object value);
 	
 	/**
 	 * Many formats only apply to a special type or even specific

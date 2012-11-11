@@ -13,15 +13,15 @@
 
 package org.jproggy.snippetory.engine;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 
 import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.engine.spi.CaseFormater;
 import org.jproggy.snippetory.engine.spi.DateFormater;
+import org.jproggy.snippetory.engine.spi.DefaultFormater;
+import org.jproggy.snippetory.engine.spi.NullFormater;
 import org.jproggy.snippetory.engine.spi.NumFormater;
 import org.jproggy.snippetory.engine.spi.ShortenFormat;
 import org.jproggy.snippetory.engine.spi.StretchFormat;
@@ -44,17 +44,9 @@ class Attributes {
 		public Types type(String name) {
 			return attribs.get(name);
 		}
-		public List<String> names(Types type) {
-			List<String> names = new ArrayList<String>();
-			for (Map.Entry<String, Types> e: attribs.entrySet()) {
-				if (e.getValue() == type) names.add(e.getKey());
-			}
-			return names;
-		}
 	}
 	static final Registry REGISTRY = new Registry();
 	static {
-		REGISTRY.register("default", Types.DEFAULT);
 		REGISTRY.register("enc", Types.ENCODING);
 		REGISTRY.register("delimiter", Types.DELIMITER);
 		REGISTRY.register("prefix", Types.PREFIX);
@@ -66,6 +58,8 @@ class Attributes {
 		FormatRegistry.INSTANCE.register("date", new DateFormater());
 		FormatRegistry.INSTANCE.register("toggle", new ToggleFormat.Factory());
 		FormatRegistry.INSTANCE.register("case", new CaseFormater());
+		FormatRegistry.INSTANCE.register("default", new DefaultFormater());
+		FormatRegistry.INSTANCE.register("null", new NullFormater());
 		for (Encodings e: Encodings.values()) {
 			EncodingRegistry.INSTANCE.register(e);
 		}
@@ -76,6 +70,6 @@ class Attributes {
 		}
 	}
 	enum Types {
-		FORMAT, DEFAULT, ENCODING, DELIMITER, PREFIX, SUFFIX, BACKWARD
+		FORMAT, ENCODING, DELIMITER, PREFIX, SUFFIX, BACKWARD
 	}
 }

@@ -73,9 +73,11 @@ public class TemplateContext implements Cloneable {
 		Map<String,String> map = new HashMap<String, String>(2);
 		map.put("date", "");
 		map.put("number", "");
+		map.put("null", "");
 		DEFAULT_ATTRIBUTES = Collections.unmodifiableMap(map);
 	}
 	
+	@Override
 	public TemplateContext clone() {
 		try {
 			TemplateContext result = (TemplateContext)super.clone();

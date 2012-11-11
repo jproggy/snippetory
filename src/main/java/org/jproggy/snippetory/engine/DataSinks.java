@@ -6,9 +6,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.jproggy.snippetory.engine.chars.CharSequences;
-import org.jproggy.snippetory.engine.chars.SelfAppender;
 
-public class DataSinks extends CharSequences implements DataSink, SelfAppender {
+public class DataSinks extends CharSequences implements DataSink {
 	private final DataSink[] parts;
 
 	public DataSinks(List<DataSink> parts) {
@@ -20,7 +19,7 @@ public class DataSinks extends CharSequences implements DataSink, SelfAppender {
 		super();
 		this.parts = new DataSink[template.parts.length];
 		for (int i = 0; i < parts.length; i++) {
-			this.parts[i] =  template.parts[i].clone();
+			this.parts[i] =  template.parts[i].cleanCopy();
 		}
 	}
 
@@ -77,7 +76,7 @@ public class DataSinks extends CharSequences implements DataSink, SelfAppender {
 	}
 	
 	@Override
-	public DataSinks clone() {
+	public DataSinks cleanCopy() {
 		return new DataSinks(this);
 	}
 

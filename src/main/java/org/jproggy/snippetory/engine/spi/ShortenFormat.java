@@ -12,10 +12,12 @@
  *******************************************************************************/
 
 package org.jproggy.snippetory.engine.spi;
-
+ 
 import org.jproggy.snippetory.TemplateContext;
+import org.jproggy.snippetory.spi.CharDataSupport;
 import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.FormatFactory;
+
 
 
 public class ShortenFormat implements Format {
@@ -44,17 +46,16 @@ public class ShortenFormat implements Format {
 
 
 	@Override
-	public String format(Object value) {
-		String s = value.toString();
+	public CharSequence format(Object value) {
+		CharSequence s = CharDataSupport.toCharSequence(value);
 		if (s.length() <= length) return s; 
-		return s.substring(0, length - suffix.length()) + suffix;
+		return new StringBuilder(s.subSequence(0, length - suffix.length())).append(suffix);
 	}
 
 
 	@Override
 	public boolean supports(Object value) {
-		if (value instanceof CharSequence) return true;
-		return false;
+		return CharDataSupport.isCharData(value);
 	}
 	
 	public static class Factory implements FormatFactory {

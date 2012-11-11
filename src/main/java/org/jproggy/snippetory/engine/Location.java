@@ -23,6 +23,7 @@ import java.util.Set;
 import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.engine.chars.SelfAppender;
+import org.jproggy.snippetory.spi.CharDataSupport;
 import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Format;
@@ -32,14 +33,9 @@ public class Location implements DataSink, Cloneable {
 	final Metadata md;
 	private StringBuilder target;
 
-	Location(Location template) {
-		this.md = template.md;
-	}
-
 	public Location(Location parent, String name, Map<String, String> attribs,
 			String fragment, TemplateContext ctx) {
 		List<Format> formats = new ArrayList<Format>();
-		String defaultVal = null;
 		String delimiter = null;
 		String prefix = null;
 		String suffix = null;
@@ -50,9 +46,6 @@ public class Location implements DataSink, Cloneable {
 				formats.add(FormatRegistry.INSTANCE.get(attr,
 						attribs.get(attr), ctx));
 				break;
-			case DEFAULT:
-				defaultVal = attribs.get(attr);
-				break;
 			case ENCODING:
 				enc = EncodingRegistry.INSTANCE.get(attribs.get(attr));
 				break;
@@ -61,18 +54,19 @@ public class Location implements DataSink, Cloneable {
 				break;
 			case PREFIX:
 				prefix = attribs.get(attr);
-				if (defaultVal == null)	defaultVal = "";
 				break;
 			case SUFFIX:
 				suffix = attribs.get(attr);
-				if (defaultVal == null)	defaultVal = "";
 				break;
 			default:
 				throw new SnippetoryException("Attribute " + attr + " has unknown type " + Attributes.REGISTRY.type(attr));
 			}
 		}
-		md = new Metadata(name, formats, enc, defaultVal, fragment, delimiter,
-				prefix, suffix, parent == null ? null : parent.md);
+		md = new Metadata(name, formats, enc, fragment, delimiter, prefix, suffix, metadata(parent));
+	}
+
+	private static Metadata metadata(Location parent) {
+		return parent == null ? null : parent.md;
 	}
 
 	@Override
@@ -82,25 +76,21 @@ public class Location implements DataSink, Cloneable {
 
 	public CharSequence format() {
 		if (target != null) {
-			if (md.suffix != null)
-				return target.toString() + md.suffix;
+			if (md.suffix != null) return target.toString() + md.suffix;
 			return target;
 		}
-		CharSequence f;
-		f = md.format(md.defaultVal);
-		if (md.defaultVal == null && f != null) {
-			try {
-				StringBuilder r = new StringBuilder();
-				getEncoding().escape(r, f);
-				return r;
-			} catch (IOException e) {
-				throw new SnippetoryException(e);
+		Object f = md.formatVoid();
+		if (f == null) {
+			return md.getFallback();
+		}
+		if (f instanceof EncodedData) {
+			EncodedData data = (EncodedData)f;
+			if (getEncoding().getName().equals(data.getEncoding())) {
+				return data.toCharSequence();
 			}
+			return transcode(new StringBuilder(), data.toCharSequence(), data.getEncoding());
 		}
-		if (f != null) {
-			return f;
-		}
-		return md.fragment;
+		return f.toString();
 	}
 
 	private void set(Object value) {
@@ -109,55 +99,51 @@ public class Location implements DataSink, Cloneable {
 	}
 
 	protected void append(Object value) {
-		try {
-			if (target == null) {
-				target = md.prefix == null ? new StringBuilder()
-						: new StringBuilder(md.prefix);
-			} else {
-				if (md.delimiter != null)
-					target.append(md.delimiter);
-			}
-			if (value instanceof EncodedData) {
-				handleEncodedData((EncodedData) value);
-			} else {
-				getEncoding().escape(target, md.format(md.toString(value)));
-			}
-		} catch (IOException e) {
-			throw new SnippetoryException(e);
+		prepareTarget();
+		Object formatted = md.format(md.toCharData(value));
+		String sourceEncoding = getEncoding(value, formatted);
+		writeToTarget(formatted, sourceEncoding);
+	}
+
+	private void prepareTarget() {
+		if (target == null) {
+			target = md.prefix == null ? new StringBuilder() : new StringBuilder(md.prefix);
+		} else {
+			if (md.delimiter != null) target.append(md.delimiter);
 		}
 	}
 
-	private void handleEncodedData(EncodedData value) throws IOException {
-		String sourceEnc = value.getEncoding();
-
-		// normalize empty to null-encoding
-		if (sourceEnc == null || sourceEnc.length() == 0) {
-			sourceEnc = Encodings.NULL.getName();
-		}
-		Encoding myEnc = getEncoding();
-		if (sourceEnc.equals(myEnc.getName())) {
-			CharSequence formated = md.format(value.toCharSequence());
+	private void writeToTarget(Object formated, String sourceEnc) {
+		if (sourceEnc.equals(getEncoding().getName())) {
 			if (formated instanceof SelfAppender) {
 				((SelfAppender) formated).appendTo(target);
 			} else {
 				target.append(formated);
 			}
 		} else {
-			transcode(value, sourceEnc, myEnc);
+			transcode(target, CharDataSupport.toCharSequence(formated), sourceEnc);
 		}
 	}
 
-	private void transcode(EncodedData value, String sourceEnc,
-			Encoding targetEnc) throws IOException {
-		for (Transcoding overwrite : EncodingRegistry.INSTANCE
-				.getOverwrites(targetEnc)) {
-			if (overwrite.supports(sourceEnc, targetEnc.getName())) {
-				overwrite.transcode(target, md.format(value.toString()),
-						sourceEnc, targetEnc.getName());
-				return;
+	private String getEncoding(Object value, Object formatted) {
+		if (formatted instanceof EncodedData) return ((EncodedData)formatted).getEncoding();
+		return CharDataSupport.getEncoding(value);
+	}
+
+	private <T extends Appendable> T transcode(T target, CharSequence value, String sourceEnc) {
+		Encoding targetEnc =  getEncoding();
+		try {
+			for (Transcoding overwrite : EncodingRegistry.INSTANCE.getOverwrites(targetEnc)) {
+				if (overwrite.supports(sourceEnc, targetEnc.getName())) {
+					overwrite.transcode(target, value, sourceEnc, targetEnc.getName());
+					return target;
+				}
 			}
+			targetEnc.transcode(target, value, sourceEnc);
+			return target;
+		} catch (IOException e) {
+			throw new SnippetoryException(e);
 		}
-		targetEnc.transcode(target, md.format(value.toString()), sourceEnc);
 	}
 
 	public void clear() {
@@ -190,7 +176,7 @@ public class Location implements DataSink, Cloneable {
 	}
 
 	@Override
-	public Location clone() {
+	public Location cleanCopy() {
 		try {
 			Location clone = (Location)super.clone();
 			clone.clear();

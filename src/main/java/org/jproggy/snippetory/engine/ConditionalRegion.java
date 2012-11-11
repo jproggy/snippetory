@@ -2,7 +2,6 @@ package org.jproggy.snippetory.engine;
 
 import java.util.List;
 import java.util.Set;
-
 import org.jproggy.snippetory.spi.EncodedData;
 
 public class ConditionalRegion extends DataSinks implements EncodedData {
@@ -18,7 +17,7 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
 	
 	protected ConditionalRegion(ConditionalRegion template) {
 		super(template);
-		formatter = template.formatter.clone();
+		formatter = template.formatter.cleanCopy();
 		names = names();
 		appendMe =  false;
 	}
@@ -51,7 +50,7 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
 	}
 
 	@Override
-	public ConditionalRegion clone() {
+	public ConditionalRegion cleanCopy() {
 		return new ConditionalRegion(this);
 	}
 

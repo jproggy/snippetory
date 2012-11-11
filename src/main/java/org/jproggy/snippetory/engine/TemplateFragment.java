@@ -23,7 +23,7 @@ public class TemplateFragment implements DataSink, CharSequence, SelfAppender {
 
 	@Override
 	public Set<String> names() {
-		return Collections.EMPTY_SET;
+		return Collections.emptySet();
 	}
 	
 	@Override
@@ -65,7 +65,7 @@ public class TemplateFragment implements DataSink, CharSequence, SelfAppender {
 	}
 
 	@Override
-	public TemplateFragment clone() {
+	public TemplateFragment cleanCopy() {
 		// cloning is not necessary. One instance is enough
 		return this;
 	}

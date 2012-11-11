@@ -45,7 +45,7 @@ public class Region implements Template, Cloneable, CharSequence, SelfAppender {
 		super();
 		this.md = template.md;
 		this.children = template.children;
-		this.data = template.data.clone();
+		this.data = template.data.cleanCopy();
 	}
 
 	@Override

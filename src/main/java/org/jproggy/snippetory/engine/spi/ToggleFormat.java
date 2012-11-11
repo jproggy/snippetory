@@ -16,8 +16,9 @@ package org.jproggy.snippetory.engine.spi;
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.FormatFactory;
+import org.jproggy.snippetory.spi.VoidFormat;
 
-public class ToggleFormat implements Format {
+public class ToggleFormat implements VoidFormat {
 	private int count = 1;
 	private final String[] values;
 
@@ -29,10 +30,10 @@ public class ToggleFormat implements Format {
 	@Override
 	public String format(Object value) {
 		try {
-		if (value instanceof Number) {
-			count = ((Number)value).intValue();
-		}
-		return values[Math.abs((count - 1) % values.length)];
+			if (value instanceof Number) {
+				count = ((Number) value).intValue();
+			}
+			return values[Math.abs((count - 1) % values.length)];
 		} finally {
 			count++;
 		}
@@ -40,15 +41,19 @@ public class ToggleFormat implements Format {
 
 	@Override
 	public boolean supports(Object value) {
-		if (value == null) return true;		
+		if (value == null) return true;
 		return value instanceof Number;
 	}
-	
+
+	@Override
+	public Object formatVoid() {
+		return format(null);
+	}
+
 	public static class Factory implements FormatFactory {
 		@Override
 		public Format create(String definition, TemplateContext ctx) {
 			return new ToggleFormat(definition);
 		}
 	}
-
 }

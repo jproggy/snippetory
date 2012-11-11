@@ -26,6 +26,7 @@ import junit.framework.Assert;
 
 import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.Repo;
+import org.jproggy.snippetory.Syntaxes;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.engine.ParseError;
 import org.junit.Test;
@@ -61,6 +62,26 @@ public class BasicTest {
 		assertEquals(">>'&lt;>", string.toString());
 		string.append("test", plain);
 		string.append("test", string);
+		assertEquals(">>'&lt;><>>'&lt;><", string.toString());
+		string.set("test", "\n\t\r\b\f");
+		assertEquals("\\n\\t\\r\\b\\f", string.toString());
+		Template html_string = Repo.read("${bla $test xx}$").encoding(Encodings.html_string).syntax(Syntaxes.FLUYT).parse();
+		assertEquals("", html_string.toString());
+		html_string.set("test", ">>'&lt;>\n \\<>>'&lt;><");
+		assertEquals("bla >>\\'&amp;lt;><br /> \\\\&lt;>>\\'&amp;lt;>&lt; xx", html_string.toString());
+		try {
+			string = Repo.read("test\n<>").encoding(Encodings.string).parse();
+			html_string.set("test", string);
+			fail();
+		} catch (Exception e) {
+			// expected
+		}
+		string = Repo.read("test\n<>").encoding(Encodings.plain).parse();
+		html_string.set("test", string);
+		assertEquals("bla test<br />&lt;> xx", html_string.toString());
+		html = Repo.read("<p>\n  lalala\n</p>").encoding(Encodings.html).parse();
+		html_string.set("test", html);
+		assertEquals("bla <p>\\n  lalala\\n</p> xx", html_string.toString());
 	}
 	
 	@Test
@@ -333,6 +354,30 @@ public class BasicTest {
 			assertTrue(e.getMessage().contains("Hello"));
 			assertTrue(e.getMessage().contains("{v:x backward='Hello' default='Liahallo'}"));
 		}
+		
+		try {
+			Repo.parse("Hello world{v:x backward='(Hello)(v)' default='Liahallo'}{v:x backward='world' default='Welt'}");
+			fail();
+		} catch(ParseError e) {
+			assertTrue(e.getMessage(), e.getMessage().contains("target not found: (Hello)(v)"));
+			assertTrue(e.getMessage(), e.getMessage().contains("{v:x backward='(Hello)(v)' default='Liahallo'}"));
+		}
+		
+		try {
+			Repo.parse("Hello Hello world{v:x backward='(Hello)' default='Liahallo'}{v:x backward='world' default='Welt'}");
+			fail();
+		} catch(ParseError e) {
+			assertTrue(e.getMessage(), e.getMessage().contains("backward target ambigous: (Hello)"));
+			assertTrue(e.getMessage(), e.getMessage().contains("{v:x backward='(Hello)' default='Liahallo'}"));
+		}
+		
+		try {
+			Repo.parse("Hello world{v:x backward='(Hel)(lo)' default='Liahallo'}{v:x backward='world' default='Welt'}");
+			fail();
+		} catch(ParseError e) {
+			assertTrue(e.getMessage(), e.getMessage().contains("only one match group allowed: (Hel)(lo)"));
+			assertTrue(e.getMessage(), e.getMessage().contains("{v:x backward='(Hel)(lo)' default='Liahallo'}"));
+		}
 	}
 	
 	@Test
@@ -363,4 +408,89 @@ public class BasicTest {
 		t.get("test").set("x", -1).render();
 		assertEquals("1. unpair\n2. pair\n3. unpair\n", t.toString());
 	}
+	
+	@Test
+	public void errors() {
+		try {
+			Repo.parse("before<t:>startend</t:>after");
+			fail();
+		} catch (Exception e) {
+			assertEquals("Conditional region needs to contain at least one named location, or will never be rendered  Error while parsing </t:> at position 18", e.getMessage());
+		}
+		try {
+			Repo.parse("before<t:>startend</t:end>after");
+			fail();
+		} catch (Exception e) {
+			assertEquals("1 unclosed conditional regions detected  Error while parsing </t:end> at position 18", e.getMessage());
+		}
+		try {
+			Repo.parse("before<t:start>startend</t:end>after");
+			fail();
+		} catch (Exception e) {
+			assertEquals("end found but start expected  Error while parsing </t:end> at position 23", e.getMessage());
+		}
+		try {
+			Repo.parse("before<t:x>startend</tx>after");
+			fail();
+		} catch (Exception e) {
+			assertEquals("No end element for x  Error while parsing startend</tx>after at position 11", e.getMessage());
+		}
+		try {
+			Repo.parse("before<tx>startend</t:x>after");
+			fail();
+		} catch (Exception e) {
+			assertEquals("x found but file end expected  Error while parsing </t:x> at position 18", e.getMessage());
+		}
+		try {
+			Repo.parse("before<tx>startend</t:x>after");
+			fail();
+		} catch (Exception e) {
+			assertEquals("x found but file end expected  Error while parsing </t:x> at position 18", e.getMessage());
+		}
+	}
+	
+	@Test
+	public void conditionalRegions() {
+		Template t = Repo.parse("before<t:>start{v:test null='null' delimiter=' '}end</t:>after");
+		assertEquals("beforeafter", t.toString());
+		t.set("test", null);
+		assertEquals("beforeafter", t.toString());
+		t.set("blub", null);
+		assertEquals("beforeafter", t.toString());
+		t.append("test", null);
+		assertEquals("beforeafter", t.toString());
+		t.append("test", "null");
+		assertEquals("beforestartnull null nullendafter", t.toString());
+		t.set("test", "blub");
+		assertEquals("beforestartblubendafter", t.toString());
+
+		t = Repo.read("before$test{${$(stretch='15'){start$test()midd}$le$test()end}$}$after").syntax(Syntaxes.FLUYT).parse();
+		assertEquals("beforeafter", t.toString());
+		Template test = t.get("test");
+		assertEquals("", test.toString());
+		test.set("test", "xxx");
+		assertEquals("startxxxmidd   lexxxend", test.toString());
+		test.render();
+		assertEquals("beforestartxxxmidd   lexxxendafter", t.toString());
+		test.clear();
+		assertEquals("", test.toString());
+		assertEquals("beforestartxxxmidd   lexxxendafter", t.toString());
+		test.set("test", "xxx");
+		assertEquals("startxxxmidd   lexxxend", test.toString());
+		Template test2 = t.get("test");
+		assertEquals("", test2.toString());
+		test2.set("test", "222");
+		assertEquals("start222midd   le222end", test2.toString());
+		assertEquals("startxxxmidd   lexxxend", test.toString());
+		test2.append("test", "s");
+		assertEquals("start222smidd  le222send", test2.toString());
+		assertEquals("startxxxmidd   lexxxend", test.toString());
+		test2.append("tust", "s");
+		assertEquals("start222smidd  le222send", test2.toString());
+		test2.set("tust", "s");
+		assertEquals("start222smidd  le222send", test2.toString());
+		test2.render();
+		assertEquals("beforestartxxxmidd   lexxxendstart222smidd  le222sendafter", t.toString());
+	}
+	
 }
