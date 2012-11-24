@@ -13,7 +13,6 @@
 
 package org.jproggy.snippetory.engine;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +26,6 @@ import org.jproggy.snippetory.spi.CharDataSupport;
 import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Format;
-import org.jproggy.snippetory.spi.Transcoding;
 
 public class Location implements DataSink, Cloneable {
 	final Metadata md;
@@ -80,15 +78,12 @@ public class Location implements DataSink, Cloneable {
 			return target;
 		}
 		Object f = md.formatVoid();
-		if (f == null) {
-			return md.getFallback();
-		}
 		if (f instanceof EncodedData) {
 			EncodedData data = (EncodedData)f;
 			if (getEncoding().getName().equals(data.getEncoding())) {
 				return data.toCharSequence();
 			}
-			return transcode(new StringBuilder(), data.toCharSequence(), data.getEncoding());
+			return md.transcode(new StringBuilder(), data.toCharSequence(), data.getEncoding());
 		}
 		return f.toString();
 	}
@@ -121,29 +116,13 @@ public class Location implements DataSink, Cloneable {
 				target.append(formated);
 			}
 		} else {
-			transcode(target, CharDataSupport.toCharSequence(formated), sourceEnc);
+			md.transcode(target, CharDataSupport.toCharSequence(formated), sourceEnc);
 		}
 	}
 
 	private String getEncoding(Object value, Object formatted) {
 		if (formatted instanceof EncodedData) return ((EncodedData)formatted).getEncoding();
 		return CharDataSupport.getEncoding(value);
-	}
-
-	private <T extends Appendable> T transcode(T target, CharSequence value, String sourceEnc) {
-		Encoding targetEnc =  getEncoding();
-		try {
-			for (Transcoding overwrite : EncodingRegistry.INSTANCE.getOverwrites(targetEnc)) {
-				if (overwrite.supports(sourceEnc, targetEnc.getName())) {
-					overwrite.transcode(target, value, sourceEnc, targetEnc.getName());
-					return target;
-				}
-			}
-			targetEnc.transcode(target, value, sourceEnc);
-			return target;
-		} catch (IOException e) {
-			throw new SnippetoryException(e);
-		}
 	}
 
 	public void clear() {
@@ -166,8 +145,7 @@ public class Location implements DataSink, Cloneable {
 
 	@Override
 	public void append(String name, Object value) {
-		if (name.equals(md.name)) append(value);
-		
+		if (name.equals(md.name)) append(value);		
 	}
 
 	@Override

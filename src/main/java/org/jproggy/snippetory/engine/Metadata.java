@@ -13,11 +13,13 @@
 
 package org.jproggy.snippetory.engine;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.jproggy.snippetory.spi.CharDataSupport;
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Format;
+import org.jproggy.snippetory.spi.Transcoding;
 import org.jproggy.snippetory.spi.VoidFormat;
 
 class Metadata {
@@ -72,12 +74,27 @@ class Metadata {
 		for (Format f : formats) {
 			if (f instanceof VoidFormat) return ((VoidFormat)f).formatVoid();
 		}
-		return null;
+		return getFallback();
 	}
 
 	public CharSequence getFallback() {
 		if (prefix != null || suffix != null) return "";
 		return fragment;
+	}
+
+	public <T extends Appendable> T transcode(T target, CharSequence value, String sourceEnc) {
+		try {
+			for (Transcoding overwrite : EncodingRegistry.INSTANCE.getOverwrites(enc)) {
+				if (overwrite.supports(sourceEnc, enc.getName())) {
+					overwrite.transcode(target, value, sourceEnc, enc.getName());
+					return target;
+				}
+			}
+			enc.transcode(target, value, sourceEnc);
+			return target;
+		} catch (IOException e) {
+			throw new SnippetoryException(e);
+		}
 	}
 
 }
