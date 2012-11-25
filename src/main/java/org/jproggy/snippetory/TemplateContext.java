@@ -56,7 +56,7 @@ import org.jproggy.snippetory.spi.SyntaxID;
  * @author B. Ebertz
  */
 public class TemplateContext implements Cloneable {
-	public static Locale TECH = new Locale("en", "US", "tech");
+	public static final Locale TECH = new Locale("en", "US", "tech");
 	private Locale locale = TECH;
 	private Syntax syntax = Syntax.REGISTRY.getDefault();
 	private UriResolver uriResolver;

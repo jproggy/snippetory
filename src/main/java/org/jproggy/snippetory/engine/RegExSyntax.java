@@ -87,7 +87,7 @@ public abstract class RegExSyntax implements Syntax {
 			if (found == null || pos == matcher.end()) {
 				found = matcher.find();
 			}
-			if (found == Boolean.FALSE) {
+			if (Boolean.FALSE.equals(found)) {
 				return part(matcher.regionEnd());
 			}
 			if (pos < matcher.start()) {
