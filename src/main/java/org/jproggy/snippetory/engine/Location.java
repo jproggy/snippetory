@@ -26,45 +26,46 @@ import org.jproggy.snippetory.spi.CharDataSupport;
 import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Format;
+import org.jproggy.snippetory.spi.VoidFormat;
 
 public class Location implements DataSink, Cloneable {
 	final Metadata md;
 	private StringBuilder target;
+	private final Format[] formats;
+	private final Location parent;
 
 	public Location(Location parent, String name, Map<String, String> attribs,
 			String fragment, TemplateContext ctx) {
+		this.parent = parent;
 		List<Format> formats = new ArrayList<Format>();
 		String delimiter = null;
 		String prefix = null;
 		String suffix = null;
 		Encoding enc = parent == null ? Encodings.NULL : parent.getEncoding();
-		for (String attr : attribs.keySet()) {
-			switch (Attributes.REGISTRY.type(attr)) {
+		for (Map.Entry<String, String> attr : attribs.entrySet()) {
+			switch (Attributes.REGISTRY.type(attr.getKey())) {
 			case FORMAT:
-				formats.add(FormatRegistry.INSTANCE.get(attr,
-						attribs.get(attr), ctx));
+				formats.add(FormatRegistry.INSTANCE.get(attr.getKey(),
+						attr.getValue(), ctx));
 				break;
 			case ENCODING:
-				enc = EncodingRegistry.INSTANCE.get(attribs.get(attr));
+				enc = EncodingRegistry.INSTANCE.get(attr.getValue());
 				break;
 			case DELIMITER:
-				delimiter = attribs.get(attr);
+				delimiter = attr.getValue();
 				break;
 			case PREFIX:
-				prefix = attribs.get(attr);
+				prefix = attr.getValue();
 				break;
 			case SUFFIX:
-				suffix = attribs.get(attr);
+				suffix = attr.getValue();
 				break;
 			default:
-				throw new SnippetoryException("Attribute " + attr + " has unknown type " + Attributes.REGISTRY.type(attr));
+				throw new SnippetoryException("Attribute " + attr.getKey() + " has unknown type " + Attributes.REGISTRY.type(attr.getKey()));
 			}
 		}
-		md = new Metadata(name, formats, enc, fragment, delimiter, prefix, suffix, metadata(parent));
-	}
-
-	private static Metadata metadata(Location parent) {
-		return parent == null ? null : parent.md;
+		md = new Metadata(name, formats, enc, fragment, delimiter, prefix, suffix);
+		this.formats = md.getFormats();
 	}
 
 	@Override
@@ -77,7 +78,7 @@ public class Location implements DataSink, Cloneable {
 			if (md.suffix != null) return target.toString() + md.suffix;
 			return target;
 		}
-		Object f = md.formatVoid();
+		Object f = formatVoid();
 		if (f instanceof EncodedData) {
 			EncodedData data = (EncodedData)f;
 			if (getEncoding().getName().equals(data.getEncoding())) {
@@ -95,7 +96,7 @@ public class Location implements DataSink, Cloneable {
 
 	protected void append(Object value) {
 		prepareTarget();
-		Object formatted = md.format(md.toCharData(value));
+		Object formatted = format(toCharData(value));
 		String sourceEncoding = getEncoding(value, formatted);
 		writeToTarget(formatted, sourceEncoding);
 	}
@@ -118,6 +119,37 @@ public class Location implements DataSink, Cloneable {
 		} else {
 			md.transcode(target, CharDataSupport.toCharSequence(formated), sourceEnc);
 		}
+	}
+
+	Object format(Object value) {
+		for (Format f : formats) {
+			if (f.supports(value)) value = f.format(value);
+		}
+		return value;
+	}
+
+	Object toCharData(Object value) {
+		if (isCharData(value)) return  value;
+		for (Format f : formats) {
+			if (f.supports(value)) {
+				value = f.format(value);
+				if (isCharData(value)) return  value;
+			}
+		}
+		if (parent != null) return parent.toCharData(value);
+		if (value == null) return "";
+		return String.valueOf(value);
+	}
+
+	private boolean isCharData(Object value) {
+		return CharDataSupport.isCharData(value);
+	}
+
+	Object formatVoid() {
+		for (Format f : formats) {
+			if (f instanceof VoidFormat) return ((VoidFormat)f).formatVoid();
+		}
+		return md.getFallback();
 	}
 
 	private String getEncoding(Object value, Object formatted) {
@@ -154,7 +186,7 @@ public class Location implements DataSink, Cloneable {
 	}
 
 	@Override
-	public Location cleanCopy() {
+	public Location cleanCopy(Location parent) {
 		try {
 			Location clone = (Location)super.clone();
 			clone.clear();

@@ -2,22 +2,20 @@ package org.jproggy.snippetory.engine;
 
 import java.util.List;
 import java.util.Set;
+
 import org.jproggy.snippetory.spi.EncodedData;
 
 public class ConditionalRegion extends DataSinks implements EncodedData {
 	private final Set<String> names;
 	private boolean appendMe;
-	private final Location formatter;
 
 	public ConditionalRegion(Location formatter, List<DataSink> parts) {
-		super(parts);
+		super(parts, formatter);
 		names = names();
-		this.formatter = formatter;
 	}
 	
-	protected ConditionalRegion(ConditionalRegion template) {
-		super(template);
-		formatter = template.formatter.cleanCopy();
+	protected ConditionalRegion(ConditionalRegion template, Location parent) {
+		super(template, template.getParent().cleanCopy(parent));
 		names = names();
 		appendMe =  false;
 	}
@@ -50,16 +48,16 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
 	}
 
 	@Override
-	public ConditionalRegion cleanCopy() {
-		return new ConditionalRegion(this);
+	public ConditionalRegion cleanCopy(Location parent) {
+		return new ConditionalRegion(this, parent);
 	}
 
 	@Override
 	public CharSequence format() {
 		if (!appendMe) return "";
-		formatter.clear();
-		formatter.append(this);
-		return formatter.format();
+		getParent().clear();
+		getParent().append(this);
+		return getParent().format();
 	}
 	
 	@Override
@@ -69,7 +67,7 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
 
 	@Override
 	public String getEncoding() {
-		return formatter.getEncoding().getName();
+		return getParent().getEncoding().getName();
 	}
 
 }

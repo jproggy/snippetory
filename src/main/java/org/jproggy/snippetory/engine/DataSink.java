@@ -40,7 +40,7 @@ public interface DataSink {
 	 * in that status changes are not reflected on the called instance. Thus 
 	 * immutable instance may return themselves.
 	 */
-	DataSink cleanCopy();
+	DataSink cleanCopy(Location parent);
 	
 	/**
 	 * Reset to same state as directly after parsing the template.

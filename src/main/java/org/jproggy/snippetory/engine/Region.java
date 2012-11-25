@@ -33,7 +33,7 @@ public class Region implements Template, Cloneable, CharSequence, SelfAppender {
 	public Region(Location placeHolder, List<DataSink> parts,
 			Map<String, Region> children) {
 		super();
-		this.data = new DataSinks(parts);
+		this.data = new DataSinks(parts, placeHolder);
 		this.children = children;
 		this.md = placeHolder.md;
 		for (Region child: children.values()) {
@@ -45,7 +45,12 @@ public class Region implements Template, Cloneable, CharSequence, SelfAppender {
 		super();
 		this.md = template.md;
 		this.children = template.children;
-		this.data = template.data.cleanCopy();
+		this.data = template.data.cleanCopy(getLocation());
+	}
+
+	private Location getLocation() {
+		if (parent == null) return null;
+		return ((Region)parent).data.getParent();
 	}
 
 	@Override

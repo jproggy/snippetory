@@ -65,7 +65,7 @@ public class TemplateFragment implements DataSink, CharSequence, SelfAppender {
 	}
 
 	@Override
-	public TemplateFragment cleanCopy() {
+	public TemplateFragment cleanCopy(Location parent) {
 		// cloning is not necessary. One instance is enough
 		return this;
 	}
