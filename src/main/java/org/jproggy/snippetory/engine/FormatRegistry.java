@@ -18,7 +18,7 @@ import java.util.Map;
 
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.engine.Attributes.Types;
-import org.jproggy.snippetory.spi.Format;
+import org.jproggy.snippetory.spi.FormatConfiguration;
 import org.jproggy.snippetory.spi.FormatFactory;
 
 
@@ -33,7 +33,7 @@ public final class FormatRegistry {
 		formats.put(name, value);
 	}
 
-	public Format get(String name, String definition, TemplateContext ctx) {
+	public FormatConfiguration get(String name, String definition, TemplateContext ctx) {
 		FormatFactory f = formats.get(name);
 		if (f == null) {
 			return null;

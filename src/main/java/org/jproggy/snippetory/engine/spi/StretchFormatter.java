@@ -12,56 +12,40 @@
  *******************************************************************************/
 
 package org.jproggy.snippetory.engine.spi;
- 
+
 import org.jproggy.snippetory.TemplateContext;
-import org.jproggy.snippetory.spi.CharDataSupport;
-import org.jproggy.snippetory.spi.Format;
+import org.jproggy.snippetory.engine.spi.PadFormatter.Alignment;
+import org.jproggy.snippetory.engine.spi.PadFormatter.PadFormat;
 import org.jproggy.snippetory.spi.FormatFactory;
 
-
-
-public class ShortenFormat implements Format {
-	int length;
-	String suffix = "";
-
-	public ShortenFormat(String definition) {
-		boolean num = true;
+public class StretchFormatter implements FormatFactory {
+	@Override
+	public PadFormat create(String definition, TemplateContext ctx) {
+		PadFormat f = null;
+		int length = 0;
+		Alignment left = null;
 		for (char c : definition.toCharArray()) {
-			if (num) {
+			if (f == null) {
 				if (c >= '0' && c <= '9') {
 					length = (10 * length) + (c - '0');
 					continue;
 				}
-				num = false;				
+				f = new PadFormat(length);
 			}
-			suffix += c;
+			if (c == 'l') {
+				if (left != null) throw new IllegalArgumentException("Alingment already defined");
+				left = Alignment.left;
+			} else if (c == 'r') {
+				if (left != null) throw new IllegalArgumentException("Alingment already defined");
+				left = Alignment.right;
+			}
 		}
 		if (length == 0) {
 			throw new IllegalArgumentException("no length defined");
+		} else if (f == null) {
+			f = new PadFormat(length);
 		}
-		if (length < suffix.length()) {
-			throw new IllegalArgumentException("Suffix too long");
-		}
-	}
-
-
-	@Override
-	public CharSequence format(Object value) {
-		CharSequence s = CharDataSupport.toCharSequence(value);
-		if (s.length() <= length) return s; 
-		return new StringBuilder(s.subSequence(0, length - suffix.length())).append(suffix);
-	}
-
-
-	@Override
-	public boolean supports(Object value) {
-		return CharDataSupport.isCharData(value);
-	}
-	
-	public static class Factory implements FormatFactory {
-		@Override
-		public Format create(String definition, TemplateContext ctx) {
-			return new ShortenFormat(definition);
-		}
+		if (left != null) f.setAlign(left);
+		return f;
 	}
 }

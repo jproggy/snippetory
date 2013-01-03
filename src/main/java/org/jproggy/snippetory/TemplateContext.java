@@ -158,7 +158,6 @@ public class TemplateContext implements Cloneable {
 	 * by one of the parse methods. This makes especially sense for inherited attributes.
 	 * Expect the returned map to be unmodifiable. I.e. copy via copy constructor and 
 	 * set newly if you want to extend it.
-	 * @return
 	 */
 	public Map<String, String> getBaseAttribs() {
 		if (baseAttribs == null) return DEFAULT_ATTRIBUTES;

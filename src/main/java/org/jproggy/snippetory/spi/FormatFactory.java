@@ -29,5 +29,5 @@ public interface FormatFactory {
 	 * @param ctx the TemplateContext provides additional information like the locale
 	 * @return the format that will be assigned to the location
 	 */
-	Format create(String definition, TemplateContext ctx);	
+	FormatConfiguration create(String definition, TemplateContext ctx);	
 }

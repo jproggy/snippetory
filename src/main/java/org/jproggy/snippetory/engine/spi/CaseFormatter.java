@@ -14,13 +14,14 @@
 package org.jproggy.snippetory.engine.spi;
 
 import org.jproggy.snippetory.TemplateContext;
-import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.FormatFactory;
+import org.jproggy.snippetory.spi.SimpleFormat;
+import org.jproggy.snippetory.spi.TemplateNode;
 
-public class CaseFormater implements FormatFactory {
+public class CaseFormatter implements FormatFactory {
 
 	@Override
-	public Format create(String definition, TemplateContext ctx) {
+	public StringFormat create(String definition, TemplateContext ctx) {
 		if ("upper".equals(definition)) return new Upper();
 		if ("lower".equals(definition)) return new Lower();
 		if ("firstUpper".equals(definition)) return new FirstUpper();
@@ -29,43 +30,43 @@ public class CaseFormater implements FormatFactory {
 		throw new IllegalArgumentException("defintion " + definition + " unknown.");
 	}
 	
-	private static abstract class StringFormat implements Format {
+	public static abstract class StringFormat extends SimpleFormat {
 		@Override
 		public boolean supports(Object value) {
 			return value instanceof String;
 		}
 	}
 	
-	private static class Upper extends StringFormat {
+	public static class Upper extends StringFormat {
 		@Override
-		public CharSequence format(Object value) {
+		public Object format(TemplateNode location, Object value) {
 			return ((String)value).toUpperCase();
 		}
 	}
 	
-	private static class Lower extends StringFormat {
+	public static class Lower extends StringFormat {
 		@Override
-		public CharSequence format(Object value) {
+		public Object format(TemplateNode location, Object value) {
 			return ((String)value).toLowerCase();
 		}
 	}
 	
-	private static class FirstUpper extends StringFormat {
+	public static class FirstUpper extends StringFormat {
 		@Override
-		public CharSequence format(Object value) {
+		public Object format(TemplateNode location, Object value) {
 			String s = (String)value;
 			return s.substring(0, 1).toUpperCase() + s.substring(1);
 		}
 	}
 	
-	private static class Camelize extends StringFormat {
+	public static class Camelize extends StringFormat {
 		public Camelize(boolean lower) {
 			super();
 			this.lower = lower;
 		}
 		private final boolean lower;
 		@Override
-		public CharSequence format(Object value) {
+		public Object format(TemplateNode location, Object value) {
 			String s = (String)value;
 			String[] vals = s.split("_|-");
 			StringBuilder result = new StringBuilder();

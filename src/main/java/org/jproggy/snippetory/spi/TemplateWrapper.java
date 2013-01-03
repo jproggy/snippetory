@@ -27,61 +27,74 @@ public abstract class TemplateWrapper implements Template {
 		this.wrapped = template;
 	}
 
-	public String getEncoding() {
+	@Override
+    public String getEncoding() {
 		return wrapped.getEncoding();
 	}
 
-	public CharSequence toCharSequence() {
+	@Override
+    public CharSequence toCharSequence() {
 		return wrapped.toCharSequence();
 	}
 
-	public Template get(String... name) {
+	@Override
+    public Template get(String... name) {
 		if (name.length == 0) return this;
 		return wrap(wrapped.get(name));
 	}
 	
 	protected abstract Template wrap(Template toBeWrapped);
 
-	public Template set(String name, Object value) {
+	@Override
+    public Template set(String name, Object value) {
 		wrapped.set(name, value);
 		return this;
 	}
 
-	public Template append(String name, Object value) {
+	@Override
+    public Template append(String name, Object value) {
 		wrapped.append(name, value);
 		return this;
 	}
 
-	public Template clear() {
+	@Override
+    public Template clear() {
 		wrapped.clear();
 		return this;
 	}
 
-	public void render() {
+	@Override
+    public void render() {
 		wrapped.render();
 	}
 
-	public void render(String siblingName) {
+	@Override
+    public void render(String siblingName) {
 		wrapped.render(siblingName);
 	}
 
-	public void render(Template target, String name) {
+	@Override
+    public void render(Template target, String name) {
 		wrapped.render(target, name);
 	}
 
-	public void render(Writer out) throws IOException {
+	@Override
+    public void render(Writer out) throws IOException {
 		wrapped.render(out);
 	}
 
-	public void render(PrintStream out) throws IOException {
+	@Override
+    public void render(PrintStream out) throws IOException {
 		wrapped.render(out);
 	}
 
-	public Set<String> names() {
+	@Override
+    public Set<String> names() {
 		return wrapped.names();
 	}
 
-	public Set<String> regionNames() {
+	@Override
+    public Set<String> regionNames() {
 		return wrapped.regionNames();
 	}
 	

@@ -22,12 +22,11 @@ import java.util.Set;
 
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.engine.chars.SelfAppender;
-import org.jproggy.snippetory.spi.Encoding;
 
 public class Region implements Template, Cloneable, CharSequence, SelfAppender {
-	private final Map<String, ? extends Template> children;
+	private final Map<String, Region> children;
 	private final Metadata md;
-	private Template parent;
+	private Region parent;
 	private DataSinks data;
 
 	public Region(Location placeHolder, List<DataSink> parts,
@@ -41,34 +40,30 @@ public class Region implements Template, Cloneable, CharSequence, SelfAppender {
 		}
 	}
 
-	private Region(Region template) {
+	private Region(Region template, Region parent) {
 		super();
+		setParent(parent);
 		this.md = template.md;
 		this.children = template.children;
-		this.data = template.data.cleanCopy(getLocation());
+		this.data = template.data.cleanCopy(getParentLocation());
 	}
 
-	private Location getLocation() {
+	private Location getParentLocation() {
 		if (parent == null) return null;
-		return ((Region)parent).data.getParent();
+		return parent.data.getPlaceholder();
 	}
 
 	@Override
-	public Template get(String... path) {
-		if (path.length == 0)
-			return this;
-		Template t = children.get(path[0]);
-		if (t == null)
-			return null;
+	public Region get(String... path) {
+		if (path.length == 0) return new Region(this, parent);
+		Region t = children.get(path[0]);
+		if (t == null) return null;
 		if (path.length == 1) {
-			Region copy = new Region((Region)t);
-			copy.setParent(this);
-			return copy;
+			return new Region(t, this);
 		}
 		for (int i = 1; i < path.length; i++) {
 			t = t.get(path[i]);
-			if (t == null)
-				return null;
+			if (t == null) return null;
 		}
 		return t;
 	}
@@ -88,6 +83,9 @@ public class Region implements Template, Cloneable, CharSequence, SelfAppender {
 	@Override
 	public Region clear() {
 		data.clear();
+		for (Region r : children.values()) {
+			r.clear();
+		}
 		return this;
 	}
 
@@ -96,7 +94,8 @@ public class Region implements Template, Cloneable, CharSequence, SelfAppender {
 		return this;
 	}
 
-	public <T extends Appendable> T appendTo(T result) {
+	@Override
+    public <T extends Appendable> T appendTo(T result) {
 		return data.appendTo(result);
 	}
 
@@ -105,11 +104,9 @@ public class Region implements Template, Cloneable, CharSequence, SelfAppender {
 		return appendTo(new StringBuilder()).toString();
 	}
 
-	public String getEncoding() {
-		Encoding e = md.enc;
-		if (e == null)
-			return null;
-		return e.getName();
+	@Override
+    public String getEncoding() {
+		return md.enc.getName();
 	}
 
 	@Override
@@ -155,11 +152,11 @@ public class Region implements Template, Cloneable, CharSequence, SelfAppender {
 		return children.keySet();
 	}
 	
-	public Template getParent() {
+	Template getParent() {
 		return parent;
 	}
 	
-	public void setParent(Template parent) {
+	final void setParent(Region parent) {
 		this.parent = parent;
 	}
 

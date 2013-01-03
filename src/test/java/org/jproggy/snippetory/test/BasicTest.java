@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Method;
-import java.util.Date;
 import java.util.Locale;
 
 import junit.framework.Assert;
@@ -82,86 +81,6 @@ public class BasicTest {
 		html = Repo.read("<p>\n  lalala\n</p>").encoding(Encodings.html).parse();
 		html_string.set("test", html);
 		assertEquals("bla <p>\\n  lalala\\n</p> xx", html_string.toString());
-	}
-	
-	@Test
-	public void formatString() {
-		Template stretch = Repo.parse("{v:test stretch='5r'}");
-		stretch.set("test", "x");
-		assertEquals("    x", stretch.toString());
-		stretch.set("test", "123456");
-		assertEquals("123456", stretch.toString());
-		Template shorten = Repo.parse("{v:test shorten='5...'}");
-		shorten.set("test", "x");
-		assertEquals("x", shorten.toString());
-		shorten.set("test", "123456");
-		assertEquals("12...", shorten.toString());
-		shorten.set("test", "12345");
-		assertEquals("12345", shorten.toString());
-	}
-	
-	@Test
-	public void formatNumber() {
-		Template number = Repo.parse("{v:test number=\"0.00#\"}", Locale.GERMAN);
-		number.set("test", "x");
-		assertEquals("x", number.toString());
-		number.set("test", "123456");
-		assertEquals("123456", number.toString());
-		number.set("test", 1.6);
-		assertEquals("1,60", number.toString());
-		number.set("test", 1.6333);
-		number = Repo.parse("{v:test}", Locale.US);
-		number.set("test", "x");
-		assertEquals("x", number.toString());
-		number.set("test", "123456");
-		assertEquals("123456", number.toString());
-		number.set("test", 1.6);
-		assertEquals("1.6", number.toString());
-		number.set("test", 1.6333);
-		assertEquals("1.633", number.toString());
-		number = Repo.parse("{v:test number='0.00#'}", Locale.GERMANY);
-		number.set("test", 1.55);
-		assertEquals("1,55", number.toString());
-		number.set("test", 1.55555);
-		assertEquals("1,556", number.toString());
-	}
-	
-	@Test
-	public void formatDate() {
-		Template date = Repo.parse("{v:test date='JS_NEW'}");
-		date.set("test", java.sql.Date.valueOf("2011-10-15"));
-		assertEquals("new Date(2011, 10, 15)", date.toString());
-		date = Repo.parse("{v:test date='JS_NEW'}", Locale.GERMAN);
-		date.set("test", java.sql.Date.valueOf("2011-10-15"));
-		assertEquals("new Date(2011, 10, 15)", date.toString());
-		date = Repo.parse("{v:test date='medium'}", Locale.GERMAN);
-		date.set("test", java.sql.Date.valueOf("2011-10-15"));
-		assertEquals("15.10.2011", date.toString());
-		date = Repo.parse("{v:test date=''}", Locale.GERMAN);
-		date.set("test", java.sql.Date.valueOf("2011-10-15"));
-		assertEquals("15.10.2011", date.toString());
-		date = Repo.parse("{v:test date=\"\"}", Locale.GERMAN);
-		date.set("test", java.sql.Date.valueOf("2011-10-15"));
-		assertEquals("15.10.2011", date.toString());
-		date = Repo.parse("<t:test date=''></t:test>", Locale.GERMAN);
-		date.set("test", java.sql.Date.valueOf("2011-10-15"));
-		assertEquals("15.10.2011", date.toString());
-		date = Repo.parse("<t:test date=\"\"></t:test>", Locale.GERMAN);
-		date.set("test", java.sql.Date.valueOf("2011-10-15"));
-		assertEquals("15.10.2011", date.toString());
-		date = Repo.parse("<t:test date='medium'>Date 1: {v:d1} Date 2: {v:d2} </t:test>", Locale.GERMAN).get("test");
-		date.set("d1", java.sql.Date.valueOf("2011-10-15"));
-		date.set("d2", java.sql.Date.valueOf("2011-10-06"));
-		assertEquals("Date 1: 15.10.2011 Date 2: 06.10.2011 ", date.toString());
-		date = Repo.parse("<t:test date=\"short_full\">Date 1: {v:d1 date='sql'} Date 2: {v:d2} </t:test>", Locale.GERMAN).get("test");
-		date.set("d1", java.sql.Date.valueOf("2011-10-15"));
-		date.set("d2", java.sql.Date.valueOf("2011-10-06"));
-		assertEquals("Date 1: 2011-10-15 Date 2: 06.10.11 00:00 Uhr MESZ ", date.toString());
-		date = Repo.read("<t:test>Date 1: {v:d1 date='_medium'} Date 2: {v:d2} </t:test>")
-				.locale(Locale.GERMAN).attrib("date", "long_short").parse().get("test");
-		date.set("d1", new Date(java.sql.Date.valueOf("2011-10-15").getTime() + 3915000l) );
-		date.set("d2", java.sql.Date.valueOf("2011-10-06"));
-		assertEquals("Date 1: 01:05:15 Date 2: 6. Oktober 2011 00:00 ", date.toString());
 	}
 	
 	@Test
@@ -381,35 +300,6 @@ public class BasicTest {
 	}
 	
 	@Test
-	public void toggle() {
-		Template t = Repo.parse("<t:test>{v:toggle='1;2;3'}. {v: toggle='unpair;pair'}\n</t:test>");
-		t.get("test").render();
-		t.get("test").render();
-		t.get("test").render();
-		assertEquals("1. unpair\n2. pair\n3. unpair\n", t.toString());
-		t.clear();
-		t.get("test").render();
-		t.get("test").render();
-		t.get("test").render();
-		assertEquals("1. pair\n2. unpair\n3. pair\n", t.toString());
-		t = Repo.parse("<t:test>{v:x toggle='1;2;3'}. {v:x toggle='unpair;pair'}\n</t:test>");
-		t.get("test").set("x", 1).render();
-		t.get("test").set("x", 2).render();
-		t.get("test").set("x", 3).render();
-		assertEquals("1. unpair\n2. pair\n3. unpair\n", t.toString());
-		t.clear();
-		t.get("test").set("x", 1).render();
-		t.get("test").set("x", 2).render();
-		t.get("test").set("x", 3).render();
-		assertEquals("1. unpair\n2. pair\n3. unpair\n", t.toString());
-		t.clear();
-		t.get("test").set("x", 1).render();
-		t.get("test").set("x", 0).render();
-		t.get("test").set("x", -1).render();
-		assertEquals("1. unpair\n2. pair\n3. unpair\n", t.toString());
-	}
-	
-	@Test
 	public void errors() {
 		try {
 			Repo.parse("before<t:>startend</t:>after");
@@ -451,7 +341,7 @@ public class BasicTest {
 	
 	@Test
 	public void conditionalRegions() {
-		Template t = Repo.parse("before<t:>start{v:test null='null' delimiter=' '}end</t:>after");
+		Template t = Repo.parse("before<t:>->{v:test null='null' delimiter=' '}<-</t:>after");
 		assertEquals("beforeafter", t.toString());
 		t.set("test", null);
 		assertEquals("beforeafter", t.toString());
@@ -459,38 +349,93 @@ public class BasicTest {
 		assertEquals("beforeafter", t.toString());
 		t.append("test", null);
 		assertEquals("beforeafter", t.toString());
-		t.append("test", "null");
-		assertEquals("beforestartnull null nullendafter", t.toString());
+		t.append("test", "test");
+		assertEquals("before->null null test<-after", t.toString());
 		t.set("test", "blub");
-		assertEquals("beforestartblubendafter", t.toString());
+		assertEquals("before->blub<-after", t.toString());
 
-		t = Repo.read("before$test{${$(stretch='15'){start$test()midd}$le$test()end}$}$after").syntax(Syntaxes.FLUYT).parse();
-		assertEquals("beforeafter", t.toString());
+		t = Repo.read("before-><t:test><t: pad='30' pad.align='right'><t: pad='12' pad.fill='.'>start{v:test}</t:><middle>{v:test}end</t:></t:test><-after").parse();
+		assertEquals("before-><-after", t.toString());
 		Template test = t.get("test");
 		assertEquals("", test.toString());
 		test.set("test", "xxx");
-		assertEquals("startxxxmidd   lexxxend", test.toString());
+		assertEquals("    startxxx....<middle>xxxend", test.toString());
 		test.render();
-		assertEquals("beforestartxxxmidd   lexxxendafter", t.toString());
+		assertEquals("before->    startxxx....<middle>xxxend<-after", t.toString());
 		test.clear();
 		assertEquals("", test.toString());
-		assertEquals("beforestartxxxmidd   lexxxendafter", t.toString());
+		assertEquals("before->    startxxx....<middle>xxxend<-after", t.toString());
 		test.set("test", "xxx");
-		assertEquals("startxxxmidd   lexxxend", test.toString());
+		assertEquals("    startxxx....<middle>xxxend", test.toString());
 		Template test2 = t.get("test");
 		assertEquals("", test2.toString());
 		test2.set("test", "222");
-		assertEquals("start222midd   le222end", test2.toString());
-		assertEquals("startxxxmidd   lexxxend", test.toString());
+		assertEquals("    start222....<middle>222end", test2.toString());
+		assertEquals("    startxxx....<middle>xxxend", test.toString());
 		test2.append("test", "s");
-		assertEquals("start222smidd  le222send", test2.toString());
-		assertEquals("startxxxmidd   lexxxend", test.toString());
+		assertEquals("   start222s...<middle>222send", test2.toString());
+		assertEquals("    startxxx....<middle>xxxend", test.toString());
 		test2.append("tust", "s");
-		assertEquals("start222smidd  le222send", test2.toString());
+		assertEquals("   start222s...<middle>222send", test2.toString());
 		test2.set("tust", "s");
-		assertEquals("start222smidd  le222send", test2.toString());
+		assertEquals("   start222s...<middle>222send", test2.toString());
 		test2.render();
-		assertEquals("beforestartxxxmidd   lexxxendstart222smidd  le222sendafter", t.toString());
+		assertEquals("before->    startxxx....<middle>xxxend   start222s...<middle>222send<-after", t.toString());
+		t = t.get();
+		assertEquals("before-><-after", t.toString());
+		test = t.get("test");
+		assertEquals("", test.toString());
+		test.set("test", "xxx");
+		assertEquals("    startxxx....<middle>xxxend", test.toString());
+		test.render();
+		assertEquals("before->    startxxx....<middle>xxxend<-after", t.toString());
+		test.clear();
+		assertEquals("", test.toString());
+		assertEquals("before->    startxxx....<middle>xxxend<-after", t.toString());
+		test.set("test", "xxx");
+		assertEquals("    startxxx....<middle>xxxend", test.toString());
+		test2 = t.get("test");
+		assertEquals("", test2.toString());
+		test2.set("test", "222");
+		assertEquals("    start222....<middle>222end", test2.toString());
+		assertEquals("    startxxx....<middle>xxxend", test.toString());
+		test2.append("test", "s");
+		assertEquals("   start222s...<middle>222send", test2.toString());
+		assertEquals("    startxxx....<middle>xxxend", test.toString());
+		test2.append("tust", "s");
+		assertEquals("   start222s...<middle>222send", test2.toString());
+		test2.set("tust", "s");
+		assertEquals("   start222s...<middle>222send", test2.toString());
+		test2.render();
+		assertEquals("before->    startxxx....<middle>xxxend   start222s...<middle>222send<-after", t.toString());
+
+		t = Repo.read("before$(default='nothing'){$test{ start$(pad='10'){$tust()middle}$$test()end }$}$after").syntax(Syntaxes.FLUYT).parse();
+		assertEquals("beforenothingafter", t.toString());
+		test = t.get("test");
+		assertEquals(" start$test()end ", test.toString());
+		test.set("test", "<value>");
+		assertEquals(" start<value>end ", test.toString());
+		test.render();
+		assertEquals("before start<value>end after", t.toString());
+		test.clear();
+		assertEquals(" start$test()end ", test.toString());
+		assertEquals("before start<value>end after", t.toString());
+		test.set("test", "xxx");
+		assertEquals(" startxxxend ", test.toString());
+		test2 = t.get("test");
+		assertEquals(" start$test()end ", test2.toString());
+		test2.set("tust", "222");
+		assertEquals(" start222middle $test()end ", test2.toString());
+		assertEquals(" startxxxend ", test.toString());
+		test2.append("tust", "s");
+		assertEquals(" start222smiddle$test()end ", test2.toString());
+		assertEquals(" startxxxend ", test.toString());
+		test2.append("test", ".s.");
+		assertEquals(" start222smiddle.s.end ", test2.toString());
+		test2.set("tust", "s");
+		assertEquals(" startsmiddle   .s.end ", test2.toString());
+		test2.render();
+		assertEquals("before start<value>end  startsmiddle   .s.end after", t.toString());
 	}
 	
 }

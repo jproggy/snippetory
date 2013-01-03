@@ -27,7 +27,6 @@ public interface EncodedData {
 	/**
 	 * The encoding is represented by it's name. The name can be resolved 
 	 * by  {@link EncodingRegistry#get(String) Encoding.REGISTRY.get(String)}.
-	 * @return 
 	 */
 	String getEncoding();
 	

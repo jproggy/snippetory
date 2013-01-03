@@ -11,7 +11,7 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
  *******************************************************************************/
 
-package org.jproggy.snippetory.test;
+package org.jproggy.snippetory.engine;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -33,10 +33,6 @@ import org.jproggy.snippetory.Repo;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.UriResolver;
-import org.jproggy.snippetory.engine.DataSink;
-import org.jproggy.snippetory.engine.Location;
-import org.jproggy.snippetory.engine.Region;
-import org.jproggy.snippetory.engine.TemplateFragment;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -47,12 +43,11 @@ public class RegionTest {
 	private static TemplateFragment tf(String v) {
 		return new TemplateFragment(v);
 	}
-	@SuppressWarnings("unchecked")
-	@Test 
+	@Test
 	public void charAtTest() {
-		Location placeHolder = new Location(null, "", Collections.EMPTY_MAP, "", null);
+		Location placeHolder = new Location(null, new Metadata("", "", Attributes.parse(null, Collections.<String, String>emptyMap(), null)));
 		List<DataSink> parts = Arrays.asList((DataSink)tf(""), tf("test"), tf("yagni"));
-		Region region = new Region(placeHolder, parts, Collections.EMPTY_MAP);
+		Region region = new Region(placeHolder, parts, Collections.<String, Region>emptyMap());
 		assertEquals('t', region.charAt(0));
 		assertEquals('e', region.charAt(1));
 		assertEquals('s', region.charAt(2));
@@ -85,7 +80,7 @@ public class RegionTest {
 			// ignore --> expected
 		}
 		parts = Arrays.asList((DataSink)tf("test"), tf(""), tf("yagni"), tf(""), tf("jproggy"));
-		region = new Region(placeHolder, parts, Collections.EMPTY_MAP);
+		region = new Region(placeHolder, parts, Collections.<String, Region>emptyMap());
 		assertEquals('y', region.charAt(4));
 		assertEquals('y', region.charAt(15));
 	}

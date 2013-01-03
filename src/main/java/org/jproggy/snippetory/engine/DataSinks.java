@@ -9,20 +9,20 @@ import org.jproggy.snippetory.engine.chars.CharSequences;
 
 public class DataSinks extends CharSequences implements DataSink {
 	private final DataSink[] parts;
-	private final Location parent;
+	private final Location placeHolder;
 
-	public DataSinks(List<DataSink> parts, Location parent) {
+	public DataSinks(List<DataSink> parts, Location placeHolder) {
 		super();
 		this.parts = parts.toArray(new DataSink[parts.size()]);
-		this.parent = parent;
+		this.placeHolder = placeHolder;
 	}
 
 	protected DataSinks(DataSinks template, Location parent) {
 		super();
-		this.parent = parent;
+		this.placeHolder = template.placeHolder.cleanCopy(parent);
 		this.parts = new DataSink[template.parts.length];
 		for (int i = 0; i < parts.length; i++) {
-			this.parts[i] =  template.parts[i].cleanCopy(parent);
+			this.parts[i] =  template.parts[i].cleanCopy(this.placeHolder);
 		}
 	}
 
@@ -88,7 +88,7 @@ public class DataSinks extends CharSequences implements DataSink {
 		return this;
 	}
 
-	public Location getParent() {
-		return parent;
+	public Location getPlaceholder() {
+		return placeHolder;
 	}
 }

@@ -13,53 +13,171 @@
 
 package org.jproggy.snippetory.engine;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.beans.PropertyEditor;
+import java.beans.PropertyEditorManager;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
 
 import org.jproggy.snippetory.Encodings;
-import org.jproggy.snippetory.engine.spi.CaseFormater;
-import org.jproggy.snippetory.engine.spi.DateFormater;
-import org.jproggy.snippetory.engine.spi.DefaultFormater;
-import org.jproggy.snippetory.engine.spi.NullFormater;
+import org.jproggy.snippetory.TemplateContext;
+import org.jproggy.snippetory.engine.spi.CaseFormatter;
+import org.jproggy.snippetory.engine.spi.CropFormatter;
+import org.jproggy.snippetory.engine.spi.DateFormatter;
+import org.jproggy.snippetory.engine.spi.DefaultFormatter;
+import org.jproggy.snippetory.engine.spi.NullFormatter;
 import org.jproggy.snippetory.engine.spi.NumFormater;
-import org.jproggy.snippetory.engine.spi.ShortenFormat;
-import org.jproggy.snippetory.engine.spi.StretchFormat;
-import org.jproggy.snippetory.engine.spi.ToggleFormat;
+import org.jproggy.snippetory.engine.spi.PadFormatter;
+import org.jproggy.snippetory.engine.spi.ShortenFormatter;
+import org.jproggy.snippetory.engine.spi.StretchFormatter;
+import org.jproggy.snippetory.engine.spi.ToggleFormatter;
 import org.jproggy.snippetory.spi.Configurer;
+import org.jproggy.snippetory.spi.DynamicAttributes;
+import org.jproggy.snippetory.spi.Encoding;
+import org.jproggy.snippetory.spi.FormatConfiguration;
 
 
 class Attributes {
 	static final String BACKWARD = "backward";
-	public static class Registry {
-		private final Map<String, Types> attribs = new HashMap<String, Types>();
-		private Registry() {}
-		public void register(String name, Types value) {
-			Types old = attribs.get(name);
-			if (old != null && old.equals(value)) {
-				throw new SnippetoryException("attribute " + name + " alreadeay defined oterhwise.");
-			}
-			attribs.put(name, value);
+	static final Registry REGISTRY = new Registry();
+	
+	static Attributes parse(Location parent, Map<String, String> attribs, TemplateContext ctx) {
+		Attributes result = new Attributes(parent, ctx);
+		for (Map.Entry<String, String> attr : attribs.entrySet()) {
+			Types type = Attributes.REGISTRY.type(attr.getKey());
+			type.handle(result, attr.getKey(), attr.getValue());
 		}
-		public Types type(String name) {
-			return attribs.get(name);
+		return result;
+	}
+	
+	Map<String, FormatConfiguration> formats =  new LinkedHashMap<String, FormatConfiguration>();
+	Encoding enc;
+	String delimiter;
+	String prefix;
+	String suffix;
+	private TemplateContext ctx;
+	
+	Attributes(Location parent, TemplateContext ctx) {
+		enc = parent == null ? Encodings.NULL : parent.md.enc;
+		this.ctx = ctx;
+	}
+	
+	void unregisteredAttribute(String key, String value) {
+		String[] parts = key.split("\\.");
+		if (parts.length  == 2) {
+			subAttribute(parts[0], parts[1], value);
+		} else {
+			throw new SnippetoryException("Can't understand attribute " + key + "='" + value + "'");
+		}
+		
+	}
+	
+	private void subAttribute(String parent, String attrib, String value) {
+		FormatConfiguration format = formats.get(parent);
+		try {
+			BeanInfo desc = Introspector.getBeanInfo(format.getClass());
+			for (PropertyDescriptor prop: desc.getPropertyDescriptors()) {
+				if (prop.getName().equals(attrib)) {
+					setProperty(format, prop, value);
+					return;
+				}
+			}
+		} catch (IntrospectionException e) {
+			throw new SnippetoryException(e);
+		}
+		if (format instanceof DynamicAttributes) {
+			((DynamicAttributes)format).setAttribute(attrib, value);
+			return;
+		}
+		throw new SnippetoryException("Can't understand attribute " + parent + '.' + attrib + "='" + value + "'");
+	}
+
+	private void setProperty(FormatConfiguration format, PropertyDescriptor prop, String value) {
+		try {
+			PropertyEditor editor = toEditor(prop);
+			editor.setAsText(value);
+			prop.getWriteMethod().invoke(format, editor.getValue());
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new SnippetoryException(e);
 		}
 	}
-	static final Registry REGISTRY = new Registry();
+
+	@SuppressWarnings("unchecked")
+	private PropertyEditor toEditor(PropertyDescriptor prop) throws InstantiationException, IllegalAccessException {
+		Class<?> editorType = prop.getPropertyEditorClass();
+		if (editorType != null) {
+			return (PropertyEditor)editorType.newInstance();
+		}
+		Class<?> type = prop.getPropertyType();
+		if (Enum.class.isAssignableFrom(type)) {
+			return new EnumEditor((Class<Enum<?>>)type);
+		}
+		return PropertyEditorManager.findEditor(type);
+	}
+
+	enum Types {
+		FORMAT {
+			@Override
+			void handle(Attributes target, String key, String value) {
+				target.formats.put(key, FormatRegistry.INSTANCE.get(key, value, target.ctx));
+			}			
+		}, ENCODING {
+			@Override
+			void handle(Attributes target, String key, String value) {
+				target.enc = EncodingRegistry.INSTANCE.get(value);
+			}			
+		}, DELIMITER {
+			@Override
+			void handle(Attributes target, String key, String value) {
+				target.delimiter = value;
+			}			
+		}, PREFIX {
+			@Override
+			void handle(Attributes target, String key, String value) {
+				target.prefix = value;
+			}			
+		}, SUFFIX {
+			@Override
+			void handle(Attributes target, String key, String value) {
+				target.suffix = value;
+			}			
+		}, BACKWARD {
+			@Override
+			void handle(Attributes target, String key, String value) {
+				throw new SnippetoryException("Internal error: BACKWARD is not expected here");
+			}			
+		}, UNREGISTERED {
+			@Override
+			void handle(Attributes target, String key, String value) {
+				target.unregisteredAttribute(key, value);
+			}			
+		};
+		abstract void handle(Attributes target, String key, String value);
+	}
+
 	static {
 		REGISTRY.register("enc", Types.ENCODING);
 		REGISTRY.register("delimiter", Types.DELIMITER);
 		REGISTRY.register("prefix", Types.PREFIX);
 		REGISTRY.register("suffix", Types.SUFFIX);
 		REGISTRY.register(BACKWARD, Types.BACKWARD);
-		FormatRegistry.INSTANCE.register("stretch", new StretchFormat.Factory());
-		FormatRegistry.INSTANCE.register("shorten", new ShortenFormat.Factory());
+		FormatRegistry.INSTANCE.register("pad", new PadFormatter());
+		FormatRegistry.INSTANCE.register("stretch", new StretchFormatter());
+		FormatRegistry.INSTANCE.register("crop", new CropFormatter());
+		FormatRegistry.INSTANCE.register("shorten", new ShortenFormatter());
 		FormatRegistry.INSTANCE.register("number", new NumFormater());
-		FormatRegistry.INSTANCE.register("date", new DateFormater());
-		FormatRegistry.INSTANCE.register("toggle", new ToggleFormat.Factory());
-		FormatRegistry.INSTANCE.register("case", new CaseFormater());
-		FormatRegistry.INSTANCE.register("default", new DefaultFormater());
-		FormatRegistry.INSTANCE.register("null", new NullFormater());
+		FormatRegistry.INSTANCE.register("date", new DateFormatter());
+		FormatRegistry.INSTANCE.register("toggle", new ToggleFormatter());
+		FormatRegistry.INSTANCE.register("case", new CaseFormatter());
+		FormatRegistry.INSTANCE.register("default", new DefaultFormatter());
+		FormatRegistry.INSTANCE.register("null", new NullFormatter());
 		for (Encodings e: Encodings.values()) {
 			EncodingRegistry.INSTANCE.register(e);
 		}
@@ -69,7 +187,19 @@ class Attributes {
 			c.getClass();
 		}
 	}
-	enum Types {
-		FORMAT, ENCODING, DELIMITER, PREFIX, SUFFIX, BACKWARD
+	public static class Registry {
+		private final Map<String, Types> attribs = new HashMap<String, Types>();
+		private Registry() {}
+		public void register(String name, Types value) {
+			Types old = attribs.get(name);
+			if (old != null && old.equals(value)) {
+				throw new SnippetoryException("attribute " + name + " already defined otherwise.");
+			}
+			attribs.put(name, value);
+		}
+		public Types type(String name) {
+			if (!attribs.containsKey(name)) return Types.UNREGISTERED;
+			return attribs.get(name);
+		}
 	}
 }

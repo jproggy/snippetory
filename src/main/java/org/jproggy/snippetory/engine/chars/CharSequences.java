@@ -64,7 +64,7 @@ public abstract class CharSequences implements CharSequence, SelfAppender {
 		return l;
 	}
 	
-	@Override
+    @Override
 	public String toString() {
 		return appendTo(new StringBuilder()).toString();
 	}

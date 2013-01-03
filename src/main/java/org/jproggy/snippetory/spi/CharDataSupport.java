@@ -9,6 +9,10 @@ public class CharDataSupport {
 		return value instanceof EncodedData || value instanceof CharSequence;
 	}
 	
+	public static int length(Object chars) {
+		return toCharSequence(chars).length();
+	}
+	
 	public static CharSequence toCharSequence(Object chars) {
 		if (chars instanceof CharSequence) {
 			return (CharSequence)chars;

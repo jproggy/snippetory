@@ -48,7 +48,8 @@ public enum Syntaxes implements SyntaxID {
 	 */
 	HIDDEN_BLOCKS;
 	
-	public String getName() { return name(); }
+	@Override
+    public String getName() { return name(); }
 	
 	/**
 	 *  a template context pre-configured for selected syntax 

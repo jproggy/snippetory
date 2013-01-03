@@ -20,13 +20,14 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 import org.jproggy.snippetory.TemplateContext;
-import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.FormatFactory;
+import org.jproggy.snippetory.spi.SimpleFormat;
+import org.jproggy.snippetory.spi.TemplateNode;
 
 
 public class NumFormater implements FormatFactory {
 	@Override
-	public Format create(String definition, TemplateContext ctx) {
+	public SimpleFormat create(String definition, TemplateContext ctx) {
 		if (("".equals(definition) && isTechLocale(ctx)) 
 				|| "tostring".equalsIgnoreCase(definition)) {
 			new ToStringFormat();
@@ -47,10 +48,10 @@ public class NumFormater implements FormatFactory {
 		return new DecimalFormat(definition, DecimalFormatSymbols.getInstance(l));
 	}
 
-	public static class ToStringFormat implements Format {
+	public static class ToStringFormat extends SimpleFormat {
 
 		@Override
-		public CharSequence format(Object value) {
+		public Object format(TemplateNode location, Object value) {
 			return value.toString();
 		}
 
@@ -60,7 +61,7 @@ public class NumFormater implements FormatFactory {
 		}
 	}	
 
-	public static class DecimalFormatWrapper implements Format {
+	public static class DecimalFormatWrapper extends SimpleFormat {
 		private final NumberFormat impl;
 
 		public DecimalFormatWrapper(String definition, Locale l) {
@@ -68,7 +69,7 @@ public class NumFormater implements FormatFactory {
 		}
 
 		@Override
-		public CharSequence format(Object value) {
+		public Object format(TemplateNode location, Object value) {
 			return impl.format(value, new StringBuffer(), new FieldPosition(0));
 		}
 

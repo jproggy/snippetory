@@ -23,10 +23,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.jproggy.snippetory.TemplateContext;
-import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.FormatFactory;
+import org.jproggy.snippetory.spi.SimpleFormat;
+import org.jproggy.snippetory.spi.TemplateNode;
 
-public class DateFormater implements FormatFactory {
+public class DateFormatter implements FormatFactory {
 	private static final Map<String, Integer> LENGTHS = new TreeMap<String, Integer>(
 			String.CASE_INSENSITIVE_ORDER);
 
@@ -38,7 +39,7 @@ public class DateFormater implements FormatFactory {
 	}
 
 	@Override
-	public Format create(String definition, TemplateContext ctx) {
+	public DateFormatWrapper create(String definition, TemplateContext ctx) {
 		return new DateFormatWrapper(toFormat(definition, ctx.getLocale()));
 	}
 
@@ -59,12 +60,16 @@ public class DateFormater implements FormatFactory {
 			return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
 		// JS
-		if ("JS_NEW".equals(definition))
+		if ("JS".equals(definition))
 			return new SimpleDateFormat("'new Date('yyyy', 'MM', 'dd')'",
 					Locale.US);
-		if ("JS_NEW_FULL".equals(definition))
+		if ("_JS".equals(definition))
 			return new SimpleDateFormat(
-					"'new Date('yyyy', 'MM', 'dd', 'MM', 'dd', 'HH', 'mm', 'ss')'",
+					"'new Date(0, 0, 0, 'HH', 'mm', 'ss')'",
+					Locale.US);
+		if ("JS_JS".equals(definition))
+			return new SimpleDateFormat(
+					"'new Date('yyyy', 'MM', 'dd', 'HH', 'mm', 'ss')'",
 					Locale.US);
 
 		return evaluateLengths(definition, l);
@@ -99,7 +104,7 @@ public class DateFormater implements FormatFactory {
 		return new SimpleDateFormat(definition, l);
 	}
 
-	public static class DateFormatWrapper implements Format {
+	public static class DateFormatWrapper extends SimpleFormat {
 		private final DateFormat impl;
 
 		public DateFormatWrapper(DateFormat d) {
@@ -107,9 +112,9 @@ public class DateFormater implements FormatFactory {
 		}
 
 		@Override
-		public CharSequence format(Object value) {
+		public Object format(TemplateNode location, Object value) {
 			if (value instanceof Calendar)
-				return format(((Calendar) value).getTime());
+				return format(location, ((Calendar) value).getTime());
 			return impl.format(value, new StringBuffer(), new FieldPosition(0));
 		}
 

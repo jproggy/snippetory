@@ -9,7 +9,7 @@ public interface DataSink {
 	 * Offers a value to the callee.  The callee is responsible for filtering out the 
 	 * relevant names. Thus it's expected to ignore all names, that aren't listed in
 	 * it's names(). However, the caller may do this filtering, too, as far as it provides
-	 * a names declared by the names() method. The set method is intented to keep
+	 * a names declared by the names() method. The set method is intended to keep
 	 * only a single value.
 	 * </p>
 	 */

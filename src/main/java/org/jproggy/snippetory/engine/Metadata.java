@@ -14,28 +14,31 @@
 package org.jproggy.snippetory.engine;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Collections;
+import java.util.Set;
 
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Format;
+import org.jproggy.snippetory.spi.FormatConfiguration;
+import org.jproggy.snippetory.spi.TemplateNode;
 import org.jproggy.snippetory.spi.Transcoding;
+import org.jproggy.snippetory.spi.VoidFormat;
 
-class Metadata {
-	public Metadata(String name, List<Format> formats, Encoding enc,
-			 String fragment, String delimiter,
-			String prefix, String suffix) {
+class Metadata implements VoidFormat {
+	
+	public Metadata(String name, String fragment, Attributes attribs) {
 		super();
 		this.name = name;
-		this.formats = formats.toArray(new Format[formats.size()]);
-		this.enc = enc;
+		this.formats = attribs.formats.values().toArray(new FormatConfiguration[attribs.formats.size()]);
+		this.enc = attribs.enc;
 		this.fragment = fragment;
-		this.delimiter = delimiter;
-		this.prefix = prefix;
-		this.suffix = suffix;
+		this.delimiter = attribs.delimiter;
+		this.prefix = attribs.prefix;
+		this.suffix = attribs.suffix;
 	}
 
 	final String name;
-	private final Format[] formats;
+	final FormatConfiguration[] formats;
 	final Encoding enc;
 	final String fragment;
 	final String delimiter;
@@ -61,9 +64,44 @@ class Metadata {
 			throw new SnippetoryException(e);
 		}
 	}
-
-	public Format[] getFormats() {
-		return formats;
+	
+	Format[] getFormats(TemplateNode location) {
+		Format[] result = new Format[formats.length];
+		for (int i = 0; i < formats.length; i++) {
+			result[i] = formats[i].getFormat(location);
+		}
+		return result;
 	}
 
+	@Override
+	public Object format(TemplateNode location, Object value) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean supports(Object value) {
+		return false;
+	}
+
+	@Override
+	public void clear(TemplateNode location) {
+	}
+
+	@Override
+	public Object formatVoid(TemplateNode node) {
+		return getFallback();
+	}
+
+	@Override
+	public void set(String name, Object value) {
+	}
+
+	@Override
+	public void append(String name, Object value) {
+	}
+
+	@Override
+	public Set<String> names() {
+		return Collections.emptySet();
+	}
 }

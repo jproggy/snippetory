@@ -13,59 +13,28 @@
 
 package org.jproggy.snippetory.engine;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Set;
 
-import org.jproggy.snippetory.Encodings;
-import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.engine.chars.SelfAppender;
 import org.jproggy.snippetory.spi.CharDataSupport;
 import org.jproggy.snippetory.spi.EncodedData;
-import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Format;
+import org.jproggy.snippetory.spi.TemplateNode;
 import org.jproggy.snippetory.spi.VoidFormat;
 
-public class Location implements DataSink, Cloneable {
+public final class Location implements DataSink, TemplateNode {
 	final Metadata md;
 	private StringBuilder target;
-	private final Format[] formats;
 	private final Location parent;
+	private final Format[] formats;
+	private final VoidFormat voidformat;
 
-	public Location(Location parent, String name, Map<String, String> attribs,
-			String fragment, TemplateContext ctx) {
+	public Location(Location parent, Metadata metadata) {
 		this.parent = parent;
-		List<Format> formats = new ArrayList<Format>();
-		String delimiter = null;
-		String prefix = null;
-		String suffix = null;
-		Encoding enc = parent == null ? Encodings.NULL : parent.getEncoding();
-		for (Map.Entry<String, String> attr : attribs.entrySet()) {
-			switch (Attributes.REGISTRY.type(attr.getKey())) {
-			case FORMAT:
-				formats.add(FormatRegistry.INSTANCE.get(attr.getKey(),
-						attr.getValue(), ctx));
-				break;
-			case ENCODING:
-				enc = EncodingRegistry.INSTANCE.get(attr.getValue());
-				break;
-			case DELIMITER:
-				delimiter = attr.getValue();
-				break;
-			case PREFIX:
-				prefix = attr.getValue();
-				break;
-			case SUFFIX:
-				suffix = attr.getValue();
-				break;
-			default:
-				throw new SnippetoryException("Attribute " + attr.getKey() + " has unknown type " + Attributes.REGISTRY.type(attr.getKey()));
-			}
-		}
-		md = new Metadata(name, formats, enc, fragment, delimiter, prefix, suffix);
-		this.formats = md.getFormats();
+		this.md = metadata;
+		this.formats = md.getFormats(this);
+		this.voidformat = getVoidFormat(formats, metadata);
 	}
 
 	@Override
@@ -73,15 +42,16 @@ public class Location implements DataSink, Cloneable {
 		return format().toString();
 	}
 
-	public CharSequence format() {
+	@Override
+    public CharSequence format() {
 		if (target != null) {
 			if (md.suffix != null) return target.toString() + md.suffix;
 			return target;
 		}
-		Object f = formatVoid();
+		Object f = voidformat.formatVoid(this);
 		if (f instanceof EncodedData) {
 			EncodedData data = (EncodedData)f;
-			if (getEncoding().getName().equals(data.getEncoding())) {
+			if (getEncoding().equals(data.getEncoding())) {
 				return data.toCharSequence();
 			}
 			return md.transcode(new StringBuilder(), data.toCharSequence(), data.getEncoding());
@@ -89,14 +59,14 @@ public class Location implements DataSink, Cloneable {
 		return f.toString();
 	}
 
-	private void set(Object value) {
-		clear();
+	protected void set(Object value) {
+		target = null;
 		append(value);
 	}
 
-	protected void append(Object value) {
+	private void append(Object value) {
 		prepareTarget();
-		Object formatted = format(toCharData(value));
+		Object formatted = format(this, toCharData(this, value));
 		String sourceEncoding = getEncoding(value, formatted);
 		writeToTarget(formatted, sourceEncoding);
 	}
@@ -110,7 +80,7 @@ public class Location implements DataSink, Cloneable {
 	}
 
 	private void writeToTarget(Object formated, String sourceEnc) {
-		if (sourceEnc.equals(getEncoding().getName())) {
+		if (sourceEnc.equals(getEncoding())) {
 			if (formated instanceof SelfAppender) {
 				((SelfAppender) formated).appendTo(target);
 			} else {
@@ -121,78 +91,95 @@ public class Location implements DataSink, Cloneable {
 		}
 	}
 
-	Object format(Object value) {
-		for (Format f : formats) {
-			if (f.supports(value)) value = f.format(value);
-		}
-		return value;
+	private String getEncoding(Object value, Object formatted) {
+		if (formatted instanceof EncodedData) return ((EncodedData)formatted).getEncoding();
+		return CharDataSupport.getEncoding(value);
 	}
 
-	Object toCharData(Object value) {
+	@Override
+    public void clear() {
+		target = null;
+		clearFormats(this);
+	}
+
+	private Object toCharData(Location node, Object value) {
 		if (isCharData(value)) return  value;
 		for (Format f : formats) {
-			if (f.supports(value)) {
-				value = f.format(value);
-				if (isCharData(value)) return  value;
+			if (matches(node, f) && f.supports(value)) {
+				value = f.format(node, value);
+				if (isCharData(value)) return value;
 			}
 		}
-		if (parent != null) return parent.toCharData(value);
+		if (parent != null) return parent.toCharData(node, value);
 		if (value == null) return "";
 		return String.valueOf(value);
+	}
+	
+	private boolean matches(Location node, Format f) {
+		if (this.equals(node)) return true;
+		return !(f instanceof VoidFormat);
 	}
 
 	private boolean isCharData(Object value) {
 		return CharDataSupport.isCharData(value);
 	}
 
-	Object formatVoid() {
+	private void clearFormats(Location node) {
 		for (Format f : formats) {
-			if (f instanceof VoidFormat) return ((VoidFormat)f).formatVoid();
+			f.clear(node);
 		}
-		return md.getFallback();
+		if (getParent() != null) parent.clearFormats(node);
 	}
 
-	private String getEncoding(Object value, Object formatted) {
-		if (formatted instanceof EncodedData) return ((EncodedData)formatted).getEncoding();
-		return CharDataSupport.getEncoding(value);
+	private Object format(Location node, Object value) {
+		for (Format f : formats) {
+			if (f.supports(value)) value = f.format(node, value);
+		}
+		return value;
 	}
 
-	public void clear() {
-		target = null;
+	private static VoidFormat getVoidFormat(Format[] formats, Metadata md) {
+		for (Format f : formats) {
+			if (f instanceof VoidFormat) return ((VoidFormat)f);
+		}
+		return md;
 	}
 
 	public String getName() {
 		return md.name;
 	}
 
-	public Encoding getEncoding() {
-		return md.enc;
+	@Override
+    public String getEncoding() {
+		return md.enc.getName();
+	}
+	
+	@Override
+	public Location getParent() {
+		return parent;
 	}
 
 	@Override
 	public void set(String name, Object value) {
 		if (name.equals(md.name)) set(value);
-		
+		voidformat.set(name, value);
 	}
 
 	@Override
 	public void append(String name, Object value) {
-		if (name.equals(md.name)) append(value);		
+		if (name.equals(md.name)) append(value);
+		voidformat.append(name, value);
 	}
 
 	@Override
 	public Set<String> names() {
-		return Collections.singleton(md.name);
+		HashSet<String> result = new HashSet<String>(voidformat.names());
+		result.add(getName());
+		return result;
 	}
 
 	@Override
 	public Location cleanCopy(Location parent) {
-		try {
-			Location clone = (Location)super.clone();
-			clone.clear();
-			return clone;
-		} catch (CloneNotSupportedException e) {
-			throw new SnippetoryException(e);
-		}
+		return new Location(parent, md);
 	}
 }

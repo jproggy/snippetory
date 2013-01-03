@@ -1,16 +1,18 @@
 package org.jproggy.snippetory.engine.spi;
 
 import org.jproggy.snippetory.TemplateContext;
-import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.FormatFactory;
+import org.jproggy.snippetory.spi.SimpleFormat;
+import org.jproggy.snippetory.spi.TemplateNode;
 
-public class NullFormater implements FormatFactory {
+public class NullFormatter implements FormatFactory {
 	
-	public Format create(String definition, TemplateContext ctx) {
+	@Override
+    public NullFormat create(String definition, TemplateContext ctx) {
 		return new NullFormat(definition);
 	}
 
-	private static class NullFormat implements Format {
+	public static class NullFormat extends SimpleFormat {
 		private final String value;
 		
 		public NullFormat(String value) {
@@ -18,7 +20,7 @@ public class NullFormater implements FormatFactory {
 		}
 		
 		@Override
-		public Object format(Object value) {
+		public Object format(TemplateNode location, Object value) {
 			return this.value;
 		}
 

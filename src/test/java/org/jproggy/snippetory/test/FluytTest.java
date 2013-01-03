@@ -8,7 +8,7 @@ import org.junit.Test;
 
 public class FluytTest {
 	@Test
-	public void hiddenBlox() {
+	public void basic() {
 		Template t1 = FLUYT.parse("$test{ i++; }test$");
 		assertEquals(" i++; ", t1.get("test").toString());
 		Template t2 = FLUYT.parse("$test(enc='url'){ i++; }test$");
@@ -35,7 +35,7 @@ public class FluytTest {
 
 
 	@Test
-	public void lineRemovalHB() {
+	public void lineRemoval() {
 		Template t1 = FLUYT.parse("  $test{  \n i++; \n   }test$  \n");
 		t1.append("test", t1.get("test"));
 		assertEquals(" i++; \n", t1.toString());

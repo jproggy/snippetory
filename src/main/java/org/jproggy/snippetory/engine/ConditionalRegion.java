@@ -14,8 +14,8 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
 		names = names();
 	}
 	
-	protected ConditionalRegion(ConditionalRegion template, Location parent) {
-		super(template, template.getParent().cleanCopy(parent));
+	private ConditionalRegion(ConditionalRegion template, Location parent) {
+		super(template, template.getPlaceholder().cleanCopy(parent));
 		names = names();
 		appendMe =  false;
 	}
@@ -39,12 +39,8 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
 	@Override
 	public void clear() {
 		super.clear();
+		getPlaceholder().clear();
 		appendMe = false;
-	}
-
-	@Override
-	public <T extends Appendable> T appendTo(T to) {
-		return super.appendTo(to);
 	}
 
 	@Override
@@ -54,10 +50,11 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
 
 	@Override
 	public CharSequence format() {
-		if (!appendMe) return "";
-		getParent().clear();
-		getParent().append(this);
-		return getParent().format();
+		Location placeholder = getPlaceholder();
+		if (appendMe) {
+			placeholder.set(this);
+		}
+		return placeholder.format();
 	}
 	
 	@Override
@@ -67,7 +64,7 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
 
 	@Override
 	public String getEncoding() {
-		return getParent().getEncoding().getName();
+		return getPlaceholder().getEncoding();
 	}
 
 }

@@ -35,7 +35,7 @@ public class TemplateBuilder {
 	private Syntax.Tokenizer parser;
 	private final TemplateContext ctx;
 
-	protected TemplateBuilder(TemplateContext ctx, CharSequence data) {
+	private TemplateBuilder(TemplateContext ctx, CharSequence data) {
 		this.ctx = ctx;
 		tempSyntax = ctx.getSyntax();
 		parser = getSyntax().parse(data, ctx);
@@ -43,7 +43,7 @@ public class TemplateBuilder {
 	
 	public static Template parse(TemplateContext ctx, CharSequence data) {
 		TemplateBuilder builder = new TemplateBuilder(ctx.clone(), data);
-		Location root = new Location(null, null, ctx.getBaseAttribs(), "", ctx);
+		Location root = new Location(null, new Metadata(null, "", Attributes.parse(null, ctx.getBaseAttribs(), ctx)));
 		return builder.parse(root);
 	}
 
@@ -172,8 +172,8 @@ public class TemplateBuilder {
 	}
 
 	private Location location(Location parent, Token t) {
-		return new Location(parent, t.getName(), 
-				t.getAttributes(), t.getContent(), ctx);
+		return new Location(parent, new Metadata(t.getName(), t.getContent(),
+				Attributes.parse(parent, t.getAttributes(), ctx)));
 	}
 
 	private void checkNameUnique(Map<String, Region> children, Token t) {
@@ -185,9 +185,8 @@ public class TemplateBuilder {
 	}
 
 	private Location placeHolder(Location parent, Token t) {
-		Location var = new Location(parent, t.getName(), 
-				t.getAttributes(), "", ctx);
-		return var;
+		return new Location(parent, new Metadata(t.getName(), "",
+				Attributes.parse(parent, t.getAttributes(), ctx)));
 	}
 
 	private void setSyntax(Syntax s) {

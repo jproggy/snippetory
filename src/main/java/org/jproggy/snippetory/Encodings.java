@@ -206,7 +206,7 @@ public enum Encodings implements Encoding {
 				throws IOException {
 			StringBuilder tmp = new StringBuilder();
 			html.escape(tmp, val);
-			string.escape(target, tmp.toString());
+			string.escape(target, tmp);
 		}
 
 		@Override

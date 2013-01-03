@@ -56,10 +56,9 @@ public final class EncodingRegistry {
 		return encodings.get(name);
 	}
 
-	@SuppressWarnings("unchecked")
 	public Collection<Transcoding> getOverwrites(Encoding target) {
 		Collection<Transcoding> result = overwrites.get(target.getName());
-		if (result == null) return Collections.EMPTY_LIST;
+		if (result == null) return Collections.emptyList();
 		return result;
 	}
 
