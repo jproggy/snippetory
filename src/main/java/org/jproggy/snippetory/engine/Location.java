@@ -174,7 +174,7 @@ public final class Location implements DataSink, TemplateNode {
 	@Override
 	public Set<String> names() {
 		HashSet<String> result = new HashSet<String>(voidformat.names());
-		result.add(getName());
+		if (getName() !=  null) result.add(getName());
 		return result;
 	}
 

@@ -41,7 +41,7 @@ public class HiddenBloxTest {
 		t1 = HIDDEN_BLOCKS.parse("  /*t:test*/\n i++; \n/*!t:test*/  ");
 		t1.append("test", t1.get("test"));
 		assertEquals(" i++; \n", t1.toString());
-		Template t7 = HIDDEN_BLOCKS.parse("  /*t:test shorten='4-'-->  \n i++; \n   <!--!t:test*/  \n");
+		Template t7 = HIDDEN_BLOCKS.parse("  /*t:test crop='4' crop.mark='-'-->  \n i++; \n   <!--!t:test*/  \n");
 		t7.get("test").render();
 		t7.get("test").render();
 		assertEquals(" i+- i+-", t7.toString());

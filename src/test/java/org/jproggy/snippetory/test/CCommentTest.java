@@ -38,7 +38,7 @@ public class CCommentTest {
 		t1 = C_COMMENTS.parse("  //${test\n i++; \n//test}  ");
 		t1.append("test", t1.get("test"));
 		assertEquals(" i++; \n", t1.toString());
-		Template t7 = C_COMMENTS.parse("  //${test shorten='4-'  \n i++; \n   // test}  \n");
+		Template t7 = C_COMMENTS.parse("  //${test crop='4' crop.mark='-'  \n i++; \n   // test}  \n");
 		t7.get("test").render();
 		t7.get("test").render();
 		assertEquals(" i+- i+-", t7.toString());

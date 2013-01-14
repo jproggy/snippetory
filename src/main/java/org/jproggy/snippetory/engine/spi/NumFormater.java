@@ -30,7 +30,7 @@ public class NumFormater implements FormatFactory {
 	public SimpleFormat create(String definition, TemplateContext ctx) {
 		if (("".equals(definition) && isTechLocale(ctx)) 
 				|| "tostring".equalsIgnoreCase(definition)) {
-			new ToStringFormat();
+			return new ToStringFormat();
 		}
 		return new DecimalFormatWrapper(definition, ctx.getLocale());
 	}

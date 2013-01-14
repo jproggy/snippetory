@@ -29,10 +29,10 @@ import org.jproggy.snippetory.engine.FormatRegistry;
  * </p>
  * Sub-attributes are implemented as bean properties of the {@code Format} implementation:
  * <p>
- * <code>
- *  enum Alignment {left, right};<br />
+ * <pre>
+ *  enum Alignment {left, right};
  *  public void setAlign(Alignment value) {..
- * </code>
+ * </pre>
  * </p>
  * This mechanism provides support for numbers, boolean, enums, {@link Encoding Encodings} and strings. 
  * Alternatively, especially when the attributes are not known at build time, this can be done

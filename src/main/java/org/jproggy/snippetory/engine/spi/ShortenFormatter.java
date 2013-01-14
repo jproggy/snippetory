@@ -14,51 +14,33 @@
 package org.jproggy.snippetory.engine.spi;
 
 import org.jproggy.snippetory.TemplateContext;
-import org.jproggy.snippetory.spi.CharDataSupport;
+import org.jproggy.snippetory.engine.spi.CropFormatter.CropFormat;
 import org.jproggy.snippetory.spi.FormatFactory;
-import org.jproggy.snippetory.spi.SimpleFormat;
-import org.jproggy.snippetory.spi.TemplateNode;
 
 public class ShortenFormatter implements FormatFactory {
 	@Override
-	public ShortenFormat create(String definition, TemplateContext ctx) {
-		return new ShortenFormat(definition);
-	}
-
-	public static class ShortenFormat extends SimpleFormat {
-		private int length;
-		private String suffix = "";
-
-		public ShortenFormat(String definition) {
-			boolean num = true;
-			for (char c : definition.toCharArray()) {
-				if (num) {
-					if (c >= '0' && c <= '9') {
-						length = (10 * length) + (c - '0');
-						continue;
-					}
-					num = false;
+	public CropFormat create(String definition, TemplateContext ctx) {
+		int length = 0;
+		String mark = "";
+		boolean num = true;
+		for (char c : definition.toCharArray()) {
+			if (num) {
+				if (c >= '0' && c <= '9') {
+					length = (10 * length) + (c - '0');
+					continue;
 				}
-				suffix += c;
+				num = false;
 			}
-			if (length == 0) {
-				throw new IllegalArgumentException("no length defined");
-			}
-			if (length < suffix.length()) {
-				throw new IllegalArgumentException("Suffix too long");
-			}
+			mark += c;
 		}
-
-		@Override
-		public Object format(TemplateNode location, Object value) {
-			CharSequence s = CharDataSupport.toCharSequence(value);
-			if (s.length() <= length) return value;
-			return new StringBuilder(s.subSequence(0, length - suffix.length())).append(suffix);
+		if (length == 0) {
+			throw new IllegalArgumentException("no length defined");
 		}
-
-		@Override
-		public boolean supports(Object value) {
-			return CharDataSupport.isCharData(value);
+		if (length < mark.length()) {
+			throw new IllegalArgumentException("Suffix too long");
 		}
+		CropFormat cropFormat = new CropFormat(length);
+		if (mark.length() > 0) cropFormat.setMark(mark);
+		return cropFormat;
 	}
 }

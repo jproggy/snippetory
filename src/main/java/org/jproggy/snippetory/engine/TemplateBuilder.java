@@ -61,7 +61,7 @@ public class TemplateBuilder {
 				case BlockStart: {
 					checkNameUnique(children, t);
 					TemplateFragment end = handleBackward(parts, t);
-					Location placeHolder = placeHolder(parent, t);
+					Location placeHolder = placeHolder(parent, locationStack, t);
 					if (t.getName() == null) {
 						partsStack.add(parts);
 						parts = new ArrayList<DataSink>();
@@ -94,7 +94,7 @@ public class TemplateBuilder {
 					return new Region(parent, parts, children);
 				case Field:
 					TemplateFragment end = handleBackward(parts, t);
-					parts.add(location(parent, t));
+					parts.add(location(parent, locationStack, t));
 					if (end != null) parts.add(end);
 					break;
 				case TemplateData:
@@ -171,7 +171,8 @@ public class TemplateBuilder {
 		return end;
 	}
 
-	private Location location(Location parent, Token t) {
+	private Location location(Location parent, List<Location> locationStack, Token t) {
+		parent = parent(parent, locationStack);
 		return new Location(parent, new Metadata(t.getName(), t.getContent(),
 				Attributes.parse(parent, t.getAttributes(), ctx)));
 	}
@@ -184,7 +185,15 @@ public class TemplateBuilder {
 		}
 	}
 
-	private Location placeHolder(Location parent, Token t) {
+	private Location parent(Location parent, List<Location> locationStack) {
+		if (!locationStack.isEmpty()) {
+			return locationStack.get(locationStack.size() - 1);
+		}
+		return parent;
+	}
+
+	private Location placeHolder(Location parent, List<Location> locationStack, Token t) {
+		parent = parent(parent, locationStack);
 		return new Location(parent, new Metadata(t.getName(), "",
 				Attributes.parse(parent, t.getAttributes(), ctx)));
 	}

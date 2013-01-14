@@ -179,7 +179,7 @@ public class TemplateContext implements Cloneable {
 		return parse(uriResolver.resolve(uri, this));
 	}
 
-	protected Template parse(CharSequence data) {
+	public Template parse(CharSequence data) {
 		return TemplateBuilder.parse(this, data);
 	}
 

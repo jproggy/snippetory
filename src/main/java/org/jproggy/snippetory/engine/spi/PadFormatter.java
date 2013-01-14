@@ -18,12 +18,13 @@ public class PadFormatter implements FormatFactory {
 	public enum Alignment {left, right}
 	
 	public static class PadFormat extends SimpleFormat {
-		private int width;
+		private int length;
 		private Alignment align = Alignment.left;
 		private String fill = "                       ";
 		
 		public PadFormat(int width) {
-			this.width = width;
+			super();
+			this.length = width;
 		}
 		
 		public void setAlign(Alignment val) {
@@ -37,12 +38,12 @@ public class PadFormatter implements FormatFactory {
 
 		@Override
 		public Object format(TemplateNode location, Object value) {
-			if (CharDataSupport.length(value) >= width) {
+			if (CharDataSupport.length(value) >= length) {
 				return value;
 			}
 			String v = value.toString();
-			String b = fill(width - v.length());
-			return (align != Alignment.right) ? v + b : b + v;
+			String b = fill(length - v.length());
+			return (align == Alignment.right) ? b + v : v + b;
 		}
 
 		private String fill(int i) {

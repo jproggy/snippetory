@@ -79,6 +79,9 @@ class Attributes {
 	
 	private void subAttribute(String parent, String attrib, String value) {
 		FormatConfiguration format = formats.get(parent);
+		if (format == null) {
+			throw new SnippetoryException("Missing parent " + parent + " for sub-attribute " + attrib + "='" + value + '\'');
+		}
 		try {
 			BeanInfo desc = Introspector.getBeanInfo(format.getClass());
 			for (PropertyDescriptor prop: desc.getPropertyDescriptors()) {
@@ -126,12 +129,16 @@ class Attributes {
 		FORMAT {
 			@Override
 			void handle(Attributes target, String key, String value) {
-				target.formats.put(key, FormatRegistry.INSTANCE.get(key, value, target.ctx));
+				FormatConfiguration format = FormatRegistry.INSTANCE.get(key, value, target.ctx);
+				target.formats.put(key, format);
 			}			
 		}, ENCODING {
 			@Override
 			void handle(Attributes target, String key, String value) {
 				target.enc = EncodingRegistry.INSTANCE.get(value);
+				if (target.enc == null) {
+					throw new SnippetoryException("Encoding " + value + " not found.");
+				}
 			}			
 		}, DELIMITER {
 			@Override
@@ -192,7 +199,7 @@ class Attributes {
 		private Registry() {}
 		public void register(String name, Types value) {
 			Types old = attribs.get(name);
-			if (old != null && old.equals(value)) {
+			if (old != null && !old.equals(value)) {
 				throw new SnippetoryException("attribute " + name + " already defined otherwise.");
 			}
 			attribs.put(name, value);

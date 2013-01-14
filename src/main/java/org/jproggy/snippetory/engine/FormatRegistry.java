@@ -38,7 +38,11 @@ public final class FormatRegistry {
 		if (f == null) {
 			return null;
 		}
-		return f.create(definition, ctx);
+		FormatConfiguration created = f.create(definition, ctx);
+		if (created == null) {
+			throw new SnippetoryException("Format " + name + " doesn't support " + definition);
+		}
+		return created;
 	}
 
 	public static final FormatRegistry INSTANCE = new FormatRegistry();

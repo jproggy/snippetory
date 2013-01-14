@@ -14,6 +14,7 @@
 package org.jproggy.snippetory.engine.spi;
 
 import org.jproggy.snippetory.TemplateContext;
+import org.jproggy.snippetory.spi.CharDataSupport;
 import org.jproggy.snippetory.spi.FormatFactory;
 import org.jproggy.snippetory.spi.SimpleFormat;
 import org.jproggy.snippetory.spi.TemplateNode;
@@ -33,28 +34,28 @@ public class CaseFormatter implements FormatFactory {
 	public static abstract class StringFormat extends SimpleFormat {
 		@Override
 		public boolean supports(Object value) {
-			return value instanceof String;
+			return CharDataSupport.isCharData(value);
 		}
 	}
 	
 	public static class Upper extends StringFormat {
 		@Override
 		public Object format(TemplateNode location, Object value) {
-			return ((String)value).toUpperCase();
+			return value.toString().toUpperCase();
 		}
 	}
 	
 	public static class Lower extends StringFormat {
 		@Override
 		public Object format(TemplateNode location, Object value) {
-			return ((String)value).toLowerCase();
+			return value.toString().toLowerCase();
 		}
 	}
 	
 	public static class FirstUpper extends StringFormat {
 		@Override
 		public Object format(TemplateNode location, Object value) {
-			String s = (String)value;
+			String s = value.toString();
 			return s.substring(0, 1).toUpperCase() + s.substring(1);
 		}
 	}
@@ -67,10 +68,11 @@ public class CaseFormatter implements FormatFactory {
 		private final boolean lower;
 		@Override
 		public Object format(TemplateNode location, Object value) {
-			String s = (String)value;
+			String s = value.toString();
 			String[] vals = s.split("_|-");
 			StringBuilder result = new StringBuilder();
 			for (String val: vals) {
+				if (val.length() == 0) continue;
 				if (result.length() == 0 && lower) {
 					result.append(val.substring(0, 1).toLowerCase());
 				} else {

@@ -57,7 +57,11 @@ public class EncodedContainer implements EncodedData, CharSequence, SelfAppender
 	
 	@Override
 	public boolean equals(Object obj) {
-		return data.equals(obj);
+		if (this == obj) return true;
+		if (!(obj instanceof EncodedContainer)) return false;
+		EncodedContainer encodedContainer = (EncodedContainer)obj;
+		if (!encoding.equals(encodedContainer.encoding)) return false;
+		return toString().equals(encodedContainer.toString());
 	}
 	
 	@Override

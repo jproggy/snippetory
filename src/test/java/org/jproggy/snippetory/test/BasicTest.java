@@ -23,66 +23,12 @@ import java.util.Locale;
 
 import junit.framework.Assert;
 
-import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.Repo;
-import org.jproggy.snippetory.Syntaxes;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.engine.ParseError;
 import org.junit.Test;
 
 public class BasicTest {
-	@Test
-	public void encoding() throws Exception {
-		Template html = Repo.parse("{v:test enc='html'}");
-		html.set("test", "<");
-		assertEquals("&lt;", html.toString());
-		html.append("test", "-");
-		assertEquals("&lt;-", html.toString());
-		html.set("test", ">'");
-		assertEquals(">'", html.toString());
-		Template plain = Encodings.plain.parse("{v:test}");
-		plain.set("test", "<");
-		assertEquals("<", plain.toString());
-		plain.append("test", "-");
-		assertEquals("<-", plain.toString());
-		plain.set("test", "<");
-		assertEquals("<", plain.toString());
-		Template string = Repo.parse("{v:test enc='string'}");
-		string.set("test", "<");
-		assertEquals("<", string.toString());
-		string.append("test", "\"");
-		assertEquals("<\\\"", string.toString());
-		string.set("test", ">");
-		assertEquals(">", string.toString());
-		html.append("test", plain);
-		assertEquals(">'&lt;", html.toString());
-		html.append("test", string);
-		string.append("test", html);
-		assertEquals(">>'&lt;>", string.toString());
-		string.append("test", plain);
-		string.append("test", string);
-		assertEquals(">>'&lt;><>>'&lt;><", string.toString());
-		string.set("test", "\n\t\r\b\f");
-		assertEquals("\\n\\t\\r\\b\\f", string.toString());
-		Template html_string = Repo.read("${bla $test xx}$").encoding(Encodings.html_string).syntax(Syntaxes.FLUYT).parse();
-		assertEquals("", html_string.toString());
-		html_string.set("test", ">>'&lt;>\n \\<>>'&lt;><");
-		assertEquals("bla >>\\'&amp;lt;><br /> \\\\&lt;>>\\'&amp;lt;>&lt; xx", html_string.toString());
-		try {
-			string = Repo.read("test\n<>").encoding(Encodings.string).parse();
-			html_string.set("test", string);
-			fail();
-		} catch (Exception e) {
-			// expected
-		}
-		string = Repo.read("test\n<>").encoding(Encodings.plain).parse();
-		html_string.set("test", string);
-		assertEquals("bla test<br />&lt;> xx", html_string.toString());
-		html = Repo.read("<p>\n  lalala\n</p>").encoding(Encodings.html).parse();
-		html_string.set("test", html);
-		assertEquals("bla <p>\\n  lalala\\n</p> xx", html_string.toString());
-	}
-	
 	@Test
 	public void delimiter() {
 		Template t1 = Repo.parse("in ({v:test delimiter=', '})");
@@ -159,8 +105,18 @@ public class BasicTest {
 	}
 
 	@Test
+	public void syntaxSwitchFail() {
+		try {
+			Repo.parse(" {v:test} \n <s:C_COMMENTS_X />  \n /*${test}*/ \r\n  /*Syntax:FLUYT*/  \n #test ");
+			fail();
+		} catch (RuntimeException e) {
+			assertEquals("Unkown syntax: C_COMMENTS_X", e.getCause().getMessage());
+		}
+	}
+
+	@Test
 	public void syntaxSwitch() {
-		Template t1 = Repo.parse(" {v:test} \n <s:C_COMMENTS />  \n /*${test}*/ \r\n  /*Syntax:FLUYT*/  \n $test ");
+		Template t1 = Repo.parse(" {v:test} \n <s:C_COMMENTS />  \n /*${test}*/ \r\n  /*Syntax:FLUYT*/  \n #test ");
 		t1.set("test", "blub");
 		assertEquals(" blub \n blub \r\n blub ", t1.toString());
 	}
@@ -340,7 +296,7 @@ public class BasicTest {
 	}
 	
 	@Test
-	public void conditionalRegions() {
+	public void conditionalRegionsSimple() {
 		Template t = Repo.parse("before<t:>->{v:test null='null' delimiter=' '}<-</t:>after");
 		assertEquals("beforeafter", t.toString());
 		t.set("test", null);
@@ -353,8 +309,11 @@ public class BasicTest {
 		assertEquals("before->null null test<-after", t.toString());
 		t.set("test", "blub");
 		assertEquals("before->blub<-after", t.toString());
-
-		t = Repo.read("before-><t:test><t: pad='30' pad.align='right'><t: pad='12' pad.fill='.'>start{v:test}</t:><middle>{v:test}end</t:></t:test><-after").parse();
+	}
+	
+	@Test
+	public void conditionalRegions() {
+		Template t = Repo.read("before-><t:test><t: pad='30' pad.align='right'><t: pad='12' pad.fill='.'>start{v:test}</t:><middle>{v:test}end</t:></t:test><-after").parse();
 		assertEquals("before-><-after", t.toString());
 		Template test = t.get("test");
 		assertEquals("", test.toString());
@@ -408,34 +367,6 @@ public class BasicTest {
 		assertEquals("   start222s...<middle>222send", test2.toString());
 		test2.render();
 		assertEquals("before->    startxxx....<middle>xxxend   start222s...<middle>222send<-after", t.toString());
-
-		t = Repo.read("before$(default='nothing'){$test{ start$(pad='10'){$tust()middle}$$test()end }$}$after").syntax(Syntaxes.FLUYT).parse();
-		assertEquals("beforenothingafter", t.toString());
-		test = t.get("test");
-		assertEquals(" start$test()end ", test.toString());
-		test.set("test", "<value>");
-		assertEquals(" start<value>end ", test.toString());
-		test.render();
-		assertEquals("before start<value>end after", t.toString());
-		test.clear();
-		assertEquals(" start$test()end ", test.toString());
-		assertEquals("before start<value>end after", t.toString());
-		test.set("test", "xxx");
-		assertEquals(" startxxxend ", test.toString());
-		test2 = t.get("test");
-		assertEquals(" start$test()end ", test2.toString());
-		test2.set("tust", "222");
-		assertEquals(" start222middle $test()end ", test2.toString());
-		assertEquals(" startxxxend ", test.toString());
-		test2.append("tust", "s");
-		assertEquals(" start222smiddle$test()end ", test2.toString());
-		assertEquals(" startxxxend ", test.toString());
-		test2.append("test", ".s.");
-		assertEquals(" start222smiddle.s.end ", test2.toString());
-		test2.set("tust", "s");
-		assertEquals(" startsmiddle   .s.end ", test2.toString());
-		test2.render();
-		assertEquals("before start<value>end  startsmiddle   .s.end after", t.toString());
 	}
 	
 }
