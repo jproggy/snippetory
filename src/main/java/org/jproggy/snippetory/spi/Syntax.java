@@ -18,10 +18,13 @@ import java.util.Map;
 
 import org.jproggy.snippetory.Syntaxes;
 import org.jproggy.snippetory.TemplateContext;
+import org.jproggy.snippetory.engine.SnippetoryException;
 import org.jproggy.snippetory.engine.TemplateBuilder;
 import org.jproggy.snippetory.engine.Token;
 import org.jproggy.snippetory.engine.spi.CComments;
+import org.jproggy.snippetory.engine.spi.FluytCCSyntax;
 import org.jproggy.snippetory.engine.spi.FluytSyntax;
+import org.jproggy.snippetory.engine.spi.FluytXSyntax;
 import org.jproggy.snippetory.engine.spi.HiddenBlocksSyntax;
 import org.jproggy.snippetory.engine.spi.XMLAlikeSyntax;
 
@@ -40,11 +43,16 @@ public interface Syntax {
 			register(Syntaxes.XML_ALIKE, new XMLAlikeSyntax());
 			register(Syntaxes.C_COMMENTS, new CComments());
 			register(Syntaxes.FLUYT, new FluytSyntax());
+			register(Syntaxes.FLUYT_CC, new FluytCCSyntax());
+			register(Syntaxes.FLUYT_X, new FluytXSyntax());
 		}
 		public void register(SyntaxID name, Syntax syntax) {
 			reg.put(name.getName(), syntax);
 		}
 		public Syntax byName(String name) {
+			if (!reg.containsKey(name)) {
+				throw new SnippetoryException("Unkown syntax: " + name);
+			}
 			return reg.get(name);
 		}
 		public Syntax getDefault() {
