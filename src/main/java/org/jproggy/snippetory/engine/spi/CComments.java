@@ -56,9 +56,10 @@ public class CComments   extends RegExSyntax {
 		String pre = commentBlockStart + "\\$\\{\\s*";
 		String suff = "\\s*\\}" + commentBlockEnd;
 
+		String ATTRIBUTES = "(?:\\s+" + ATTRIBUTE + ")*)";
+		
 		Pattern mock_default = Pattern.compile(
-				pre +"(" + NAME + "(?:\\s+" + ATTRIBUTE + ")*)" + commentBlockEnd + 
-				"((?:(?!/\\*).)*)" + commentBlockStart + suff, Pattern.MULTILINE);
+				pre + "(" + NAME + ATTRIBUTES + commentBlockEnd + "((?:(?!/\\*).)*)" + commentBlockStart + suff, Pattern.MULTILINE);
 		patterns.put(mock_default, TokenType.Field);
 
 		Pattern start = Pattern.compile(
@@ -67,7 +68,7 @@ public class CComments   extends RegExSyntax {
 		patterns.put(start, TokenType.BlockStart);
 
 		start = Pattern.compile(
-				pre + "(" + NAME + "(?:\\s+" + ATTRIBUTE + ")*)" + commentBlockEnd, Pattern.MULTILINE);
+				pre + "(" + NAME + ATTRIBUTES + commentBlockEnd, Pattern.MULTILINE);
 		patterns.put(start, TokenType.BlockStart);
 
 		Pattern end = Pattern.compile(
@@ -82,10 +83,10 @@ public class CComments   extends RegExSyntax {
 				LINE_START + "\\/\\/\\/.*" +  LINE_END, Pattern.MULTILINE);
 		patterns.put(comment, TokenType.Comment);
 		
-		Pattern field = Pattern.compile(pre + "(" + NAME + "(?:\\s+" + ATTRIBUTE + ")*)" + suff, Pattern.MULTILINE);
+		Pattern field = Pattern.compile(pre + "(" + NAME + ATTRIBUTES + suff, Pattern.MULTILINE);
 		patterns.put(field, TokenType.Field);
 
-		Pattern nameless = Pattern.compile(pre + "(" + ATTRIBUTE + "(?:\\s+" + ATTRIBUTE + ")*)" + suff, Pattern.MULTILINE);
+		Pattern nameless = Pattern.compile(pre + "(" + ATTRIBUTE + ATTRIBUTES + suff, Pattern.MULTILINE);
 		patterns.put(nameless, TokenType.Field);
 		return new RegexParser(data, ctx, patterns);
 	}

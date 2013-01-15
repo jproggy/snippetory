@@ -18,7 +18,7 @@ import org.jproggy.snippetory.engine.EncodingRegistry;
 
 
 /**
- * Combines character data as payload with information about it's encoding 
+ * Combines character data as pay load with information about it's encoding 
  * as additional meta data.
  * 
  * @author B. Ebertz

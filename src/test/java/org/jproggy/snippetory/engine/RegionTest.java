@@ -121,7 +121,7 @@ public class RegionTest {
 	    	}
 	    	week.render();
 	    }
-	    month.render(new FileWriter("src/test/resources/calendarOut.html"));
+	    month.render(new FileWriter("target/calendarOut.html"));
 	}
 
 	private Calendar getStart(Date day) {

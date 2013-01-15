@@ -22,7 +22,7 @@ import org.jproggy.snippetory.engine.IncompatibleEncodingException;
 /**
  * The purpose of an encoding is to ensure the syntactical correctness of an output by 
  * escaping terms or characters with special meaning in the syntax of the output file.
- * For example the ampersand is illegal within xml as it's used to mark an entity.
+ * For example the ampersand is illegal within XML as it's used to mark an entity.
  * It has to be replaced by &amp;amp;.<br />
  * By handling those technical issues of the output file within the template definition
  * the handling logic gets more reusable. And simpler to implement. This is a simple but
@@ -41,11 +41,11 @@ public interface Encoding {
 	/**
 	 * Sometimes it's possible to combine data encoded in different ways after applying 
 	 * a special action to one of the strings. This action might be a translation like 
-	 * wiki syntax to html or simply apply default escaping to the data and mix encodings
-	 * that way. I.e. when adding html to string-encoded data this is possible. However, 
+	 * wiki syntax to HTML or simply apply default escaping to the data and mix encodings
+	 * that way. I.e. when adding HTML to string-encoded data this is possible. However, 
 	 * line breaks or quotation marks will have to be escaped. (We are talking about a
 	 * file that contains a definition of a string of course) <br />
-	 * In other cases no action will be needed. String encoded data can be added to html
+	 * In other cases no action will be needed. String encoded data can be added to HTML
 	 * as this is a container format and is able to carry string definition within script-
 	 * section for instance. <br />
 	 * However, some combinations of encodings are illegal. Especially the plain encoding
