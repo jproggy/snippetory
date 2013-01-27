@@ -83,7 +83,7 @@ public abstract class UriResolver {
 			
 			@Override
 			public String resolve(String resource, TemplateContext context) {
-				return ToString.resource(resource, null);
+				return ToString.resource(resource);
 			}
 		};
 	}
@@ -98,7 +98,7 @@ public abstract class UriResolver {
 			@Override
 			public String resolve(String resource, TemplateContext context) {
 				String path = realPF + (resource.startsWith("/") ? resource.substring(1) : resource);
-				return ToString.resource(path, null);
+				return ToString.resource(path);
 			}
 		};
 	}

@@ -186,13 +186,7 @@ public class TemplateContext implements Cloneable {
 	static class ToString {
 		private ToString() {}
 		
-		public static String resource(String name, ClassLoader test) {
-			if (test != null) {
-				InputStream in = test.getResourceAsStream(name);
-				if (in == null)
-					return resource(name, null);
-				return stream(in);
-			}
+		public static String resource(String name) {
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
 			if (loader == null) {
 				loader = ToString.class.getClassLoader();
