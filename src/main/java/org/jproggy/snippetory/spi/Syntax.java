@@ -34,6 +34,7 @@ import org.jproggy.snippetory.engine.spi.XMLAlikeSyntax;
  * to chop the template data into handy tokens.  
  * 
  * @author B. Ebertz
+ * @see RegExSyntax
  */
 public interface Syntax {
 	public class Registry {

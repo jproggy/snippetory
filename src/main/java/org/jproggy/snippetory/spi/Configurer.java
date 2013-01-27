@@ -23,7 +23,8 @@ import java.util.ServiceLoader;
  * you to have your additions available when you need them. Be aware that Snippetory can only 
  * load services if it's {@link ClassLoader} can find them.
  *   
- * @author Sir RotN
+ * @author B. Ebertz
+ * 
  */
 public interface Configurer {
 

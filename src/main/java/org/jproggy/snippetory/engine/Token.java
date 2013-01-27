@@ -21,10 +21,11 @@ import java.util.LinkedHashMap;
  * works with a simple syntax scheme there's only a small number of different purposes
  * such a token can fulfill. They are defined in the enum {@link TokenType}. 
  * <br />
- *  A token consists of the portion of template code it represents, the start position of
- *  this code, the token type and some data that's depends on token type.
+ * A token consists of the portion of template code it represents, the start position of
+ * this code, the token type and some data that's depends on token type.
  * 
  * @author B. Ebertz
+ * @see Syntax
  */
 public class Token {
 	/**

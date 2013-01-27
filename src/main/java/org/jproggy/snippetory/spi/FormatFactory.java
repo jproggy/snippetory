@@ -19,7 +19,7 @@ import org.jproggy.snippetory.TemplateContext;
  * A FormatFactory is registered to create a new formatting attribute.
  * <p>
  * Format definition in templates is done  by attributes. Every format has exactly one main
- * attribute and an arbitrary number of sub-attribitubes. The name of sub-attributes starts
+ * attribute and an arbitrary number of sub-attributes. The name of sub-attributes starts
  * with the name of the main attribute followed by a dot and the name of the sub-attribute.
  * That way every format has it's own name space.
  * </p>
@@ -33,13 +33,19 @@ import org.jproggy.snippetory.TemplateContext;
  * </p>
  * 
  * @author B. Ebertz
+ *  
  */
 public interface FormatFactory {
 	/**
+	 * Instantiate the {@link FormatConfiguration} to be kept in the mate data of a template
+	 * and will be used for creating real template nodes. For each real template node
+	 *  {@link FormatConfiguration#getFormat(TemplateNode)} is called exactly once.
+	 *  However, there is always one node that never gets used to render a template, but only
+	 *  for cloning all the others.
 	 * 
 	 * @param definition the attribute value from the template 
 	 * @param ctx the TemplateContext provides additional information like the locale
-	 * @return the format that will be assigned to the location
+	 * @return a FormatConfiguration that will be kept as meta data of this node
 	 */
 	FormatConfiguration create(String definition, TemplateContext ctx);	
 }

@@ -22,6 +22,7 @@ import org.jproggy.snippetory.engine.EncodingRegistry;
  * as additional meta data.
  * 
  * @author B. Ebertz
+ * 
  */
 public interface EncodedData {
 	/**
