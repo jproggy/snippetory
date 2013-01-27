@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.Locale;
+
 import org.jproggy.snippetory.TemplateContext.ToString;
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Syntax;
@@ -48,6 +49,9 @@ public class Repo {
 	 * null encoding and no locale support. <br />
 	 * This is sometimes useful for very short and simple templates replacing
 	 * a complex string concatenation.
+	 * 
+	 * @deprecated prefer defining a syntax when parsing. I.e. use 
+	 * {@link Syntaxes#parse(CharSequence) Syntaxes.XML_ALIKE.parse(CharSequence)} instead
 	 */
 	public static Template parse(CharSequence data) {
 		return new TemplateContext(data).parse();
@@ -56,6 +60,9 @@ public class Repo {
 	/**
 	 * Short cut method for parsing a string into a template. With default syntax,
 	 * null encoding, but supporting a locale for formatting.
+	 * 
+	 * @deprecated prefer defining a syntax when parsing. I.e. use 
+	 * {@link Syntaxes#parse(CharSequence, Locale) Syntaxes.XML_ALIKE.parse(CharSequence, Locale)} instead
 	 */
 	public static Template parse(CharSequence data, Locale l) {
 		return new TemplateContext(data).locale(l).parse();
@@ -74,11 +81,7 @@ public class Repo {
 	 * The data for the TemplateContext is searched on class path
 	 */
 	public static TemplateContext readResource(String name) {
-		return readResource(name, null);
-	}
-
-	public static TemplateContext readResource(String name, ClassLoader test) {
-		return new TemplateContext(ToString.resource(name, test));
+		return new TemplateContext(ToString.resource(name));
 	}
 
 	public static TemplateContext readFile(String fileName) {

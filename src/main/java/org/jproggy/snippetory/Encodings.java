@@ -263,10 +263,18 @@ public enum Encodings implements Encoding {
 		return name();
 	}
 
+	/**
+	 * 
+	 * @deprecated prefer syntax as starting point of context definition 
+	 */
 	public TemplateContext context() {
 		return new TemplateContext().encoding(this);
 	}
 
+	/**
+	 * @deprecated always specify a syntax when parsing. If no syntax is contained in your data
+	 * use {@link #wrap} instead.
+	 */
 	public Template parse(CharSequence data) {
 		return context().parse(data);
 	}
