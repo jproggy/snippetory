@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import org.jproggy.snippetory.Template;
 import org.junit.Test;
 
+@Deprecated
 public class CCommentTest {
 	@Test
 	public void cComments() {

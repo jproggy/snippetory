@@ -13,6 +13,8 @@
 
 package org.jproggy.snippetory.test;
 
+import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +68,7 @@ public class MetaphorRepTest {
 		// for an example putting the template here makes it simple. In real live an own file
 		// might be better. At least a little more advanced formatting would be nice ;-)
 		Template explanation = 
-				Repo.parse("{v:text} <ul><t:points><li>{v:point}</li></t:points></ul>");
+				XML_ALIKE.parse("{v:text} <ul><t:points><li>{v:point}</li></t:points></ul>");
 		explanation.set("text", labels.getString("desc.text"));
 		explanation.get("points").set("point", labels.getString("desc.point1")).render();
 		explanation.get("points").set("point", labels.getString("desc.point2")).render();

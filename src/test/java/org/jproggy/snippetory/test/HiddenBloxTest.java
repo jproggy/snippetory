@@ -3,7 +3,6 @@ package org.jproggy.snippetory.test;
 import static org.jproggy.snippetory.Syntaxes.HIDDEN_BLOCKS;
 import static org.junit.Assert.assertEquals;
 
-import org.jproggy.snippetory.Repo;
 import org.jproggy.snippetory.Template;
 import org.junit.Test;
 
@@ -60,7 +59,7 @@ public class HiddenBloxTest {
 		assertEquals("in (5, 8)", t1.toString());
 		t1.append("test", 5);
 		assertEquals("in (5, 8, 5)", t1.toString());
-		Template t2 = Repo.parse("\"{v:test delimiter='\",\"'}\"");
+		Template t2 = HIDDEN_BLOCKS.parse("\"{v:test delimiter='\",\"'}\"");
 		t2.append("test", 5);
 		assertEquals("\"5\"", t2.toString());
 		t2.append("test", "hallo");
