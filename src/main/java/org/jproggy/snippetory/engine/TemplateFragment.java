@@ -39,6 +39,16 @@ public class TemplateFragment implements DataSink, CharSequence, SelfAppender {
 	}
 	
 	@Override
+	public Set<String> regionNames() {
+		return Collections.emptySet();
+	}
+	
+	@Override
+	public Region getChild(String name) {
+		return null;
+	}
+	
+	@Override
 	public String toString() {
 		return data;
 	}

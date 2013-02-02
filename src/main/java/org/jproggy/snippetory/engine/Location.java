@@ -13,6 +13,7 @@
 
 package org.jproggy.snippetory.engine;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -169,6 +170,16 @@ public final class Location implements DataSink, TemplateNode {
 	public void append(String name, Object value) {
 		if (name.equals(md.name)) append(value);
 		voidformat.append(name, value);
+	}
+
+	@Override
+	public Set<String> regionNames() {
+		return Collections.emptySet();
+	}
+	
+	@Override
+	public Region getChild(String name) {
+		return null;
 	}
 
 	@Override

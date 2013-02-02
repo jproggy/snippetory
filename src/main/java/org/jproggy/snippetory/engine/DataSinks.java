@@ -62,6 +62,15 @@ public class DataSinks extends CharSequences implements DataSink {
 	}
 
 	@Override
+	public Set<String> regionNames() {
+		Set<String> result = new TreeSet<String>();
+		for (DataSink part : parts) {
+			result.addAll(part.regionNames());
+		}
+		return result;
+	}
+
+	@Override
 	public void clear() {
 		for (DataSink v : parts) {
 			v.clear();
@@ -102,5 +111,13 @@ public class DataSinks extends CharSequences implements DataSink {
 
 	public Location getPlaceholder() {
 		return placeHolder;
+	}
+
+	@Override
+	public Region getChild(String name) {
+		for (DataSink v : parts) {
+			if (v.regionNames().contains(name)) return v.getChild(name);
+		}
+		return null;
 	}
 }

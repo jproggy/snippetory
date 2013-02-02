@@ -40,6 +40,14 @@ public class Region implements Template, Cloneable, CharSequence, SelfAppender {
 		}
 	}
 
+	private Region(Region template, Location parent) {
+		super();
+		setParent(null);
+		this.md = template.md;
+		this.children = template.children;
+		this.data = template.data.cleanCopy(parent);
+	}
+
 	private Region(Region template, Region parent) {
 		super();
 		setParent(parent);
@@ -56,16 +64,23 @@ public class Region implements Template, Cloneable, CharSequence, SelfAppender {
 	@Override
 	public Region get(String... path) {
 		if (path.length == 0) return new Region(this, parent);
-		Region t = children.get(path[0]);
+		Region t = getChild(path[0]);
 		if (t == null) return null;
-		if (path.length == 1) {
-			return new Region(t, this);
-		}
 		for (int i = 1; i < path.length; i++) {
 			t = t.get(path[i]);
 			if (t == null) return null;
 		}
 		return t;
+	}
+
+	protected Region getChild(String name) {
+		if (children.containsKey(name))	{
+			Region child = children.get(name);
+			return new Region(child, this);
+		}
+		Region child = data.getChild(name);
+		child.setParent(this);
+		return child;
 	}
 	
 	@Override
@@ -173,5 +188,8 @@ public class Region implements Template, Cloneable, CharSequence, SelfAppender {
 	@Override
 	public CharSequence subSequence(int start, int end) {
 		return data.subSequence(start, end);
+	}
+	Region cleanCopy(Location parent) {
+		return new Region(this, parent);
 	}
 }

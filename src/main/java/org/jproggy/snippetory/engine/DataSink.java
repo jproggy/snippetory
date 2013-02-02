@@ -48,6 +48,13 @@ public interface DataSink {
 	Set<String> names();
 	
 	/**
+	 * Declares the names supported by this DataSink. The returned Set must not
+	 * change over time. It may return different instances, but it must be reliable
+	 * to cache the result.
+	 */
+	Set<String> regionNames();
+	
+	/**
 	 * Create a new, clean instance. The returned instance has to be decoupled 
 	 * in that status changes are not reflected on the called instance. Thus 
 	 * immutable instance may return themselves.
@@ -64,4 +71,6 @@ public interface DataSink {
 	 * @return
 	 */
 	CharSequence format();
+
+	Region getChild(String name);
 }

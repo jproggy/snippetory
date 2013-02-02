@@ -12,23 +12,31 @@
  *******************************************************************************/
 package org.jproggy.snippetory.engine;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.jproggy.snippetory.spi.EncodedData;
 
 public class ConditionalRegion extends DataSinks implements EncodedData {
 	private final Set<String> names;
+	private final Map<String, Region> children;
 	private boolean appendMe;
 
-	public ConditionalRegion(Location formatter, List<DataSink> parts) {
+	public ConditionalRegion(Location formatter, List<DataSink> parts, Map<String, Region> children) {
 		super(parts, formatter);
 		names = names();
+		this.children = children;
 	}
 	
 	private ConditionalRegion(ConditionalRegion template, Location parent) {
 		super(template, template.getPlaceholder().cleanCopy(parent));
 		names = names();
+		this.children =  new HashMap<String, Region>();
+		for (Map.Entry<String, Region> entry: template.children.entrySet()) {
+			this.children.put(entry.getKey(), entry.getValue().cleanCopy(getPlaceholder()));
+		}
 		appendMe =  false;
 	}
 
@@ -48,6 +56,18 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
 		}
 	}
 
+	@Override
+	public Set<String> regionNames() {
+		return children.keySet();
+	}
+	
+	@Override
+	public Region getChild(String name) {
+		Region child = children.get(name);
+		if (child != null) child = child.cleanCopy(getPlaceholder());
+ 		return child;
+	}
+	
 	@Override
 	public void clear() {
 		super.clear();
