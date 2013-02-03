@@ -105,7 +105,7 @@ import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.spi.TemplateWrapper;
 // #class{
 
-/*#i*/public class /*#name( case="camelizeUpper "*/Bean/*)*/ extends TemplateWrapper {
+/*#i*/public class /*#name( case="camelizeUpper"*/Bean/*)*/ extends TemplateWrapper {
 /*#i*/  public /*#name(case="camelizeUpper"*/Bean/*)*/ (Template template) {
 /*#i*/      super(template);
 /*#i*/  }

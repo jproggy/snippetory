@@ -4,6 +4,7 @@ import static org.jproggy.snippetory.Syntaxes.FLUYT;
 import static org.jproggy.snippetory.Syntaxes.FLUYT_CC;
 import static org.jproggy.snippetory.Syntaxes.FLUYT_X;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.jproggy.snippetory.Repo;
 import org.jproggy.snippetory.Syntaxes;
@@ -103,6 +104,14 @@ public class FluytTest {
 		t = FLUYT_CC.parse("/*\t#test\t*/bla");
 		t.set("test", "xy");
 		assertEquals("xybla", t.toString());
+
+		t = FLUYT_CC.parse("/*\t#test(*/test/*)*/bla");
+		t.set("test", "xy");
+		assertEquals("xybla", t.toString());
+
+		t = FLUYT_CC.parse("/*\t#test(pad='5'\t*/test/*)*/bla");
+		t.set("test", "xy");
+		assertEquals("xy   bla", t.toString());
 
 		t = FLUYT_CC.parse("/*\t#test()\t*/bla");
 		t.set("test", "xy");
@@ -278,5 +287,43 @@ public class FluytTest {
 		assertEquals(" startsmiddle   .s.end ", test2.toString());
 		test2.render();
 		assertEquals("before start<value>end  startsmiddle   .s.end after", t.toString());
+	}
+	
+	@Test
+	public void noParse() {
+		Template t = FLUYT.parse("#test(");
+		t.set("test", "hallo");
+		assertEquals("#test(", t.toString());
+		assertTrue(t.names().isEmpty());
+
+		t = FLUYT.parse("#test(crop)");
+		t.set("test", "hallo");
+		assertEquals("#test(crop)", t.toString());
+		assertTrue(t.names().isEmpty());
+
+		t = FLUYT.parse("#test(crop='c)");
+		t.set("test", "hallo");
+		assertEquals("#test(crop='c)", t.toString());
+		assertTrue(t.names().isEmpty());
+
+		t = FLUYT.parse("#test(*/ test /)");
+		t.set("test", "hallo");
+		assertEquals("#test(*/ test /)", t.toString());
+		assertTrue(t.names().isEmpty());
+
+		t = FLUYT.parse("#test(* test /*)");
+		t.set("test", "hallo");
+		assertEquals("#test(* test /*)", t.toString());
+		assertTrue(t.names().isEmpty());
+
+		t = FLUYT.parse("#test(crop='2'*/ test /)");
+		t.set("test", "hallo");
+		assertEquals("#test(crop='2'*/ test /)", t.toString());
+		assertTrue(t.names().isEmpty());
+
+		t = FLUYT.parse("#test(pad=\"5\" * test /*)");
+		t.set("test", "hallo");
+		assertEquals("#test(pad=\"5\" * test /*)", t.toString());
+		assertTrue(t.names().isEmpty());
 	}
 }

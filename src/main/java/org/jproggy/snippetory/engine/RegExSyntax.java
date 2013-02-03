@@ -27,7 +27,9 @@ public abstract class RegExSyntax implements Syntax {
 		"[ \\t]*(?>(?>\\r\\n?)|\\n|\\u0085|\\u2028|\\u2029|\\Z)";
 	protected static final String LINE_START = "^[ \\t]*";
 	protected final static String ESCAPES = "\\\\\\\\|\\\\'|\\\\\"|\\\\n|\\\\r|\\\\b|\\\\t|\\\\f";
-	protected static final String NAME = "[\\p{javaJavaIdentifierStart}&&[^\\$]][\\p{javaJavaIdentifierPart}\\.\\-&&[^\\$]]*";
+	protected static final String NAME_START_CHAR = "[\\p{javaJavaIdentifierStart}&&[^\\$]]";
+	protected static final String NAME_CHAR = "[\\p{javaJavaIdentifierPart}\\.\\-&&[^\\$]]";
+	protected static final String NAME = NAME_START_CHAR + NAME_CHAR + "*";
 	protected static final String ATTRIBUTE = 
 		NAME + "=(?:\\'(?:" + ESCAPES + "|[^\\\\'])*\\'|\\\"(?:" + ESCAPES + "|[^\\\\\"])*\\\")";
 	protected static final String ATTRIBUTES = "(?:\\s+" + ATTRIBUTE + ")*";

@@ -22,12 +22,12 @@ public class FluytCCSyntax extends FluytSyntax {
 	@Override
 	protected Map<Pattern, TokenType> createPatterns() {
 		Map<Pattern, TokenType> patterns = super.createPatterns();
-		String mock = "[ \t]*\\*/((?:(?!/\\*).)*)/\\*[ \t]*";
+		String mock = "[ \t]*\\*/([^/\\*]*)/\\*[ \t]*";
 		
-		String field = "\\$(" + NAME + "\\((?:" + PLAIN_ATTRIBS + ")?" + mock + "\\))";
+		String field = "\\#(" + NAME + "\\((?:" + PLAIN_ATTRIBS + ")?)" + mock + "\\)";
 		createFieldPattern(patterns, SyntaxVariant.Named, field);
 		
-		field = "\\$(\\(" + PLAIN_ATTRIBS + mock + "\\))";
+		field = "\\#(\\(" + PLAIN_ATTRIBS + ")" + mock + "\\)";
 		createFieldPattern(patterns, SyntaxVariant.Nameless, field);
 
 		return patterns;

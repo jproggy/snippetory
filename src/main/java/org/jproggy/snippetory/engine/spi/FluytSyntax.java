@@ -28,7 +28,7 @@ import org.jproggy.snippetory.engine.Token.TokenType;
 
 public class FluytSyntax extends RegExSyntax {
 	protected static final String PLAIN_ATTRIBS = "\\s*" + ATTRIBUTE + "(?:\\s+" + ATTRIBUTE + ")*\\s*";
-	protected static final String OPT_ATTRIBS = "(?:\\(" + PLAIN_ATTRIBS + "\\)|\\(\\))?";
+	protected static final String OPT_ATTRIBS = "(?:(?![" + NAME_CHAR + "\\(])|\\(" + PLAIN_ATTRIBS + "\\)|\\(\\))";
 	protected static final String MAND_ATTRIBS = "\\(" + PLAIN_ATTRIBS + "\\)";
 
 	protected static final String START_TOKEN = "\\#((?:" + NAME + ")?" + OPT_ATTRIBS + ")\\{";
