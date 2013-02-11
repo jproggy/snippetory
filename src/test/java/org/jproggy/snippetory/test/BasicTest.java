@@ -125,7 +125,13 @@ public class BasicTest {
 
 	@Test
 	public void syntaxSwitch() {
-		Template t1 = XML_ALIKE.parse(" {v:test} \n <s:C_COMMENTS />  \n /*${test}*/ \r\n  /*Syntax:FLUYT*/  \n #test ");
+		Template t1 = XML_ALIKE.parse(" {v:test} \n <s:C_COMMENTS />  \n /*${test}*/ \r\n  /*Syntax:FLUYT*/  \n $test ");
+		t1.set("test", "blub");
+		assertEquals(" blub \n blub \r\n blub ", t1.toString());
+		t1 = XML_ALIKE.parse(" {v:test} \n // Syntax:C_COMMENTS   \n /*${test}*/ \r\n  /* Syntax:FLUYT */  \n $test ");
+		t1.set("test", "blub");
+		assertEquals(" blub \n blub \r\n blub ", t1.toString());
+		t1 = XML_ALIKE.parse(" {v:test} \n <!-- Syntax:C_COMMENTS -->  \n /*${test}*/ \r\n  # Syntax:FLUYT  \n $test ");
 		t1.set("test", "blub");
 		assertEquals(" blub \n blub \r\n blub ", t1.toString());
 	}

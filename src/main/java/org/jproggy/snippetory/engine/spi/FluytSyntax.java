@@ -31,11 +31,11 @@ public class FluytSyntax extends RegExSyntax {
 	protected static final String OPT_ATTRIBS = "(?:(?![" + NAME_CHAR + "\\(])|\\(" + PLAIN_ATTRIBS + "\\)|\\(\\))";
 	protected static final String MAND_ATTRIBS = "\\(" + PLAIN_ATTRIBS + "\\)";
 
-	protected static final String START_TOKEN = "\\#((?:" + NAME + ")?" + OPT_ATTRIBS + ")\\{";
-	protected static final String END_TOKEN = "\\}(" + NAME + ")?\\#";
+	protected static final String START_TOKEN = "\\$((?:" + NAME + ")?" + OPT_ATTRIBS + ")\\{";
+	protected static final String END_TOKEN = "\\}(" + NAME + ")?\\$";
 
-	protected static final String NAMED_LOC = "\\#(" + NAME + OPT_ATTRIBS + ")";
-	protected static final String NAMELESS_LOC = "\\#(" + MAND_ATTRIBS + ")";
+	protected static final String NAMED_LOC = "\\$(" + NAME + OPT_ATTRIBS + ")";
+	protected static final String NAMELESS_LOC = "\\$(" + MAND_ATTRIBS + ")";
 
 	protected enum SyntaxVariant {
 		Block, Inline, Named, Nameless

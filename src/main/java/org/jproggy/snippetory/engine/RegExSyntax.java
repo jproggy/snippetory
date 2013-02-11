@@ -37,7 +37,7 @@ public abstract class RegExSyntax implements Syntax {
 		"(" + NAME + ")=(?>\\'((?>" + ESCAPES + 
 		"|[^\\'])*)\\'|\\\"((?>" + ESCAPES + "|[^\\\\\"])*)\\\")|(" + NAME + ")"; 
 	protected static final Pattern SYNTAX_SELECTOR = Pattern.compile(
-			LINE_START + "[ \\t]*(?://|/\\*|<!--|<|--|#|\\'|rem)(?:s|S|Syntax):(" + NAME + ")(?:\\*/|-|/|>| |\\t)*" + LINE_END, Pattern.MULTILINE);
+			LINE_START + "[ \\t]*(?:(?://|/\\*|<!--|--|#|\\'|rem)[ \\t]*Syntax|<s):(" + NAME + ")(?:\\*/|-|/|>| |\\t)*" + LINE_END, Pattern.MULTILINE);
 
 	@Override
 	public abstract RegexParser parse(CharSequence data, TemplateContext ctx) ;
