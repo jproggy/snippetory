@@ -25,14 +25,24 @@ import org.jproggy.snippetory.spi.SimpleFormat;
 import org.jproggy.snippetory.spi.TemplateNode;
 
 
-public class NumFormater implements FormatFactory {
+public class NumFormatter implements FormatFactory {
+	private final SupportedTypes types;
+	
+	protected NumFormatter(Class<?>... types) {
+		this.types = new SupportedTypes(types);
+	}
+	
+	public NumFormatter() {
+		this(Number.class);
+	}
+	
 	@Override
 	public SimpleFormat create(String definition, TemplateContext ctx) {
 		if (("".equals(definition) && isTechLocale(ctx)) 
 				|| "tostring".equalsIgnoreCase(definition)) {
-			return new ToStringFormat();
+			return new ToStringFormat(types);
 		}
-		return new DecimalFormatWrapper(definition, ctx.getLocale());
+		return new DecimalFormatWrapper(definition, ctx.getLocale(), types);
 	}
 
 	private boolean isTechLocale(TemplateContext ctx) {
@@ -49,7 +59,11 @@ public class NumFormater implements FormatFactory {
 	}
 
 	public static class ToStringFormat extends SimpleFormat {
-
+		private final SupportedTypes types;
+		
+		public ToStringFormat(SupportedTypes types) {
+			this.types = types;
+		}
 		@Override
 		public Object format(TemplateNode location, Object value) {
 			return value.toString();
@@ -57,15 +71,17 @@ public class NumFormater implements FormatFactory {
 
 		@Override
 		public boolean supports(Object value) {
-			return (value instanceof Number);
+			return types.isSupported(value);
 		}
 	}	
 
 	public static class DecimalFormatWrapper extends SimpleFormat {
 		private final NumberFormat impl;
+		private final SupportedTypes types;
 
-		public DecimalFormatWrapper(String definition, Locale l) {
+		public DecimalFormatWrapper(String definition, Locale l, SupportedTypes types) {
 			impl = toFormat(definition, l);
+			this.types = types;
 		}
 
 		@Override
@@ -75,7 +91,7 @@ public class NumFormater implements FormatFactory {
 
 		@Override
 		public boolean supports(Object value) {
-			return (value instanceof Number);
+			return types.isSupported(value);
 		}
 	}	
 }

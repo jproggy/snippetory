@@ -20,6 +20,8 @@ public class NumberFormatTest {
 		number.set("test", 1.6);
 		assertEquals("1,60", number.toString());
 		number.set("test", 1.6333);
+		assertEquals("1,633", number.toString());
+		
 		number = XML_ALIKE.parse("{v:test}", Locale.US);
 		number.set("test", "x");
 		assertEquals("x", number.toString());
@@ -29,6 +31,7 @@ public class NumberFormatTest {
 		assertEquals("1.6", number.toString());
 		number.set("test", 1.6333);
 		assertEquals("1.633", number.toString());
+		
 		number = XML_ALIKE.parse("{v:test number='0.00#'}", Locale.GERMANY);
 		number.set("test", 1.55);
 		assertEquals("1,55", number.toString());
@@ -47,18 +50,49 @@ public class NumberFormatTest {
 		number = XML_ALIKE.parse("{v:test}", Locale.GERMANY);
 		number.set("test", 1.55);
 		assertEquals("1,55", number.toString());
-		number.set("test", 10000);
-		assertEquals("10.000", number.toString());
+
 		number = XML_ALIKE.parse("{v:test}");
 		number.set("test", 1.55);
 		assertEquals("1.55", number.toString());
-		number.set("test", 10000);
-		assertEquals("10000", number.toString());
 		number = XML_ALIKE.parse("{v:test}", Locale.US);
 		number.set("test", 1.55);
 		assertEquals("1.55", number.toString());
+	}
+	@Test
+	public void formatInt() {
+		Template number = XML_ALIKE.parse("{v:test int=\"0.00#\"}", Locale.GERMAN);
+		number.set("test", "x");
+		assertEquals("x", number.toString());
+		number.set("test", "123456");
+		assertEquals("123456", number.toString());
+		number.set("test", 1);
+		assertEquals("1,00", number.toString());
+		number.set("test", 1.6);
+		assertEquals("1,6", number.toString());
+		number.set("test", 1.6333);
+		assertEquals("1,633", number.toString());
+		
+		number = XML_ALIKE.parse("{v:test}");
+		number.set("test", 1000);
+		assertEquals("1000", number.toString());
+
+		number = XML_ALIKE.parse("{v:test}", Locale.US);
+		number.set("test", 1000);
+		assertEquals("1000", number.toString());
+
+		number = XML_ALIKE.parse("{v:test int='tostring'}", Locale.GERMANY);
+		number.set("test", 1000);
+		assertEquals("1000", number.toString());
 		number.set("test", 10000);
-		assertEquals("10,000", number.toString());
+		assertEquals("10000", number.toString());
+
+		number = XML_ALIKE.parse("{v:test}", Locale.GERMANY);
+		number.set("test", 10000);
+		assertEquals("10000", number.toString());
+		
+		number = XML_ALIKE.parse("{v:test}");
+		number.set("test", 10000);
+		assertEquals("10000", number.toString());
 	}
 	
 	@Test
