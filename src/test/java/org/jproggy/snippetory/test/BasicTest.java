@@ -213,37 +213,37 @@ public class BasicTest {
 			XML_ALIKE.parse("before<t:>startend</t:>after");
 			fail();
 		} catch (Exception e) {
-			assertEquals("Conditional region needs to contain at least one named location, or will never be rendered  Error while parsing </t:> at position 18", e.getMessage());
+			assertEquals("Conditional region needs to contain at least one named location, or will never be rendered  Error while parsing </t:> at line 1 character 18", e.getMessage());
 		}
 		try {
-			XML_ALIKE.parse("before<t:>startend</t:end>after");
+			XML_ALIKE.parse("before\n<t:>\rstartend\r\n</t:end>\r\nafter");
 			fail();
 		} catch (Exception e) {
-			assertEquals("1 unclosed conditional regions detected  Error while parsing </t:end> at position 18", e.getMessage());
+			assertEquals("1 unclosed conditional regions detected  Error while parsing </t:end>\r\n at line 4 character 1", e.getMessage());
 		}
 		try {
 			XML_ALIKE.parse("before<t:start>startend</t:end>after");
 			fail();
 		} catch (Exception e) {
-			assertEquals("end found but start expected  Error while parsing </t:end> at position 23", e.getMessage());
+			assertEquals("end found but start expected  Error while parsing </t:end> at line 1 character 23", e.getMessage());
 		}
 		try {
 			XML_ALIKE.parse("before<t:x>startend</tx>after");
 			fail();
 		} catch (Exception e) {
-			assertEquals("No end element for x  Error while parsing startend</tx>after at position 11", e.getMessage());
+			assertEquals("No end element for x  Error while parsing startend</tx>after at line 1 character 11", e.getMessage());
 		}
 		try {
 			XML_ALIKE.parse("before<tx>startend</t:x>after");
 			fail();
 		} catch (Exception e) {
-			assertEquals("x found but file end expected  Error while parsing </t:x> at position 18", e.getMessage());
+			assertEquals("x found but file end expected  Error while parsing </t:x> at line 1 character 18", e.getMessage());
 		}
 		try {
 			XML_ALIKE.parse("before<tx>startend</t:x>after");
 			fail();
 		} catch (Exception e) {
-			assertEquals("x found but file end expected  Error while parsing </t:x> at position 18", e.getMessage());
+			assertEquals("x found but file end expected  Error while parsing </t:x> at line 1 character 18", e.getMessage());
 		}
 	}
 	

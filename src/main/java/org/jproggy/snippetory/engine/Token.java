@@ -15,6 +15,8 @@ package org.jproggy.snippetory.engine;
 
 import java.util.LinkedHashMap;
 
+import org.jproggy.snippetory.spi.Syntax;
+
 /**
  * A token is a portion of the template that fulfills a special purpose, view from
  * the perspective of a syntax to parse this Snippetory template. As Snippetory
@@ -53,13 +55,15 @@ public class Token {
 	private final String content;
 	private final TokenType type;
 	private final int position;
+	private final Syntax.Tokenizer locator;
 	
-	public Token(String name, String content, TokenType type, int position) {
+	public Token(String name, String content, TokenType type, int position, Syntax.Tokenizer locator) {
 		super();
 		this.name = name == null ? null : name.intern();
 		this.content = content;
 		this.type = type;
 		this.position = position;
+		this.locator = locator;
 	}
 
 	/**
@@ -105,6 +109,10 @@ public class Token {
 	 */
 	public int getPosition() {
 		return position;
+	}
+	
+	public TextPosition getTextPosition() {
+		return locator.getPosition(this);
 	}
 	
 	public String toString() {

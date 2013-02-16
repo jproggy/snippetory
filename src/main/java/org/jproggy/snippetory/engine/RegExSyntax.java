@@ -99,10 +99,10 @@ public abstract class RegExSyntax implements Syntax {
 			pos = matcher.end();
 			TokenType type = analyze(matcher.group());
 			if (type == TokenType.Comment) {
-				return new Token(null, matcher.group(), type, matcher.start());
+				return new Token(null, matcher.group(), type, matcher.start(), this);
 			}
 			if (type == TokenType.BlockEnd) {
-				return new Token(content, matcher.group(), type, matcher.start());
+				return new Token(content, matcher.group(), type, matcher.start(), this);
 			}
 			return createToken(content, type);
 		}
@@ -115,7 +115,7 @@ public abstract class RegExSyntax implements Syntax {
 
 		private Token part(int endPos) {
 			String content = data.subSequence(pos, endPos).toString();
-			Token t = new Token(null, content, TokenType.TemplateData, pos);
+			Token t = new Token(null, content, TokenType.TemplateData, pos, this);
 			pos = endPos;
 			return t;
 		}
@@ -128,7 +128,7 @@ public abstract class RegExSyntax implements Syntax {
 			while (m.find()) {
 				if (first) {
 					token = new Token(m.group(4), matcher.group(), type,
-							matcher.start());
+							matcher.start(), this);
 					first = false;
 					if (m.group(4) != null) continue;
 				}
@@ -146,7 +146,7 @@ public abstract class RegExSyntax implements Syntax {
 			}
 			if (token == null) {
 				// no name, no attributes
-				return new Token(null, matcher.group(), type, matcher.start());
+				return new Token(null, matcher.group(), type, matcher.start(), this);
 			}
 			return token;
 		}
@@ -215,6 +215,19 @@ public abstract class RegExSyntax implements Syntax {
 		@Override
 		public TemplateContext getContext() {
 			return context;
+		}
+		
+		private final Pattern LINES = Pattern.compile("\\r\\n?|\\n|\\u0085|\\u2028|\\u2029", Pattern.MULTILINE);
+		@Override
+		public TextPosition getPosition(Token t) {
+			Matcher lineCutter = LINES.matcher(data);
+			int lineStart = 1;
+			int line = 1;
+			while (lineCutter.find() && lineCutter.end() <= t.getPosition()) {
+				lineStart = lineCutter.end();
+				line++;
+			}
+			return new TextPosition(line, (t.getPosition() - lineStart) + 1);
 		}
 	}
 }

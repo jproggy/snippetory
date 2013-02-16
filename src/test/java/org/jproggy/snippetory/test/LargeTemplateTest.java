@@ -24,7 +24,7 @@ public class LargeTemplateTest {
 		Template fluyt = template.get("FLUYT");
 		assertNotNull(fluyt);
 		renderAll(fluyt);
-		assertEquals(-1, fluyt.toString().indexOf('#'));
+		assertEquals(-1, fluyt.toString().indexOf('$'));
 	}
 	
 	private void renderAll(Template t) {
@@ -34,8 +34,7 @@ public class LargeTemplateTest {
 			renderAll(child);
 			child.render();
 		}
-		Set<String> names = t.names();
-		for (String name : names) {
+		for (String name : t.names()) {
 			if (!regions.contains(name)) t.set(name, "");
 		}
 	}

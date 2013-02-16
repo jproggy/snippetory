@@ -26,6 +26,7 @@ public class ParseError extends SnippetoryException {
 
 	private static String toMessage(Token at) {
 		if (at == null) return "Error at end";
-		return "Error while parsing " + at.getContent() + " at position " + at.getPosition();
+		TextPosition tPos = at.getTextPosition();
+		return "Error while parsing " + at.getContent() + " at line " + tPos.getLine() + " character " + tPos.getPosition();
 	}
 }

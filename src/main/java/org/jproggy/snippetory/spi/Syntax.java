@@ -18,8 +18,10 @@ import java.util.Map;
 
 import org.jproggy.snippetory.Syntaxes;
 import org.jproggy.snippetory.TemplateContext;
+import org.jproggy.snippetory.engine.RegExSyntax;
 import org.jproggy.snippetory.engine.SnippetoryException;
 import org.jproggy.snippetory.engine.TemplateBuilder;
+import org.jproggy.snippetory.engine.TextPosition;
 import org.jproggy.snippetory.engine.Token;
 import org.jproggy.snippetory.engine.spi.CComments;
 import org.jproggy.snippetory.engine.spi.FluytCCSyntax;
@@ -94,6 +96,10 @@ public interface Syntax {
 		void jumpTo(int position);
 		
 		TemplateContext getContext();
+		/**
+		 * Calculates the position of this token for error presentation.  
+		 */
+		TextPosition getPosition(Token t);
 	}
 	
 	/**
