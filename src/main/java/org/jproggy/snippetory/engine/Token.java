@@ -115,6 +115,7 @@ public class Token {
 		return locator.getPosition(this);
 	}
 	
+	@Override
 	public String toString() {
 		return type + ": " + content;
 	}

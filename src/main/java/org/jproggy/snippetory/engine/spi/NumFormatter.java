@@ -50,11 +50,11 @@ public class NumFormatter implements FormatFactory {
 	}
 	
 	private static NumberFormat toFormat(String definition, Locale l) {
-		if ("".equals(definition)) return DecimalFormat.getNumberInstance(l);
-		if ("currency".equals(definition)) return DecimalFormat.getCurrencyInstance(l);
-		if ("int".equals(definition)) return DecimalFormat.getIntegerInstance(l);
-		if ("percent".endsWith(definition)) return DecimalFormat.getPercentInstance(l);
-		if ("JS".equals(definition)) return DecimalFormat.getNumberInstance(Locale.US);
+		if ("".equals(definition)) return NumberFormat.getNumberInstance(l);
+		if ("currency".equals(definition)) return NumberFormat.getCurrencyInstance(l);
+		if ("int".equals(definition)) return NumberFormat.getIntegerInstance(l);
+		if ("percent".endsWith(definition)) return NumberFormat.getPercentInstance(l);
+		if ("JS".equals(definition)) return NumberFormat.getNumberInstance(Locale.US);
 		return new DecimalFormat(definition, DecimalFormatSymbols.getInstance(l));
 	}
 

@@ -98,6 +98,7 @@ public abstract class TemplateWrapper implements Template {
 		return wrapped.regionNames();
 	}
 	
+	@Override
 	public String toString() {
 		return wrapped.toString();
 	}

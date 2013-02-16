@@ -79,6 +79,7 @@ public class Region implements Template, Cloneable, CharSequence, SelfAppender {
 			return new Region(child, this);
 		}
 		Region child = data.getChild(name);
+		if (child == null) return null;
 		child.setParent(this);
 		return child;
 	}

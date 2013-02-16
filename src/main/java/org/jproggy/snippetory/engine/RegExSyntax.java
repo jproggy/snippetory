@@ -123,13 +123,11 @@ public abstract class RegExSyntax implements Syntax {
 		private static final Pattern VARI = Pattern.compile(CONTENT);
 		protected Token createToken(String varDef, TokenType type) {
 			Matcher m = VARI.matcher(varDef);
-			boolean first =  true;
 			Token token = null;
 			while (m.find()) {
-				if (first) {
+				if (token == null) {
 					token = new Token(m.group(4), matcher.group(), type,
 							matcher.start(), this);
-					first = false;
 					if (m.group(4) != null) continue;
 				}
 				if (m.group(4) != null)
