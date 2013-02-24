@@ -4,7 +4,7 @@
 	<artifactId>snippetory</artifactId>
 	<packaging>jar</packaging>
 	<name>Snippetory Template Engine</name>
-	<version>0.9.5</version>
+	<version>0.9.5-SNAPSHOT</version>
 	<description>
     Snippetory is a template engine for java with an integrated repository 
     for organizing and reusing the template code. Logic and presentation are separated by 
@@ -25,9 +25,9 @@
 		<version>7</version>
 	</parent>
 	<scm>
-		<url>http://snippetory.svn.sourceforge.net/viewvc/snippetory/tags/snippetory-0.9.5</url>
-		<developerConnection>scm:svn:https://snippetory.svn.sourceforge.net/svnroot/snippetory/tags/snippetory-0.9.5</developerConnection>
-		<connection>scm:svn:https://snippetory.svn.sourceforge.net/svnroot/snippetory/tags/snippetory-0.9.5</connection>
+		<url>http://snippetory.svn.sourceforge.net/viewvc/snippetory/tags/0.9.2</url>
+		<developerConnection>scm:svn:https://snippetory.svn.sourceforge.net/svnroot/snippetory/trunk</developerConnection>
+		<connection>scm:svn:https://snippetory.svn.sourceforge.net/svnroot/snippetory/trunk</connection>
 	</scm>
 	<developers>
 		<developer>
