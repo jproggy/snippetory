@@ -25,9 +25,9 @@
 		<version>7</version>
 	</parent>
 	<scm>
-		<url>http://snippetory.svn.sourceforge.net/viewvc/snippetory/tags/0.9.2</url>
-		<developerConnection>scm:svn:https://snippetory.svn.sourceforge.net/svnroot/snippetory/trunk</developerConnection>
-		<connection>scm:svn:https://snippetory.svn.sourceforge.net/svnroot/snippetory/trunk</connection>
+		<url>http://sourceforge.net/p/snippetory/code/HEAD/tree/trunk/</url>
+		<developerConnection>scm:svn:https://svn.code.sf.net/p/snippetory/code/trunk</developerConnection>
+		<connection>scm:svn:svn://svn.code.sf.net/p/snippetory/code/trunk snippetory-code</connection>
 	</scm>
 	<developers>
 		<developer>
