@@ -171,6 +171,9 @@ class Attributes {
 		abstract void handle(Attributes target, String key, String value);
 	}
 
+	public static void init() {
+	  // noop -> just called to ensure initializer is called.
+	}
 	static {
 		REGISTRY.register("enc", Types.ENCODING);
 		REGISTRY.register("delimiter", Types.DELIMITER);

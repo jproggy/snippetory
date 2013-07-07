@@ -76,6 +76,7 @@ public class TemplateContext implements Cloneable {
 		map.put("decimal", "");
 		map.put("null", "");
 		DEFAULT_ATTRIBUTES = Collections.unmodifiableMap(map);
+        TemplateBuilder.init();
 	}
 	
 	@Override

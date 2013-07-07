@@ -39,9 +39,16 @@ public class TemplateBuilder {
 		this.ctx = ctx;
 		tempSyntax = ctx.getSyntax();
 		parser = getSyntax().parse(data, ctx);
-	}
-	
-	public static Template parse(TemplateContext ctx, CharSequence data) {
+    }
+    
+	/**
+	 * Initialize Snippetory templating platfaorm as a whole. Includes initialization of plugins. 
+	 */
+    public static void init() {
+      Attributes.init();
+    }
+    
+    public static Template parse(TemplateContext ctx, CharSequence data) {
 		TemplateBuilder builder = new TemplateBuilder(ctx.clone(), data);
 		Location root = new Location(null, new Metadata(null, "", Attributes.parse(null, ctx.getBaseAttribs(), ctx)));
 		return builder.parse(root);
