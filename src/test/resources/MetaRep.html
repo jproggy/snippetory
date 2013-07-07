@@ -48,29 +48,29 @@
 <body>
   <t:page>
   <center>
-  <form action="{v:target enc='url'}" >
+  <form action="$target(enc='url')" >
   <table width="600">
     <tr>
-      <td colspan="3"><h1>{v:title}</h1></td>
+      <td colspan="3"><h1>$title</h1></td>
     </tr>
     <t:section>
     <tr>
-      <th colspan="3" class="head">{v:title}</th>
+      <th colspan="3" class="head">$title</th>
     </tr>
     <t:attribute>
     <tr>
       <td class="space"></td>
-      <td class="label">{v:label}</td>
+      <td class="label">$label</td>
       <td>
       <t:control><input type="text" /></t:control>
-      <t:msg><span class="err">{v:error}</span></t:msg>
+      <t:msg><span class="err">$error</span></t:msg>
       </td>
     </tr>
     </t:attribute>
     <t:description>
     <tr>
       <td class="space"></td>
-      <td colspan="2">{v:description}</td>
+      <td colspan="2">$description</td>
     </tr>
     </t:description>
     <t:controls>
@@ -82,14 +82,14 @@
       <td>
         <t:checkbox>
         <label>
-          <input type="checkbox" name="{v:name}" value="{v:value}" />
-          {v:label}
+          <input type="checkbox" name="$name" value="$value" />
+          $label
         </label><br />
         </t:checkbox>
         <t:selected_checkbox>
         <label>
-          <input type="checkbox" name="{v:name}" value="{v:value}" checked="checked" />
-          {v:label}
+          <input type="checkbox" name="$name" value="$value" checked="checked" />
+          $label
         </label><br />
         </t:selected_checkbox>
         <label><input type="checkbox" name="r2" />Choice 2</label><br /> 
@@ -97,12 +97,12 @@
       </td>
     </tr>
     <!-- ... or write just the components for compacter representation -->
-    <t:text><input type="text" name="{v:name}" value="{v:value}" /></t:text>
+    <t:text><input type="text" name="$name" value="$value" /></t:text>
     <t:select>
-      <select name="{v:name}">
+      <select name="$name">
         <option>Please select...</option>
-        <t:option><option id="{v:value}">{v:label}</option></t:option>
-        <t:selected_option><option selected="selected" id="{v:value}">{v:label}</option></t:selected_option>
+        <t:option><option id="$value">$label</option></t:option>
+        <t:selected_option><option selected="selected" id="$value">$label</option></t:selected_option>
       </select>
     </t:select>
     </t:controls>

@@ -13,17 +13,14 @@
 
 package org.jproggy.snippetory.test;
 
-import static org.jproggy.snippetory.Syntaxes.HIDDEN_BLOCKS;
-import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.jproggy.snippetory.Syntaxes.*;
+import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
-import java.util.Locale;
 
 import junit.framework.Assert;
 
+import org.jproggy.snippetory.Repo;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.engine.ParseError;
 import org.junit.Test;
@@ -54,40 +51,21 @@ public class BasicTest {
 	public void indexDemo() throws Exception {
 		  Method def = Template.class.getMethod("render", Template.class, String.class);
 		  
-		  // In a real world application we wouldn't have the template definition inside
-		  // the code. XML_ALIKE provides methods to read this from class path, file, Reader 
-		  // and so on.
-		  // switch over to another syntax. This could be done in template two. 
-		  // Even multiple times.
-		  Template method = XML_ALIKE.read(
-				  
-		  	  // The mock data 'Template' and 'render' ensures to compile while the mark
-		  	  // up code is hidden in comments
-		  	  //         |------|                      |-----|
-		      "/*t:type*/Template/*!t:type*/ /*t:name*/render/*!t:name*/" + 
-
-		      // Inside this block we use the xml variant of syntax. Then the entire block
-		      // appears as a comment to a compiler. 
-		  	  //             meta data        repeated area
-		  	  //          |------------|   |-----------------|
-		      "(/*t:param delimiter=', '-->{v:type} param{v:i}<!--!t:param*/);"      
-		  ).syntax(HIDDEN_BLOCKS)
-		  // --> The US locale is typically a good choice for machine readable output.
-		  .locale(Locale.US)
-		  // After configuration we finally parse the template
-		  .parse();
-		  
-		  String typeName = def.getReturnType().getSimpleName();
+		  // Repo provides methods to read this from class path, file, Reader and so on.
+		  // The typical workflow consists of getting the template data, configure the 
+		  // context and finally parse to materialize the template object.
+		  Template method = Repo.readResource("method.tpl").syntax(FLUYT_CC).parse();
 		  
 		  // bind parent data
-		  method.set("type", typeName).set("name", def.getName());
+		  String typeName = def.getReturnType().getSimpleName();
+		  method.set("type", typeName);
+		  method.set("name", def.getName());
 		  
 		  for (int i = 0; i < def.getParameterTypes().length; i++) {
 		    String paramType = def.getParameterTypes()[i].getSimpleName();
 		    
-		    // bind child data
+		    // bind child data -> the builder interface helps to have concise code
 		    method.get("param").set("type", paramType).set("i", i).render();
-
 		  }
 		  assertEquals("void render(Template param0, String param1);", 
 				  method.toString());

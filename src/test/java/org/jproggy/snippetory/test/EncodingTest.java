@@ -1,7 +1,6 @@
 package org.jproggy.snippetory.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.Syntaxes;
@@ -16,8 +15,8 @@ public class EncodingTest {
 	public void encodingXML() throws Exception {
 		TemplateContext ctx = new TemplateContext().encoding(Encodings.xml).syntax(Syntaxes.FLUYT);
 		Template t = ctx.parse("$test");
-		t.set("test", "<test>&amp;</test>");
-		assertEquals("&lt;test>&amp;amp;&lt;/test>", t.toString());
+		t.set("test", "<test>\n&amp;\n</test>");
+		assertEquals("&lt;test>\n&amp;amp;\n&lt;/test>", t.toString());
 		t.set("test", Encodings.xml.wrap("<test>&amp;</test>"));
 		assertEquals("<test>&amp;</test>", t.toString());
 		t.set("test", Encodings.html.wrap("<test>&amp;</test>"));

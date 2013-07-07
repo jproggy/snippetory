@@ -1,7 +1,7 @@
 package org.jproggy.snippetory.test;
 
-import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
-import static org.junit.Assert.assertEquals;
+import static org.jproggy.snippetory.Syntaxes.*;
+import static org.junit.Assert.*;
 
 import java.util.Date;
 import java.util.Locale;
@@ -90,13 +90,62 @@ public class DateFormatTest {
 		assertEquals("41/10 2011", date.toString());
 	}
 	
-	@Test
-	public void chinaLong() {
-		Template date = XML_ALIKE.parse("{v:test date='long'}", Locale.SIMPLIFIED_CHINESE);
-		date.set("test", D1);
-		assertEquals("2011年10月15日", date.toString());
-	}
-	
+    @Test
+    public void chinaLong() {
+        Template date = XML_ALIKE.parse("{v:test date='long'}", Locale.SIMPLIFIED_CHINESE);
+        date.set("test", D1);
+        assertEquals("2011年10月15日", date.toString());
+    }
+    
+    @Test
+    public void chinaShortFull() {
+        Template date = XML_ALIKE.parse("{v:test date='short_full'}", Locale.SIMPLIFIED_CHINESE);
+        date.set("test", D1_TIME);
+        assertEquals("11-10-15 上午01时05分15秒 CEST", date.toString());
+    }
+    
+    @Test
+    public void china_medium() {
+        Template date = XML_ALIKE.parse("{v:test date='_medium'}", Locale.SIMPLIFIED_CHINESE);
+        date.set("test", D1_TIME);
+        assertEquals("1:05:15", date.toString());
+    }
+    
+    @Test
+    public void usLong() {
+        Template date = XML_ALIKE.parse("{v:test date='long'}", Locale.US);
+        date.set("test", D1);
+        assertEquals("October 15, 2011", date.toString());
+    }
+    
+    @Test
+    public void usShortFull() {
+        Template date = XML_ALIKE.parse("{v:test date='short_full'}", Locale.US);
+        date.set("test", D1_TIME);
+        assertEquals("10/15/11 1:05:15 AM CEST", date.toString());
+    }
+    
+    @Test
+    public void us_medium() {
+        Template date = XML_ALIKE.parse("{v:test date='_medium'}", Locale.US);
+        date.set("test", D1_TIME);
+        assertEquals("1:05:15 AM", date.toString());
+    }
+    
+    @Test
+    public void germanShortFull() {
+        Template date = XML_ALIKE.parse("{v:test date='short_full'}", Locale.GERMAN);
+        date.set("test", D1_TIME);
+        assertEquals("15.10.11 01:05 Uhr MESZ", date.toString());
+    }
+    
+    @Test
+    public void german_medium() {
+        Template date = XML_ALIKE.parse("{v:test date='_medium'}", Locale.GERMAN);
+        date.set("test", D1_TIME);
+        assertEquals("01:05:15", date.toString());
+    }
+    
 	@Test
 	public void jpLongLong() {
 		Template date = XML_ALIKE.parse("{v:test date='long_long'}", Locale.JAPANESE);
