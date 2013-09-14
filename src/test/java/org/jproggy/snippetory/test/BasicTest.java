@@ -17,6 +17,7 @@ import static org.jproggy.snippetory.Syntaxes.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
+import java.util.TimeZone;
 
 import junit.framework.Assert;
 
@@ -26,6 +27,10 @@ import org.jproggy.snippetory.engine.ParseError;
 import org.junit.Test;
 
 public class BasicTest {
+  static {
+    TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+  }
+
 	@Test
 	public void delimiter() {
 		Template t1 = XML_ALIKE.parse("in ({v:test delimiter=', '})");
