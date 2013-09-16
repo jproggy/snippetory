@@ -101,10 +101,18 @@ public class EncodingTest {
 		}
 		t.set("test", Encodings.NULL.wrap("<test>\n&amp;\n</test>"));
 		assertEquals("<test>\n&amp;\n</test>", t.toString());
-	}
+    }
 
-	@Test
-	public void encodingHtmlString() throws Exception {
+    @Test
+    public void encodingURL() throws Exception {
+      TemplateContext ctx = new TemplateContext().encoding(Encodings.url).syntax(Syntaxes.FLUYT);
+      Template t = ctx.parse("$test");
+      t.set("test", "a.b cä+");
+      assertEquals("a.b+c%C3%A4%2B", t.toString());
+    }
+
+    @Test
+    public void encodingHtmlString() throws Exception {
 		TemplateContext ctx = new TemplateContext().encoding(Encodings.html_string).syntax(Syntaxes.FLUYT);
 		Template t = ctx.parse("$test");
 		t.set("test", "<test>&amp;</test>\n\rfoo\rbar");
