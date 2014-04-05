@@ -4,7 +4,7 @@
 	<artifactId>snippetory</artifactId>
 	<packaging>jar</packaging>
 	<name>Snippetory Template Engine</name>
-	<version>0.9.6</version>
+	<version>0.9.6-SNAPSHOT</version>
 	<description>
     Snippetory is a template engine for java with an integrated repository 
     for organizing and reusing the template code. Logic and presentation are separated by 
