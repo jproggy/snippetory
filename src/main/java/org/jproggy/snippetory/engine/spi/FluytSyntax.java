@@ -13,11 +13,6 @@
 
 package org.jproggy.snippetory.engine.spi;
 
-import static org.jproggy.snippetory.engine.spi.FluytSyntax.SyntaxVariant.Block;
-import static org.jproggy.snippetory.engine.spi.FluytSyntax.SyntaxVariant.Inline;
-import static org.jproggy.snippetory.engine.spi.FluytSyntax.SyntaxVariant.Named;
-import static org.jproggy.snippetory.engine.spi.FluytSyntax.SyntaxVariant.Nameless;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -28,14 +23,19 @@ import org.jproggy.snippetory.engine.Token.TokenType;
 
 public class FluytSyntax extends RegExSyntax {
 	protected static final String PLAIN_ATTRIBS = "\\s*" + ATTRIBUTE + "(?:\\s+" + ATTRIBUTE + ")*\\s*";
-	protected static final String OPT_ATTRIBS = "(?:(?![" + NAME_CHAR + "\\(])|\\(" + PLAIN_ATTRIBS + "\\)|\\(\\))";
+	protected static final String OPT_ATTRIBS = "(?:(?![" + NAME_CHAR + "\\(])|\\(" + PLAIN_ATTRIBS + "\\))";
 	protected static final String MAND_ATTRIBS = "\\(" + PLAIN_ATTRIBS + "\\)";
 
 	protected static final String START_TOKEN = "\\$((?:" + NAME + ")?" + OPT_ATTRIBS + ")\\{";
 	protected static final String END_TOKEN = "\\}(" + NAME + ")?\\$";
 
-	protected static final String NAMED_LOC = "\\$(" + NAME + OPT_ATTRIBS + ")";
-	protected static final String NAMELESS_LOC = "\\$(" + MAND_ATTRIBS + ")";
+	protected static final String NAMED_LOC = "\\$(" + NAME + OPT_ATTRIBS + ")(?:\\$)?";
+	protected static final String NAMELESS_LOC = "\\$(" + MAND_ATTRIBS + ")(?:\\$)?";
+	
+    protected static final SyntaxVariant Block = SyntaxVariant.Block;
+    protected static final SyntaxVariant Inline = SyntaxVariant.Inline;
+    protected static final SyntaxVariant Named = SyntaxVariant.Named;
+    protected static final SyntaxVariant Nameless = SyntaxVariant.Nameless;
 
 	protected enum SyntaxVariant {
 		Block, Inline, Named, Nameless

@@ -144,6 +144,10 @@ public class InheritanceTest {
 	}
 
 	public static class FormRegion {
+		  static {
+			    TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+			  }
+
 		@Test
 		public void toRegion() {
 			Template date = XML_ALIKE.parse("<t:test date='short'>Date 1: {v:d1}<t:test date='short'> Date 2: {v:d1}</t:test></t:test>").get("test");

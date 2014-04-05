@@ -1,10 +1,7 @@
 package org.jproggy.snippetory.test;
 
-import static org.jproggy.snippetory.Syntaxes.FLUYT;
-import static org.jproggy.snippetory.Syntaxes.FLUYT_CC;
-import static org.jproggy.snippetory.Syntaxes.FLUYT_X;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.jproggy.snippetory.Syntaxes.*;
+import static org.junit.Assert.*;
 
 import org.jproggy.snippetory.Repo;
 import org.jproggy.snippetory.Syntaxes;
@@ -17,10 +14,16 @@ public class FluytTest {
 		Template t = FLUYT.parse("$test");
 		assertEquals(" i++; ", t.set("test", " i++; ").toString());
 
-		t = FLUYT.parse("$test$test$");
-		assertEquals(" i++;  i++; $", t.set("test", " i++; ").toString());
+        t = FLUYT.parse("$test$test$");
+        assertEquals(" i++; test$", t.set("test", " i++; ").toString());
 
-		t = FLUYT.parse("$test()$test{}$");
+        t = FLUYT.parse("$test$$test");
+        assertEquals(" i++;  i++; ", t.set("test", " i++; ").toString());
+
+        t = FLUYT.parse("$test$$test$");
+        assertEquals(" i++;  i++; ", t.set("test", " i++; ").toString());
+
+		t = FLUYT.parse("$test$$test{}$");
 		assertEquals(" i++;  i++; ", t.set("test", " i++; ").toString());
 
 		t = FLUYT.parse("$test{}$$test");
@@ -33,13 +36,15 @@ public class FluytTest {
 		assertEquals(" i++; ", t.get("test").toString());
 
 		t = FLUYT.parse("${ $test i++; }$");
-		assertEquals("", t.toString());
-		t.set("test", "");
+        assertEquals("", t.toString());
+        t.set("test", null);
+        assertEquals("", t.toString());
+        t.set("test", "");
 		assertEquals("  i++; ", t.toString());
 		t.set("test", "blub");
 		assertEquals(" blub i++; ", t.toString());
 
-		t = FLUYT.parse("$test()bla");
+		t = FLUYT.parse("$test$bla");
 		t.set("test", "xy");
 		assertEquals("xybla", t.toString());
 	}
@@ -75,7 +80,7 @@ public class FluytTest {
 		t.set("test", "blub");
 		assertEquals(" blub i++; ", t.toString());
 
-		t = FLUYT_X.parse("$test()bla");
+		t = FLUYT_X.parse("$test$bla");
 		t.set("test", "xy");
 		assertEquals("xybla", t.toString());
 	}
@@ -113,7 +118,7 @@ public class FluytTest {
 		t.set("test", "xy");
 		assertEquals("xy   bla", t.toString());
 
-		t = FLUYT_CC.parse("/*\t$test()\t*/bla");
+		t = FLUYT_CC.parse("/*\t$test$\t*/bla");
 		t.set("test", "xy");
 		assertEquals("xybla", t.toString());
 	}
@@ -248,7 +253,7 @@ public class FluytTest {
 		assertEquals("beforeafter", t.toString());
 		t.set("test", 5);
 		assertEquals("before->005<-after", t.toString());
-		t = FLUYT.parse("$test(number='000'){before${->${$test()}$<-}$after}$");
+		t = FLUYT.parse("$test(number='000'){before${->${$test$}$<-}$after}$");
 		assertEquals("", t.toString());
 		t.get("test").append("test", 5).render();
 		assertEquals("before->005<-after", t.toString());
@@ -260,26 +265,26 @@ public class FluytTest {
 
 	@Test
 	public void conditionalRegions() {
-		Template t = Repo.read("before$(default='nothing'){$test{ start$(pad='10'){$tust()middle}$$test()end }$}$after").syntax(Syntaxes.FLUYT).parse();
+		Template t = Repo.read("before$(default='nothing'){$test{ start$(pad='10'){$tust$middle}$$test$end }$}$after").syntax(Syntaxes.FLUYT).parse();
 		assertEquals("beforenothingafter", t.toString());
 		Template test = t.get("test");
-		assertEquals(" start$test()end ", test.toString());
+		assertEquals(" start$test$end ", test.toString());
 		test.set("test", "<value>");
 		assertEquals(" start<value>end ", test.toString());
 		test.render();
 		assertEquals("before start<value>end after", t.toString());
 		test.clear();
-		assertEquals(" start$test()end ", test.toString());
+		assertEquals(" start$test$end ", test.toString());
 		assertEquals("before start<value>end after", t.toString());
 		test.set("test", "xxx");
 		assertEquals(" startxxxend ", test.toString());
 		Template test2 = t.get("test");
-		assertEquals(" start$test()end ", test2.toString());
+		assertEquals(" start$test$end ", test2.toString());
 		test2.set("tust", "222");
-		assertEquals(" start222middle $test()end ", test2.toString());
+		assertEquals(" start222middle $test$end ", test2.toString());
 		assertEquals(" startxxxend ", test.toString());
 		test2.append("tust", "s");
-		assertEquals(" start222smiddle$test()end ", test2.toString());
+		assertEquals(" start222smiddle$test$end ", test2.toString());
 		assertEquals(" startxxxend ", test.toString());
 		test2.append("test", ".s.");
 		assertEquals(" start222smiddle.s.end ", test2.toString());
