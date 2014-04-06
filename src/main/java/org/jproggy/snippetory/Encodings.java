@@ -5,9 +5,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR 
- * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, 
+ * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE,
  * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
  *******************************************************************************/
 
@@ -17,8 +17,8 @@ import java.io.IOException;
 import java.net.URLEncoder;
 
 import org.jproggy.snippetory.engine.IncompatibleEncodingException;
+import org.jproggy.snippetory.engine.chars.CharSequences;
 import org.jproggy.snippetory.engine.chars.EncodedContainer;
-import org.jproggy.snippetory.engine.chars.SelfAppender;
 import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Encoding;
 
@@ -30,7 +30,7 @@ import org.jproggy.snippetory.spi.Encoding;
  * implementation and still use this enum to identify a format. <br />
  * All default implementations defined here respect <code>NULL</code> as a wild
  * card that never has to be transcoded.
- * 
+ *
  * @author B. Ebertz
  */
 public enum Encodings implements Encoding {
@@ -72,7 +72,7 @@ public enum Encodings implements Encoding {
 		@Override
 		public void transcode(Appendable target, CharSequence value, String encodingName) throws IOException {
 			if (in(encodingName, xml, html, html_string)){
-				append(target, value);
+				CharSequences.append(target, value);
 			} else {
 				super.transcode(target, value, encodingName);
 			}
@@ -110,7 +110,7 @@ public enum Encodings implements Encoding {
 		@Override
 		public void transcode(Appendable target, CharSequence value, String encodingName) throws IOException {
 			if (in(encodingName, xml, html, html_string)){
-				append(target, value);
+				CharSequences.append(target, value);
 			} else {
 				super.transcode(target, value, encodingName);
 			}
@@ -128,7 +128,7 @@ public enum Encodings implements Encoding {
 	/**
 	 * Most C-based languages have almost the same rules. This implementation
 	 * fits at least Java and JavaScript.
-	 * 
+	 *
 	 */
 	string {
 		@Override
@@ -180,7 +180,7 @@ public enum Encodings implements Encoding {
 		@Override
 		public void transcode(Appendable target, CharSequence value, String encodingName) throws IOException {
 			if (in(encodingName, html_string, NULL)) {
-				append(target, value);
+				CharSequences.append(target, value);
 			} else {
 				escape(target, value);
 			}
@@ -220,19 +220,19 @@ public enum Encodings implements Encoding {
 	plain {
 		@Override
 		public void escape(Appendable target, CharSequence val) throws IOException {
-			append(target, val);
+			CharSequences.append(target, val);
 		}
 	},
 	/**
 	 * The wild card encoding. Fits to any other, any other fits to this.
 	 * Sometimes it's necessary to work around the checks. It' for compatibility
-	 * with legacy code to ease the conversion to the Snippetory template engine, 
+	 * with legacy code to ease the conversion to the Snippetory template engine,
 	 * but once on Snippetory it's better to get rid of it.
 	 */
 	NULL {
 		@Override
 		public void escape(Appendable target, CharSequence val) throws IOException {
-			append(target, val);
+			CharSequences.append(target, val);
 		}
 
 		@Override
@@ -246,7 +246,7 @@ public enum Encodings implements Encoding {
 	@Override
 	public void transcode(Appendable target, CharSequence value, String encodingName) throws IOException {
 		if (in(encodingName, NULL)) {
-			append(target, value);
+			CharSequences.append(target, value);
 		} else if (in(encodingName, plain)) {
 			escape(target, value);
 		} else {
@@ -264,8 +264,8 @@ public enum Encodings implements Encoding {
 	}
 
 	/**
-	 * 
-	 * @deprecated prefer syntax as starting point of context definition 
+	 *
+	 * @deprecated prefer syntax as starting point of context definition
 	 */
 	public TemplateContext context() {
 		return new TemplateContext().encoding(this);
@@ -291,13 +291,5 @@ public enum Encodings implements Encoding {
 			if (enc.name().equals(encoding)) return true;
 		}
 		return false;
-	}
-
-	private static void append(Appendable target, CharSequence value) throws IOException {
-		if (value instanceof SelfAppender) {
-			((SelfAppender) value).appendTo(target);
-		} else {
-			target.append(value);
-		}
 	}
 }

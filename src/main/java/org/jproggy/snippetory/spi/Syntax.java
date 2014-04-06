@@ -5,9 +5,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR 
- * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, 
+ * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE,
  * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
  *******************************************************************************/
 
@@ -20,9 +20,9 @@ import org.jproggy.snippetory.Syntaxes;
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.engine.RegExSyntax;
 import org.jproggy.snippetory.engine.SnippetoryException;
-import org.jproggy.snippetory.engine.TemplateBuilder;
 import org.jproggy.snippetory.engine.TextPosition;
 import org.jproggy.snippetory.engine.Token;
+import org.jproggy.snippetory.engine.build.TemplateBuilder;
 import org.jproggy.snippetory.engine.spi.CComments;
 import org.jproggy.snippetory.engine.spi.FluytCCSyntax;
 import org.jproggy.snippetory.engine.spi.FluytSyntax;
@@ -33,14 +33,15 @@ import org.jproggy.snippetory.engine.spi.XMLAlikeSyntax;
 /**
  * A syntax defines the way how Snippetory markup is determined and understood.
  * For this job it provides an {@link Tokenizer} which in turn does the real work
- * to chop the template data into handy tokens.  
- * 
+ * to chop the template data into handy tokens.
+ *
  * @author B. Ebertz
  * @see RegExSyntax
  */
 public interface Syntax {
 	public class Registry {
 		private Map<String, Syntax> reg =  new HashMap<String, Syntax>();
+		@SuppressWarnings("deprecation")
 		private Registry() {
 			register(Syntaxes.HIDDEN_BLOCKS, new HiddenBlocksSyntax());
 			register(Syntaxes.XML_ALIKE, new XMLAlikeSyntax());
@@ -74,7 +75,7 @@ public interface Syntax {
 	    /**
 	     * Returns the next token found in the input data as long as <tt>hasNext</tt>
 	     * has returned <tt>true</tt> immediately before this call.
-	     * 
+	     *
 	     * @return the next element in the iteration.
 	     */
 		Token next();
@@ -83,25 +84,25 @@ public interface Syntax {
 		 */
 		CharSequence getData();
 		/**
-		 * 
+		 *
 		 * @return the start position of the token the <tt>next</tt> method will provide
-		 * by it's next call. Or <tt>getData().length()</tt> if no further token present. 
+		 * by it's next call. Or <tt>getData().length()</tt> if no further token present.
 		 */
 		int getPosition();
 		/**
-		 * set the position where next token is expected to start. This method is mainly 
+		 * set the position where next token is expected to start. This method is mainly
 		 * for handing over a template from one syntax to another.
 		 * @param position start position of the next token
 		 */
 		void jumpTo(int position);
-		
+
 		TemplateContext getContext();
 		/**
-		 * Calculates the position of this token for error presentation.  
+		 * Calculates the position of this token for error presentation.
 		 */
 		TextPosition getPosition(Token t);
 	}
-	
+
 	/**
 	 * transform input data to a stream of token. Those tokens can be used by low level tools
 	 * like the {@link TemplateBuilder}.
@@ -115,10 +116,10 @@ public interface Syntax {
 	 * @return a tokenizer providing the token stream
 	 */
 	Tokenizer takeOver(Tokenizer data);
-	
+
 	/**
 	 * To be able select a syntax via the <a href="/snippetory/Syntax.html#Syntax">syntax selector</a>
-	 * it has to be registered. 
+	 * it has to be registered.
 	 */
 	Registry REGISTRY = new Registry();
 

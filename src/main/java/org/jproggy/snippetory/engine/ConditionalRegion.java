@@ -5,9 +5,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR 
- * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, 
+ * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE,
  * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
  *******************************************************************************/
 package org.jproggy.snippetory.engine;
@@ -29,8 +29,8 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
 		names = names();
 		this.children = children;
 	}
-	
-	private ConditionalRegion(ConditionalRegion template, Location parent) {
+
+	protected ConditionalRegion(ConditionalRegion template, Location parent) {
 		super(template, template.getPlaceholder().cleanCopy(parent));
 		names = names();
 		this.children =  new HashMap<String, Region>();
@@ -60,14 +60,14 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
 	public Set<String> regionNames() {
 		return children.keySet();
 	}
-	
+
 	@Override
 	public Region getChild(String name) {
 		Region child = children.get(name);
 		if (child != null) child = child.cleanCopy(getPlaceholder());
  		return child;
 	}
-	
+
 	@Override
 	public void clear() {
 		super.clear();
@@ -83,12 +83,16 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
 	@Override
 	public CharSequence format() {
 		Location placeholder = getPlaceholder();
-		if (appendMe) {
+		if (appendMe()) {
 			placeholder.set(this);
 		}
 		return placeholder.format();
 	}
-	
+
+  protected boolean appendMe() {
+    return appendMe;
+  }
+
 	@Override
 	public CharSequence toCharSequence() {
 		return this;

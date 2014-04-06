@@ -5,26 +5,40 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR 
- * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, 
+ * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE,
  * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
  *******************************************************************************/
 
 package org.jproggy.snippetory.engine;
 
+import java.util.Collections;
+import java.util.List;
+
+
 public class NoDataException extends SnippetoryException {
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public NoDataException(String message, Throwable cause) {
-		super(message, cause);
-	}
+  private final List<Exception> exceptions;
 
-	public NoDataException(String message) {
-		super(message);
-	}
+  public NoDataException(String message, List<Exception> exceptions) {
+    super(message);
+    if (!exceptions.isEmpty()) this.initCause(exceptions.get(0));
+    this.exceptions = exceptions;
+  }
 
-	public NoDataException(Throwable cause) {
-		super(cause);
-	}
+  public NoDataException(String message) {
+    super(message);
+    this.exceptions = Collections.emptyList();
+  }
+
+  public NoDataException(Throwable cause) {
+    super(cause);
+    this.exceptions = Collections.emptyList();
+  }
+
+  public List<Exception> getExceptions() {
+    return exceptions;
+  }
 }

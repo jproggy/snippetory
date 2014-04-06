@@ -5,9 +5,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR 
- * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, 
+ * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE,
  * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
  *******************************************************************************/
 package org.jproggy.snippetory.engine;
@@ -20,7 +20,7 @@ import java.util.TreeSet;
 import org.jproggy.snippetory.engine.chars.CharSequences;
 
 public class DataSinks extends CharSequences implements DataSink {
-	private final DataSink[] parts;
+	protected final DataSink[] parts;
 	private final Location placeHolder;
 
 	public DataSinks(List<DataSink> parts, Location placeHolder) {
@@ -29,7 +29,7 @@ public class DataSinks extends CharSequences implements DataSink {
 		this.placeHolder = placeHolder;
 	}
 
-	protected DataSinks(DataSinks template, Location parent) {
+	public DataSinks(DataSinks template, Location parent) {
 		super();
 		this.placeHolder = template.placeHolder.cleanCopy(parent);
 		this.parts = new DataSink[template.parts.length];
@@ -98,7 +98,7 @@ public class DataSinks extends CharSequences implements DataSink {
 		}
 		return to;
 	}
-	
+
 	@Override
 	public DataSinks cleanCopy(Location parent) {
 		return new DataSinks(this, parent);

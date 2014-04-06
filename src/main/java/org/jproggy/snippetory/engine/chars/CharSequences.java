@@ -13,6 +13,8 @@
 
 package org.jproggy.snippetory.engine.chars;
 
+import java.io.IOException;
+
 /**
  * CharSequences is a helper class to implement 'CompoundCharSequences' i.e.
  * CharSequences consisting of several parts. 
@@ -73,4 +75,12 @@ public abstract class CharSequences implements CharSequence, SelfAppender {
 	public String subSequence(int start, int end) {
 		return this.toString().substring(start, end);
 	}
+
+  public static void append(Appendable target, CharSequence value) throws IOException {
+  	if (value instanceof SelfAppender) {
+  		((SelfAppender) value).appendTo(target);
+  	} else {
+  		target.append(value);
+  	}
+  }
 }

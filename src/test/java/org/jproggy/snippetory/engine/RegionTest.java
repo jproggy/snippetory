@@ -5,9 +5,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR 
- * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, 
+ * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE,
  * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
  *******************************************************************************/
 
@@ -39,7 +39,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 public class RegionTest {
-	
+
 	private static TemplateFragment tf(String v) {
 		return new TemplateFragment(v);
 	}
@@ -47,7 +47,7 @@ public class RegionTest {
 	public void charAtTest() {
 		Location placeHolder = new Location(null, new Metadata("", "", Attributes.parse(null, Collections.<String, String>emptyMap(), null)));
 		List<DataSink> parts = Arrays.asList((DataSink)tf(""), tf("test"), tf("yagni"));
-		Region region = new Region(placeHolder, parts, Collections.<String, Region>emptyMap());
+		Region region = new Region(new DataSinks(parts, placeHolder), Collections.<String, Region>emptyMap());
 		assertEquals('t', region.charAt(0));
 		assertEquals('e', region.charAt(1));
 		assertEquals('s', region.charAt(2));
@@ -80,7 +80,7 @@ public class RegionTest {
 			// ignore --> expected
 		}
 		parts = Arrays.asList((DataSink)tf("test"), tf(""), tf("yagni"), tf(""), tf("jproggy"));
-		region = new Region(placeHolder, parts, Collections.<String, Region>emptyMap());
+		region = new Region(new DataSinks(parts, placeHolder), Collections.<String, Region>emptyMap());
 		assertEquals('y', region.charAt(4));
 		assertEquals('y', region.charAt(15));
 	}
@@ -105,7 +105,7 @@ public class RegionTest {
 		context.uriResolver(UriResolver.url(new File("src/test/resources").toURI().toURL()));
 		context.getTemplate("testTable.htm");
 	}
-	
+
 	@Test
 	public void calendar() throws IOException {
 		Date day = Date.valueOf("1979-02-02");
@@ -180,7 +180,7 @@ public class RegionTest {
 	}
 
 	public void testN(int n) {
-		int i = 0; 
+		int i = 0;
 		try {
 			int count = 0;
 			for (; i < n; i++) {

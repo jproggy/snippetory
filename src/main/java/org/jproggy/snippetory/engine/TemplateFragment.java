@@ -5,9 +5,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR 
- * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, 
+ * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE,
  * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
  *******************************************************************************/
 package org.jproggy.snippetory.engine;
@@ -19,10 +19,10 @@ import java.util.Set;
 import org.jproggy.snippetory.engine.chars.SelfAppender;
 
 public class TemplateFragment implements DataSink, CharSequence, SelfAppender {
-	private final String data;
-	
-	public TemplateFragment(String data) {
-		this.data = data;
+	private final CharSequence data;
+
+	public TemplateFragment(CharSequence data2) {
+		this.data = data2;
 	}
 
 	@Override
@@ -37,20 +37,20 @@ public class TemplateFragment implements DataSink, CharSequence, SelfAppender {
 	public Set<String> names() {
 		return Collections.emptySet();
 	}
-	
+
 	@Override
 	public Set<String> regionNames() {
 		return Collections.emptySet();
 	}
-	
+
 	@Override
 	public Region getChild(String name) {
 		return null;
 	}
-	
+
 	@Override
 	public String toString() {
-		return data;
+		return data.toString();
 	}
 
 	@Override
@@ -77,13 +77,13 @@ public class TemplateFragment implements DataSink, CharSequence, SelfAppender {
 	public CharSequence subSequence(int start, int end) {
 		return data.subSequence(start, end);
 	}
-	
+
 	public TemplateFragment start(int start) {
-		return new TemplateFragment(data.substring(0,start));
+		return new TemplateFragment(this.subSequence(0,start));
 	}
-	
+
 	public TemplateFragment end(int start) {
-		return new TemplateFragment(data.substring(start));
+		return new TemplateFragment(this.subSequence(start, data.length()));
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class TemplateFragment implements DataSink, CharSequence, SelfAppender {
 	public void clear() {
 		// is immutable --> nothing to clear
 	}
-	
+
 	@Override
 	public CharSequence format() {
 		return this;

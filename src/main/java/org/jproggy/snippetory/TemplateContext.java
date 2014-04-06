@@ -5,9 +5,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR 
- * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, 
+ * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE,
  * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
  *******************************************************************************/
 
@@ -29,7 +29,7 @@ import java.util.Map;
 
 import org.jproggy.snippetory.engine.NoDataException;
 import org.jproggy.snippetory.engine.SnippetoryException;
-import org.jproggy.snippetory.engine.TemplateBuilder;
+import org.jproggy.snippetory.engine.build.TemplateBuilder;
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Syntax;
 import org.jproggy.snippetory.spi.SyntaxID;
@@ -41,18 +41,18 @@ import org.jproggy.snippetory.spi.SyntaxID;
  * subclass and use a different parsing mechanism or place an additional layer
  * of interceptors.
  * </p>
- * 
- * <p>In fact the TemplatCcontext is designed to be extended to be integrated into 
+ *
+ * <p>In fact the TemplatCcontext is designed to be extended to be integrated into
  * your global data. For example some applications configure presentation attributes
  * like number formating at user level. In this case you can easily add the user
  * to the TemplateContext and replace the numb Formatter by one the values the user.
  * </p>
- * 
+ *
  * <p><strong>Caution:</strong> As the TemplateContext is a mutable construct it has to
  * be considered single threaded! For reuse over several threads one would need to
- * ensure immutability. However, the clone method allows fast creation of copies. 
+ * ensure immutability. However, the clone method allows fast creation of copies.
  * </p>
- * 
+ *
  * @author B. Ebertz
  */
 public class TemplateContext implements Cloneable {
@@ -60,14 +60,14 @@ public class TemplateContext implements Cloneable {
 	private Locale locale = TECH;
 	private Syntax syntax = Syntax.REGISTRY.getDefault();
 	private UriResolver uriResolver;
-	
+
 	/**
 	 * Omit initialization here to ensure TemplateContext to be cheap in default behavior
 	 * and generate the cost of a map only when required.
 	 */
 	private Map<String, String> baseAttribs;
-	
-	private static final Map<String, String> DEFAULT_ATTRIBUTES; 
+
+	private static final Map<String, String> DEFAULT_ATTRIBUTES;
 
 	static {
 		Map<String,String> map = new HashMap<String, String>(2);
@@ -78,7 +78,7 @@ public class TemplateContext implements Cloneable {
 		DEFAULT_ATTRIBUTES = Collections.unmodifiableMap(map);
         TemplateBuilder.init();
 	}
-	
+
 	@Override
 	public TemplateContext clone() {
 		try {
@@ -108,16 +108,16 @@ public class TemplateContext implements Cloneable {
 			throw new NullPointerException();
 		this.syntax = syntax;
 	}
-	
+
 	public TemplateContext uriResolver(UriResolver uriResolver) {
 		setUriResolver(uriResolver);
 		return this;
 	}
-	
+
 	public void setUriResolver(UriResolver uriResolver) {
 		this.uriResolver = uriResolver;
 	}
-	
+
 	public UriResolver getUriResolver() {
 		return uriResolver;
 	}
@@ -158,7 +158,7 @@ public class TemplateContext implements Cloneable {
 	/**
 	 * Returns the attributes intended to be set on the root node of a template created
 	 * by one of the parse methods. This makes especially sense for inherited attributes.
-	 * Expect the returned map to be unmodifiable. I.e. copy via copy constructor and 
+	 * Expect the returned map to be unmodifiable. I.e. copy via copy constructor and
 	 * set newly if you want to extend it.
 	 */
 	public Map<String, String> getBaseAttribs() {
@@ -169,10 +169,10 @@ public class TemplateContext implements Cloneable {
 	public void setBaseAttribs(Map<String, String> baseAttribs) {
 		this.baseAttribs = baseAttribs;
 	}
-	
+
 	/**
 	 * Get the Template identified by the uri. The uri is resolved by the configured uri resolver.
-	 * Thus configuring a UriRelover is mandatory, 
+	 * Thus configuring a UriRelover is mandatory,
 	 */
 	public Template getTemplate(String uri) {
 		if (uriResolver == null) {
@@ -187,7 +187,7 @@ public class TemplateContext implements Cloneable {
 
 	static class ToString {
 		private ToString() {}
-		
+
 		public static String resource(String name) {
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
 			if (loader == null) {

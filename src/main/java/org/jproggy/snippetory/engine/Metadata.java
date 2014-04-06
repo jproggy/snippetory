@@ -5,9 +5,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR 
- * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, 
+ * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE,
  * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
  *******************************************************************************/
 
@@ -24,8 +24,8 @@ import org.jproggy.snippetory.spi.TemplateNode;
 import org.jproggy.snippetory.spi.Transcoding;
 import org.jproggy.snippetory.spi.VoidFormat;
 
-class Metadata implements VoidFormat {
-	
+public class Metadata implements VoidFormat {
+
 	public Metadata(String name, String fragment, Attributes attribs) {
 		super();
 		this.name = name;
@@ -64,7 +64,7 @@ class Metadata implements VoidFormat {
 			throw new SnippetoryException(e);
 		}
 	}
-	
+
 	Format[] getFormats(TemplateNode location) {
 		Format[] result = new Format[formats.length];
 		for (int i = 0; i < formats.length; i++) {

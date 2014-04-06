@@ -5,9 +5,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR 
- * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, 
+ * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE,
  * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
  *******************************************************************************/
 
@@ -16,7 +16,6 @@ package org.jproggy.snippetory.engine;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Writer;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,33 +24,28 @@ import org.jproggy.snippetory.engine.chars.SelfAppender;
 
 public class Region implements Template, Cloneable, CharSequence, SelfAppender {
 	private final Map<String, Region> children;
-	private final Metadata md;
 	private Region parent;
-	private DataSinks data;
+	protected DataSinks data;
 
-	public Region(Location placeHolder, List<DataSink> parts,
-			Map<String, Region> children) {
+	public Region(DataSinks data, Map<String, Region> children) {
 		super();
-		this.data = new DataSinks(parts, placeHolder);
+		this.data = data;
 		this.children = children;
-		this.md = placeHolder.md;
 		for (Region child: children.values()) {
 			child.setParent(this);
 		}
 	}
 
-	private Region(Region template, Location parent) {
+	protected Region(Region template, Location parent) {
 		super();
 		setParent(null);
-		this.md = template.md;
 		this.children = template.children;
 		this.data = template.data.cleanCopy(parent);
 	}
 
-	private Region(Region template, Region parent) {
+	protected Region(Region template, Region parent) {
 		super();
 		setParent(parent);
-		this.md = template.md;
 		this.children = template.children;
 		this.data = template.data.cleanCopy(getParentLocation());
 	}
@@ -63,7 +57,7 @@ public class Region implements Template, Cloneable, CharSequence, SelfAppender {
 
 	@Override
 	public Region get(String... path) {
-		if (path.length == 0) return new Region(this, parent);
+		if (path.length == 0) return cleanCopy();
 		Region t = getChild(path[0]);
 		if (t == null) return null;
 		for (int i = 1; i < path.length; i++) {
@@ -73,17 +67,25 @@ public class Region implements Template, Cloneable, CharSequence, SelfAppender {
 		return t;
 	}
 
+  protected Region cleanCopy() {
+    return new Region(this, parent);
+  }
+
 	protected Region getChild(String name) {
 		if (children.containsKey(name))	{
 			Region child = children.get(name);
-			return new Region(child, this);
+			return cleanChild(child);
 		}
 		Region child = data.getChild(name);
 		if (child == null) return null;
 		child.setParent(this);
 		return child;
 	}
-	
+
+  protected Region cleanChild(Region child) {
+    return new Region(child, this);
+  }
+
 	@Override
 	public Region set(String key, Object value) {
 		data.set(key, value);
@@ -122,14 +124,14 @@ public class Region implements Template, Cloneable, CharSequence, SelfAppender {
 
 	@Override
     public String getEncoding() {
-		return md.enc.getName();
+		return data.getPlaceholder().md.enc.getName();
 	}
 
 	@Override
 	public void render() {
 		// ignore render calls on root node as they don't make any sense.
 		if (isRoot()) return;
-		render(md.name);
+		render(data.getPlaceholder().md.name);
 	}
 
 	private boolean isRoot() {
@@ -167,11 +169,11 @@ public class Region implements Template, Cloneable, CharSequence, SelfAppender {
 	public Set<String> regionNames() {
 		return children.keySet();
 	}
-	
-	Template getParent() {
+
+	protected Template getParent() {
 		return parent;
 	}
-	
+
 	final void setParent(Region parent) {
 		this.parent = parent;
 	}
@@ -190,7 +192,7 @@ public class Region implements Template, Cloneable, CharSequence, SelfAppender {
 	public CharSequence subSequence(int start, int end) {
 		return data.subSequence(start, end);
 	}
-	Region cleanCopy(Location parent) {
+	protected Region cleanCopy(Location parent) {
 		return new Region(this, parent);
 	}
 }

@@ -5,9 +5,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR 
- * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, 
+ * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE,
  * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
  *******************************************************************************/
 
@@ -44,11 +44,11 @@ import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.FormatConfiguration;
 
 
-class Attributes {
-	static final String BACKWARD = "backward";
+public class Attributes {
+	public static final String BACKWARD = "backward";
 	static final Registry REGISTRY = new Registry();
-	
-	static Attributes parse(Location parent, Map<String, String> attribs, TemplateContext ctx) {
+
+	public static Attributes parse(Location parent, Map<String, String> attribs, TemplateContext ctx) {
 		Attributes result = new Attributes(parent, ctx);
 		for (Map.Entry<String, String> attr : attribs.entrySet()) {
 			Types type = Attributes.REGISTRY.type(attr.getKey());
@@ -56,19 +56,19 @@ class Attributes {
 		}
 		return result;
 	}
-	
+
 	Map<String, FormatConfiguration> formats =  new LinkedHashMap<String, FormatConfiguration>();
 	Encoding enc;
 	String delimiter;
 	String prefix;
 	String suffix;
 	private TemplateContext ctx;
-	
+
 	Attributes(Location parent, TemplateContext ctx) {
 		enc = parent == null ? Encodings.NULL : parent.md.enc;
 		this.ctx = ctx;
 	}
-	
+
 	void unregisteredAttribute(String key, String value) {
 		String[] parts = key.split("\\.");
 		if (parts.length  == 2) {
@@ -76,9 +76,9 @@ class Attributes {
 		} else {
 			throw new SnippetoryException("Can't understand attribute " + key + "='" + value + "'");
 		}
-		
+
 	}
-	
+
 	private void subAttribute(String parent, String attrib, String value) {
 		FormatConfiguration format = formats.get(parent);
 		if (format == null) {
@@ -133,7 +133,7 @@ class Attributes {
 			void handle(Attributes target, String key, String value) {
 				FormatConfiguration format = FormatRegistry.INSTANCE.get(key, value, target.ctx);
 				target.formats.put(key, format);
-			}			
+			}
 		}, ENCODING {
 			@Override
 			void handle(Attributes target, String key, String value) {
@@ -141,32 +141,32 @@ class Attributes {
 				if (target.enc == null) {
 					throw new SnippetoryException("Encoding " + value + " not found.");
 				}
-			}			
+			}
 		}, DELIMITER {
 			@Override
 			void handle(Attributes target, String key, String value) {
 				target.delimiter = value;
-			}			
+			}
 		}, PREFIX {
 			@Override
 			void handle(Attributes target, String key, String value) {
 				target.prefix = value;
-			}			
+			}
 		}, SUFFIX {
 			@Override
 			void handle(Attributes target, String key, String value) {
 				target.suffix = value;
-			}			
+			}
 		}, BACKWARD {
 			@Override
 			void handle(Attributes target, String key, String value) {
 				throw new SnippetoryException("Internal error: BACKWARD is not expected here");
-			}			
+			}
 		}, UNREGISTERED {
 			@Override
 			void handle(Attributes target, String key, String value) {
 				target.unregisteredAttribute(key, value);
-			}			
+			}
 		};
 		abstract void handle(Attributes target, String key, String value);
 	}
