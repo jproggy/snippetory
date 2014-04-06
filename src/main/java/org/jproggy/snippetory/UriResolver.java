@@ -5,9 +5,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR 
- * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, 
+ * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE,
  * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
  *******************************************************************************/
 package org.jproggy.snippetory;
@@ -37,15 +37,15 @@ import org.jproggy.snippetory.engine.SnippetoryException;
  * This class already provides some basic implementations. However,
  * for the moment none of them draws the context into account. But
  * more sophisticated algorithms are likely to be based on Locale
- * or Encoding. 
- *  
+ * or Encoding.
+ *
  * @author B. Ebertz
  */
 public abstract class UriResolver {
 	/**
 	 * Creates a UriResolver that sequentially scans the provided
 	 * directories for a file that's represented by the uri and
-	 * returns the content of the first match. 
+	 * returns the content of the first match.
 	 */
 	public static UriResolver directories(final String... dirs) {
 		File[] files = new File[dirs.length];
@@ -57,11 +57,11 @@ public abstract class UriResolver {
 	/**
 	 * Creates a UriResolver that sequentially scans the provided
 	 * directories for a file that's represented by the uri and
-	 * returns the content of the first match. 
+	 * returns the content of the first match.
 	 */
 	public static UriResolver directories(final File... dirs) {
 		return new UriResolver() {
-			
+
 			@Override
 			public String resolve(String uri, TemplateContext context) {
 				for (File dir :dirs) {
@@ -76,11 +76,11 @@ public abstract class UriResolver {
 	 * Resolves to a resource. The resource has to be queried as described
 	 * in {@link ClassLoader#getResource(String)}. The used Classloader
 	 * is typically the {@link Thread#getContextClassLoader() ContextClassloader}
-	 * 
+	 *
 	 */
 	public static UriResolver resource() {
 		return new UriResolver() {
-			
+
 			@Override
 			public String resolve(String resource, TemplateContext context) {
 				return ToString.resource(resource);
@@ -92,9 +92,9 @@ public abstract class UriResolver {
 	 * as organizing template sets in different packages.
 	 */
 	public static UriResolver resource(String prefix) {
-		final String realPF = prefix.endsWith("/") ? prefix : prefix + '/';
+		final String realPF = (prefix.isEmpty() || prefix.endsWith("/")) ? prefix : prefix + '/';
 		return new UriResolver() {
-			
+
 			@Override
 			public String resolve(String resource, TemplateContext context) {
 				String path = realPF + (resource.startsWith("/") ? resource.substring(1) : resource);
@@ -117,7 +117,7 @@ public abstract class UriResolver {
 	 */
 	public static UriResolver url(final URL base) {
 		return new UriResolver() {
-			
+
 			@Override
 			public String resolve(String url, TemplateContext context) {
 				try {
@@ -129,11 +129,19 @@ public abstract class UriResolver {
 			}
 		};
 	}
-	
+
+	/**
+	 * Build a more complex repository consisting of several other, searched in order
+	 * for and uri.
+	 */
+	public static RepoBuilder combine() {
+	  return new RepoBuilder();
+	}
+
 	/**
 	 * Resolves the uri within the repository to the data represented
 	 * by it. This data will be parsed to a template.
-	 * The meaning of the uri may greatly differ depending on the 
+	 * The meaning of the uri may greatly differ depending on the
 	 * implementation. It may or may not map to a certain location.
 	 */
 	public abstract String resolve(String uri, TemplateContext context);
