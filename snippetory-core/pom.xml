@@ -1,0 +1,21 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jproggy</groupId>
+    <artifactId>snippetory</artifactId>
+    <version>0.9.6-SNAPSHOT</version>
+  </parent>
+  <artifactId>snippetory-core</artifactId>
+  <description>
+    Snippetory is a template engine for java with an integrated repository 
+    for organizing and reusing the template code. Logic and presentation are separated by 
+    an abstraction layer with support for different technologies and a powerful formatting 
+    engine.
+  </description>
+  <dependencies>
+	<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+    </dependency>
+  </dependencies>
+</project>

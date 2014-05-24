@@ -1,8 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.jproggy</groupId>
 	<artifactId>snippetory</artifactId>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 	<name>Snippetory Template Engine</name>
 	<version>0.9.6-SNAPSHOT</version>
 	<description>
@@ -10,7 +11,7 @@
     for organizing and reusing the template code. Logic and presentation are separated by 
     an abstraction layer with support for different technologies and a powerful formatting 
     engine.
-  </description>
+    </description>
 	<url>http://www.jproggy.org/snippetory/</url>
 	<licenses>
 		<license>
@@ -39,25 +40,42 @@
 	<properties>
 		<gpg.keyname>Templa Project</gpg.keyname>
 	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.10</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.10</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.jproggy</groupId>
+				<artifactId>snippetory-core</artifactId>
+				<version>0.9.6-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-all</artifactId>
+				<version>1.9.5</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<build>
 		<plugins>
-		    <plugin>
-		        <groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-compiler-plugin</artifactId>
-		        <configuration>
-		            <source>1.6</source>
-		            <target>1.6</target>
-		        </configuration>
-		     </plugin>
-		 </plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
+	<modules>
+		<module>snippetory-core</module>
+		<module>snippetory-sql</module>
+	</modules>
 </project>
 

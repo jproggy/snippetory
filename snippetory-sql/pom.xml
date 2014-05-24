@@ -1,0 +1,42 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.jproggy</groupId>
+		<artifactId>snippetory</artifactId>
+		<version>0.9.6-SNAPSHOT</version>
+	</parent>
+	<artifactId>snippetory-sql</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Snippeorty SQL Repository</name>
+	<description>
+	   Snippetory SQL Repository provides storage of SQL statements based on a named parameter scheme and providing a rich 
+	   set of functionality to handle alternatives of those statements
+	</description>
+	<dependencies>
+		<dependency>
+			<groupId>org.jproggy</groupId>
+			<artifactId>snippetory-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

@@ -1,0 +1,5 @@
+<t:test1>
+SELECT * 
+FROM tblTest1 
+WHERE value = ?<t:test2> or value = ?</t:test2><t:test3> or value = ?</t:test3>
+</t:test1>
