@@ -112,14 +112,14 @@ public class Location implements DataSink, TemplateNode {
     return String.valueOf(value);
   }
 
-  private Format[] getFormats() {
+  protected Format[] getFormats() {
     if (formats == null) {
       formats = md.getFormats(this);
     }
     return formats;
   }
 
-  private boolean matches(Location node, Format f) {
+  protected boolean matches(Location node, Format f) {
     if (this.equals(node)) return true;
     return !(f instanceof VoidFormat);
   }

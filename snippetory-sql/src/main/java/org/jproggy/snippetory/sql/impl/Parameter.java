@@ -19,6 +19,7 @@ import java.util.List;
 import org.jproggy.snippetory.engine.Location;
 import org.jproggy.snippetory.engine.Metadata;
 import org.jproggy.snippetory.spi.EncodedData;
+import org.jproggy.snippetory.spi.Format;
 
 public class Parameter extends Location implements StatementBinder {
   private List<Object> values = new ArrayList<Object>();
@@ -46,7 +47,7 @@ public class Parameter extends Location implements StatementBinder {
 
   protected Object handleValue(String name, Object value) {
     if (mine(name) && !(value instanceof EncodedData)) {
-      values.add(value);
+      values.add(format(this, value));
       value = "?";
     } else if (mine(name) && value instanceof StatementBinder) {
       values.add(value);
@@ -54,57 +55,112 @@ public class Parameter extends Location implements StatementBinder {
     return value;
   }
 
+  private Object format(Location node, Object value) {
+    if (isSupported(value)) return value;
+    for (Format f : getFormats()) {
+      if (matches(node, f) && f.supports(value)) {
+        value = f.format(node, value);
+        if (isSupported(value)) return value;
+      }
+    }
+    if (getParent() != null) return ((Parameter)getParent()).format(node, value);
+    return String.valueOf(value);
+  }
+
+  private boolean isSupported(Object val) {
+    if (val instanceof String) {
+      return true;
+    } else if (val instanceof BigDecimal) {
+      return true;
+    } else if (val instanceof Byte) {
+      return true;
+    } else if (val instanceof Double) {
+      return true;
+    } else if (val instanceof Float) {
+      return true;
+    } else if (val instanceof Long) {
+      return true;
+    } else if (val instanceof Integer) {
+      return true;
+    } else if (val instanceof Short) {
+      return true;
+    } else if (val instanceof Date) {
+      return true;
+    } else if (val instanceof Time) {
+      return true;
+    } else if (val instanceof Timestamp) {
+      return true;
+    } else if (val instanceof java.util.Date) {
+      return true;
+    } else if (val instanceof URL) {
+      return true;
+    } else if (val instanceof Array) {
+      return true;
+    } else if (val instanceof Blob) {
+      return true;
+    } else if (val instanceof Clob) {
+      return true;
+    } else if (val instanceof NClob) {
+      return true;
+    } else if (val instanceof Ref) {
+      return true;
+    } else if (val instanceof SQLXML) {
+      return true;
+    } else if (val instanceof byte[]) {
+      return true;
+    }
+    return false;
+  }
+
   @Override
   public int bindTo(PreparedStatement stmt, int offset) throws SQLException {
-    int i = 0;
     for (Object val: values) {
       if (val instanceof StatementBinder) {
-        offset = ((StatementBinder)val).bindTo(stmt, offset + i);
-        i = 0;
+        offset = ((StatementBinder)val).bindTo(stmt, offset);
         continue;
       } else if (val instanceof String) {
-        stmt.setString(offset + i, (String)val);
+        stmt.setString(offset, (String)val);
       } else if (val instanceof BigDecimal) {
-        stmt.setBigDecimal(offset + i, (BigDecimal)val);
+        stmt.setBigDecimal(offset, (BigDecimal)val);
       } else if (val instanceof Byte) {
-        stmt.setByte(offset + i, ((Number)val).byteValue());
+        stmt.setByte(offset, ((Number)val).byteValue());
       } else if (val instanceof Double) {
-        stmt.setDouble(offset + i, ((Number)val).doubleValue());
+        stmt.setDouble(offset, ((Number)val).doubleValue());
       } else if (val instanceof Float) {
-        stmt.setFloat(offset + i, ((Number)val).floatValue());
+        stmt.setFloat(offset, ((Number)val).floatValue());
       } else if (val instanceof Long) {
-        stmt.setLong(offset + i, ((Number)val).longValue());
+        stmt.setLong(offset, ((Number)val).longValue());
       } else if (val instanceof Integer) {
-        stmt.setInt(offset + i, ((Number)val).intValue());
+        stmt.setInt(offset, ((Number)val).intValue());
       } else if (val instanceof Short) {
-        stmt.setShort(offset + i, ((Number)val).shortValue());
+        stmt.setShort(offset, ((Number)val).shortValue());
       } else if (val instanceof Date) {
-        stmt.setDate(offset + i, (Date)val);
+        stmt.setDate(offset, (Date)val);
       } else if (val instanceof Time) {
-        stmt.setTime(offset + i, (Time)val);
+        stmt.setTime(offset, (Time)val);
       } else if (val instanceof Timestamp) {
-        stmt.setTimestamp(offset + i, (Timestamp)val);
+        stmt.setTimestamp(offset, (Timestamp)val);
       } else if (val instanceof java.util.Date) {
-        stmt.setTimestamp(offset + i, new Timestamp(((java.util.Date)val).getTime()));
+        stmt.setTimestamp(offset, new Timestamp(((java.util.Date)val).getTime()));
       } else if (val instanceof URL) {
-        stmt.setURL(offset + i, (URL)val);
+        stmt.setURL(offset, (URL)val);
       } else if (val instanceof Array) {
-        stmt.setArray(offset + i, (Array)val);
+        stmt.setArray(offset, (Array)val);
       } else if (val instanceof Blob) {
-        stmt.setBlob(offset + i, (Blob)val);
+        stmt.setBlob(offset, (Blob)val);
       } else if (val instanceof Clob) {
-        stmt.setClob(offset + i, (Clob)val);
+        stmt.setClob(offset, (Clob)val);
       } else if (val instanceof NClob) {
-        stmt.setNClob(offset + i, (NClob)val);
+        stmt.setNClob(offset, (NClob)val);
       } else if (val instanceof Ref) {
-        stmt.setRef(offset + i, (Ref)val);
+        stmt.setRef(offset, (Ref)val);
       } else if (val instanceof SQLXML) {
-        stmt.setSQLXML(offset + i, (SQLXML)val);
+        stmt.setSQLXML(offset, (SQLXML)val);
       } else if (val instanceof byte[]) {
-        stmt.setBytes(offset + i, (byte[])val);
+        stmt.setBytes(offset, (byte[])val);
       }
-      i++;
+      offset++;
     }
-    return offset + i;
+    return offset;
   }
 }
