@@ -5,9 +5,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR 
- * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, 
+ * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE,
  * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
  *******************************************************************************/
 
@@ -47,7 +47,7 @@ public class DateFormatter implements FormatFactory {
 		if ("".equals(definition) && isTechLocale(l)) {
 			definition = "sql_sql";
 		}
-		
+
 		if ("".equals(definition))
 			return DateFormat.getDateInstance(DateFormat.DEFAULT, l);
 
@@ -78,7 +78,7 @@ public class DateFormatter implements FormatFactory {
 	private boolean isTechLocale(Locale l) {
 		return l.equals(TemplateContext.TECH);
 	}
-	
+
 	private DateFormat evaluateLengths(String definition, Locale l) {
 		// data by length
 		Integer f = LENGTHS.get(definition);
@@ -113,9 +113,12 @@ public class DateFormatter implements FormatFactory {
 
 		@Override
 		public Object format(TemplateNode location, Object value) {
-			if (value instanceof Calendar)
-				return format(location, ((Calendar) value).getTime());
-			return impl.format(value, new StringBuffer(), new FieldPosition(0));
+			if (value instanceof Calendar) {
+			  return format(location, ((Calendar) value).getTime());
+			}
+			synchronized(impl) {
+			  return impl.format(value, new StringBuffer(), new FieldPosition(0));
+			}
 		}
 
 		@Override
