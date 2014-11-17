@@ -33,7 +33,7 @@ public class RepositoryTest {
     Statement statement = repo.get("test1");
     statement.set("value1", "test");
     assertEquals(TestResults.test1(), statement.toString());
-    statement.processRows(null);
+    statement.forEach(null);
     verify(stmt).setString(1, "test");
   }
 
@@ -45,7 +45,7 @@ public class RepositoryTest {
     statement.set("value1", "test1");
     statement.set("value2", "test2");
     assertEquals(TestResults.test2(), statement.toString());
-    statement.processRows(null);
+    statement.forEach(null);
     verify(stmt).setString(1, "test1");
     verify(stmt).setString(2, "test2");
   }
@@ -58,7 +58,7 @@ public class RepositoryTest {
     statement.set("value2", 2f);
     statement.set("value1", Date.valueOf("2014-01-01"));
     assertEquals(TestResults.test2(), statement.toString());
-    statement.processRows(null);
+    statement.forEach(null);
     verify(stmt).setDate(1, Date.valueOf("2014-01-01"));
     verify(stmt).setFloat(2, 2);
   }
@@ -72,7 +72,7 @@ public class RepositoryTest {
     statement.set("value2", 2);
     statement.set("value3", 3.0);
     assertEquals(TestResults.test3(), statement.toString());
-    statement.processRows(null);
+    statement.forEach(null);
     verify(stmt).setByte(1, (byte)1);
     verify(stmt).setInt(2, 2);
     verify(stmt).setDouble(3, 3);
@@ -87,7 +87,7 @@ public class RepositoryTest {
     statement.set("value2", 2);
     statement.get("t1").set("value", 3.0).render();
     assertEquals(TestResults.test3(), statement.toString());
-    statement.processRows(null);
+    statement.forEach(null);
     verify(stmt).setByte(1, (byte)1);
     verify(stmt).setDouble(2, 3);
     verify(stmt).setInt(3, 2);
@@ -101,7 +101,7 @@ public class RepositoryTest {
     statement.set("value1", (byte)1);
     statement.get("t1").set("value", 3.0).render();
     assertEquals(TestResults.test2(), statement.toString());
-    statement.processRows(null);
+    statement.forEach(null);
     verify(stmt).setByte(1, (byte)1);
     verify(stmt).setDouble(2, 3);
   }
@@ -114,7 +114,7 @@ public class RepositoryTest {
     statement.set("value1", (byte)1);
     statement.set("value2", 3.0);
     assertEquals(TestResults.test2(), statement.toString());
-    statement.processRows(null);
+    statement.forEach(null);
     verify(stmt).setByte(1, (byte)1);
     verify(stmt).setDouble(2, 3);
   }
@@ -128,7 +128,7 @@ public class RepositoryTest {
     statement.get("t1").set("value", 3.0).render();
     statement.get("t1").set("value", 4.0).render();
     assertEquals(TestResults.test3(), statement.toString());
-    statement.processRows(null);
+    statement.forEach(null);
     verify(stmt).setByte(1, (byte)1);
     verify(stmt).setDouble(2, 3);
     verify(stmt).setDouble(3, 4);
@@ -141,7 +141,7 @@ public class RepositoryTest {
     Statement statement = repo.get("test4");
     statement.set("value1", (byte)1);
     assertEquals(TestResults.test1(), statement.toString());
-    statement.processRows(null);
+    statement.forEach(null);
     verify(stmt).setByte(1, (byte)1);
   }
 
@@ -154,7 +154,7 @@ public class RepositoryTest {
     statement.set("value2", 2);
     statement.get("t1").set("value", 3.0).render();
     assertEquals(TestResults.test3(), statement.toString());
-    statement.processRows(null);
+    statement.forEach(null);
     verify(stmt).setByte(1, (byte)1);
     verify(stmt).setDouble(3, 3);
     verify(stmt).setInt(2, 2);
