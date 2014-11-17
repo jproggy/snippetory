@@ -1,5 +1,7 @@
 package org.jproggy.snippetory.sql;
 
+import org.jproggy.snippetory.Template;
+
 public class Repository {
   private final Statement repo;
 
@@ -10,5 +12,9 @@ public class Repository {
 
   public Statement get(String name) {
     return repo.get(name);
+  }
+
+  public Template toTemplate() {
+    return repo;
   }
 }
