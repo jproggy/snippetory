@@ -21,7 +21,7 @@ import org.jproggy.snippetory.engine.spi.ToggleFormatter;
 
 /**
  * Simplifies handling based on TemplateNode. The problem with this is, that the state is not
- * bound directly to one node, but rather to a parent of the node or a node even higher in this hirarchy.
+ * bound directly to one node, but rather to a parent of the node or a node even higher in this hierarchy.
  * In some cases it is necessary to collect data over more than one node. Like counters for instance.
  * It handles resolving the right key and creating new objects.
  *
@@ -113,19 +113,6 @@ public abstract class StateContainer<V> {
 			}
 
 		}
-
-		/**
-		 * @deprecated State bound to a single node can be maintained conveniently
-		 * by returning a new instance on each call of
-		 * {@link FormatConfiguration#getFormat(TemplateNode)}
-		 */
-		@Deprecated
-		public static final KeyResolver NONE = new KeyResolver() {
-			@Override
-			public TemplateNode resolve(TemplateNode org) {
-				return org;
-			}
-		};
 
 		public abstract TemplateNode resolve(TemplateNode org);
 	}
