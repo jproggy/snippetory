@@ -5,9 +5,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR 
- * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, 
+ * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE,
  * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
  *******************************************************************************/
 
@@ -27,28 +27,33 @@ import org.jproggy.snippetory.spi.TemplateNode;
 
 public class NumFormatter implements FormatFactory {
 	private final SupportedTypes types;
-	
+
 	protected NumFormatter(Class<?>... types) {
 		this.types = new SupportedTypes(types);
 	}
-	
+
 	public NumFormatter() {
-		this(Number.class);
+	  types = null;
 	}
-	
+
 	@Override
 	public SimpleFormat create(String definition, TemplateContext ctx) {
-		if (("".equals(definition) && isTechLocale(ctx)) 
+		if (("".equals(definition) && isTechLocale(ctx))
 				|| "tostring".equalsIgnoreCase(definition)) {
-			return new ToStringFormat(types);
+			return new ToStringFormat();
 		}
-		return new DecimalFormatWrapper(definition, ctx.getLocale(), types);
+		if (types == null) {
+		  return new DecimalFormatWrapper(definition, ctx.getLocale());
+		} else {
+		  return new TypedDecimalFormatWrapper(definition, ctx.getLocale(), types);
+		}
+
 	}
 
 	private boolean isTechLocale(TemplateContext ctx) {
 		return ctx.getLocale().equals(TemplateContext.TECH);
 	}
-	
+
 	private static NumberFormat toFormat(String definition, Locale l) {
 		if ("".equals(definition)) return NumberFormat.getNumberInstance(l);
 		if ("currency".equals(definition)) return NumberFormat.getCurrencyInstance(l);
@@ -59,10 +64,8 @@ public class NumFormatter implements FormatFactory {
 	}
 
 	public static class ToStringFormat extends SimpleFormat {
-		private final SupportedTypes types;
-		
-		public ToStringFormat(SupportedTypes types) {
-			this.types = types;
+
+		public ToStringFormat() {
 		}
 		@Override
 		public Object format(TemplateNode location, Object value) {
@@ -71,27 +74,41 @@ public class NumFormatter implements FormatFactory {
 
 		@Override
 		public boolean supports(Object value) {
-			return types.isSupported(value);
+			return value instanceof Number;
 		}
-	}	
+	}
 
-	public static class DecimalFormatWrapper extends SimpleFormat {
-		private final NumberFormat impl;
-		private final SupportedTypes types;
+  public static class DecimalFormatWrapper extends SimpleFormat {
+    private final NumberFormat impl;
 
-		public DecimalFormatWrapper(String definition, Locale l, SupportedTypes types) {
-			impl = toFormat(definition, l);
-			this.types = types;
-		}
+    public DecimalFormatWrapper(String definition, Locale l) {
+      impl = toFormat(definition, l);
+    }
 
-		@Override
-		public Object format(TemplateNode location, Object value) {
-			return impl.format(value, new StringBuffer(), new FieldPosition(0));
-		}
+    @Override
+    public Object format(TemplateNode location, Object value) {
+      synchronized(impl) {
+        return impl.format(value, new StringBuffer(), new FieldPosition(0));
+      }
+    }
 
-		@Override
-		public boolean supports(Object value) {
-			return types.isSupported(value);
-		}
-	}	
+    @Override
+    public boolean supports(Object value) {
+      return value instanceof Number;
+    }
+  }
+
+  public static class TypedDecimalFormatWrapper extends DecimalFormatWrapper {
+    private final SupportedTypes types;
+
+    public TypedDecimalFormatWrapper(String definition, Locale l, SupportedTypes types) {
+      super(definition, l);
+      this.types = types;
+    }
+
+    @Override
+    public boolean supports(Object value) {
+      return types.isSupported(value);
+    }
+  }
 }
