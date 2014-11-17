@@ -5,9 +5,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR 
- * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, 
+ * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE,
  * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
  *******************************************************************************/
 
@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.jproggy.snippetory.TemplateContext;
+import org.jproggy.snippetory.engine.chars.EncodedContainer;
 import org.jproggy.snippetory.spi.FormatConfiguration;
 import org.jproggy.snippetory.spi.FormatFactory;
 import org.jproggy.snippetory.spi.StateContainer;
@@ -44,7 +45,8 @@ public class ToggleFormatter implements FormatFactory {
 				if (value instanceof Number) {
 					count = ((Number) value).intValue();
 				}
-				return config.values[Math.abs((count - 1) % config.values.length)];
+				String data = config.values[Math.abs((count - 1) % config.values.length)];
+        return new EncodedContainer(data, location.getEncoding());
 			} finally {
 				count++;
 			}
@@ -79,7 +81,7 @@ public class ToggleFormatter implements FormatFactory {
 			return Collections.emptySet();
 		}
 	}
-	
+
 	private static class Config extends StateContainer<ToggleFormat> implements FormatConfiguration {
 		private final String[] values;
 		public Config(String definition) {
