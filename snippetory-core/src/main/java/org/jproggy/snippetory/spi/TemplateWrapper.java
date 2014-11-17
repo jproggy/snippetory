@@ -5,9 +5,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR 
- * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, 
+ * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE,
  * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
  *******************************************************************************/
 
@@ -22,7 +22,7 @@ import org.jproggy.snippetory.Template;
 
 public abstract class TemplateWrapper implements Template {
 	protected final Template wrapped;
-	
+
 	public TemplateWrapper(Template template) {
 		this.wrapped = template;
 	}
@@ -39,10 +39,16 @@ public abstract class TemplateWrapper implements Template {
 
 	@Override
     public Template get(String... name) {
-		if (name.length == 0) return this;
-		return wrap(wrapped.get(name));
+		if (name.length == 0) return wrap(wrapped.get());
+		if (name.length == 1) return wrap(wrapped.get(name));
+		Template t = this;
+		for (String part: name) {
+		  t = t.get(part);
+		  if (t == null) return t;
+		}
+		return t;
 	}
-	
+
 	protected abstract Template wrap(Template toBeWrapped);
 
 	@Override
@@ -97,9 +103,16 @@ public abstract class TemplateWrapper implements Template {
     public Set<String> regionNames() {
 		return wrapped.regionNames();
 	}
-	
+
 	@Override
 	public String toString() {
 		return wrapped.toString();
+	}
+
+	public Template getImplementation() {
+	  if (wrapped instanceof TemplateWrapper) {
+	    return ((TemplateWrapper)wrapped).getImplementation();
+	  }
+	  return wrapped;
 	}
 }
