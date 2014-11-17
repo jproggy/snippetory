@@ -13,20 +13,38 @@ import org.junit.Test;
 
 public class LargeTemplateTest {
 	private static Template template;
-	
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+    template = new TemplateContext().uriResolver(UriResolver.resource()).getTemplate("large.tpl");
 	}
 
-	@Test
-	public void fluyt() {
-		template = new TemplateContext().uriResolver(UriResolver.resource()).getTemplate("large.tpl");
-		Template fluyt = template.get("FLUYT");
-		assertNotNull(fluyt);
-		renderAll(fluyt);
-		assertEquals(-1, fluyt.toString().indexOf('$'));
-	}
-	
+  @Test
+  public void fluyt() {
+    Template fluyt = template.get("FLUYT");
+    assertNotNull(fluyt);
+    renderAll(fluyt);
+    assertEquals(-1, fluyt.toString().indexOf('$'));
+  }
+
+  @Test
+  public void xmlAlike() {
+    Template section = template.get("XML_ALIKE");
+    assertNotNull(section);
+    renderAll(section);
+    assertEquals(-1, section.toString().indexOf(":t"));
+    assertEquals(-1, section.toString().indexOf("{:v"));
+    assertEquals(17, section.toString().indexOf(","));
+  }
+
+  @Test
+  public void cComments() {
+    Template fluyt = template.get("C_COMMENTS");
+    assertNotNull(fluyt);
+    renderAll(fluyt);
+    assertEquals(-1, fluyt.toString().indexOf('$'));
+  }
+
 	private void renderAll(Template t) {
 		Set<String> regions = t.regionNames();
 		for (String name : regions) {
@@ -35,7 +53,7 @@ public class LargeTemplateTest {
 			child.render();
 		}
 		for (String name : t.names()) {
-			if (!regions.contains(name)) t.set(name, "");
+			if (!regions.contains(name)) t.set(name, name + ' ');
 		}
 	}
 }

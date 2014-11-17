@@ -5,16 +5,19 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR 
- * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, 
+ * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR
+ * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE,
  * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
  *******************************************************************************/
 
 package org.jproggy.snippetory.test;
 
-import static org.jproggy.snippetory.Syntaxes.*;
-import static org.junit.Assert.*;
+import static org.jproggy.snippetory.Syntaxes.FLUYT_CC;
+import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.Method;
 import java.util.TimeZone;
@@ -41,7 +44,7 @@ public class BasicTest {
 		t1.append("test", 5);
 		assertEquals("in (5, 8, 5)", t1.toString());
 	}
-	
+
 	@Test
 	public void delimiterEscaped() throws Exception {
 		Template t2 = XML_ALIKE.parse("\"{v:test delimiter='\",\"'}\"");
@@ -51,31 +54,31 @@ public class BasicTest {
 		t2.append("test", "hallo");
 		assertEquals("\"5\",\"hallo\"", t2.toString());
 	}
-	
+
 	@Test
 	public void indexDemo() throws Exception {
 		  Method def = Template.class.getMethod("render", Template.class, String.class);
-		  
+
 		  // Repo provides methods to read this from class path, file, Reader and so on.
-		  // The typical workflow consists of getting the template data, configure the 
+		  // The typical workflow consists of getting the template data, configure the
 		  // context and finally parse to materialize the template object.
 		  Template method = Repo.readResource("method.tpl").syntax(FLUYT_CC).parse();
-		  
+
 		  // bind parent data
 		  String typeName = def.getReturnType().getSimpleName();
 		  method.set("type", typeName);
 		  method.set("name", def.getName());
-		  
+
 		  for (int i = 0; i < def.getParameterTypes().length; i++) {
 		    String paramType = def.getParameterTypes()[i].getSimpleName();
-		    
+
 		    // bind child data -> the builder interface helps to have concise code
 		    method.get("param").set("type", paramType).set("i", i).render();
 		  }
-		  assertEquals("void render(Template param0, String param1);", 
+		  assertEquals("void render(Template param0, String param1);",
 				  method.toString());
 	}
-	
+
 	@Test
 	public void childTempates() {
 		Template t1 = XML_ALIKE.parse("in<t:test> and out</t:test> and around");
@@ -88,7 +91,7 @@ public class BasicTest {
 		t1.clear();
 		assertEquals("in and around", t1.toString());
 	}
-	
+
 	@Test
 	public void childTempatesNested() throws Exception {
 		Template t2 = XML_ALIKE.parse("<t:outer>in<t:test> and {v:test}</t:test> and around</t:outer>").get("outer");
@@ -134,7 +137,7 @@ public class BasicTest {
 		t.append("x", "1").append("x", 2).append("x", "3");
 		assertEquals("\f123xx", t.toString());
 	}
-	
+
 	@Test
 	public void backward() {
 		Template t = XML_ALIKE.parse("<a href='test.html'>Here</a> " +
@@ -143,7 +146,7 @@ public class BasicTest {
 				"</t:test_bw>");
 		t.get("test_bw").append("path", "x s").append("path", "xy+z").set("file", "tesst").render();
 		assertEquals("<a href='x+s/xy%2Bz/tesst.html'>Here</a> ", t.toString());
-		
+
 		try {
 			XML_ALIKE.parse("lsdfkjsdfl {v:x backward='test'}" );
 			Assert.fail();
@@ -152,10 +155,10 @@ public class BasicTest {
 			assertTrue(e.getMessage().contains("test"));
 			assertTrue(e.getMessage().contains("{v:x backward='test'}"));
 		}
-		
+
 		Template t2 = XML_ALIKE.parse("Hello world{v:x backward='Hello' default='Liahallo'}{v:x backward='world' default='Welt'}");
 		assertEquals("Liahallo Welt", t2.toString());
-		
+
 		try {
 			XML_ALIKE.parse("Hello world{v:x backward='world' default='Welt'}{v:x backward='Hello' default='Liahallo'}");
 			fail();
@@ -164,7 +167,7 @@ public class BasicTest {
 			assertTrue(e.getMessage().contains("Hello"));
 			assertTrue(e.getMessage().contains("{v:x backward='Hello' default='Liahallo'}"));
 		}
-		
+
 		try {
 			XML_ALIKE.parse("Hello world{v:x backward='(Hello)(v)' default='Liahallo'}{v:x backward='world' default='Welt'}");
 			fail();
@@ -172,7 +175,7 @@ public class BasicTest {
 			assertTrue(e.getMessage(), e.getMessage().contains("target not found: (Hello)(v)"));
 			assertTrue(e.getMessage(), e.getMessage().contains("{v:x backward='(Hello)(v)' default='Liahallo'}"));
 		}
-		
+
 		try {
 			XML_ALIKE.parse("Hello Hello world{v:x backward='(Hello)' default='Liahallo'}{v:x backward='world' default='Welt'}");
 			fail();
@@ -180,7 +183,7 @@ public class BasicTest {
 			assertTrue(e.getMessage(), e.getMessage().contains("backward target ambigous: (Hello)"));
 			assertTrue(e.getMessage(), e.getMessage().contains("{v:x backward='(Hello)' default='Liahallo'}"));
 		}
-		
+
 		try {
 			XML_ALIKE.parse("Hello world{v:x backward='(Hel)(lo)' default='Liahallo'}{v:x backward='world' default='Welt'}");
 			fail();
@@ -189,7 +192,7 @@ public class BasicTest {
 			assertTrue(e.getMessage(), e.getMessage().contains("{v:x backward='(Hel)(lo)' default='Liahallo'}"));
 		}
 	}
-	
+
 	@Test
 	public void errors() {
 		try {
@@ -229,7 +232,7 @@ public class BasicTest {
 			assertEquals("x found but file end expected  Error while parsing </t:x> at line 1 character 18", e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void conditionalRegionsSimple() {
 		Template t = XML_ALIKE.parse("before<t:>->{v:test null='null' delimiter=' '}<-</t:>after");
@@ -245,7 +248,7 @@ public class BasicTest {
 		t.set("test", "blub");
 		assertEquals("before->blub<-after", t.toString());
 	}
-	
+
 	@Test
 	public void conditionalRegions() {
 		Template t = XML_ALIKE.read("before-><t:test><t: pad='30' pad.align='right'><t: pad='12' pad.fill='.'>start{v:test}</t:><middle>{v:test}end</t:></t:test><-after").parse();
@@ -303,5 +306,5 @@ public class BasicTest {
 		test2.render();
 		assertEquals("before->    startxxx....<middle>xxxend   start222s...<middle>222send<-after", t.toString());
 	}
-	
+
 }

@@ -19,6 +19,7 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -168,9 +169,8 @@ public class RegionTest {
 	}
 
 	@Test
-	@Ignore
-	public void test100000() {
-		testN(35000);
+	public void test100_000() {
+		testN(100000);
 	}
 
 	@Test
@@ -192,10 +192,27 @@ public class RegionTest {
 				}
 				row.render("row1");
 			}
-			@SuppressWarnings("unused")
-			CharSequence x = template.toString();
+			NUL nul = new NUL();
+ 			template.render(nul);
+		} catch (IOException e) {
+		  throw new RuntimeException(e);
 		} finally {
 			Assert.assertEquals(n, i);
 		}
+	}
+
+	private static class NUL extends Writer {
+
+    @Override
+    public void write(char[] cbuf, int off, int len) throws IOException {
+    }
+
+    @Override
+    public void flush() throws IOException {
+    }
+
+    @Override
+    public void close() throws IOException {
+    }
 	}
 }
