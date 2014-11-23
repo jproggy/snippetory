@@ -1,15 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2011-2012 JProggy.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR 
- * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, 
- * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
- *******************************************************************************/
+/// Copyright JProggy
+///
+/// Licensed under the Apache License, Version 2.0 (the "License");
+/// you may not use this file except in compliance with the License.
+/// You may obtain a copy of the License at
+///
+///     http://www.apache.org/licenses/LICENSE-2.0
+///
+/// Unless required by applicable law or agreed to in writing, software
+/// distributed under the License is distributed on an "AS IS" BASIS,
+/// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+/// See the License for the specific language governing permissions and
+/// limitations under the License.
 
 package org.jproggy.snippetory.engine.spi;
 
@@ -22,10 +23,10 @@ import org.jproggy.snippetory.engine.RegExSyntax;
 import org.jproggy.snippetory.engine.Token.TokenType;
 
 /**
- * C_COMMENTS syntax uses C comment areas and C++ line comments to hide template syntax 
+ * C_COMMENTS syntax uses C comment areas and C++ line comments to hide template syntax
  * from compilers and interpreters that might be used to validate the templates.
  * <br />
- * The template syntax is based on a leading $ sign and braces to mark the area 
+ * The template syntax is based on a leading $ sign and braces to mark the area
  * of impact. On regions the name is repeated at the end, while pure locations
  * simply close the curly bracket.
  * <br />
@@ -34,13 +35,13 @@ import org.jproggy.snippetory.engine.Token.TokenType;
  * <code style="color:darkblue;">
  * /*${name attrib="value"&#42;/<b>mock</b>/*}&#42;/;
  * </code>
- * <br /> 
+ * <br />
  * The mock will be ignored and will not be written to the output. This supports
  * to keep the template valid for execution or compilation as for the validation
  * environment the mock is visible and substitutes data to be bound.
  * <br />
  * Line breaks are supported whitespace in C_COMMENTS but not within the mock.
- * 
+ *
  * @author B. Ebertz
  */
 public class CComments   extends RegExSyntax {
@@ -57,13 +58,13 @@ public class CComments   extends RegExSyntax {
 		String suff = "\\s*\\}" + commentBlockEnd;
 
 		String ATTRIBUTES = "(?:\\s+" + ATTRIBUTE + ")*)";
-		
+
 		Pattern mock_default = Pattern.compile(
 				pre + "(" + NAME + ATTRIBUTES + commentBlockEnd + "((?:(?!/\\*).)*)" + commentBlockStart + suff, Pattern.MULTILINE);
 		patterns.put(mock_default, TokenType.Field);
 
 		Pattern start = Pattern.compile(
-				LINE_START +  "\\/\\/\\s*\\$\\{[\\s/]*(" + NAME + 
+				LINE_START +  "\\/\\/\\s*\\$\\{[\\s/]*(" + NAME +
 				"(?:\\s[\\s/]*" + ATTRIBUTE + ")*)" + LINE_END, Pattern.MULTILINE);
 		patterns.put(start, TokenType.BlockStart);
 
@@ -75,14 +76,14 @@ public class CComments   extends RegExSyntax {
 				LINE_START + "\\/\\/\\s*(" + NAME + ")\\s*\\}" + LINE_END, Pattern.MULTILINE);
 		patterns.put(end, TokenType.BlockEnd);
 
-		end = Pattern.compile(commentBlockStart + "(" + NAME + ")\\s*\\}" + 
+		end = Pattern.compile(commentBlockStart + "(" + NAME + ")\\s*\\}" +
 					commentBlockEnd, Pattern.MULTILINE);
 		patterns.put(end, TokenType.BlockEnd);
-		
+
 		Pattern comment = Pattern.compile(
 				LINE_START + "\\/\\/\\/.*" +  LINE_END, Pattern.MULTILINE);
 		patterns.put(comment, TokenType.Comment);
-		
+
 		Pattern field = Pattern.compile(pre + "(" + NAME + ATTRIBUTES + suff, Pattern.MULTILINE);
 		patterns.put(field, TokenType.Field);
 

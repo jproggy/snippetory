@@ -24,6 +24,24 @@
 	<artifactId>snippetory-groovy</artifactId>
 	<name>Groovy integration for Snippetory</name>
 
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<issueManagement>
+	  <url>https://github.com/jproggy/Snippetory/issues</url>
+	</issueManagement>
+	<developers>
+		<developer>
+			<id>Sir RotN</id>
+			<name>Bernd Ebertz</name>
+			<email>bebertz@jproggy.org</email>
+		</developer>
+	</developers>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>

@@ -1,15 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2011-2012 JProggy.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR 
- * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, 
- * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
- *******************************************************************************/
+/// Copyright JProggy
+///
+/// Licensed under the Apache License, Version 2.0 (the "License");
+/// you may not use this file except in compliance with the License.
+/// You may obtain a copy of the License at
+///
+///     http://www.apache.org/licenses/LICENSE-2.0
+///
+/// Unless required by applicable law or agreed to in writing, software
+/// distributed under the License is distributed on an "AS IS" BASIS,
+/// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+/// See the License for the specific language governing permissions and
+/// limitations under the License.
 
 package org.jproggy.snippetory.engine;
 
@@ -23,19 +24,19 @@ import org.jproggy.snippetory.spi.Syntax;
 
 
 public abstract class RegExSyntax implements Syntax {
-	protected static final String LINE_END = 
+	protected static final String LINE_END =
 		"[ \\t]*(?>(?>\\r\\n?)|\\n|\\u0085|\\u2028|\\u2029|\\Z)";
 	protected static final String LINE_START = "^[ \\t]*";
 	protected final static String ESCAPES = "\\\\\\\\|\\\\'|\\\\\"|\\\\n|\\\\r|\\\\b|\\\\t|\\\\f";
 	protected static final String NAME_START_CHAR = "[\\p{javaJavaIdentifierStart}&&[^\\$]]";
 	protected static final String NAME_CHAR = "[\\p{javaJavaIdentifierPart}\\.\\-&&[^\\$]]";
 	protected static final String NAME = NAME_START_CHAR + NAME_CHAR + "*";
-	protected static final String ATTRIBUTE = 
+	protected static final String ATTRIBUTE =
 		NAME + "=(?:\\'(?:" + ESCAPES + "|[^\\\\'])*\\'|\\\"(?:" + ESCAPES + "|[^\\\\\"])*\\\")";
 	protected static final String ATTRIBUTES = "(?:\\s+" + ATTRIBUTE + ")*";
-	protected static final String CONTENT = 
-		"(" + NAME + ")=(?>\\'((?>" + ESCAPES + 
-		"|[^\\'])*)\\'|\\\"((?>" + ESCAPES + "|[^\\\\\"])*)\\\")|(" + NAME + ")"; 
+	protected static final String CONTENT =
+		"(" + NAME + ")=(?>\\'((?>" + ESCAPES +
+		"|[^\\'])*)\\'|\\\"((?>" + ESCAPES + "|[^\\\\\"])*)\\\")|(" + NAME + ")";
 	protected static final Pattern SYNTAX_SELECTOR = Pattern.compile(
 			LINE_START + "[ \\t]*(?:(?://|/\\*|<!--|--|#|\\'|rem)[ \\t]*Syntax|<s):(" + NAME + ")(?:\\*/|-|/|>| |\\t)*" + LINE_END, Pattern.MULTILINE);
 
@@ -50,7 +51,7 @@ public abstract class RegExSyntax implements Syntax {
 	}
 
 	protected static class RegexParser implements Syntax.Tokenizer {
-		private final Map<Pattern, TokenType> patterns; 
+		private final Map<Pattern, TokenType> patterns;
 		private final Matcher matcher;
 		private final CharSequence data;
 		private Boolean found;
@@ -106,7 +107,7 @@ public abstract class RegExSyntax implements Syntax {
 			}
 			return createToken(content, type);
 		}
-		
+
 		@Override
 		public void jumpTo(int position) {
 			matcher.region(position, matcher.regionEnd());
@@ -148,7 +149,7 @@ public abstract class RegExSyntax implements Syntax {
 			}
 			return token;
 		}
-		
+
 		private String decode(String val, Token t) {
 			StringBuilder result = new StringBuilder();
 			boolean bsFound = false;
@@ -214,7 +215,7 @@ public abstract class RegExSyntax implements Syntax {
 		public TemplateContext getContext() {
 			return context;
 		}
-		
+
 		private final Pattern LINES = Pattern.compile("\\r\\n?|\\n|\\u0085|\\u2028|\\u2029", Pattern.MULTILINE);
 		@Override
 		public TextPosition getPosition(Token t) {

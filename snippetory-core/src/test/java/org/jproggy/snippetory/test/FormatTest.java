@@ -1,3 +1,17 @@
+/// Copyright JProggy
+///
+/// Licensed under the Apache License, Version 2.0 (the "License");
+/// you may not use this file except in compliance with the License.
+/// You may obtain a copy of the License at
+///
+///     http://www.apache.org/licenses/LICENSE-2.0
+///
+/// Unless required by applicable law or agreed to in writing, software
+/// distributed under the License is distributed on an "AS IS" BASIS,
+/// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+/// See the License for the specific language governing permissions and
+/// limitations under the License.
+
 package org.jproggy.snippetory.test;
 
 import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
@@ -16,7 +30,7 @@ public class FormatTest {
 		stretch.set("test", "123456");
 		assertEquals("123456", stretch.toString());
 	}
-	
+
 	@Test
 	public void formatPad() {
 		Template pad = XML_ALIKE.parse("{v:test pad='5' pad.align='right'}");
@@ -25,7 +39,7 @@ public class FormatTest {
 		pad.set("test", "123456");
 		assertEquals("123456", pad.toString());
 	}
-	
+
 	@Test
 	public void formatShorten() {
 		Template shorten = XML_ALIKE.parse("{v:test shorten='5...'}");
@@ -36,7 +50,7 @@ public class FormatTest {
 		shorten.set("test", "12345");
 		assertEquals("12345", shorten.toString());
 	}
-	
+
 	@Test
 	public void formatCrop() {
 		Template crop = XML_ALIKE.parse("{v:test crop='5' crop.mark='...'}");
@@ -47,7 +61,7 @@ public class FormatTest {
 		crop.set("test", "12345");
 		assertEquals("12345", crop.toString());
 	}
-	
+
 	@Test
 	public void formatDefaultLocaion() {
 		Template t = XML_ALIKE.parse("{v:test default='not set'}");
@@ -55,7 +69,7 @@ public class FormatTest {
 		t.set("test", "test");
 		assertEquals("test", t.toString());
 	}
-	
+
 	@Test
 	public void formatDefaultRegion() {
 		Template t = XML_ALIKE.parse("<t:test default='not set'></t:test>");
@@ -63,7 +77,7 @@ public class FormatTest {
 		t.set("test", "test");
 		assertEquals("test", t.toString());
 	}
-	
+
 	@Test
 	public void formatDefaultCondRegion() {
 		Template t = XML_ALIKE.parse("<t: default='not set'>{v:test}</t:>");
@@ -71,7 +85,7 @@ public class FormatTest {
 		t.set("test", "test");
 		assertEquals("test", t.toString());
 	}
-	
+
 	@Test
 	public void formatCase() {
 		Template t = XML_ALIKE.parse("{v:test case='upper'}");
@@ -108,7 +122,7 @@ public class FormatTest {
 		t.set("test", "TEST_TEST");
 		assertEquals("TestTest", t.toString());
 	}
-	
+
 	@Test
 	public void toggle() {
 		Template t = XML_ALIKE.parse("<t:test>{v:toggle='1;2;3'}. {v: toggle='unpair;pair'}\n</t:test>");
@@ -117,7 +131,7 @@ public class FormatTest {
 		t.clear();
 		bindPLain(t);
 		assertEquals("1. unpair\n2. pair\n3. unpair\n", t.toString());
-		
+
 		t = XML_ALIKE.parse("<t:test>{v:x toggle='1;2;3'}. {v:x toggle='unpair;pair'}\n</t:test>");
 		bindX(t);
 		assertEquals("1. unpair\n2. pair\n3. unpair\n", t.toString());
@@ -129,7 +143,7 @@ public class FormatTest {
 		t.get("test").set("x", 0).render();
 		t.get("test").set("x", -1).render();
 		assertEquals("1. unpair\n2. pair\n3. unpair\n", t.toString());
-		
+
 		t = XML_ALIKE.parse("<t:test><t: toggle='1. ;2. ;3. ;4. '>von {v:von} nach {v:nach}\n</t:></t:test>");
 		bindTrack(t);
 		assertEquals("1. von Hergersweiler nach Winden\n2. von 6 nach {v:nach}\n", t.toString());
@@ -159,7 +173,7 @@ public class FormatTest {
 		t.get("test").render();
 		t.get("test").set("von", 6).render();
 	}
-	
+
 	@Test
 	public void unkown() {
 		try {

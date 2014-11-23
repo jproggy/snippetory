@@ -1,15 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2011-2012 JProggy.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR 
- * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, 
- * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
- *******************************************************************************/
+/// Copyright JProggy
+///
+/// Licensed under the Apache License, Version 2.0 (the "License");
+/// you may not use this file except in compliance with the License.
+/// You may obtain a copy of the License at
+///
+///     http://www.apache.org/licenses/LICENSE-2.0
+///
+/// Unless required by applicable law or agreed to in writing, software
+/// distributed under the License is distributed on an "AS IS" BASIS,
+/// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+/// See the License for the specific language governing permissions and
+/// limitations under the License.
 
 package org.jproggy.snippetory;
 
@@ -34,10 +35,10 @@ import org.jproggy.snippetory.spi.SyntaxID;
  * </p>
  * However this is rather for simple usage like tests or examples. Whenever things
  * get complicated consider use of {@link org.jproggy.snippetory.TemplateContext}
- * 
+ *
  * @see org.jproggy.snippetory.TemplateContext TemplateContext
  * @see Template
- * 
+ *
  * @author B. Ebertz
  */
 public class Repo {
@@ -49,8 +50,8 @@ public class Repo {
 	 * null encoding and no locale support. <br />
 	 * This is sometimes useful for very short and simple templates replacing
 	 * a complex string concatenation.
-	 * 
-	 * @deprecated prefer defining a syntax when parsing. I.e. use 
+	 *
+	 * @deprecated prefer defining a syntax when parsing. I.e. use
 	 * {@link Syntaxes#parse(CharSequence) Syntaxes.XML_ALIKE.parse(CharSequence)} instead
 	 */
 	public static Template parse(CharSequence data) {
@@ -60,8 +61,8 @@ public class Repo {
 	/**
 	 * Short cut method for parsing a string into a template. With default syntax,
 	 * null encoding, but supporting a locale for formatting.
-	 * 
-	 * @deprecated prefer defining a syntax when parsing. I.e. use 
+	 *
+	 * @deprecated prefer defining a syntax when parsing. I.e. use
 	 * {@link Syntaxes#parse(CharSequence, Locale) Syntaxes.XML_ALIKE.parse(CharSequence, Locale)} instead
 	 */
 	public static Template parse(CharSequence data, Locale l) {
@@ -95,8 +96,8 @@ public class Repo {
 	/**
 	 * Reads the complete content of the stream considering it to utf-8
 	 * encoded. Once read the stream is closed.
-	 * 
-	 * @param in a stream providing data representing a Snippetory 
+	 *
+	 * @param in a stream providing data representing a Snippetory
 	 * template.
 	 * @return a TemplateContext containing the data of the stream.
 	 */
@@ -107,19 +108,19 @@ public class Repo {
 	/**
 	 * reads the complete data of the reader. Once read the reader
 	 * is closed.
-	 * 
-	 * @param in a stream providing data representing a Snippetory 
+	 *
+	 * @param in a stream providing data representing a Snippetory
 	 * template.
 	 * @return a TemplateContext containing the data of the stream.
 	 */
 	public static TemplateContext readReader(Reader in) {
 		return new TemplateContext(ToString.reader(in));
 	}
-	
+
 	/**
 	 * Repo uses a special TemplateContext that replaces the functionality
 	 * of configuring a UrlResolver by the ability to keep the data provided
-	 * during initialization. 
+	 * during initialization.
 	 */
 	public static class TemplateContext extends org.jproggy.snippetory.TemplateContext {
 		private final CharSequence data;
@@ -128,38 +129,38 @@ public class Repo {
 			super();
 			this.data = data;
 		}
-		
+
 		@Override
 		public TemplateContext locale(Locale locale) {
 			return (TemplateContext)super.locale(locale);
 		}
-		
+
 		@Override
 		public TemplateContext attrib(String name,
 				String value) {
 			return (TemplateContext)super.attrib(name, value);
 		}
-		
+
 		@Override
 		public TemplateContext encoding(Encoding encoding) {
 			return (TemplateContext)super.encoding(encoding);
 		}
-		
+
 		@Override
 		public TemplateContext encoding(String encoding) {
 			return (TemplateContext)super.encoding(encoding);
 		}
-		
+
 		@Override
 		public TemplateContext syntax(Syntax syntax) {
 			return (TemplateContext)super.syntax(syntax);
 		}
-		
+
 		@Override
 		public TemplateContext syntax(SyntaxID syntax) {
 			return (TemplateContext)super.syntax(syntax);
 		}
-		
+
 		/**
 		 * @deprecated Configuring the resolver is not allowed within Repo.
 		 */

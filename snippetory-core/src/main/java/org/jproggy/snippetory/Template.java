@@ -1,15 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2011-2012 JProggy.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, THE PROGRAM IS PROVIDED ON AN 
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR 
- * IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, 
- * NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE
- *******************************************************************************/
+/// Copyright JProggy
+///
+/// Licensed under the Apache License, Version 2.0 (the "License");
+/// you may not use this file except in compliance with the License.
+/// You may obtain a copy of the License at
+///
+///     http://www.apache.org/licenses/LICENSE-2.0
+///
+/// Unless required by applicable law or agreed to in writing, software
+/// distributed under the License is distributed on an "AS IS" BASIS,
+/// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+/// See the License for the specific language governing permissions and
+/// limitations under the License.
 
 package org.jproggy.snippetory;
 
@@ -24,38 +25,38 @@ import org.jproggy.snippetory.spi.Encoding;
 
 
 /**
- * The Template is the central interface of the Snippetory Template Engine. 
- * A Template has two faces. It's a template or a snippet. It describes how 
- * data is bound to create an output. However, it's a repository of snippets as 
- * well. This introduces new possibilities of (re-)usage to template code. Any 
- * Template can be reused as needed and combined with any other Template. As 
- * simple as calling a method.<br /> 
+ * The Template is the central interface of the Snippetory Template Engine.
+ * A Template has two faces. It's a template or a snippet. It describes how
+ * data is bound to create an output. However, it's a repository of snippets as
+ * well. This introduces new possibilities of (re-)usage to template code. Any
+ * Template can be reused as needed and combined with any other Template. As
+ * simple as calling a method.<br />
  * <br />
  * It abstracts from most technical issues of the output by handling several
  * typical issues when generating textual languages interpreted by other machines
  * and presented to humans all over the world. On one hand any target language needs
  * some help to maintain syntactical correctness.<br />
  * {@link Encoding}s are designed to deliver this help by escaping characters or terms to
- * keep their original meaning instead of confusing the target parser or provide 
- * possibilities for several types of attacks. As the needs differ and grow additional 
+ * keep their original meaning instead of confusing the target parser or provide
+ * possibilities for several types of attacks. As the needs differ and grow additional
  * encodings can be added and existing can be replaced.<br />
  * To achieve a professional presentation to people of different languages, throughout
  * a mix of transmission languages and technologies you need a quite flexible and
- * robust formatting system. This is provided with a chain of type sensitive 
+ * robust formatting system. This is provided with a chain of type sensitive
  * formatters applied just before encoding. And as formatting is part of the look of the
  * result it is useful to have it in the template.<br />
  * <br />
  * The next important aspect of the design of Snippetory is, that logic separated from view.
  * No loops, no conditions, no variable definitions and manipulations in the template.
- * (by the way, we'll talk of variables in some cases, but formally that are just 
+ * (by the way, we'll talk of variables in some cases, but formally that are just
  * location marks in the template not a declaration and several usages, that have to
  * be in sequence) And freeing template from logic means freeing from context. And
- * in consequence it is easy to take a peace of template and use it where appropriate. 
- * This means an abstraction from template storage and organization and allows one to 
+ * in consequence it is easy to take a peace of template and use it where appropriate.
+ * This means an abstraction from template storage and organization and allows one to
  * organize the template structure as needed.
- * 
+ *
  * @see Repo
- * 
+ *
  * @author B. Ebertz
  */
 
@@ -63,16 +64,16 @@ public interface Template extends EncodedData  {
 
 	/**
 	 * Get further elements out of this repository.
-	 * 
+	 *
 	 * @param name the path within the repository. This might consist of several elements.
-	 * 
-	 * @return a clean instance of the child template identified by the name  or null if 
+	 *
+	 * @return a clean instance of the child template identified by the name  or null if
 	 * there is no child template with this name. It's undefined if this is a new copy or if only a
 	 * single instance exists. Though subsequent calls an get on the same instance with
 	 * the same name might clear the instances returned by previous call or not.
 	 */
 	Template get(String... name);
-	
+
 	/**
 	 * Sets all variables with given name to a String representation of the value.
 	 * Exact value might differ according to different meta data associated with
@@ -80,40 +81,40 @@ public interface Template extends EncodedData  {
 	 * All matching formats and encodings are used. However, there is some
 	 * special handling for the interface (@link EncodedData). In this case the
 	 * provided encoding in determined to calculate the correct transcoding.
-	 * 
+	 *
 	 * @return the Template itself
 	 */
 	Template set(String name, Object value);
-	
+
 	/**
 	 * Appends a String representation of the value to all variables with given name.
 	 * The exact value might differ according to different meta data associated with
-	 * each of these variables. Eventually set or appended data is kept and new data 
+	 * each of these variables. Eventually set or appended data is kept and new data
 	 * is appended behind the last character.
 	 * All matching formats and encodings are used. However, there is some
 	 * special handling for the interface (@link EncodedData). In this case the
 	 * provided encoding in determined to calculate the correct transcoding.
-	 * 
+	 *
 	 * @return the Template itself
 	 */
 	Template append(String name, Object value);
-	
+
 	/**
 	 * removes all data already bound to this instance.
-	 * 
+	 *
 	 * @return the Template itself
 	 */
 	Template clear();
-	
+
 	/**
-	 * Appends the textual representation of this Template to the location where 
+	 * Appends the textual representation of this Template to the location where
 	 * it was created. (I.e. got from)
 	 * This works pretty fine for the really simple cases.
 	 */
 	void render();
-	
+
 	/**
-	 * Appends the textual representation of this Template to a sibling of the location 
+	 * Appends the textual representation of this Template to a sibling of the location
 	 * where it was created. (I.e. got from)
 	 * This will be used when handling several variants of presentations within a list.
 	 * To avoid sorting of elements by variant it has to be ensured that all variants
@@ -140,12 +141,12 @@ public interface Template extends EncodedData  {
 	 * using render() instead of render("target0") in the "debit" line would show all debits
 	 * first and all credits afterwards. But in the example it's ensured that all data is written
 	 * to the same location, though, the order stays as defined.
-	 * 
+	 *
 	 * @param siblingName names a child of the same parent. If using the name of this Snippetory
 	 * it's the same as render() without parameter.
 	 */
 	void render(String siblingName);
-	
+
 	/**
 	 * Appends the textual representation of this Template to an arbitrary location.
 	 * This allows even to mix data from different files. Quite similar to
@@ -153,19 +154,19 @@ public interface Template extends EncodedData  {
 	 * target.append(name, thisOne);
 	 * </pre>
 	 * however an interceptor gets more information what's going on.
-	 * 
+	 *
 	 * @param target a Template to append to
 	 * @param name the name of the place where the data should go to.
 	 */
 	void render(Template target, String name);
-	
+
 	/**
-	 * A convenience method to write to a Writer 
+	 * A convenience method to write to a Writer
 	 */
 	void render(Writer out) throws IOException;
 
 	/**
-	 * A convenience method to write to a PrintStream 
+	 * A convenience method to write to a PrintStream
 	 */
 	void render(PrintStream out) throws IOException;
 
@@ -176,9 +177,9 @@ public interface Template extends EncodedData  {
 	 * Use with care as it's a more expensive operation.
 	 */
 	Set<String> names();
-	
+
 	/**
-	 * Delivers the names of the regions. Regions can be accessed by the get operation. This 
+	 * Delivers the names of the regions. Regions can be accessed by the get operation. This
 	 * is a subset of the names delivered by <code>names()</code>.
 	 */
 	Set<String> regionNames();

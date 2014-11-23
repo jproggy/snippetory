@@ -1,7 +1,21 @@
+/// Copyright JProggy
+///
+/// Licensed under the Apache License, Version 2.0 (the "License");
+/// you may not use this file except in compliance with the License.
+/// You may obtain a copy of the License at
+///
+///     http://www.apache.org/licenses/LICENSE-2.0
+///
+/// Unless required by applicable law or agreed to in writing, software
+/// distributed under the License is distributed on an "AS IS" BASIS,
+/// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+/// See the License for the specific language governing permissions and
+/// limitations under the License.
+
 package org.jproggy.snippetory.test;
 
-import static org.jproggy.snippetory.Syntaxes.*;
-import static org.junit.Assert.*;
+import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 import java.util.Locale;
@@ -22,9 +36,9 @@ public class InheritanceTest {
 	private static final java.sql.Date D2 = java.sql.Date.valueOf("2011-10-06");
 	private static final java.sql.Date D1 = java.sql.Date.valueOf("2011-10-15");
 	private static final Date D1_TIME = new Date(D1.getTime() + 3915000l);
-	
+
 	public static class FormRoot {
-		
+
 		@Test
 		public void dateToRegion() {
 			TemplateContext ctx = XML_ALIKE.context().attrib("date", "medium_long");
@@ -32,13 +46,13 @@ public class InheritanceTest {
 			date.get("test").set("d1", D1).set("d2", D1_TIME).render();
 			date.get("test").set("d1", D2).render();
 			assertEquals("Date: Oct 15, 2011 12:00:00 AM GMT Other date: Oct 15, 2011 1:05:15 AM GMT\nDate: Oct 6, 2011 12:00:00 AM GMT\n", date.toString());
-			
+
 			Template test = date.get("test");
 			assertEquals("Date: {v:d1}\n", test.toString());
 			test.set("d2", D2).set("d1", D2);
 			assertEquals("Date: Oct 6, 2011 12:00:00 AM GMT Other date: Oct 6, 2011 12:00:00 AM GMT\n", test.toString());
 			assertEquals("Date: Oct 15, 2011 12:00:00 AM GMT Other date: Oct 15, 2011 1:05:15 AM GMT\nDate: Oct 6, 2011 12:00:00 AM GMT\n", date.toString());
-			
+
 			date.set("test", D2);
 			assertEquals("Oct 6, 2011 12:00:00 AM GMT", date.toString());
 
@@ -48,7 +62,7 @@ public class InheritanceTest {
 			date.get("test").set("d1", D2).render();
 			assertEquals("Date: Oct 15, 2011 12:00:00 AM GMT Other date: Oct 15, 2011 1:05:15 AM GMT\nDate: Oct 6, 2011 12:00:00 AM GMT\n", date.toString());
 		}
-		
+
 		@Test
 		public void dateToCond() {
 			TemplateContext ctx = XML_ALIKE.context().attrib("date", "short_medium");
@@ -59,20 +73,20 @@ public class InheritanceTest {
 			assertEquals("Date: 10/15/11 12:00:00 AM Other date: 10/15/11 1:05:15 AM", date.toString());
 			date.set("test", D2);
 			assertEquals("Date: 10/15/11 12:00:00 AM10/6/11 12:00:00 AM", date.toString());
-			
+
 			Template test2 = date.get("test");
 			assertEquals(" Other date: {v:d2}", test2.toString());
 			test2.set("d2", D2);
 			assertEquals(" Other date: 10/15/11 1:05:15 AM", test1.toString());
 			assertEquals(" Other date: 10/6/11 12:00:00 AM", test2.toString());
-			
+
 			date = date.get();
 			assertEquals("", date.toString());
 			date.set("d1", D2).get("test").set("d2", D2).render();
 			date.set("d1", D1);
 			assertEquals("Date: 10/15/11 12:00:00 AM Other date: 10/6/11 12:00:00 AM", date.toString());
 		}
-		
+
 		@Test
 		public void dateToCondAndRegion() {
 			TemplateContext ctx = XML_ALIKE.context().attrib("date", "short_medium");
@@ -83,13 +97,13 @@ public class InheritanceTest {
 			assertEquals("Date: 10/15/11 12:00:00 AM Other date: 10/15/11 1:05:15 AM", date.toString());
 			date.set("test", D2);
 			assertEquals("Date: 10/15/11 12:00:00 AM10/6/11 12:00:00 AM", date.toString());
-			
+
 			Template test2 = date.get("test");
 			assertEquals("", test2.toString());
 			test2.set("d2", D2);
 			assertEquals(" Other date: 10/15/11 1:05:15 AM", test1.toString());
 			assertEquals(" Other date: 10/6/11 12:00:00 AM", test2.toString());
-			
+
 			date = date.get();
 			assertEquals("", date.toString());
 			date.set("d1", D2).get("test").set("d2", D2).render();
@@ -104,7 +118,7 @@ public class InheritanceTest {
 			assertEquals("beforeafter", date.toString());
 			date.set("test", D1);
 			assertEquals("before->2011-10-15<-after", date.toString());
-			
+
 			date = date.get();
 			assertEquals("beforeafter", date.toString());
 			date.set("test", D1);
@@ -117,7 +131,7 @@ public class InheritanceTest {
 			assertEquals("beforeafter", date.toString());
 			date.set("test", D1);
 			assertEquals("before->2011-10-15<-after", date.toString());
-			
+
 			date = date.get();
 			assertEquals("beforeafter", date.toString());
 			date.set("test", D1);
@@ -130,12 +144,12 @@ public class InheritanceTest {
 			assertEquals("beforeafter", date.toString());
 			date.get("v1").set("test", D1).render();
 			assertEquals("before->2011-10-15<-after", date.toString());
-			
-			Template v1 = date.get("v1"); 
+
+			Template v1 = date.get("v1");
 			assertEquals("{v:test}", v1.toString());
 			v1.append("test", D2);
 			assertEquals("2011-10-06", v1.toString());
-			
+
 			date = date.get();
 			assertEquals("beforeafter", date.toString());
 			date.get("v1").set("test", D1).render();
@@ -154,7 +168,7 @@ public class InheritanceTest {
 			date.set("d1", D1);
 			date.get("test").set("d1", D2).render();
 			assertEquals("Date 1: 10/15/11 Date 2: 10/6/11", date.toString());
-			
+
 		}
 
 		@Test
@@ -163,7 +177,7 @@ public class InheritanceTest {
 			date.set("d1", D1);
 			date.set("d2", D2);
 			assertEquals("Date 1: 2011-10-15 Date 2: 06.10.11 00:00 Uhr GMT ", date.toString());
-			
+
 		}
 
 		@Test
@@ -174,7 +188,7 @@ public class InheritanceTest {
 			date.get("test").set("d2", D2).render();
 			assertEquals("Date 1: 01:05:15 Date 2: 00:00:00 ", date.toString());
 		}
-		
+
 	}
 
 }

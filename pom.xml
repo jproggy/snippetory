@@ -1,3 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright JProggy -->
+<!-- Licensed under the Apache License, Version 2.0 (the "License"); -->
+<!-- you may not use this file except in compliance with the License. -->
+<!-- You may obtain a copy of the License at -->
+<!-- -> http://www.apache.org/licenses/LICENSE-2.0 <- -->
+<!-- Unless required by applicable law or agreed to in writing, software -->
+<!-- distributed under the License is distributed on an "AS IS" BASIS, -->
+<!-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. -->
+<!-- See the License for the specific language governing permissions and -->
+<!-- limitations under the License. -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -13,18 +25,21 @@
     engine.
     </description>
 	<url>http://www.jproggy.org/snippetory/</url>
-	<licenses>
-		<license>
-			<name>The Eclipse Software License, Version 1.0</name>
-			<url>http://www.eclipse.org/legal/epl-v10.html</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
-		<version>7</version>
+		<version>9</version>
 	</parent>
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<issueManagement>
+	  <url>https://github.com/jproggy/Snippetory/issues</url>
+	</issueManagement>
 	<scm>
 		<url>http://sourceforge.net/p/snippetory/code/HEAD/tree/trunk/</url>
 		<developerConnection>scm:svn:https://svn.code.sf.net/p/snippetory/code/trunk</developerConnection>
@@ -59,6 +74,12 @@
 				<version>1.9.5</version>
 				<scope>test</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.codehaus.groovy</groupId>
+				<artifactId>groovy</artifactId>
+				<version>2.3.7</version>
+				<scope>provided</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<build>
@@ -76,6 +97,6 @@
 	<modules>
 		<module>snippetory-core</module>
 		<module>snippetory-sql</module>
+		<!-- module>snippetory-groovy</module -->
 	</modules>
 </project>
-

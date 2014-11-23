@@ -1,3 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright JProggy -->
+<!-- Licensed under the Apache License, Version 2.0 (the "License"); -->
+<!-- you may not use this file except in compliance with the License. -->
+<!-- You may obtain a copy of the License at -->
+<!-- -> http://www.apache.org/licenses/LICENSE-2.0 <- -->
+<!-- Unless required by applicable law or agreed to in writing, software -->
+<!-- distributed under the License is distributed on an "AS IS" BASIS, -->
+<!-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. -->
+<!-- See the License for the specific language governing permissions and -->
+<!-- limitations under the License. -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -7,12 +19,29 @@
 		<version>0.9.6-SNAPSHOT</version>
 	</parent>
 	<artifactId>snippetory-sql</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.9.6-SNAPSHOT</version>
 	<name>Snippeorty SQL Repository</name>
 	<description>
 	   Snippetory SQL Repository provides storage of SQL statements based on a named parameter scheme and providing a rich 
 	   set of functionality to handle alternatives of those statements
 	</description>
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<issueManagement>
+	  <url>https://github.com/jproggy/Snippetory/issues</url>
+	</issueManagement>
+	<developers>
+		<developer>
+			<id>Sir RotN</id>
+			<name>Bernd Ebertz</name>
+			<email>bebertz@jproggy.org</email>
+		</developer>
+	</developers>
 	<dependencies>
 		<dependency>
 			<groupId>org.jproggy</groupId>
@@ -25,6 +54,30 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<artifactId>mysql-connector-java</artifactId>
+			<groupId>mysql</groupId>
+			<version>5.1.33</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derby</artifactId>
+			<version>10.11.1.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>2.3.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.xerial</groupId>
+			<artifactId>sqlite-jdbc</artifactId>
+			<version>3.8.7</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<build>
