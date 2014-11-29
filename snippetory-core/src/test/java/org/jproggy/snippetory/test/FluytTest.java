@@ -165,6 +165,7 @@ public class FluytTest {
   @Test
   public void comments() {
     Template t1 = FLUYT.parse("/// comment on start  \n  $test{  \n i++; \n   ///another comment  \n   }test$  \n");
+    assertEquals("", t1.toString());
     t1.append("test", t1.get("test"));
     assertEquals(" i++; \n", t1.toString());
 
