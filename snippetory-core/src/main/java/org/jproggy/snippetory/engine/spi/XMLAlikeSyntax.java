@@ -42,7 +42,11 @@ public class XMLAlikeSyntax extends RegExSyntax {
 
 		Pattern nameless = Pattern.compile(NAMELESS_TOKEN, Pattern.MULTILINE);
 		patterns.put(nameless, TokenType.Field);
-		return new RegexParser(data, ctx, patterns);
+
+    Pattern comment = Pattern.compile(LINE_START + "///.*" + LINE_END, Pattern.MULTILINE);
+    patterns.put(comment, TokenType.Comment);
+
+    return new RegexParser(data, ctx, patterns);
 	}
 
 	protected static void addRegionPatterns(Map<Pattern, TokenType> patterns) {

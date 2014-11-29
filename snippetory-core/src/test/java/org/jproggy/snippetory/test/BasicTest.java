@@ -80,6 +80,22 @@ public class BasicTest {
 				  method.toString());
 	}
 
+  @Test
+  public void comments() {
+    Template t1 = XML_ALIKE.parse("/// comment on start  \n  <t:test>  \n i++; \n   ///another comment  \n   </t:test>  \n");
+    assertEquals("", t1.toString());
+    t1.append("test", t1.get("test"));
+    assertEquals(" i++; \n", t1.toString());
+
+    t1 = XML_ALIKE.parse("<t:test>\n i++; \n</t:test>\n  /// comment at the end");
+    t1.append("test", t1.get("test"));
+    assertEquals(" i++; \n", t1.toString());
+
+    t1 = XML_ALIKE.parse("\t /// comment after tab \r <t:test>  \n i++; \n   </t:test>\n");
+    t1.append("test", t1.get("test"));
+    assertEquals(" i++; \n", t1.toString());
+  }
+
 	@Test
 	public void childTempates() {
 		Template t1 = XML_ALIKE.parse("in<t:test> and out</t:test> and around");
