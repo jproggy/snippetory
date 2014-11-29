@@ -61,7 +61,7 @@ public class ToggleFormatter implements FormatFactory {
 
 		@Override
 		public Object formatVoid(TemplateNode node) {
-			return format(null, node);
+			return format(node, null);
 		}
 
 		@Override
