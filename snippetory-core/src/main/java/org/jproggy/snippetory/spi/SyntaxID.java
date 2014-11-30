@@ -22,8 +22,8 @@ package org.jproggy.snippetory.spi;
  * @author B. Ebertz
  */
 public interface SyntaxID {
-	/**
-	 * @return a name identifying the syntax uniquely.
-	 */
-	String getName();
+  /**
+   * @return a name identifying the syntax uniquely.
+   */
+  String getName();
 }

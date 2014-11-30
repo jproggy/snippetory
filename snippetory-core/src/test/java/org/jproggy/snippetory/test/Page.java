@@ -36,8 +36,8 @@ public class Page implements EncodedData {
   public Page(String title, String target, Map<String, String> errors, ResourceBundle labels) {
     this.errors = errors;
     this.labels = labels;
-    template = Repo.readResource("MetaRep.html").encoding(Encodings.html)
-        .syntax(Syntaxes.FLUYT_X).locale(Locale.US).parse();
+    template = Repo.readResource("MetaRep.html").encoding(Encodings.html).syntax(Syntaxes.FLUYT_X).locale(Locale.US)
+        .parse();
     page = template.get("page");
     page.set("title", title);
     page.set("target", target);

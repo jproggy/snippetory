@@ -31,93 +31,93 @@ import org.jproggy.snippetory.spi.Syntax;
  * @see Syntax
  */
 public class Token {
-	/**
-	 * The token type classifies he meaning of a template element.
-	 *
-	 * @author B. Ebertz
-	 */
-	public enum TokenType {
-		// start of a region
-		BlockStart,
-		// end of a region
-		BlockEnd,
-		// represents a location
-		Field,
-		// a syntax selector
-		Syntax,
-		// will be copied to output format
-		TemplateData,
-		// is ignored
-		Comment
-	}
+  /**
+   * The token type classifies he meaning of a template element.
+   *
+   * @author B. Ebertz
+   */
+  public enum TokenType {
+    // start of a region
+    BlockStart,
+    // end of a region
+    BlockEnd,
+    // represents a location
+    Field,
+    // a syntax selector
+    Syntax,
+    // will be copied to output format
+    TemplateData,
+    // is ignored
+    Comment
+  }
 
-	private final LinkedHashMap<String, String> attributes = new LinkedHashMap<String, String>();
-	private final String name;
-	private final String content;
-	private final TokenType type;
-	private final int position;
-	private final Syntax.Tokenizer locator;
+  private final LinkedHashMap<String, String> attributes = new LinkedHashMap<String, String>();
+  private final String name;
+  private final String content;
+  private final TokenType type;
+  private final int position;
+  private final Syntax.Tokenizer locator;
 
-	public Token(String name, String content, TokenType type, int position, Syntax.Tokenizer locator) {
-		super();
-		this.name = name == null ? null : name.intern();
-		this.content = content;
-		this.type = type;
-		this.position = position;
-		this.locator = locator;
-	}
+  public Token(String name, String content, TokenType type, int position, Syntax.Tokenizer locator) {
+    super();
+    this.name = name == null ? null : name.intern();
+    this.content = content;
+    this.type = type;
+    this.position = position;
+    this.locator = locator;
+  }
 
-	/**
-	 * attributes are only provided for {@link TokenType#BlockStart} and
-	 */
-	public LinkedHashMap<String, String> getAttributes() {
-		return attributes;
-	}
+  /**
+   * attributes are only provided for {@link TokenType#BlockStart} and
+   */
+  public LinkedHashMap<String, String> getAttributes() {
+    return attributes;
+  }
 
-	/**
-	 * Not every TokenType has a name in any case.
-	 * For instance the name of a field is optional and
-	 * comment has no name at all
-	 *
-	 * @return the name  of the element represented by this token
-	 *         or null or empty string if none.
-	 */
-	public String getName() {
-		return name;
-	}
+  /**
+   * Not every TokenType has a name in any case.
+   * For instance the name of a field is optional and
+   * comment has no name at all
+   *
+   * @return the name  of the element represented by this token
+   *         or null or empty string if none.
+   */
+  public String getName() {
+    return name;
+  }
 
-	/**
-	 * The token type categorizes different meanings of the elements
-	 * represented by the tokens.
-	 *
-	 * @return the token type recognized for the represented element
-	 */
-	public TokenType getType() {
-		return type;
-	}
+  /**
+   * The token type categorizes different meanings of the elements
+   * represented by the tokens.
+   *
+   * @return the token type recognized for the represented element
+   */
+  public TokenType getType() {
+    return type;
+  }
 
-	/**
-	 *  The complete piece of template code representing this token. This
-	 *  can be used to re-assemble the original template from a token stream
-	 */
-	public String getContent() {
-		return content;
-	}
+  /**
+   *  The complete piece of template code representing this token. This
+   *  can be used to re-assemble the original template from a token stream
+   */
+  public String getContent() {
+    return content;
+  }
 
-	/**
-	 *  the position where the content starts within the entire template data.
-	 *  It dosen't matter where this syntax started to be used.
-	 */
-	public int getPosition() {
-		return position;
-	}
+  /**
+   *  the position where the content starts within the entire template data.
+   *  It dosen't matter where this syntax started to be used.
+   */
+  public int getPosition() {
+    return position;
+  }
 
-	public TextPosition getTextPosition() {
-		return locator.getPosition(this);
-	}
+  public TextPosition getTextPosition() {
+    return locator.getPosition(this);
+  }
 
-	@Override
-	public String toString() {
-		return type + ": " + content;
-	}
+  @Override
+  public String toString() {
+    return type + ": " + content;
+  }
 }

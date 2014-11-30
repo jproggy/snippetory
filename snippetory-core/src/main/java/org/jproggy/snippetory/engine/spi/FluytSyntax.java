@@ -23,73 +23,73 @@ import org.jproggy.snippetory.engine.RegExSyntax;
 import org.jproggy.snippetory.engine.Token.TokenType;
 
 public class FluytSyntax extends RegExSyntax {
-	protected static final String PLAIN_ATTRIBS = "\\s*" + ATTRIBUTE + "(?:\\s+" + ATTRIBUTE + ")*\\s*";
-	protected static final String OPT_ATTRIBS = "(?:(?![" + NAME_CHAR + "\\(])|\\(" + PLAIN_ATTRIBS + "\\))";
-	protected static final String MAND_ATTRIBS = "\\(" + PLAIN_ATTRIBS + "\\)";
+  protected static final String PLAIN_ATTRIBS = "\\s*" + ATTRIBUTE + "(?:\\s+" + ATTRIBUTE + ")*\\s*";
+  protected static final String OPT_ATTRIBS = "(?:(?![" + NAME_CHAR + "\\(])|\\(" + PLAIN_ATTRIBS + "\\))";
+  protected static final String MAND_ATTRIBS = "\\(" + PLAIN_ATTRIBS + "\\)";
 
-	protected static final String START_TOKEN = "\\$((?:" + NAME + ")?" + OPT_ATTRIBS + ")\\{";
-	protected static final String END_TOKEN = "\\}(" + NAME + ")?\\$";
+  protected static final String START_TOKEN = "\\$((?:" + NAME + ")?" + OPT_ATTRIBS + ")\\{";
+  protected static final String END_TOKEN = "\\}(" + NAME + ")?\\$";
 
-	protected static final String NAMED_LOC = "\\$(" + NAME + OPT_ATTRIBS + ")(?:\\$)?";
-	protected static final String NAMELESS_LOC = "\\$(" + MAND_ATTRIBS + ")(?:\\$)?";
+  protected static final String NAMED_LOC = "\\$(" + NAME + OPT_ATTRIBS + ")(?:\\$)?";
+  protected static final String NAMELESS_LOC = "\\$(" + MAND_ATTRIBS + ")(?:\\$)?";
 
-    protected static final SyntaxVariant Block = SyntaxVariant.Block;
-    protected static final SyntaxVariant Inline = SyntaxVariant.Inline;
-    protected static final SyntaxVariant Named = SyntaxVariant.Named;
-    protected static final SyntaxVariant Nameless = SyntaxVariant.Nameless;
+  protected static final SyntaxVariant Block = SyntaxVariant.Block;
+  protected static final SyntaxVariant Inline = SyntaxVariant.Inline;
+  protected static final SyntaxVariant Named = SyntaxVariant.Named;
+  protected static final SyntaxVariant Nameless = SyntaxVariant.Nameless;
 
-	protected enum SyntaxVariant {
-		Block, Inline, Named, Nameless
-	}
+  protected enum SyntaxVariant {
+    Block, Inline, Named, Nameless
+  }
 
-	@Override
-	public RegexParser parse(CharSequence data, TemplateContext ctx) {
-		Map<Pattern, TokenType> patterns = createPatterns();
-		return new RegexParser(data, ctx, patterns);
-	}
+  @Override
+  public RegexParser parse(CharSequence data, TemplateContext ctx) {
+    Map<Pattern, TokenType> patterns = createPatterns();
+    return new RegexParser(data, ctx, patterns);
+  }
 
-	protected Map<Pattern, TokenType> createPatterns() {
-		Map<Pattern, TokenType> patterns = new LinkedHashMap<Pattern, TokenType>();
+  protected Map<Pattern, TokenType> createPatterns() {
+    Map<Pattern, TokenType> patterns = new LinkedHashMap<Pattern, TokenType>();
 
-		patterns.put(SYNTAX_SELECTOR, TokenType.Syntax);
+    patterns.put(SYNTAX_SELECTOR, TokenType.Syntax);
 
-		createBlockPattern(patterns, TokenType.BlockStart, START_TOKEN);
-		createInlinePattern(patterns, TokenType.BlockStart, START_TOKEN);
+    createBlockPattern(patterns, TokenType.BlockStart, START_TOKEN);
+    createInlinePattern(patterns, TokenType.BlockStart, START_TOKEN);
 
-		createBlockPattern(patterns, TokenType.BlockEnd, END_TOKEN);
-		createInlinePattern(patterns, TokenType.BlockEnd, END_TOKEN);
+    createBlockPattern(patterns, TokenType.BlockEnd, END_TOKEN);
+    createInlinePattern(patterns, TokenType.BlockEnd, END_TOKEN);
 
-		createFieldPattern(patterns, Named, NAMED_LOC);
-		createFieldPattern(patterns, Nameless, NAMELESS_LOC);
+    createFieldPattern(patterns, Named, NAMED_LOC);
+    createFieldPattern(patterns, Nameless, NAMELESS_LOC);
 
-		Pattern comment = Pattern.compile(LINE_START + "///.*" + LINE_END, Pattern.MULTILINE);
-		patterns.put(comment, TokenType.Comment);
+    Pattern comment = Pattern.compile(LINE_START + "///.*" + LINE_END, Pattern.MULTILINE);
+    patterns.put(comment, TokenType.Comment);
 
-		return patterns;
-	}
+    return patterns;
+  }
 
-	protected void createFieldPattern(Map<Pattern, TokenType> patterns, SyntaxVariant variant, String token) {
-		Pattern field = Pattern.compile(
-				coatStart(TokenType.Field, variant) + token + coatEnd(TokenType.Field, variant), Pattern.MULTILINE);
-		patterns.put(field, TokenType.Field);
-	}
+  protected void createFieldPattern(Map<Pattern, TokenType> patterns, SyntaxVariant variant, String token) {
+    Pattern field = Pattern.compile(coatStart(TokenType.Field, variant) + token + coatEnd(TokenType.Field, variant),
+        Pattern.MULTILINE);
+    patterns.put(field, TokenType.Field);
+  }
 
-	protected void createBlockPattern(Map<Pattern, TokenType> patterns, TokenType type, String token) {
-		Pattern start = Pattern.compile(LINE_START + coatStart(type, Block) + token + coatEnd(type, Block) + LINE_END,
-				Pattern.MULTILINE);
-		patterns.put(start, type);
-	}
+  protected void createBlockPattern(Map<Pattern, TokenType> patterns, TokenType type, String token) {
+    Pattern start = Pattern.compile(LINE_START + coatStart(type, Block) + token + coatEnd(type, Block) + LINE_END,
+        Pattern.MULTILINE);
+    patterns.put(start, type);
+  }
 
-	protected void createInlinePattern(Map<Pattern, TokenType> patterns, TokenType type, String token) {
-		Pattern start = Pattern.compile(coatStart(type, Inline) + token + coatEnd(type, Inline), Pattern.MULTILINE);
-		patterns.put(start, type);
-	}
+  protected void createInlinePattern(Map<Pattern, TokenType> patterns, TokenType type, String token) {
+    Pattern start = Pattern.compile(coatStart(type, Inline) + token + coatEnd(type, Inline), Pattern.MULTILINE);
+    patterns.put(start, type);
+  }
 
-	protected String coatStart(TokenType type, SyntaxVariant variant) {
-		return "";
-	}
+  protected String coatStart(TokenType type, SyntaxVariant variant) {
+    return "";
+  }
 
-	protected String coatEnd(TokenType type, SyntaxVariant variant) {
-		return "";
-	}
+  protected String coatEnd(TokenType type, SyntaxVariant variant) {
+    return "";
+  }
 }

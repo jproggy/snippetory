@@ -27,57 +27,57 @@ import org.jproggy.snippetory.spi.CharDataSupport;
  * @author B. Ebertz
  */
 public abstract class CharSequences implements CharSequence, SelfAppender {
-	private CharSequence recentCS = null;
-	private int csIndex = -1;
-	private int recentStart = 0;
+  private CharSequence recentCS = null;
+  private int csIndex = -1;
+  private int recentStart = 0;
 
-	/**
-	 * the number of distinct parts connected by this instance
-	 */
-	protected abstract int partCount();
+  /**
+   * the number of distinct parts connected by this instance
+   */
+  protected abstract int partCount();
 
-	/**
-	 * provide one of the parts
-	 */
-	protected abstract CharSequence part(int index);
+  /**
+   * provide one of the parts
+   */
+  protected abstract CharSequence part(int index);
 
-	/**
-	 * there are some optimizations for subsequent calls of charAt with increasing index.
-	 */
-	@Override
-	public char charAt(int index) {
-		if (index < recentStart) {
-			recentStart = 0;
-			recentCS = null;
-			csIndex = -1;
-		}
-		while ((recentCS == null || (index - recentStart) >= recentCS.length()) && csIndex + 1 < partCount()) {
-			if (recentCS != null) {
-				recentStart += recentCS.length();
-			}
-			csIndex++;
-			recentCS = part(csIndex);
-		}
-		return recentCS.charAt(index - recentStart);
-	}
+  /**
+   * there are some optimizations for subsequent calls of charAt with increasing index.
+   */
+  @Override
+  public char charAt(int index) {
+    if (index < recentStart) {
+      recentStart = 0;
+      recentCS = null;
+      csIndex = -1;
+    }
+    while ((recentCS == null || (index - recentStart) >= recentCS.length()) && csIndex + 1 < partCount()) {
+      if (recentCS != null) {
+        recentStart += recentCS.length();
+      }
+      csIndex++;
+      recentCS = part(csIndex);
+    }
+    return recentCS.charAt(index - recentStart);
+  }
 
-	@Override
-	public int length() {
-		int l = 0;
-		for (int i = 0; i < partCount(); i++) {
-			l += part(i).length();
-		}
-		return l;
-	}
+  @Override
+  public int length() {
+    int l = 0;
+    for (int i = 0; i < partCount(); i++) {
+      l += part(i).length();
+    }
+    return l;
+  }
 
-    @Override
-	public String toString() {
-		return appendTo(new StringBuilder()).toString();
-	}
+  @Override
+  public String toString() {
+    return appendTo(new StringBuilder()).toString();
+  }
 
-	@Override
-	public String subSequence(int start, int end) {
-		return this.toString().substring(start, end);
+  @Override
+  public String subSequence(int start, int end) {
+    return this.toString().substring(start, end);
   }
 
   public static void append(Appendable target, Object value) {
@@ -89,10 +89,10 @@ public abstract class CharSequences implements CharSequence, SelfAppender {
   }
 
   public static void append(Appendable target, CharSequence value) throws IOException {
-  	if (value instanceof SelfAppender) {
-  		((SelfAppender) value).appendTo(target);
-  	} else {
-  		target.append(value);
-  	}
+    if (value instanceof SelfAppender) {
+      ((SelfAppender)value).appendTo(target);
+    } else {
+      target.append(value);
+    }
   }
 }

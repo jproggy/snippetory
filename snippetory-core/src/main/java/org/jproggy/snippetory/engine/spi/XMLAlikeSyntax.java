@@ -23,43 +23,43 @@ import org.jproggy.snippetory.engine.RegExSyntax;
 import org.jproggy.snippetory.engine.Token.TokenType;
 
 public class XMLAlikeSyntax extends RegExSyntax {
-	protected static final String START_TOKEN = "\\<t\\:((?:" + NAME + ")?" + ATTRIBUTES + ")\\s*\\>";
-	protected static final String END_TOKEN = "</t\\:(" + NAME + ")?\\>";
+  protected static final String START_TOKEN = "\\<t\\:((?:" + NAME + ")?" + ATTRIBUTES + ")\\s*\\>";
+  protected static final String END_TOKEN = "</t\\:(" + NAME + ")?\\>";
 
-	protected static final String NAMED_LOC = "\\{v\\:(" + NAME + ATTRIBUTES + ")[ \\t]*\\}";
-	protected static final String NAMELESS_TOKEN = "\\{v\\:\\s*(" + ATTRIBUTE + ATTRIBUTES + ")\\s*\\}";
+  protected static final String NAMED_LOC = "\\{v\\:(" + NAME + ATTRIBUTES + ")[ \\t]*\\}";
+  protected static final String NAMELESS_TOKEN = "\\{v\\:\\s*(" + ATTRIBUTE + ATTRIBUTES + ")\\s*\\}";
 
-	@Override
-	public RegexParser parse(CharSequence data, TemplateContext ctx) {
-		Map<Pattern, TokenType> patterns = new LinkedHashMap<Pattern, TokenType>();
+  @Override
+  public RegexParser parse(CharSequence data, TemplateContext ctx) {
+    Map<Pattern, TokenType> patterns = new LinkedHashMap<Pattern, TokenType>();
 
-		patterns.put(SYNTAX_SELECTOR, TokenType.Syntax);
+    patterns.put(SYNTAX_SELECTOR, TokenType.Syntax);
 
-		addRegionPatterns(patterns);
+    addRegionPatterns(patterns);
 
-		Pattern field = Pattern.compile(NAMED_LOC, Pattern.MULTILINE);
-		patterns.put(field, TokenType.Field);
+    Pattern field = Pattern.compile(NAMED_LOC, Pattern.MULTILINE);
+    patterns.put(field, TokenType.Field);
 
-		Pattern nameless = Pattern.compile(NAMELESS_TOKEN, Pattern.MULTILINE);
-		patterns.put(nameless, TokenType.Field);
+    Pattern nameless = Pattern.compile(NAMELESS_TOKEN, Pattern.MULTILINE);
+    patterns.put(nameless, TokenType.Field);
 
     Pattern comment = Pattern.compile(LINE_START + "///.*" + LINE_END, Pattern.MULTILINE);
     patterns.put(comment, TokenType.Comment);
 
     return new RegexParser(data, ctx, patterns);
-	}
+  }
 
-	protected static void addRegionPatterns(Map<Pattern, TokenType> patterns) {
-		Pattern start = Pattern.compile(LINE_START + START_TOKEN + LINE_END, Pattern.MULTILINE);
-		patterns.put(start, TokenType.BlockStart);
+  protected static void addRegionPatterns(Map<Pattern, TokenType> patterns) {
+    Pattern start = Pattern.compile(LINE_START + START_TOKEN + LINE_END, Pattern.MULTILINE);
+    patterns.put(start, TokenType.BlockStart);
 
-		start = Pattern.compile(START_TOKEN, Pattern.MULTILINE);
-		patterns.put(start, TokenType.BlockStart);
+    start = Pattern.compile(START_TOKEN, Pattern.MULTILINE);
+    patterns.put(start, TokenType.BlockStart);
 
-		Pattern end = Pattern.compile(LINE_START + END_TOKEN + LINE_END, Pattern.MULTILINE);
-		patterns.put(end, TokenType.BlockEnd);
+    Pattern end = Pattern.compile(LINE_START + END_TOKEN + LINE_END, Pattern.MULTILINE);
+    patterns.put(end, TokenType.BlockEnd);
 
-		end = Pattern.compile(END_TOKEN, Pattern.MULTILINE);
-		patterns.put(end, TokenType.BlockEnd);
-	}
+    end = Pattern.compile(END_TOKEN, Pattern.MULTILINE);
+    patterns.put(end, TokenType.BlockEnd);
+  }
 }

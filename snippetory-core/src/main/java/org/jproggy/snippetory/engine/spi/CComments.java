@@ -44,51 +44,46 @@ import org.jproggy.snippetory.engine.Token.TokenType;
  *
  * @author B. Ebertz
  */
-public class CComments   extends RegExSyntax {
+public class CComments extends RegExSyntax {
 
-	@Override
-	public RegexParser parse(CharSequence data, TemplateContext ctx) {
-		Map<Pattern, TokenType> patterns = new LinkedHashMap<Pattern, TokenType>();
+  @Override
+  public RegexParser parse(CharSequence data, TemplateContext ctx) {
+    Map<Pattern, TokenType> patterns = new LinkedHashMap<Pattern, TokenType>();
 
-		patterns.put(SYNTAX_SELECTOR, TokenType.Syntax);
-		String commentBlockStart = "\\/\\*\\s*";
-		String commentBlockEnd = "\\s*\\*\\/";
+    patterns.put(SYNTAX_SELECTOR, TokenType.Syntax);
+    String commentBlockStart = "\\/\\*\\s*";
+    String commentBlockEnd = "\\s*\\*\\/";
 
-		String pre = commentBlockStart + "\\$\\{\\s*";
-		String suff = "\\s*\\}" + commentBlockEnd;
+    String pre = commentBlockStart + "\\$\\{\\s*";
+    String suff = "\\s*\\}" + commentBlockEnd;
 
-		String ATTRIBUTES = "(?:\\s+" + ATTRIBUTE + ")*)";
+    String ATTRIBUTES = "(?:\\s+" + ATTRIBUTE + ")*)";
 
-		Pattern mock_default = Pattern.compile(
-				pre + "(" + NAME + ATTRIBUTES + commentBlockEnd + "((?:(?!/\\*).)*)" + commentBlockStart + suff, Pattern.MULTILINE);
-		patterns.put(mock_default, TokenType.Field);
+    Pattern mock_default = Pattern.compile(pre + "(" + NAME + ATTRIBUTES + commentBlockEnd + "((?:(?!/\\*).)*)"
+        + commentBlockStart + suff, Pattern.MULTILINE);
+    patterns.put(mock_default, TokenType.Field);
 
-		Pattern start = Pattern.compile(
-				LINE_START +  "\\/\\/\\s*\\$\\{[\\s/]*(" + NAME +
-				"(?:\\s[\\s/]*" + ATTRIBUTE + ")*)" + LINE_END, Pattern.MULTILINE);
-		patterns.put(start, TokenType.BlockStart);
+    Pattern start = Pattern.compile(LINE_START + "\\/\\/\\s*\\$\\{[\\s/]*(" + NAME + "(?:\\s[\\s/]*" + ATTRIBUTE
+        + ")*)" + LINE_END, Pattern.MULTILINE);
+    patterns.put(start, TokenType.BlockStart);
 
-		start = Pattern.compile(
-				pre + "(" + NAME + ATTRIBUTES + commentBlockEnd, Pattern.MULTILINE);
-		patterns.put(start, TokenType.BlockStart);
+    start = Pattern.compile(pre + "(" + NAME + ATTRIBUTES + commentBlockEnd, Pattern.MULTILINE);
+    patterns.put(start, TokenType.BlockStart);
 
-		Pattern end = Pattern.compile(
-				LINE_START + "\\/\\/\\s*(" + NAME + ")\\s*\\}" + LINE_END, Pattern.MULTILINE);
-		patterns.put(end, TokenType.BlockEnd);
+    Pattern end = Pattern.compile(LINE_START + "\\/\\/\\s*(" + NAME + ")\\s*\\}" + LINE_END, Pattern.MULTILINE);
+    patterns.put(end, TokenType.BlockEnd);
 
-		end = Pattern.compile(commentBlockStart + "(" + NAME + ")\\s*\\}" +
-					commentBlockEnd, Pattern.MULTILINE);
-		patterns.put(end, TokenType.BlockEnd);
+    end = Pattern.compile(commentBlockStart + "(" + NAME + ")\\s*\\}" + commentBlockEnd, Pattern.MULTILINE);
+    patterns.put(end, TokenType.BlockEnd);
 
-		Pattern comment = Pattern.compile(
-				LINE_START + "\\/\\/\\/.*" +  LINE_END, Pattern.MULTILINE);
-		patterns.put(comment, TokenType.Comment);
+    Pattern comment = Pattern.compile(LINE_START + "\\/\\/\\/.*" + LINE_END, Pattern.MULTILINE);
+    patterns.put(comment, TokenType.Comment);
 
-		Pattern field = Pattern.compile(pre + "(" + NAME + ATTRIBUTES + suff, Pattern.MULTILINE);
-		patterns.put(field, TokenType.Field);
+    Pattern field = Pattern.compile(pre + "(" + NAME + ATTRIBUTES + suff, Pattern.MULTILINE);
+    patterns.put(field, TokenType.Field);
 
-		Pattern nameless = Pattern.compile(pre + "(" + ATTRIBUTE + ATTRIBUTES + suff, Pattern.MULTILINE);
-		patterns.put(nameless, TokenType.Field);
-		return new RegexParser(data, ctx, patterns);
-	}
+    Pattern nameless = Pattern.compile(pre + "(" + ATTRIBUTE + ATTRIBUTES + suff, Pattern.MULTILINE);
+    patterns.put(nameless, TokenType.Field);
+    return new RegexParser(data, ctx, patterns);
+  }
 }

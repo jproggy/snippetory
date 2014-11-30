@@ -17,7 +17,6 @@ package org.jproggy.snippetory.engine;
 import java.util.Collections;
 import java.util.List;
 
-
 public class NoDataException extends SnippetoryException {
   private static final long serialVersionUID = 1L;
 

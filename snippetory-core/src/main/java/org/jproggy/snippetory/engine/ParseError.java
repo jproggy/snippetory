@@ -15,19 +15,19 @@
 package org.jproggy.snippetory.engine;
 
 public class ParseError extends SnippetoryException {
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public ParseError(String message, Token at) {
-		super(message + "  " + toMessage(at));
-	}
+  public ParseError(String message, Token at) {
+    super(message + "  " + toMessage(at));
+  }
 
-	public ParseError(Throwable cause, Token at) {
-		super(toMessage(at), cause);
-	}
+  public ParseError(Throwable cause, Token at) {
+    super(toMessage(at), cause);
+  }
 
-	private static String toMessage(Token at) {
-		if (at == null) return "Error at end";
-		TextPosition tPos = at.getTextPosition();
-		return "Error while parsing " + at.getContent() + " at line " + tPos.getLine() + " character " + tPos.getPosition();
-	}
+  private static String toMessage(Token at) {
+    if (at == null) return "Error at end";
+    TextPosition tPos = at.getTextPosition();
+    return "Error while parsing " + at.getContent() + " at line " + tPos.getLine() + " character " + tPos.getPosition();
+  }
 }

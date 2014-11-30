@@ -18,8 +18,8 @@ import java.math.BigDecimal;
 
 public class DecimalFormatter extends NumFormatter {
 
-	public DecimalFormatter() {
-		super(Float.class, Double.class, BigDecimal.class);
-	}
+  public DecimalFormatter() {
+    super(Float.class, Double.class, BigDecimal.class);
+  }
 
 }

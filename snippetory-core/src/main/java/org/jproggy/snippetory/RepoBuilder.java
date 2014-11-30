@@ -31,7 +31,7 @@ import org.jproggy.snippetory.engine.NoDataException;
  * server or in a folder in file system, whatever is appropriate.
  */
 public class RepoBuilder extends UriResolver {
-  private List<UriResolver> parts =  new ArrayList<UriResolver>();
+  private List<UriResolver> parts = new ArrayList<UriResolver>();
 
   public RepoBuilder addDirectories(final String... dirs) {
     return add(UriResolver.directories(dirs));
@@ -52,7 +52,7 @@ public class RepoBuilder extends UriResolver {
    * the {@link Thread#getContextClassLoader() ContextClassloader}
    *
    */
-  public  RepoBuilder addResource() {
+  public RepoBuilder addResource() {
     return add(UriResolver.resource());
   }
 
@@ -60,27 +60,28 @@ public class RepoBuilder extends UriResolver {
    * Allows resource lookup from packages with a short name as well as
    * organizing template sets in different packages.
    */
-  public  RepoBuilder addResource(String prefix) {
+  public RepoBuilder addResource(String prefix) {
     return add(UriResolver.resource(prefix));
   }
 
   /**
    * resolves uris relative to the base URL
    */
-  public  RepoBuilder addUrl(String base) {
+  public RepoBuilder addUrl(String base) {
     return add(UriResolver.url(base));
   }
 
   /**
    * resolves uris relative to the base URL
    */
-  public  RepoBuilder addUrl(final URL base) {
+  public RepoBuilder addUrl(final URL base) {
     return add(UriResolver.url(base));
   }
+
   /**
    * resolves uris relative to the base URL
    */
-  public  RepoBuilder add(UriResolver part) {
+  public RepoBuilder add(UriResolver part) {
     parts.add(part);
     return this;
   }
@@ -88,11 +89,10 @@ public class RepoBuilder extends UriResolver {
   @Override
   public String resolve(String uri, TemplateContext context) {
     if (parts.isEmpty()) {
-      throw new NoDataException("Empty repository. " +
-      		"Please use add... methods to build an meaningfull repository");
+      throw new NoDataException("Empty repository. " + "Please use add... methods to build an meaningfull repository");
     }
     List<Exception> exceptions = new ArrayList<Exception>();
-    for (UriResolver part: parts) {
+    for (UriResolver part : parts) {
       try {
         String result = part.resolve(uri, context);
         if (result != null) {

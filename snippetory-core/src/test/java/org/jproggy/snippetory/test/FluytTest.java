@@ -320,6 +320,11 @@ public class FluytTest {
     assertEquals("$test(", t.toString());
     assertTrue(t.names().isEmpty());
 
+    t = FLUYT.parse("$test$(");
+    t.set("test", "hallo");
+    assertEquals("hallo(", t.toString());
+    assertEquals(1, t.names().size());
+
     t = FLUYT.parse("$test(crop)");
     t.set("test", "hallo");
     assertEquals("$test(crop)", t.toString());

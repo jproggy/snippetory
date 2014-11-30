@@ -56,31 +56,31 @@ import org.jproggy.snippetory.engine.FormatRegistry;
  * @author B. Ebertz
  */
 public interface Format {
-	/**
-	 * Register {@link FormatFactory FormatFactories} here.
-	 */
-	FormatRegistry REGISTRY = FormatRegistry.INSTANCE;
+  /**
+   * Register {@link FormatFactory FormatFactories} here.
+   */
+  FormatRegistry REGISTRY = FormatRegistry.INSTANCE;
 
-	/**
-	 * Will only be called for supported values.
-	 *
-	 * @param location gives some additional information to the this call
-	 * like the target encoding
-	 * @param value
-	 */
-	Object format(TemplateNode location, Object value);
+  /**
+   * Will only be called for supported values.
+   *
+   * @param location gives some additional information to the this call
+   * like the target encoding
+   * @param value
+   */
+  Object format(TemplateNode location, Object value);
 
-	/**
-	 * Many formats only apply to a special type or even specific
-	 * values. The format method will only be called for supported values
-	 */
-	boolean supports(Object value);
+  /**
+   * Many formats only apply to a special type or even specific
+   * values. The format method will only be called for supported values
+   */
+  boolean supports(Object value);
 
-	/**
-	 * Resets the state of the format to initialization value.
-	 * As most formats are state-less they can safely ignore this method.
-	 *
-	 * @param location
-	 */
-	void clear(TemplateNode location);
+  /**
+   * Resets the state of the format to initialization value.
+   * As most formats are state-less they can safely ignore this method.
+   *
+   * @param location
+   */
+  void clear(TemplateNode location);
 }

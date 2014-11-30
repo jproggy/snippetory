@@ -17,3 +17,4 @@
  * with registration methods.
  */
 package org.jproggy.snippetory.engine.spi;
+

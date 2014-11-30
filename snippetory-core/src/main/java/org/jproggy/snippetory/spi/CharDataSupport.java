@@ -31,44 +31,44 @@ import org.jproggy.snippetory.Encodings;
  *
  */
 public class CharDataSupport {
-	/**
-	 * Determine whether this object is one of the supported types.
-	 */
-	public static boolean isCharData(Object value) {
-		return value instanceof EncodedData || value instanceof CharSequence;
-	}
+  /**
+   * Determine whether this object is one of the supported types.
+   */
+  public static boolean isCharData(Object value) {
+    return value instanceof EncodedData || value instanceof CharSequence;
+  }
 
-	/**
-	 * Calculate the length of the character data. This method may only be called with
-	 * character data.
-	 */
-	public static int length(Object chars) {
-		return toCharSequence(chars).length();
-	}
+  /**
+   * Calculate the length of the character data. This method may only be called with
+   * character data.
+   */
+  public static int length(Object chars) {
+    return toCharSequence(chars).length();
+  }
 
-	/**
-	 *  Converts the Object to <code>CharSequence</code>. This method may only be called with
-	 * character data.
-	 */
-	public static CharSequence toCharSequence(Object chars) {
+  /**
+   *  Converts the Object to <code>CharSequence</code>. This method may only be called with
+   * character data.
+   */
+  public static CharSequence toCharSequence(Object chars) {
     if (chars instanceof CharSequence) {
       return (CharSequence)chars;
     }
     if (chars instanceof EncodedData) {
       return ((EncodedData)chars).toCharSequence();
     }
-		return chars.toString();
-	}
+    return chars.toString();
+  }
 
-	/**
-	 * Figures out the encoding of this data. Will assume plain text
-	 * if no encoding is provided.
-	 * This method may only be called with character data.
-	 */
-	public static String getEncoding(Object chars) {
-		if (chars instanceof EncodedData) {
-			((EncodedData)chars).getEncoding();
-		}
-		return Encodings.plain.getName();
-	}
+  /**
+   * Figures out the encoding of this data. Will assume plain text
+   * if no encoding is provided.
+   * This method may only be called with character data.
+   */
+  public static String getEncoding(Object chars) {
+    if (chars instanceof EncodedData) {
+      ((EncodedData)chars).getEncoding();
+    }
+    return Encodings.plain.getName();
+  }
 }

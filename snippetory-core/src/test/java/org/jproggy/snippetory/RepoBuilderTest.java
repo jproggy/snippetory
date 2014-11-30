@@ -31,7 +31,7 @@ public class RepoBuilderTest {
     assertEquals("org.jproggy.mini2", resolver.resolve("mini2.txt", ctx));
   }
 
-  @Test(expected=SnippetoryException.class)
+  @Test(expected = SnippetoryException.class)
   public void fileResourceTestNotFound() {
     TemplateContext ctx = new TemplateContext();
     UriResolver resolver = UriResolver.combine().addDirectories("src/test/resources").addResource("org/jproggy");

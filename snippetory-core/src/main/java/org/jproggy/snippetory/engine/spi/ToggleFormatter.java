@@ -26,78 +26,77 @@ import org.jproggy.snippetory.spi.TemplateNode;
 import org.jproggy.snippetory.spi.VoidFormat;
 
 public class ToggleFormatter implements FormatFactory {
-	@Override
-	public FormatConfiguration create(String definition, TemplateContext ctx) {
-		return new Config(definition);
-	}
+  @Override
+  public FormatConfiguration create(String definition, TemplateContext ctx) {
+    return new Config(definition);
+  }
 
-	public static class ToggleFormat implements VoidFormat {
-		private int count = 1;
-		private final Config config;
+  public static class ToggleFormat implements VoidFormat {
+    private int count = 1;
+    private final Config config;
 
-		public ToggleFormat(Config definition) {
-			super();
-			config =  definition;
-		}
+    public ToggleFormat(Config definition) {
+      super();
+      config = definition;
+    }
 
-		@Override
-		public Object format(TemplateNode location, Object value) {
-			try {
-				if (value instanceof Number) {
-					count = ((Number) value).intValue();
-				}
-				String data = config.values[Math.abs((count - 1) % config.values.length)];
+    @Override
+    public Object format(TemplateNode location, Object value) {
+      try {
+        if (value instanceof Number) {
+          count = ((Number)value).intValue();
+        }
+        String data = config.values[Math.abs((count - 1) % config.values.length)];
         return new EncodedContainer(data, location.getEncoding());
-			} finally {
-				count++;
-			}
-		}
+      } finally {
+        count++;
+      }
+    }
 
-		@Override
-		public boolean supports(Object value) {
-			if (value == null) return true;
-			return value instanceof Number;
-		}
+    @Override
+    public boolean supports(Object value) {
+      if (value == null) return true;
+      return value instanceof Number;
+    }
 
-		@Override
-		public Object formatVoid(TemplateNode node) {
-			return format(node, null);
-		}
+    @Override
+    public Object formatVoid(TemplateNode node) {
+      return format(node, null);
+    }
 
-		@Override
-		public void clear(TemplateNode location) {
-			count = 1;
-		}
+    @Override
+    public void clear(TemplateNode location) {
+      count = 1;
+    }
 
-		@Override
-		public void set(String name, Object value) {
-		}
+    @Override
+    public void set(String name, Object value) {}
 
-		@Override
-		public void append(String name, Object value) {
-		}
+    @Override
+    public void append(String name, Object value) {}
 
-		@Override
-		public Set<String> names() {
-			return Collections.emptySet();
-		}
-	}
+    @Override
+    public Set<String> names() {
+      return Collections.emptySet();
+    }
+  }
 
-	private static class Config extends StateContainer<ToggleFormat> implements FormatConfiguration {
-		private final String[] values;
-		public Config(String definition) {
-			super(KeyResolver.ROOT);
-			this.values = definition.split(";");
-		}
+  private static class Config extends StateContainer<ToggleFormat> implements FormatConfiguration {
+    private final String[] values;
 
-		@Override
-		public ToggleFormat getFormat(TemplateNode node) {
-			return get(node);
-		}
+    public Config(String definition) {
+      super(KeyResolver.ROOT);
+      this.values = definition.split(";");
+    }
 
-		@Override
-		protected ToggleFormat createValue(TemplateNode key) {
-			return new ToggleFormat(this);
-		}
-	}
+    @Override
+    public ToggleFormat getFormat(TemplateNode node) {
+      return get(node);
+    }
+
+    @Override
+    protected ToggleFormat createValue(TemplateNode key) {
+      return new ToggleFormat(this);
+    }
+  }
 }

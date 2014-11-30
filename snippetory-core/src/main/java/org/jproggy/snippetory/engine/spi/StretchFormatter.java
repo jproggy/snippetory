@@ -20,33 +20,33 @@ import org.jproggy.snippetory.engine.spi.PadFormatter.PadFormat;
 import org.jproggy.snippetory.spi.FormatFactory;
 
 public class StretchFormatter implements FormatFactory {
-	@Override
-	public PadFormat create(String definition, TemplateContext ctx) {
-		PadFormat f = null;
-		int length = 0;
-		Alignment left = null;
-		for (char c : definition.toCharArray()) {
-			if (f == null) {
-				if (c >= '0' && c <= '9') {
-					length = (10 * length) + (c - '0');
-					continue;
-				}
-				f = new PadFormat(length);
-			}
-			if (c == 'l') {
-				if (left != null) throw new IllegalArgumentException("Alingment already defined");
-				left = Alignment.left;
-			} else if (c == 'r') {
-				if (left != null) throw new IllegalArgumentException("Alingment already defined");
-				left = Alignment.right;
-			}
-		}
-		if (length == 0) {
-			throw new IllegalArgumentException("no length defined");
-		} else if (f == null) {
-			f = new PadFormat(length);
-		}
-		if (left != null) f.setAlign(left);
-		return f;
-	}
+  @Override
+  public PadFormat create(String definition, TemplateContext ctx) {
+    PadFormat f = null;
+    int length = 0;
+    Alignment left = null;
+    for (char c : definition.toCharArray()) {
+      if (f == null) {
+        if (c >= '0' && c <= '9') {
+          length = (10 * length) + (c - '0');
+          continue;
+        }
+        f = new PadFormat(length);
+      }
+      if (c == 'l') {
+        if (left != null) throw new IllegalArgumentException("Alingment already defined");
+        left = Alignment.left;
+      } else if (c == 'r') {
+        if (left != null) throw new IllegalArgumentException("Alingment already defined");
+        left = Alignment.right;
+      }
+    }
+    if (length == 0) {
+      throw new IllegalArgumentException("no length defined");
+    } else if (f == null) {
+      f = new PadFormat(length);
+    }
+    if (left != null) f.setAlign(left);
+    return f;
+  }
 }

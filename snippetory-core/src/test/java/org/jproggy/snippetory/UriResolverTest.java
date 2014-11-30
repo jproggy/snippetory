@@ -46,7 +46,8 @@ public class UriResolverTest {
   @Test
   public void fileTestFiles() {
     TemplateContext ctx = new TemplateContext();
-    UriResolver resolver = UriResolver.directories(new File("src/test/resources/org/jproggy"), new File("src/test/resources"));
+    UriResolver resolver = UriResolver.directories(new File("src/test/resources/org/jproggy"), new File(
+        "src/test/resources"));
     assertEquals("org.jproggy.mini", resolver.resolve("mini.txt", ctx));
   }
 

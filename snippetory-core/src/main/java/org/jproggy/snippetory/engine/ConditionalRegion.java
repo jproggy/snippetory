@@ -22,87 +22,87 @@ import java.util.Set;
 import org.jproggy.snippetory.spi.EncodedData;
 
 public class ConditionalRegion extends DataSinks implements EncodedData {
-	private final Set<String> names;
-	private final Map<String, Region> children;
-	private boolean appendMe;
+  private final Set<String> names;
+  private final Map<String, Region> children;
+  private boolean appendMe;
 
-	public ConditionalRegion(Location formatter, List<DataSink> parts, Map<String, Region> children) {
-		super(parts, formatter);
-		names = names();
-		this.children = children;
-	}
+  public ConditionalRegion(Location formatter, List<DataSink> parts, Map<String, Region> children) {
+    super(parts, formatter);
+    names = names();
+    this.children = children;
+  }
 
-	protected ConditionalRegion(ConditionalRegion template, Location parent) {
-		super(template, template.getPlaceholder().cleanCopy(parent));
-		names = names();
-		this.children =  new HashMap<String, Region>();
-		for (Map.Entry<String, Region> entry: template.children.entrySet()) {
-			this.children.put(entry.getKey(), entry.getValue().cleanCopy(getPlaceholder()));
-		}
-		appendMe =  false;
-	}
+  protected ConditionalRegion(ConditionalRegion template, Location parent) {
+    super(template, template.getPlaceholder().cleanCopy(parent));
+    names = names();
+    this.children = new HashMap<String, Region>();
+    for (Map.Entry<String, Region> entry : template.children.entrySet()) {
+      this.children.put(entry.getKey(), entry.getValue().cleanCopy(getPlaceholder()));
+    }
+    appendMe = false;
+  }
 
-	@Override
-	public void set(String name, Object value) {
-		if (names.contains(name)) {
-			super.set(name, value);
-			if (value != null) appendMe =  true;
-		}
-	}
+  @Override
+  public void set(String name, Object value) {
+    if (names.contains(name)) {
+      super.set(name, value);
+      if (value != null) appendMe = true;
+    }
+  }
 
-	@Override
-	public void append(String name, Object value) {
-		if (names.contains(name)) {
-			super.append(name, value);
-			if (value != null) appendMe =  true;
-		}
-	}
+  @Override
+  public void append(String name, Object value) {
+    if (names.contains(name)) {
+      super.append(name, value);
+      if (value != null) appendMe = true;
+    }
+  }
 
-	@Override
-	public Set<String> regionNames() {
-		return children.keySet();
-	}
+  @Override
+  public Set<String> regionNames() {
+    return children.keySet();
+  }
 
-	@Override
-	public Region getChild(String name) {
-		Region child = children.get(name);
-		if (child != null) child = child.cleanCopy(getPlaceholder());
- 		return child;
-	}
+  @Override
+  public Region getChild(String name) {
+    Region child = children.get(name);
+    if (child != null) child = child.cleanCopy(getPlaceholder());
+    return child;
+  }
 
-	@Override
-	public void clear() {
-		super.clear();
-		getPlaceholder().clear();
-		appendMe = false;
-	}
+  @Override
+  public void clear() {
+    super.clear();
+    getPlaceholder().clear();
+    appendMe = false;
+  }
 
-	@Override
-	public ConditionalRegion cleanCopy(Location parent) {
-		return new ConditionalRegion(this, parent);
-	}
+  @Override
+  public ConditionalRegion cleanCopy(Location parent) {
+    return new ConditionalRegion(this, parent);
+  }
 
-	@Override
-	public CharSequence format() {
-		Location placeholder = getPlaceholder();
-		if (appendMe()) {
-			placeholder.set(this);
-		}
-		return placeholder.format();
-	}
+  @Override
+  public CharSequence format() {
+    Location placeholder = getPlaceholder();
+    if (appendMe()) {
+      placeholder.set(this);
+    }
+    return placeholder.format();
+  }
 
   protected boolean appendMe() {
     return appendMe;
   }
 
-	@Override
-	public CharSequence toCharSequence() {
-		return this;
-	}
+  @Override
+  public CharSequence toCharSequence() {
+    return this;
+  }
 
-	@Override
-	public String getEncoding() {
-		return getPlaceholder().getEncoding();
-	}
+  @Override
+  public String getEncoding() {
+    return getPlaceholder().getEncoding();
+  }
 
 }

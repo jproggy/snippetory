@@ -14,7 +14,6 @@
 
 package org.jproggy.snippetory.engine.chars;
 
-
 /**
  * Whenever one {@code CharSequence} is appended to another, it analyzes
  * the target type to figure out an efficient way. If the type of the
@@ -27,5 +26,5 @@ public interface SelfAppender {
   /**
    *
    */
-	<T extends Appendable> T appendTo (T to);
+  <T extends Appendable> T appendTo(T to);
 }

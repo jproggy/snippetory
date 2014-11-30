@@ -68,54 +68,54 @@ public class TemplateBuilder {
 
       try {
         switch (t.getType()) {
-          case BlockStart: {
-            reg.checkNameUnique(t);
-            TemplateFragment end = reg.handleBackward(t);
-            Location placeHolder = placeHolder(reg.placeHolder, t);
-            if (t.getName() == null) {
-              regionStack.push(reg);
-              reg = new RegionBuilder(placeHolder);
-            } else {
-              reg.addPart(placeHolder);
-              Region template = parse(placeHolder);
-              reg.children.put(placeHolder.getName(), template);
+        case BlockStart: {
+          reg.checkNameUnique(t);
+          TemplateFragment end = reg.handleBackward(t);
+          Location placeHolder = placeHolder(reg.placeHolder, t);
+          if (t.getName() == null) {
+            regionStack.push(reg);
+            reg = new RegionBuilder(placeHolder);
+          } else {
+            reg.addPart(placeHolder);
+            Region template = parse(placeHolder);
+            reg.children.put(placeHolder.getName(), template);
+          }
+          if (end != null) reg.addPart(end);
+          break;
+        }
+        case BlockEnd:
+          if (t.getName() == null && !regionStack.isEmpty()) {
+            ConditionalRegion r = buildConditional(reg.placeHolder, reg.parts, reg.children);
+            if (r.names().isEmpty()) {
+              throw new ParseError(
+                  "Conditional region needs to contain at least one named location, or will never be rendered", t);
             }
-            if (end != null) reg.addPart(end);
+            reg = regionStack.pop();
+            reg.addPart(r);
             break;
           }
-          case BlockEnd:
-            if (t.getName() == null && !regionStack.isEmpty()) {
-              ConditionalRegion r = buildConditional(reg.placeHolder, reg.parts, reg.children);
-              if (r.names().isEmpty()) {
-                throw new ParseError(
-                    "Conditional region needs to contain at least one named location, or will never be rendered", t);
-              }
-              reg = regionStack.pop();
-              reg.addPart(r);
-              break;
-            }
-            if (!regionStack.isEmpty()) {
-              throw new ParseError(regionStack.size() + " unclosed conditional regions detected", t);
-            }
-            reg.verifyName(t);
-            return build(reg.placeHolder, reg.parts, reg.children);
-          case Field:
-            TemplateFragment end = reg.handleBackward(t);
-            reg.addPart(location(reg.placeHolder, t));
-            if (end != null) reg.addPart(end);
-            break;
-          case TemplateData:
-            reg.addPart(buildFragment(t));
-            break;
-          case Syntax:
-            setSyntax(Syntax.REGISTRY.byName(t.getName()));
-            parser = getSyntax().takeOver(parser);
-            break;
-          case Comment:
-            // comments are simply ignored.
-            break;
-          default:
-            throw new SnippetoryException("Unknown token type: " + t.getType());
+          if (!regionStack.isEmpty()) {
+            throw new ParseError(regionStack.size() + " unclosed conditional regions detected", t);
+          }
+          reg.verifyName(t);
+          return build(reg.placeHolder, reg.parts, reg.children);
+        case Field:
+          TemplateFragment end = reg.handleBackward(t);
+          reg.addPart(location(reg.placeHolder, t));
+          if (end != null) reg.addPart(end);
+          break;
+        case TemplateData:
+          reg.addPart(buildFragment(t));
+          break;
+        case Syntax:
+          setSyntax(Syntax.REGISTRY.byName(t.getName()));
+          parser = getSyntax().takeOver(parser);
+          break;
+        case Comment:
+          // comments are simply ignored.
+          break;
+        default:
+          throw new SnippetoryException("Unknown token type: " + t.getType());
         }
       } catch (ParseError e) {
         throw e;
@@ -130,7 +130,8 @@ public class TemplateBuilder {
     return build(reg.placeHolder, reg.parts, reg.children);
   }
 
-  protected ConditionalRegion buildConditional(Location placeHolder, List<DataSink> parts, Map<String, Region> children) {
+  protected ConditionalRegion
+      buildConditional(Location placeHolder, List<DataSink> parts, Map<String, Region> children) {
     return new ConditionalRegion(placeHolder, parts, children);
   }
 

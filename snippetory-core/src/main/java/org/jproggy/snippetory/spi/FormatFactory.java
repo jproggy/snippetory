@@ -37,16 +37,16 @@ import org.jproggy.snippetory.TemplateContext;
  *
  */
 public interface FormatFactory {
-	/**
-	 * Instantiate the {@link FormatConfiguration} to be kept in the mate data of a template
-	 * and will be used for creating real template nodes. For each real template node
-	 *  {@link FormatConfiguration#getFormat(TemplateNode)} is called exactly once.
-	 *  However, there is always one node that never gets used to render a template, but only
-	 *  for cloning all the others.
-	 *
-	 * @param definition the attribute value from the template
-	 * @param ctx the TemplateContext provides additional information like the locale
-	 * @return a FormatConfiguration that will be kept as meta data of this node
-	 */
-	FormatConfiguration create(String definition, TemplateContext ctx);
+  /**
+   * Instantiate the {@link FormatConfiguration} to be kept in the mate data of a template
+   * and will be used for creating real template nodes. For each real template node
+   *  {@link FormatConfiguration#getFormat(TemplateNode)} is called exactly once.
+   *  However, there is always one node that never gets used to render a template, but only
+   *  for cloning all the others.
+   *
+   * @param definition the attribute value from the template
+   * @param ctx the TemplateContext provides additional information like the locale
+   * @return a FormatConfiguration that will be kept as meta data of this node
+   */
+  FormatConfiguration create(String definition, TemplateContext ctx);
 }

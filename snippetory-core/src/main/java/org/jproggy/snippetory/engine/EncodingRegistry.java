@@ -30,38 +30,37 @@ import org.jproggy.snippetory.spi.Transcoding;
  * @author B. Ebertz
  */
 public final class EncodingRegistry {
-	private Map<String, Encoding> encodings = new HashMap<String, Encoding>();
-	private Map<String, Collection<Transcoding>> overwrites = new HashMap<String, Collection<Transcoding>>();
+  private Map<String, Encoding> encodings = new HashMap<String, Encoding>();
+  private Map<String, Collection<Transcoding>> overwrites = new HashMap<String, Collection<Transcoding>>();
 
-	private EncodingRegistry() {
-	}
+  private EncodingRegistry() {}
 
-	public void register(Encoding value) {
-		encodings.put(value.getName(), value);
-	}
+  public void register(Encoding value) {
+    encodings.put(value.getName(), value);
+  }
 
-	public void registerOverwite(Encoding target, Transcoding overwrite) {
-		Collection<Transcoding> values = overwrites.get(target.getName());
-		if (values == null) {
-			values = new ArrayList<Transcoding>();
-			overwrites.put(target.getName(), values);
-		}
-		values.add(overwrite);
-	}
+  public void registerOverwite(Encoding target, Transcoding overwrite) {
+    Collection<Transcoding> values = overwrites.get(target.getName());
+    if (values == null) {
+      values = new ArrayList<Transcoding>();
+      overwrites.put(target.getName(), values);
+    }
+    values.add(overwrite);
+  }
 
-	/**
-	 * Resolve Encoding by name
-	 * @return the registered encoding or null if none
-	 */
-	public Encoding get(String name) {
-		return encodings.get(name);
-	}
+  /**
+   * Resolve Encoding by name
+   * @return the registered encoding or null if none
+   */
+  public Encoding get(String name) {
+    return encodings.get(name);
+  }
 
-	public Collection<Transcoding> getOverwrites(Encoding target) {
-		Collection<Transcoding> result = overwrites.get(target.getName());
-		if (result == null) return Collections.emptyList();
-		return result;
-	}
+  public Collection<Transcoding> getOverwrites(Encoding target) {
+    Collection<Transcoding> result = overwrites.get(target.getName());
+    if (result == null) return Collections.emptyList();
+    return result;
+  }
 
-	public static final EncodingRegistry INSTANCE = new EncodingRegistry();
+  public static final EncodingRegistry INSTANCE = new EncodingRegistry();
 }

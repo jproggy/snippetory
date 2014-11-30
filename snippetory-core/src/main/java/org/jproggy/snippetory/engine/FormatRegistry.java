@@ -22,29 +22,27 @@ import org.jproggy.snippetory.engine.Attributes.Types;
 import org.jproggy.snippetory.spi.FormatConfiguration;
 import org.jproggy.snippetory.spi.FormatFactory;
 
-
 public final class FormatRegistry {
-	private Map<String, FormatFactory> formats = new HashMap<String, FormatFactory>();
+  private Map<String, FormatFactory> formats = new HashMap<String, FormatFactory>();
 
-	private FormatRegistry() {
-	}
+  private FormatRegistry() {}
 
-	public void register(String name, FormatFactory value) {
-		Attributes.REGISTRY.register(name, Types.FORMAT);
-		formats.put(name, value);
-	}
+  public void register(String name, FormatFactory value) {
+    Attributes.REGISTRY.register(name, Types.FORMAT);
+    formats.put(name, value);
+  }
 
-	public FormatConfiguration get(String name, String definition, TemplateContext ctx) {
-		FormatFactory f = formats.get(name);
-		if (f == null) {
-			return null;
-		}
-		FormatConfiguration created = f.create(definition, ctx);
-		if (created == null) {
-			throw new SnippetoryException("Format " + name + " doesn't support " + definition);
-		}
-		return created;
-	}
+  public FormatConfiguration get(String name, String definition, TemplateContext ctx) {
+    FormatFactory f = formats.get(name);
+    if (f == null) {
+      return null;
+    }
+    FormatConfiguration created = f.create(definition, ctx);
+    if (created == null) {
+      throw new SnippetoryException("Format " + name + " doesn't support " + definition);
+    }
+    return created;
+  }
 
-	public static final FormatRegistry INSTANCE = new FormatRegistry();
+  public static final FormatRegistry INSTANCE = new FormatRegistry();
 }

@@ -15,6 +15,7 @@
 package org.jproggy.snippetory.spi;
 
 public interface TemplateNode {
-	TemplateNode getParent();
-	String getEncoding();
+  TemplateNode getParent();
+
+  String getEncoding();
 }

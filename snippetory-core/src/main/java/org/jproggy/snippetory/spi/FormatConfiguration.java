@@ -28,9 +28,9 @@ package org.jproggy.snippetory.spi;
  */
 public interface FormatConfiguration {
 
-	/**
-	 * Allows the Configuration to control the instanciation of Format.
-	 * @see StateContainer
-	 */
-	Format getFormat(TemplateNode node);
+  /**
+   * Allows the Configuration to control the instanciation of Format.
+   * @see StateContainer
+   */
+  Format getFormat(TemplateNode node);
 }

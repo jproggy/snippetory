@@ -19,29 +19,29 @@ import org.jproggy.snippetory.engine.spi.CropFormatter.CropFormat;
 import org.jproggy.snippetory.spi.FormatFactory;
 
 public class ShortenFormatter implements FormatFactory {
-	@Override
-	public CropFormat create(String definition, TemplateContext ctx) {
-		int length = 0;
-		String mark = "";
-		boolean num = true;
-		for (char c : definition.toCharArray()) {
-			if (num) {
-				if (c >= '0' && c <= '9') {
-					length = (10 * length) + (c - '0');
-					continue;
-				}
-				num = false;
-			}
-			mark += c;
-		}
-		if (length == 0) {
-			throw new IllegalArgumentException("no length defined");
-		}
-		if (length < mark.length()) {
-			throw new IllegalArgumentException("Suffix too long");
-		}
-		CropFormat cropFormat = new CropFormat(length);
-		if (mark.length() > 0) cropFormat.setMark(mark);
-		return cropFormat;
-	}
+  @Override
+  public CropFormat create(String definition, TemplateContext ctx) {
+    int length = 0;
+    String mark = "";
+    boolean num = true;
+    for (char c : definition.toCharArray()) {
+      if (num) {
+        if (c >= '0' && c <= '9') {
+          length = (10 * length) + (c - '0');
+          continue;
+        }
+        num = false;
+      }
+      mark += c;
+    }
+    if (length == 0) {
+      throw new IllegalArgumentException("no length defined");
+    }
+    if (length < mark.length()) {
+      throw new IllegalArgumentException("Suffix too long");
+    }
+    CropFormat cropFormat = new CropFormat(length);
+    if (mark.length() > 0) cropFormat.setMark(mark);
+    return cropFormat;
+  }
 }
