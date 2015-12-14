@@ -72,12 +72,12 @@ public class SQL implements Encoding, Configurer {
     return "sql";
   }
 
-  public static RowTransformer<Boolean> asBoolean() {
+  public static ColumnTransformer<Boolean> asBoolean() {
     return asBoolean(1);
   }
 
-  public static RowTransformer<Boolean> asBoolean(final int colIndex) {
-    return new RowTransformer<Boolean>() {
+  public static ColumnTransformer<Boolean> asBoolean(final int colIndex) {
+    return new ColumnTransformer<Boolean>(colIndex) {
       @Override
       public Boolean transformRow(ResultSet rs) throws SQLException {
         return rs.getBoolean(colIndex);
@@ -85,8 +85,8 @@ public class SQL implements Encoding, Configurer {
     };
   }
 
-  public static RowTransformer<Boolean> asBoolean(final String colName) {
-    return new RowTransformer<Boolean>() {
+  public static ColumnTransformer<Boolean> asBoolean(final String colName) {
+    return new ColumnTransformer<Boolean>(colName) {
       @Override
       public Boolean transformRow(ResultSet rs) throws SQLException {
         return rs.getBoolean(colName);
@@ -94,12 +94,12 @@ public class SQL implements Encoding, Configurer {
     };
   }
 
-  public static RowTransformer<Integer> asInteger() {
+  public static ColumnTransformer<Integer> asInteger() {
     return asInteger(1);
   }
 
-  public static RowTransformer<Integer> asInteger(final int colIndex) {
-    return new RowTransformer<Integer>() {
+  public static ColumnTransformer<Integer> asInteger(final int colIndex) {
+    return new ColumnTransformer<Integer>(colIndex) {
       @Override
       public Integer transformRow(ResultSet rs) throws SQLException {
         return rs.getInt(colIndex);
@@ -107,8 +107,8 @@ public class SQL implements Encoding, Configurer {
     };
   }
 
-  public static RowTransformer<Integer> asInteger(final String colName) {
-    return new RowTransformer<Integer>() {
+  public static ColumnTransformer<Integer> asInteger(final String colName) {
+    return new ColumnTransformer<Integer>(colName) {
       @Override
       public Integer transformRow(ResultSet rs) throws SQLException {
         return rs.getInt(colName);
@@ -116,12 +116,12 @@ public class SQL implements Encoding, Configurer {
     };
   }
 
-  public static RowTransformer<Long> asLong() {
+  public static ColumnTransformer<Long> asLong() {
     return asLong(1);
   }
 
-  public static RowTransformer<Long> asLong(final int colIndex) {
-    return new RowTransformer<Long>() {
+  public static ColumnTransformer<Long> asLong(final int colIndex) {
+    return new ColumnTransformer<Long>(colIndex) {
       @Override
       public Long transformRow(ResultSet rs) throws SQLException {
         return rs.getLong(colIndex);
@@ -129,8 +129,8 @@ public class SQL implements Encoding, Configurer {
     };
   }
 
-  public static RowTransformer<Long> asLong(final String colName) {
-    return new RowTransformer<Long>() {
+  public static ColumnTransformer<Long> asLong(final String colName) {
+    return new ColumnTransformer<Long>(colName) {
       @Override
       public Long transformRow(ResultSet rs) throws SQLException {
         return rs.getLong(colName);
@@ -142,8 +142,8 @@ public class SQL implements Encoding, Configurer {
     return asDouble(1);
   }
 
-  public static RowTransformer<Double> asDouble(final int colIndex) {
-    return new RowTransformer<Double>() {
+  public static ColumnTransformer<Double> asDouble(final int colIndex) {
+    return new ColumnTransformer<Double>(colIndex) {
       @Override
       public Double transformRow(ResultSet rs) throws SQLException {
         return rs.getDouble(colIndex);
@@ -151,8 +151,8 @@ public class SQL implements Encoding, Configurer {
     };
   }
 
-  public static RowTransformer<Double> asDouble(final String colName) {
-    return new RowTransformer<Double>() {
+  public static ColumnTransformer<Double> asDouble(final String colName) {
+    return new ColumnTransformer<Double>(colName) {
       @Override
       public Double transformRow(ResultSet rs) throws SQLException {
         return rs.getDouble(colName);
@@ -160,12 +160,12 @@ public class SQL implements Encoding, Configurer {
     };
   }
 
-  public static RowTransformer<BigDecimal> asBigDecimal() {
+  public static ColumnTransformer<BigDecimal> asBigDecimal() {
     return asBigDecimal(1);
   }
 
-  public static RowTransformer<BigDecimal> asBigDecimal(final int colIndex) {
-    return new RowTransformer<BigDecimal>() {
+  public static ColumnTransformer<BigDecimal> asBigDecimal(final int colIndex) {
+    return new ColumnTransformer<BigDecimal>(colIndex) {
       @Override
       public BigDecimal transformRow(ResultSet rs) throws SQLException {
         return rs.getBigDecimal(colIndex);
@@ -173,8 +173,8 @@ public class SQL implements Encoding, Configurer {
     };
   }
 
-  public static RowTransformer<BigDecimal> asBigDecimal(final String colName) {
-    return new RowTransformer<BigDecimal>() {
+  public static ColumnTransformer<BigDecimal> asBigDecimal(final String colName) {
+    return new ColumnTransformer<BigDecimal>(colName) {
       @Override
       public BigDecimal transformRow(ResultSet rs) throws SQLException {
         return rs.getBigDecimal(colName);
@@ -182,12 +182,12 @@ public class SQL implements Encoding, Configurer {
     };
   }
 
-  public static RowTransformer<String> asString() {
+  public static ColumnTransformer<String> asString() {
     return asString(1);
   }
 
-  public static RowTransformer<String> asString(final int colIndex) {
-    return new RowTransformer<String>() {
+  public static ColumnTransformer<String> asString(final int colIndex) {
+    return new ColumnTransformer<String>(colIndex) {
       @Override
       public String transformRow(ResultSet rs) throws SQLException {
         return rs.getString(colIndex);
@@ -195,8 +195,8 @@ public class SQL implements Encoding, Configurer {
     };
   }
 
-  public static RowTransformer<String> asString(final String colName) {
-    return new RowTransformer<String>() {
+  public static ColumnTransformer<String> asString(final String colName) {
+    return new ColumnTransformer<String>(colName) {
       @Override
       public String transformRow(ResultSet rs) throws SQLException {
         return rs.getString(colName);
@@ -204,12 +204,12 @@ public class SQL implements Encoding, Configurer {
     };
   }
 
-  public static RowTransformer<Date> asSqlDate() {
+  public static ColumnTransformer<Date> asSqlDate() {
     return asSqlDate(1);
   }
 
-  public static RowTransformer<Date> asSqlDate(final int colIndex) {
-    return new RowTransformer<Date>() {
+  public static ColumnTransformer<Date> asSqlDate(final int colIndex) {
+    return new ColumnTransformer<Date>(colIndex) {
       @Override
       public Date transformRow(ResultSet rs) throws SQLException {
         return rs.getDate(colIndex);
@@ -226,12 +226,12 @@ public class SQL implements Encoding, Configurer {
     };
   }
 
-  public static RowTransformer<Time> asSqlTime() {
+  public static ColumnTransformer<Time> asSqlTime() {
     return asSqlTime(1);
   }
 
-  public static RowTransformer<Time> asSqlTime(final int colIndex) {
-    return new RowTransformer<Time>() {
+  public static ColumnTransformer<Time> asSqlTime(final int colIndex) {
+    return new ColumnTransformer<Time>(colIndex) {
       @Override
       public Time transformRow(ResultSet rs) throws SQLException {
         return rs.getTime(colIndex);
@@ -239,8 +239,8 @@ public class SQL implements Encoding, Configurer {
     };
   }
 
-  public static RowTransformer<Time> asSqlTime(final String colName) {
-    return new RowTransformer<Time>() {
+  public static ColumnTransformer<Time> asSqlTime(final String colName) {
+    return new ColumnTransformer<Time>(colName) {
       @Override
       public Time transformRow(ResultSet rs) throws SQLException {
         return rs.getTime(colName);
@@ -248,12 +248,12 @@ public class SQL implements Encoding, Configurer {
     };
   }
 
-  public static RowTransformer<Timestamp> asSqlTimestamp() {
+  public static ColumnTransformer<Timestamp> asSqlTimestamp() {
     return asSqlTimestamp(1);
   }
 
-  public static RowTransformer<Timestamp> asSqlTimestamp(final int colIndex) {
-    return new RowTransformer<Timestamp>() {
+  public static ColumnTransformer<Timestamp> asSqlTimestamp(final int colIndex) {
+    return new ColumnTransformer<Timestamp>(colIndex) {
       @Override
       public Timestamp transformRow(ResultSet rs) throws SQLException {
         return rs.getTimestamp(colIndex);
@@ -261,8 +261,8 @@ public class SQL implements Encoding, Configurer {
     };
   }
 
-  public static RowTransformer<Timestamp> asSqlTimestamp(final String colName) {
-    return new RowTransformer<Timestamp>() {
+  public static ColumnTransformer<Timestamp> asSqlTimestamp(final String colName) {
+    return new ColumnTransformer<Timestamp>(colName) {
       @Override
       public Timestamp transformRow(ResultSet rs) throws SQLException {
         return rs.getTimestamp(colName);
@@ -325,6 +325,75 @@ public class SQL implements Encoding, Configurer {
         return result;
       }
     };
+  }
+
+  public static abstract class ColumnTransformer<T> implements RowTransformer<T> {
+    private final int index;
+    private final String colName;
+
+    private ColumnTransformer(ColumnTransformer<?> parent) {
+      this.index = parent.index;
+      this.colName = parent.colName;
+    }
+
+    private ColumnTransformer(String colName) {
+      this.index = 0;
+      this.colName = colName;
+    }
+
+    private ColumnTransformer(int index) {
+      this.index = index;
+      this.colName = null;
+    }
+
+    public ColumnTransformer<T> orElse(final ColumnTransformer<T> other) {
+      return new ColumnTransformer<T>(this) {
+        @Override
+        public T transformRow(ResultSet rs) throws SQLException {
+          T val = ColumnTransformer.this.transformRow(rs);
+          if (rs.wasNull()) return other.transformRow(rs);
+          return val;
+        }
+      };
+    }
+
+    public ColumnTransformer<T> orElse(final T defaultVal) {
+      return new ColumnTransformer<T>(this) {
+        @Override
+        public T transformRow(ResultSet rs) throws SQLException {
+          T val = ColumnTransformer.this.transformRow(rs);
+          if (rs.wasNull()) return defaultVal;
+          return val;
+        }
+      };
+    }
+
+    public ColumnTransformer<T> orFail() {
+      return new ColumnTransformer<T>(this) {
+        @Override
+        public T transformRow(ResultSet rs) throws SQLException {
+          T val = ColumnTransformer.this.transformRow(rs);
+          if (rs.wasNull()) throw new NullPointerException("No value found in " + col());
+          return val;
+        }
+      };
+    }
+
+    public ColumnTransformer<String> asString() {
+      return new ColumnTransformer<String>(this) {
+        @Override
+        public String transformRow(ResultSet rs) throws SQLException {
+          T val = ColumnTransformer.this.transformRow(rs);
+          if (rs.wasNull()) return null;
+          return val.toString();
+        }
+      };
+    }
+
+    private String col() {
+      if (colName == null) return "No. " + index;
+      return colName;
+    }
   }
 
 }

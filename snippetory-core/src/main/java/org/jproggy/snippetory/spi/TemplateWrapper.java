@@ -21,6 +21,12 @@ import java.util.Set;
 
 import org.jproggy.snippetory.Template;
 
+/**
+ * A TemplateWrapper is a utility class for conveniently implementing decorators
+ * for templates.
+ * It makes sure, that all templates returned from it's methods are wrapped, too.
+ * The only exception is {@link getImplementation}.
+ */
 public abstract class TemplateWrapper implements Template {
   protected final Template wrapped;
 
@@ -50,6 +56,11 @@ public abstract class TemplateWrapper implements Template {
     return t;
   }
 
+  /**
+   *
+   * @param toBeWrapped
+   * @return
+   */
   protected abstract Template wrap(Template toBeWrapped);
 
   @Override
@@ -110,6 +121,12 @@ public abstract class TemplateWrapper implements Template {
     return wrapped.toString();
   }
 
+  /**
+   * Unwraps all layers of TemplateWrapper around the template.
+   * Be aware, that there might be wrappers, that aren't derived
+   * from TemplateWrapper. Those won't be unwrapped by this implementation.
+   * @return the unwrapped template
+   */
   public Template getImplementation() {
     if (wrapped instanceof TemplateWrapper) {
       return ((TemplateWrapper)wrapped).getImplementation();

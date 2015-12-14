@@ -19,13 +19,15 @@ import java.util.LinkedHashMap;
 import org.jproggy.snippetory.spi.Syntax;
 
 /**
+ * <p>
  * A token is a portion of the template that fulfills a special purpose, view from
  * the perspective of a syntax to parse this Snippetory template. As Snippetory
  * works with a simple syntax scheme there's only a small number of different purposes
  * such a token can fulfill. They are defined in the enum {@link TokenType}.
- * <br />
+ * </p><p>
  * A token consists of the portion of template code it represents, the start position of
  * this code, the token type and some data that's depends on token type.
+ * </p>
  *
  * @author B. Ebertz
  * @see Syntax

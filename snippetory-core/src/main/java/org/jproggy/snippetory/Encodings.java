@@ -24,11 +24,12 @@ import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Encoding;
 
 /**
+ * <p>
  * Provides direct access to the predefined encodings. Even though the
  * functionality of identifying an format and the default implementation for
  * this format are done nearby, the Snippetory template engine always uses
  * implementation, that's registered. This allows to overwrite to default
- * implementation and still use this enum to identify a format. <br />
+ * implementation and still use this enum to identify a format. </p>
  * All default implementations defined here respect <code>NULL</code> as a wild
  * card that never has to be transcoded.
  *
@@ -38,22 +39,23 @@ public enum Encodings implements Encoding {
   /**
    * It's assumed that Snippetory is used in a modern Unicode based
    * environment. Only a minimal escaping is done:
-   * <table width="150">
+   * <table width="150" summary="list of encoding actions">
    * <tr>
    * <td>&lt;</td>
-   * <td>--></td>
+   * <td>--&gt;</td>
    * <td>&amp;lt;</td>
    * </tr>
    * <tr>
    * <td>&amp;</td>
-   * <td>--></td>
-   * <td>&ampamp;</td>
+   * <td>--&gt;</td>
+   * <td>&amp;amp;</td>
    * </tr>
    * </table>
-   * <br />
+   * <p>
    * As XML is a compound format, i.e. it can contain other formats, almost
    * each other will be placed within without any transcoding. Only on plain
    * text the normal escaping is applied.
+   * </p>
    */
   xml {
     @Override

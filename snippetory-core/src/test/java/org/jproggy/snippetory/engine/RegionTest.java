@@ -169,7 +169,7 @@ public class RegionTest {
   }
 
   @Test
-  public void test10000() {
+  public void test10_000() {
     testN(10000);
   }
 
@@ -180,7 +180,7 @@ public class RegionTest {
 
   @Test
   @Ignore
-  public void test1000000() {
+  public void test1000_000() {
     testN(1000000);
   }
 

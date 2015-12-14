@@ -32,7 +32,7 @@ public enum Syntaxes implements SyntaxID {
    * looks like this:
    * <p>
    * <code>
-   * &lt;t:name default='def'>{v:other_name}&lt;/t:name>
+   * &lt;t:name default='def'&gt;{v:other_name}&lt;/t:name&gt;
    * </code>
    * </p>
    * It integrates fine in xml-based formats and is very visible in many others.
@@ -60,11 +60,11 @@ public enum Syntaxes implements SyntaxID {
    * </p>
    * <p>
    * <code>
-   * $name(default='def'){$other_name}name$<br />
-   * <b>some text</b>$variable()<b>more text</b><br />
-   * ${<b>if and only if </b>$variable<b> is set</b>}$<br />
-   * $empty-region{<br />
-   * }$ <br />
+   * $name(default='def'){$other_name}name$<br>
+   * <b>some text</b>$variable()<b>more text</b><br>
+   * ${<b>if and only if </b>$variable<b> is set</b>}$<br>
+   * $empty-region{<br>
+   * }$ <br>
    * /// <i>however, the comment is an additional syntactical element and spans always a complete line</i>
    * </code>
    * </p>
@@ -72,12 +72,13 @@ public enum Syntaxes implements SyntaxID {
   FLUYT,
 
   /**
+   * <p>
    * Is a fluyt syntax, that can be optionally be coated into C-style comments. Start and end tokens of
    * regions as well as locations can be put into comment regions or be prefixed by a double slash.
    * Using and omitting the comment tokens can be mixed in any possible way. Tabs and spaces are allowed
    * between comment tokens and mark up. For locations there is an addition mock element before the closing
-   * attribute bracket. Arbitrary text is demarcated by an inverse comment region (<code>*&#47mock/*</code>).
-   * <p>
+   * attribute bracket. Arbitrary text is demarcated by an inverse comment region (<code>*&#47;mock/*</code>).
+   * </p>
    * <pre>
    * &#47;* $name(default='def'){ *&#47;<b>some text</b>//$other-name}name$
    * <b>some text</b>/*$variable(*&#47;some mock up/*)*&#47;<b>more text</b>
@@ -86,7 +87,6 @@ public enum Syntaxes implements SyntaxID {
    * // }$
    * /// <i>however, the comment does not support additional coating</i>
    * </pre>
-   * </p>
    */
   FLUYT_CC,
 
@@ -94,28 +94,24 @@ public enum Syntaxes implements SyntaxID {
    * Adds tag with a name space specifier 't' for region definition to a full fluyt syntax. This allows
    * more convenient integration within XML editors and is invisible within HTML files. As such it allows
    * HTML templates that are viewable in the browser, while the fluyt syntax allows concise in tag logic.
-   * <p>
    * <pre>
-   * &lt;t:region>
-   * <b>&lt;div</b> ${<b>title="</b>$optional-title<b>"</b>}$ ${<b>style="</b>$optional-style<b>"</b>}$>
-   * <b>&lt;a href="../</b>$productId(enc="url")<b>/details.html"></b>$(msg="view_details")<b>&lt;/a></b>
-   * <b>&lt;/div></b>
-   * &lt;/t:region>
+   * &lt;t:region&gt;
+   * <b>&lt;div</b> ${<b>title="</b>$optional-title<b>"</b>}$ ${<b>style="</b>$optional-style<b>"</b>}$&gt;
+   * <b>&lt;a href="../</b>$productId(enc="url")<b>/details.html"&gt;</b>$(msg="view_details")<b>&lt;/a&gt;</b>
+   * <b>&lt;/div&gt;</b>
+   * &lt;/t:region&gt;
    * </pre>
-   * </p>
    */
   FLUYT_X,
 
   /**
    * This syntax allows template markup, that is invisible to the parser
-   * of many output formats. There are variants based on &lt;!-- --> and on
+   * of many output formats. There are variants based on &lt;!-- --&gt; and on
    * &#47;* *&#47; that can be mixed freely as needed:
-   * <p>
    * <pre>
-   * &#47;*t:name1-->{v:name2}&lt;!--t:name3 default='def'-->&#47;*!t:name3*&#47;
-   * <--!t:name1*&#47;
+   * &#47;*t:name1--&gt;{v:name2}&lt;!--t:name3 default='def'--&gt;&#47;*!t:name3*&#47;
+   * &lt;--!t:name1*&#47;
    * </pre>
-   * </p>
    */
   HIDDEN_BLOCKS;
 

@@ -51,7 +51,7 @@ public class BlockingQueueTest {
     }
   }
 
-  @Test( expected=QueueCloseException.class)
+  @Test( expected=QueueClosedException.class)
   public void testToString() throws Exception {
     ArrayBlockingQueue<String> queue = new ArrayBlockingQueue<>(15);
     Source<String> src3;
@@ -93,14 +93,13 @@ public class BlockingQueueTest {
     Future<Boolean> sendResult = sendEndless(queue, data[0]);
     Future<List<Integer>> result = receive(queue);
     Thread.sleep(5);
-    queue.close();
+    queue.close(false);
     List<Integer> list = result.get();
-    Set<Integer> set = new HashSet<>(list);
-    assertEquals(list.size(), set.size());
+    assertEquals(list.size(), queue.taken());
     try {
       sendResult.get();
     } catch (ExecutionException e) {
-      assertEquals(QueueCloseException.class, e.getCause().getClass());
+      assertEquals(QueueClosedException.class, e.getCause().getClass());
     }
   }
 
@@ -114,7 +113,7 @@ public class BlockingQueueTest {
     Future<List<Integer>> result4 = receive(queue);
     Future<List<Integer>> result5 = receive(queue);
     Thread.sleep(15);
-    queue.close();
+    queue.close(false);
     Set<Integer> set = new HashSet<>();
     addChecked(set, result1.get());
     addChecked(set, result2.get());
@@ -125,7 +124,7 @@ public class BlockingQueueTest {
     try {
       sendResult.get();
     } catch (ExecutionException e) {
-      assertEquals(QueueCloseException.class, e.getCause().getClass());
+      assertEquals(QueueClosedException.class, e.getCause().getClass());
     }
   }
 
@@ -159,9 +158,7 @@ public class BlockingQueueTest {
     assertEquals(DATA_SIZE * 3, queue.taken());
   }
 
-  @Test
-  public void test10_1() throws Exception {
-    BlockingQueue<Integer> queue = new ArrayBlockingQueue<>(15);
+  public void test10_1(BlockingQueue<Integer> queue) throws Exception {
     send(queue, data[0]);
     send(queue, data[1]);
     send(queue, data[2]);
@@ -243,6 +240,26 @@ public class BlockingQueueTest {
     test10_10(new ArrayBlockingQueue<Integer>(10000));
   }
 
+  @Test
+  public void test1_10_10000() throws Exception {
+    test1_10(new ArrayBlockingQueue<Integer>(10000));
+  }
+
+  @Test
+  public void test1_10_1000() throws Exception {
+    test1_10(new ArrayBlockingQueue<Integer>(1000));
+  }
+
+  @Test
+  public void test10_1_1000() throws Exception {
+    test10_1(new ArrayBlockingQueue<Integer>(1000));
+  }
+
+  @Test
+  public void test1_1_1000() throws Exception {
+    test1_1(new ArrayBlockingQueue<Integer>(1000));
+  }
+
   public void test10_10(BlockingQueue<Integer> queue) throws Exception {
     Future<List<Integer>> result1 = receive(queue);
     Future<List<Integer>> result2 = receive(queue);
@@ -264,6 +281,44 @@ public class BlockingQueueTest {
     send(queue, data[7]);
     send(queue, data[8]);
     send(queue, data[9]);
+    monitor(result1, queue);
+    Set<Integer> set = new HashSet<>();
+    addChecked(set, result1.get());
+    addChecked(set, result2.get());
+    addChecked(set, result3.get());
+    addChecked(set, result4.get());
+    addChecked(set, result5.get());
+    addChecked(set, result6.get());
+    addChecked(set, result7.get());
+    addChecked(set, result8.get());
+    addChecked(set, result9.get());
+    addChecked(set, result10.get());
+    assertEquals(DATA_SIZE * 10, set.size());
+    assertEquals(DATA_SIZE * 10, queue.taken());
+  }
+
+  public void test1_1(BlockingQueue<Integer> queue) throws Exception {
+    Future<List<Integer>> result1 = receive(queue);
+    sendAll(queue);
+    monitor(result1, queue);
+    Set<Integer> set = new HashSet<>();
+    addChecked(set, result1.get());
+    assertEquals(DATA_SIZE * 10, set.size());
+    assertEquals(DATA_SIZE * 10, queue.taken());
+  }
+
+  public void test1_10(BlockingQueue<Integer> queue) throws Exception {
+    Future<List<Integer>> result1 = receive(queue);
+    Future<List<Integer>> result2 = receive(queue);
+    Future<List<Integer>> result3 = receive(queue);
+    Future<List<Integer>> result4 = receive(queue);
+    Future<List<Integer>> result5 = receive(queue);
+    Future<List<Integer>> result6 = receive(queue);
+    Future<List<Integer>> result7 = receive(queue);
+    Future<List<Integer>> result8 = receive(queue);
+    Future<List<Integer>> result9 = receive(queue);
+    Future<List<Integer>> result10 = receive(queue);
+    sendAll(queue);
     monitor(result1, queue);
     Set<Integer> set = new HashSet<>();
     addChecked(set, result1.get());
@@ -311,6 +366,22 @@ public class BlockingQueueTest {
     });
   }
 
+  Future<Boolean> sendAll(final BlockingQueue<Integer> target) {
+    return runner.submit(new Callable<Boolean>() {
+      @Override
+      public Boolean call() throws Exception {
+        try (Sink<Integer> sink = target.sink()) {
+          for (Integer[] set : data) {
+            for (Integer n : set) {
+              sink.put(n);
+            }
+          }
+        }
+        return Boolean.TRUE;
+      }
+    });
+  }
+
   Future<Boolean> sendEndless(final BlockingQueue<Integer> target, final Integer[] data) {
     return runner.submit(new Callable<Boolean>() {
       @Override
@@ -332,7 +403,7 @@ public class BlockingQueueTest {
       public List<Integer> call() throws Exception {
         try (Source<Integer> source = data.source()) {
           List<Integer> result = new ArrayList<>();
-          for (Integer n: source) result.add(n);
+          for (final Integer n: source) result.add(n);
           return result;
         }
       }

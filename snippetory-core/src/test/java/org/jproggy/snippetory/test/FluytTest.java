@@ -31,11 +31,26 @@ public class FluytTest {
     Template t = FLUYT.parse("$test");
     assertEquals(" i++; ", t.set("test", " i++; ").toString());
 
+    t = FLUYT.parse("$test$()");
+    assertEquals(" i++; ()", t.set("test", " i++; ").toString());
+
+    t = FLUYT.parse("$test${");
+    assertEquals(" i++; {", t.set("test", " i++; ").toString());
+
+    t = FLUYT.parse("$test$(){");
+    assertEquals(" i++; (){", t.set("test", " i++; ").toString());
+
     t = FLUYT.parse("$test$test$");
     assertEquals(" i++; test$", t.set("test", " i++; ").toString());
 
     t = FLUYT.parse("$test$$test");
     assertEquals(" i++;  i++; ", t.set("test", " i++; ").toString());
+
+    t = FLUYT.parse("$test$$test()$");
+    assertEquals(" i++; $test()$", t.set("test", " i++; ").toString());
+
+    t = FLUYT.parse("$test()$test$");
+    assertEquals("$test() i++; ", t.set("test", " i++; ").toString());
 
     t = FLUYT.parse("$test$$test$");
     assertEquals(" i++;  i++; ", t.set("test", " i++; ").toString());
@@ -323,6 +338,11 @@ public class FluytTest {
     t = FLUYT.parse("$test$(");
     t.set("test", "hallo");
     assertEquals("hallo(", t.toString());
+    assertEquals(1, t.names().size());
+
+    t = FLUYT.parse("$test$(){");
+    t.set("test", "hallo");
+    assertEquals("hallo(){", t.toString());
     assertEquals(1, t.names().size());
 
     t = FLUYT.parse("$test(crop)");

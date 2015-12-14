@@ -21,7 +21,7 @@ package org.jproggy.snippetory.spi;
  * No matter wether implemented directly or via SimpleFormat it allows one to implement
  * sub-attributes by providing setter-methods or by implementing DynamicAttributes.
  * The types supported by those setter methods are  numbers, boolean, enums and String.
- * This can be extended by registering {@link  java.beans.ProperyEditor PropertyEditors} on
+ * This can be extended by registering {@link  java.beans.PropertyEditor PropertyEditors} on
  * {@link java.beans.PropertyEditorManager PropertyEditorManager}
  *
  * @author B. Ebertz
@@ -29,7 +29,7 @@ package org.jproggy.snippetory.spi;
 public interface FormatConfiguration {
 
   /**
-   * Allows the Configuration to control the instanciation of Format.
+   * Allows the Configuration to control the instantiation of Format.
    * @see StateContainer
    */
   Format getFormat(TemplateNode node);

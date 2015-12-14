@@ -11,22 +11,21 @@
 /// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
+<s:FLUYT>
+/// this is a comment
+Hello, $firstName(default="dear customer")!
 
-package org.jproggy.snippetory.sql;
+On $date(date="short") we received the following order:
 
-import java.util.Iterator;
+Shipping address:
+${$firstName }$$lastName
+$address
 
-import org.jproggy.snippetory.sql.spi.RowProcessor;
+$items{
+$amount(number="#,##0")x $article $price(number="##,##0.00' €'") each = $subTotal(number="##,##0.00' €'")
+}items$
+${plus shipping = $shippingCost(number="##,##0.00' €'")}$
+$separator
+Total = $total(number="##,##0.00' €'")
 
-public interface OpenCursor<T> extends Cursor<T> {
-  @Override
-  public OpenIterator<T> iterator();
-
-  public void processRow(RowProcessor proc);
-  public void updateRow();
-
-  public interface OpenIterator<T> extends Iterator<T> {
-    public void processRow(RowProcessor proc);
-    public void updateRow();
-  }
-}
+Thank you for ordering!

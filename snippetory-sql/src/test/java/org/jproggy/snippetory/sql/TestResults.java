@@ -36,4 +36,8 @@ public class TestResults {
     template.get("test3").render();
     return template.toString();
   }
+
+  public static String testHtml() {
+    return data.get("html").toString();
+  }
 }

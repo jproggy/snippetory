@@ -67,7 +67,7 @@ public class CharDataSupport {
    */
   public static String getEncoding(Object chars) {
     if (chars instanceof EncodedData) {
-      ((EncodedData)chars).getEncoding();
+      return ((EncodedData)chars).getEncoding();
     }
     return Encodings.plain.getName();
   }

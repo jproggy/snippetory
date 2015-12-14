@@ -30,12 +30,10 @@ import org.jproggy.snippetory.engine.FormatRegistry;
  * {@code stretch="20" stretch.align="left"}
  * </p>
  * Sub-attributes are implemented as bean properties of the {@link FormatConfiguration} implementation:
- * <p>
- * <pre>
+  * <pre>
  *  enum Alignment {left, right};
  *  public void setAlign(Alignment value) {..
  * </pre>
- * </p>
  * This mechanism provides support for numbers, boolean, enums, and strings.
  * Alternatively, especially when the attributes are not known at build time, this can be done
  * by implementing {@link DynamicAttributes} instead. However, the separation of Format
@@ -44,8 +42,8 @@ import org.jproggy.snippetory.engine.FormatRegistry;
  * both.
  * <h2>Binding data to formats at runtime</h2>
  * In order to bind data to a format at runtime you have to implement {@link VoidFormat} and
- * of course you've to take care for handling the state apropriately. Returning a new instance per
- * call of {@link FormatConfiguration#getInstance} will do the job.
+ * of course you've to take care for handling the state appropriately. Returning a new instance per
+ * call of {@link FormatConfiguration#getFormat} will do the job.
  *
  * @see <a href="http://www.jproggy.org/snippetory/Formats.html">Official documentation on formats</a>
  * @see FormatFactory

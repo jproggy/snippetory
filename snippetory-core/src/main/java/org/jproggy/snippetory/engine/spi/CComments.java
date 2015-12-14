@@ -23,25 +23,26 @@ import org.jproggy.snippetory.engine.RegExSyntax;
 import org.jproggy.snippetory.engine.Token.TokenType;
 
 /**
+ * <p>
  * C_COMMENTS syntax uses C comment areas and C++ line comments to hide template syntax
  * from compilers and interpreters that might be used to validate the templates.
- * <br />
+ * </p><p>
  * The template syntax is based on a leading $ sign and braces to mark the area
  * of impact. On regions the name is repeated at the end, while pure locations
  * simply close the curly bracket.
- * <br />
+ * </p><p>
  * A special variant of the syntax allows mocking:
- * <br />
+ * </p><p>
  * <code style="color:darkblue;">
  * /*${name attrib="value"&#42;/<b>mock</b>/*}&#42;/;
  * </code>
- * <br />
+ * </p><p>
  * The mock will be ignored and will not be written to the output. This supports
  * to keep the template valid for execution or compilation as for the validation
  * environment the mock is visible and substitutes data to be bound.
- * <br />
+ * </p><p>
  * Line breaks are supported whitespace in C_COMMENTS but not within the mock.
- *
+ * </p>
  * @author B. Ebertz
  */
 public class CComments extends RegExSyntax {

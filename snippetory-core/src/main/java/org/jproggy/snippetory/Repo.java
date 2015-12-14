@@ -48,10 +48,11 @@ public class Repo {
 
   /**
    * Short cut method for parsing a string into a template. With default syntax,
-   * null encoding and no locale support. <br />
+   * null encoding and no locale support. 
+   * <p>
    * This is sometimes useful for very short and simple templates replacing
    * a complex string concatenation.
-   *
+   * </p>
    * @deprecated prefer defining a syntax when parsing. I.e. use
    * {@link Syntaxes#parse(CharSequence) Syntaxes.XML_ALIKE.parse(CharSequence)} instead
    */

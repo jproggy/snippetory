@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,21 +49,26 @@ public class DBAccessTest {
   static ConnectionProvider cons;
   static Repository repo;
   static Map<String, String> dbNames = new HashMap<>();
+  String dbType;
 
   @Parameters
   public static Iterable<String[]> dbUrls() {
     new File("target/test/db/sqlite").mkdirs();
-    return Arrays.asList(
-        new String[]{
-            "jdbc:mysql://localhost:3306/snippetory_test",
-            System.getProperty("snippetory.test.dbUser"),
-            System.getProperty("snippetory.test.dbPassword")},
+    List<String[]> result = new ArrayList<String[]>();
+    if (System.getProperty("snippetory.test.dbUser") != null) {
+      result.add(new String[]{
+          "jdbc:mysql://localhost:3306/snippetory_test",
+          System.getProperty("snippetory.test.dbUser"),
+          System.getProperty("snippetory.test.dbPassword")});
+    }
+    result.addAll(Arrays.asList(
             new String[]{"jdbc:derby:target/test/db/derby/snippetory_test;create=true", null, null},
             new String[]{"jdbc:derby:memory:snippetory_test;create=true", null, null},
             new String[]{"jdbc:sqlite:target/test/db/sqlite/snippetory_test.db", null, null},
             new String[]{"jdbc:hsqldb:mem:snippetory_test", null, null},
             new String[]{"jdbc:hsqldb:file:target/test/db/hsql/snippetory_test", null, null}
-        );
+        ));
+    return result;
   }
 
   public DBAccessTest(String url, String user, String pw) throws Exception {
@@ -86,7 +92,7 @@ public class DBAccessTest {
   public void init() throws Exception {
     SqlContext ctx = new SqlContext().conntecions(cons);
     String prodName = cons.getConnection().getMetaData().getDatabaseProductName();
-    String dbType = dbNames.get(prodName);
+    dbType = dbNames.get(prodName);
     ctx.postProcessor(VariantResolver.wrap(dbType));
     ctx.uriResolver(UriResolver.resource("org/jproggy/snippetory/sql"));
     repo = ctx.getRepository("DbAccessRepo.sql");
@@ -152,14 +158,15 @@ public class DBAccessTest {
     assertEquals(3, data.size());
     assertEquals("[Kuno, Karl, Egon]", data.keySet().toString());
     Iterator<Map<String, Object>> i = data.values().iterator();
+    if ("sqlite".equals(dbType)) return; //sqlite has problems with scale of bigdecimal
     Map<String, Object> row1 = i.next();
-    assertEquals(new BigDecimal("22.000").doubleValue(), ((Number)row1.get("price")).doubleValue());
+    assertEquals(new BigDecimal("22.000"), row1.get("price"));
     assertEquals("test2", row1.get("ext_id"));
     Map<String, Object> row2 = i.next();
-    assertEquals(new BigDecimal("101.300").doubleValue(), ((Number)row2.get("price")).doubleValue());
+    assertEquals(new BigDecimal("101.300"), row2.get("price"));
     assertEquals("test4", row2.get("ext_id"));
     Map<String, Object> row3 = i.next();
-    assertEquals(new BigDecimal("123.450").doubleValue(), ((Number)row3.get("price")).doubleValue());
+    assertEquals(new BigDecimal("123.450"), row3.get("price"));
     assertEquals("test6", row3.get("ext_id"));
   }
 
@@ -182,6 +189,14 @@ public class DBAccessTest {
     });
 
     assertEquals(5, count[0]);
+  }
+
+  @Test
+  public void nullhandling() throws Exception {
+    assertEquals("[x]", repo.get("nulls").list(SQL.asString("colNullStr").orElse("x")).toString());
+    assertEquals("something", repo.get("nulls").one(SQL.asString("colStr").orElse("x")));
+    assertEquals("1", repo.get("nulls").one(SQL.asString("colNullStr").orElse(SQL.asInteger("colNum").asString())));
+    assertEquals("<none>", repo.get("nulls").one(SQL.asString("colNullStr").orElse(SQL.asInteger("colNullInt").asString().orElse("<none>"))));
   }
 
   static class ConnectionFab implements ConnectionProvider {

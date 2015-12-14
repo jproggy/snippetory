@@ -188,6 +188,7 @@ public class TemplateContext implements Cloneable {
   static class ToString {
     private ToString() {}
 
+    @SuppressWarnings("resource")
     public static String resource(String name) {
       ClassLoader loader = Thread.currentThread().getContextClassLoader();
       if (loader == null) {
@@ -201,6 +202,7 @@ public class TemplateContext implements Cloneable {
       return stream(stream);
     }
 
+    @SuppressWarnings("resource")
     public static String file(String fileName) {
       try {
         return stream(new FileInputStream(fileName));
@@ -209,6 +211,7 @@ public class TemplateContext implements Cloneable {
       }
     }
 
+    @SuppressWarnings("resource")
     public static String file(File in) {
       try {
         return stream(new FileInputStream(in));

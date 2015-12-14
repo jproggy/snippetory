@@ -16,6 +16,9 @@ package org.jproggy.snippetory.sql;
 
 import org.jproggy.snippetory.Template;
 
+/**
+ * A {@code Repository} is essentially a bunch of statements stored in a file.
+ */
 public class Repository {
   private final Statement repo;
 
@@ -24,8 +27,8 @@ public class Repository {
     this.repo = repo;
   }
 
-  public Statement get(String name) {
-    return repo.get(name);
+  public Statement get(String... name) {
+    return (Statement)repo.get(name);
   }
 
   public Template toTemplate() {

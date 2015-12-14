@@ -29,13 +29,14 @@ public class VariantResolver extends StatementWrapper {
 
   @Override
   protected Statement wrap(Template toBeWrapped) {
+    if (toBeWrapped == null) return null;
     return new VariantResolver(((Statement)toBeWrapped), variant);
   }
 
   @Override
-  public Statement get(String... names) {
+  public Template get(String... names) {
     if (names.length == 1) {
-      Statement statement = super.get(names);
+      Template statement = super.get(names);
       if (statement.regionNames().contains(variant)) {
         statement = statement.get(variant);
       }

@@ -23,27 +23,30 @@ import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Encoding;
 
 /**
+ * <p>
  * The Template is the central interface of the Snippetory Template Engine.
  * A Template has two faces. It's a template or a snippet. It describes how
  * data is bound to create an output. However, it's a repository of snippets as
  * well. This introduces new possibilities of (re-)usage to template code. Any
  * Template can be reused as needed and combined with any other Template. As
- * simple as calling a method.<br />
- * <br />
+ * simple as calling a method.
+ * </p><p>
  * It abstracts from most technical issues of the output by handling several
  * typical issues when generating textual languages interpreted by other machines
  * and presented to humans all over the world. On one hand any target language needs
- * some help to maintain syntactical correctness.<br />
+ * some help to maintain syntactical correctness.
+ * </p><p>
  * {@link Encoding}s are designed to deliver this help by escaping characters or terms to
  * keep their original meaning instead of confusing the target parser or provide
  * possibilities for several types of attacks. As the needs differ and grow additional
- * encodings can be added and existing can be replaced.<br />
+ * encodings can be added and existing can be replaced.
+ * </p><p>
  * To achieve a professional presentation to people of different languages, throughout
  * a mix of transmission languages and technologies you need a quite flexible and
  * robust formatting system. This is provided with a chain of type sensitive
  * formatters applied just before encoding. And as formatting is part of the look of the
- * result it is useful to have it in the template.<br />
- * <br />
+ * result it is useful to have it in the template.
+ * </p><p>
  * The next important aspect of the design of Snippetory is, that logic separated from view.
  * No loops, no conditions, no variable definitions and manipulations in the template.
  * (by the way, we'll talk of variables in some cases, but formally that are just
@@ -52,6 +55,7 @@ import org.jproggy.snippetory.spi.Encoding;
  * in consequence it is easy to take a peace of template and use it where appropriate.
  * This means an abstraction from template storage and organization and allows one to
  * organize the template structure as needed.
+ * </p>
  *
  * @see Repo
  *
@@ -112,19 +116,21 @@ public interface Template extends EncodedData {
   void render();
 
   /**
+   * <p>
    * Appends the textual representation of this Template to a sibling of the location
    * where it was created. (I.e. got from)
    * This will be used when handling several variants of presentations within a list.
    * To avoid sorting of elements by variant it has to be ensured that all variants
-   * are rendered to the same target.<br />
-   * <br />
+   * are rendered to the same target.
+   * </p><p>
    *  A template:
+   * </p>
    *  <pre>
-   *  &lt;ul>
+   *  &lt;ul&gt;
    *   {v:target}
-   *   &lt;t:debit>  &lt;li class="debit"> {v:action} : {v:value} &lt;/li> &lt;/t:debit>
-   *   &lt;t:credit> &lt;li class="credit">{v:action} : {v:value} &lt;/li> &lt;/t:credit>
-   *  &lt;/ul>
+   *   &lt;t:debit&gt;  &lt;li class="debit"&gt; {v:action} : {v:value} &lt;/li&gt; &lt;/t:debit&gt;
+   *   &lt;t:credit&gt; &lt;li class="credit"&gt;{v:action} : {v:value} &lt;/li&gt; &lt;/t:credit&gt;
+   *  &lt;/ul&gt;
    *  </pre>
    *  And the logic:
    *  <pre>
@@ -136,12 +142,14 @@ public interface Template extends EncodedData {
    *     }
    *   }
    *  </pre>
+   * <p>
    * using render() instead of render("target0") in the "debit" line would show all debits
    * first and all credits afterwards. But in the example it's ensured that all data is written
    * to the same location, though, the order stays as defined.
-   *
+   * </p><p>
    * @param siblingName names a child of the same parent. If using the name of this Snippetory
    * it's the same as render() without parameter.
+   * </p>
    */
   void render(String siblingName);
 
@@ -169,10 +177,13 @@ public interface Template extends EncodedData {
   void render(PrintStream out) throws IOException;
 
   /**
+   * <p>
    * The names of all locations, to be accessed by the set operation. Can be used to ensure
    * to access all existing names. This method belongs to the reflective API and as such
-   * is only for special use. <br />
+   * is only for special use.
+   * </p><p>
    * Use with care as it's a more expensive operation.
+   * </p>
    */
   Set<String> names();
 

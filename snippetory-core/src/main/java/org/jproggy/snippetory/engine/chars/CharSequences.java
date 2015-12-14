@@ -22,7 +22,6 @@ import org.jproggy.snippetory.spi.CharDataSupport;
 /**
  * CharSequences is a helper class to implement 'CompoundCharSequences' i.e.
  * CharSequences consisting of several parts.
- * <br />
  *
  * @author B. Ebertz
  */

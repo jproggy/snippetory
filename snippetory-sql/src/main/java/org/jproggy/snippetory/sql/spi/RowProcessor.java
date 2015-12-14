@@ -17,6 +17,23 @@ package org.jproggy.snippetory.sql.spi;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Represents an operation that works on a {@link ResultSet} and returns no
+ * result. Unlike most other functional interfaces, {@code Consumer} is expected
+ * to operate via side-effects.
+ *
+ * <p>This is a functional interface.
+
+ * @author B.Ebertz
+ *
+ */
 public interface RowProcessor {
+
+  /**
+   * Process a single row of a result set.
+   * <p>The caller will call this method repeatedly for each row of the result set, so
+   * iterating within the
+   * method is not necessary.
+   */
   void processRow(ResultSet rs) throws SQLException;
 }

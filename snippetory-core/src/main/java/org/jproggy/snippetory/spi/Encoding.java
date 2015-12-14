@@ -54,26 +54,36 @@ public interface Encoding {
    */
   EncodingRegistry REGISTRY = EncodingRegistry.INSTANCE;
 
-  /**
-   * Sometimes it's possible to combine data encoded in different ways after applying
-   * a special action to one of the strings. This action might be a translation like
-   * wiki syntax to HTML or simply apply default escaping to the data and mix encodings
-   * that way. I.e. when adding HTML to a string-encoded location would be possible.
-   * (Since invention of html_string it`s forbidden anyway.) However,
-   * line breaks or quotation marks would have to be escaped.  <br />
-   * In other cases no action will be needed. String encoded data can be added to HTML
-   * as this is a container format and is able to carry string definition within script-
-   * section for instance. <br />
-   * However, some combinations of encodings are illegal. Especially the plain encoding
-   * can't be combined with others. In those cases an {@link IncompatibleEncodingException}
-   * is thrown.
-   *
-   * @param target result of the action has to be appended to target.
-   * @param value has be transcoded
-   * @param encodingName Value is already encoded with this encoding
-   * @throws IncompatibleEncodingException if the encoding can't be taken as is and can't
-   * be decoded.
-   */
+  	/**
+	 * <p>
+	 * Sometimes it's possible to combine data encoded in different ways after
+	 * applying a special action to one of the strings. This action might be a
+	 * translation like wiki syntax to HTML or simply apply default escaping to
+	 * the data and mix encodings that way. I.e. when adding HTML to a
+	 * string-encoded location would be possible. (Since invention of
+	 * html_string it`s forbidden anyway.) However, line breaks or quotation
+	 * marks would have to be escaped.
+	 * </p>
+	 * <p>
+	 * In other cases no action will be needed. String encoded data can be added
+	 * to HTML as this is a container format and is able to carry string
+	 * definition within script- section for instance.
+	 * </p>
+	 * <p>
+	 * However, some combinations of encodings are illegal. Especially the plain
+	 * encoding can't be combined with others. In those cases an
+	 * {@link IncompatibleEncodingException} is thrown.
+	 * </p>
+	 *
+	 * @param target
+	 *            result of the action has to be appended to target.
+	 * @param value
+	 *            has be transcoded
+	 * @param encodingName
+	 *            Value is already encoded with this encoding
+	 * @throws IncompatibleEncodingException
+	 *             if the encoding can't be taken as is and can't be decoded.
+	 */
   void transcode(Appendable target, CharSequence value, String encodingName) throws IOException,
       IncompatibleEncodingException;
 

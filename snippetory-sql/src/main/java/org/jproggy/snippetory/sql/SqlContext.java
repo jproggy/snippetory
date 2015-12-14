@@ -80,7 +80,7 @@ public class SqlContext {
 
   public Repository getRepository(String uri) {
     if (ctx.getUriResolver() == null) {
-      throw new IllegalStateException("Need UrlResolver to find repository description. Please set one");
+      throw new IllegalStateException("Need UriResolver to find repository description. Please set one");
     }
     StatementImpl stmt = StatementBuilder.parse(ctx, ctx.getUriResolver().resolve(uri, ctx));
     stmt.setConnectionProvider(connections);

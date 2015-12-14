@@ -23,27 +23,30 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
+import java.util.NoSuchElementException;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import org.jproggy.snippetory.engine.Location;
 import org.jproggy.snippetory.engine.Region;
 import org.jproggy.snippetory.engine.SnippetoryException;
 import org.jproggy.snippetory.sql.Cursor;
-import org.jproggy.snippetory.sql.OpenCursor;
 import org.jproggy.snippetory.sql.Statement;
 import org.jproggy.snippetory.sql.spi.ConnectionProvider;
 import org.jproggy.snippetory.sql.spi.RowProcessor;
 import org.jproggy.snippetory.sql.spi.RowTransformer;
+import org.jproggy.snippetory.util.ResourceObserver;
+import org.jproggy.snippetory.util.ResourceObserver.Ref;
 import org.jproggy.snippetory.util.concurrent.ArrayBlockingQueue;
 import org.jproggy.snippetory.util.concurrent.BlockingQueue;
-import org.jproggy.snippetory.util.concurrent.QueueCloseException;
+import org.jproggy.snippetory.util.concurrent.QueueClosedException;
 import org.jproggy.snippetory.util.concurrent.Sink;
 import org.jproggy.snippetory.util.concurrent.Source;
 
 public class StatementImpl extends Region implements Statement, StatementBinder {
   private ConnectionProvider connectionProvider;
-  private static final ExecutorService runner = Executors.newCachedThreadPool();
+  private static final ScheduledExecutorService runner = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 3);
+  private static final ResourceObserver resources = new ResourceObserver(runner);
 
   public StatementImpl(SqlSinks data, Map<String, Region> children) {
     super(data, children);
@@ -133,15 +136,26 @@ public class StatementImpl extends Region implements Statement, StatementBinder 
   }
 
   @Override
-  public <T> OpenCursor<T> directCursor(RowTransformer<T> transformer) {
-     return new DirectCursor<>(transformer);
+  public <T> Cursor<T> directCursor(RowTransformer<T> transformer) {
+    DirectCursor<T> c = new DirectCursor<>(transformer);
+    Ref handle = resources.observe(c, c.sql);
+    c.setHandle(handle);
+    return c;
   }
 
   @Override
   public <T> Cursor<T> readAheadCursor(RowTransformer<T> transformer) {
-    Task<T> task = new Task<>(transformer, new ArrayBlockingQueue<T>(200));
+    final Task<T> task = new Task<>(transformer, new ArrayBlockingQueue<T>(200));
     runner.execute(task);
-    return new ReadAheadCursor<>(task);
+    ReadAheadCursor<T> c = new ReadAheadCursor<>(task);
+    Ref handle = resources.observe(c, new Runnable() {
+      @Override
+      public void run() {
+        task.queue.close(true);
+      }
+    });
+    c.setHandle(handle);
+    return c;
   }
 
   @Override
@@ -193,20 +207,78 @@ public class StatementImpl extends Region implements Statement, StatementBinder 
     return ((StatementBinder)data).bindTo(stmt, offset);
   }
 
-  private class DirectCursor<T> implements OpenCursor<T>, OpenCursor.OpenIterator<T> {
-    private final Connection con;
-    private final PreparedStatement ps;
-    private final ResultSet rs;
+  private class DirectCursor<T> implements Cursor<T>, Iterator<T> {
     private final RowTransformer<T> transformer;
+    private final SqlResources sql;
     private Boolean moveResult;
+    private Ref handle;
 
     public DirectCursor(RowTransformer<T> transformer) {
+      sql = new SqlResources();
+      this.transformer = transformer;
+    }
+
+    public void setHandle(Ref handle) {
+      this.handle = handle;
+    }
+
+    @Override
+    public void close() {
+      if (handle != null) {
+        handle.close();
+        handle = null;
+      }
+      sql.close();
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+      return this ;
+    }
+
+    @Override
+    public boolean hasNext() {
+      try {
+        if (moveResult == null) {
+          moveResult = sql.rs.next();
+        }
+        return moveResult;
+      } catch (SQLException e) {
+        throw new SnippetoryException(e);
+      }
+    }
+
+    @Override
+    public T next() {
+      if (hasNext()) {
+        try {
+          moveResult = null;
+          return transformer.transformRow(sql.rs);
+        } catch (SQLException e) {
+          throw new SnippetoryException(e);
+        }
+      }
+      throw new NoSuchElementException();
+    }
+
+    @Override
+    public void remove() {
+      throw new UnsupportedOperationException();
+    }
+  }
+
+  private class SqlResources implements AutoCloseable, Runnable {
+    private final Connection con;
+    private final PreparedStatement ps;
+    final ResultSet rs;
+
+    public SqlResources() {
       try {
         con = getConnection();
         ps = getStatement(con);
         rs = ps.executeQuery();
-        this.transformer = transformer;
       } catch (SQLException e) {
+        close();
         throw new SnippetoryException(e);
       }
     }
@@ -221,66 +293,24 @@ public class StatementImpl extends Region implements Statement, StatementBinder 
 
     private Exception close(AutoCloseable c, Exception e) {
       try {
-        c.close();
+        if (c != null) c.close();
       } catch (Exception e1) {
         if (e == null) return e1;
         e.addSuppressed(e1);
         return e;
       }
-      return null;
+      return e;
     }
 
     @Override
-    public OpenIterator<T> iterator() {
-      return this ;
-    }
-
-    @Override
-    public boolean hasNext() {
-      try {
-        if (moveResult == null) moveResult = rs.next();
-        return moveResult;
-      } catch (SQLException e) {
-        throw new SnippetoryException(e);
-      }
-    }
-
-    @Override
-    public T next() {
-      try {
-        moveResult = null;
-        return transformer.transformRow(rs);
-      } catch (SQLException e) {
-        throw new SnippetoryException(e);
-      }
-    }
-
-    @Override
-    public void remove() {
-      throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void processRow(RowProcessor proc) {
-      try {
-        proc.processRow(rs);
-      } catch (SQLException e) {
-        throw new SnippetoryException(e);
-      }
-    }
-
-    @Override
-    public void updateRow() {
-      try {
-        rs.updateRow();
-      } catch (SQLException e) {
-        throw new SnippetoryException(e);
-      }
+    public void run() {
+      close();
     }
   }
   private static class ReadAheadCursor<T> implements Cursor<T> {
     private final Task<T> task;
     private final Source<T> source;
+    private Ref handle;
 
     public ReadAheadCursor(Task<T> t) {
       this.task = t;
@@ -289,7 +319,11 @@ public class StatementImpl extends Region implements Statement, StatementBinder 
 
     @Override
     public void close() {
-      task.queue.close();
+      source.close();
+      if (handle != null) {
+        handle.close();
+        handle = null;
+      }
       if (task.throwable != null) {
         throw new SnippetoryException(task.throwable);
       }
@@ -298,6 +332,10 @@ public class StatementImpl extends Region implements Statement, StatementBinder 
     @Override
     public Iterator<T> iterator() {
       return source.iterator();
+    }
+
+    public void setHandle(Ref handle) {
+      this.handle = handle;
     }
   }
 
@@ -320,7 +358,7 @@ public class StatementImpl extends Region implements Statement, StatementBinder 
         while (rs.next()) {
           s.put(transformer.transformRow(rs));
         }
-      } catch (QueueCloseException e) {
+      } catch (QueueClosedException e) {
         // ignored on the assumption that the client closed the queue
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();

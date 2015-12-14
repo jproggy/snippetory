@@ -14,75 +14,48 @@
 
 package org.jproggy.snippetory.util.concurrent;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * A bounded {@linkplain BlockingQueue blocking queue} backed by an
  * array.  This queue orders elements FIFO (first-in-first-out).
- *
- * Despite the similarly named classes in the JDK this queue is designed
- * for simple usage in an Producer / Consumer context. The Producer
- * interacts through a Sink with the queue. The idiom is like this:
- *
- * <pre>
- * try (Sink<E> sink = queue.sink()) {
- *   sink.put(produceEs())
- * } catch (InterruptedException e) {
- *   Thread.currentThread().interrupt();
- * } catch (QueueCloseException e) {
- *   // typically no handling necessary
- * }
- * </pre>
- *
- * The consumer uses a sink like this:
- *
- * <pre>
- *  try (Source<E> s = queue.source()) {
- *    for (E item : s) {
- *      consume(item);
- *    }
- *  }
- * </pre>
- *
- * or on JDK8 this can be short cut even
- *
- * <pre>
- *   queue.consume(item -> consume(item));
- * </pre>
- *
- * Once all sinks or all sources have been shut down the queue will be closed, too.
- * Once a queue is closed all the sink will refuse calls to the put-method by throwing
- * a {@link QueueCloseException}. While the active sources will finish to provide already
- * produced items and then end normally by returning {@code false} on {@code hasNext()}.
- *
- * The queue can be centrally shut down by the close method, providing a controlled way to
- * end the entire Produce / Consume process.
- *
- * There's a counter for already taken item for convenient through put measurement as well
- * as general monitoring of the process.
- *
- * Note: {@code Sink}s and {@code Source}s are not thread safe and thus must no be used by
- * concurrent threads. Of course the queue is designed for multi-threading and each Source
- * and each Sink can be used by a different thread.
  */
 public class ArrayBlockingQueue<E> implements BlockingQueue<E> {
+  private static final long NO_TIMEOUT = -1l;
   private final Object[] data;
+  /** number of items currently in the queue waiting to be taken */
   private int usage;
+  /**
+   * if the queue will not put additional items or allow sinks to be created,
+   * but it's still possible to take data until queue is empty and to register
+   * further sources.
+   */
   private boolean closed = false;
   private final ReentrantLock lock;
   private long taken;
 
-  private int srcIndex;
+  /** refers to next item to be taken in {@code data} */
+  private int srcPointer;
+  /** number of active sources, that are registered at given point in time */
   private int sources;
+  /** used to wait if queue is full and to signal, that data was taken */
   private final Condition notFull;
 
-  private int sinkIndex;
+  /** refers to next item to be put in {@code data} */
+  private int sinkPointer;
+  /** number of active sinks, that are registered at given point in time */
   private int sinks;
+  /** used to wait if queue is empty and to signal, that data was put */
   private final Condition notEmpty;
+
+  private final long regPhaseEnd;
+  private long blockedSince;
 
   private int inc(int i) {
     return (++i >= data.length) ? 0 : i;
@@ -101,6 +74,20 @@ public class ArrayBlockingQueue<E> implements BlockingQueue<E> {
 
   /**
    * Creates an {@code ArrayBlockingQueue} with the given (fixed)
+   * capacity and default access policy. The time out is used to wait for
+   * the first sink to register. The timeout will be used by the
+   * {@code take}-method to wait for the first sink to register.
+   * If no
+   *
+   * @param capacity the capacity of this queue
+   * @throws IllegalArgumentException if {@code capacity < 1}
+   */
+  public ArrayBlockingQueue(int capacity, long timeout, TimeUnit unit) {
+    this(capacity, false, timeout, unit);
+  }
+
+  /**
+   * Creates an {@code ArrayBlockingQueue} with the given (fixed)
    * capacity and the specified access policy.
    *
    * @param capacity the capacity of this queue
@@ -110,11 +97,30 @@ public class ArrayBlockingQueue<E> implements BlockingQueue<E> {
    * @throws IllegalArgumentException if {@code capacity < 1}
    */
   public ArrayBlockingQueue(int capacity, boolean fair) {
+    this(capacity, fair, NO_TIMEOUT, TimeUnit.NANOSECONDS);
+  }
+
+  /**
+   * Creates an {@code ArrayBlockingQueue} with the given (fixed)
+   * capacity and the specified access policy.
+   *
+   * @param capacity the capacity of this queue
+   * @param fair if {@code true} then queue accesses for threads blocked
+   *        on insertion or removal, are processed in FIFO order;
+   *        if {@code false} the access order is unspecified.
+   * @throws IllegalArgumentException if {@code capacity < 1}
+   */
+  public ArrayBlockingQueue(int capacity, boolean fair, long timeout, TimeUnit unit) {
     if (capacity <= 0) throw new IllegalArgumentException();
     this.data = new Object[capacity];
     lock = new ReentrantLock(fair);
     notEmpty = lock.newCondition();
     notFull = lock.newCondition();
+    if (timeout != NO_TIMEOUT) {
+      this.regPhaseEnd = System.nanoTime() + unit.toNanos(timeout);
+    } else {
+      this.regPhaseEnd = NO_TIMEOUT;
+    }
   }
 
   @Override
@@ -127,20 +133,20 @@ public class ArrayBlockingQueue<E> implements BlockingQueue<E> {
    * Call only when holding lock.
    */
   private void insert(E x) {
-    data[sinkIndex] = Objects.requireNonNull(x);
-    sinkIndex = inc(sinkIndex);
-    ++usage;
+    data[sinkPointer] = Objects.requireNonNull(x);
+    sinkPointer = inc(sinkPointer);
+    if (++usage == data.length) blockedSince = System.currentTimeMillis();
     notEmpty.signal();
   }
 
-  private void put(E e) throws InterruptedException, QueueCloseException {
+  private void put(E e) throws InterruptedException, QueueClosedException {
     final ReentrantLock lock = this.lock;
     lock.lockInterruptibly();
     try {
-      if (closed) throw new QueueCloseException();
+      if (closed) throw new QueueClosedException();
       while (usage == data.length) {
         notFull.await();
-        if (closed) throw new QueueCloseException();
+        if (closed) throw new QueueClosedException();
       }
       insert(e);
     } finally {
@@ -160,10 +166,10 @@ public class ArrayBlockingQueue<E> implements BlockingQueue<E> {
   private E extract() {
     final Object[] items = this.data;
     @SuppressWarnings("unchecked")
-    E x = (E)(items[srcIndex]);
-    items[srcIndex] = null;
-    srcIndex = inc(srcIndex);
-    --usage;
+    E x = (E)(items[srcPointer]);
+    items[srcPointer] = null;
+    srcPointer = inc(srcPointer);
+    if (--usage == 0) blockedSince = System.currentTimeMillis();
     ++taken;
     notFull.signal();
     return x;
@@ -174,6 +180,14 @@ public class ArrayBlockingQueue<E> implements BlockingQueue<E> {
     final ReentrantLock lock = this.lock;
     lock.lockInterruptibly();
     try {
+      if (isVirgin()) {
+        long waitTime = waitNanos();
+        while (waitTime > 0 && notEmpty.awaitNanos(waitTime) <= 0) {
+          if (usage > 0) return extract();
+          waitTime  =  waitNanos();
+        }
+      }
+      if (sinks == 0 && regPhaseEnd != NO_TIMEOUT) shutDown();
       while (usage == 0) {
         if (closed) return null;
         notEmpty.await();
@@ -184,17 +198,29 @@ public class ArrayBlockingQueue<E> implements BlockingQueue<E> {
     }
   }
 
+  private long waitNanos() {
+    return regPhaseEnd - System.nanoTime();
+  }
+
+  /**
+   *
+   */
+  private boolean isVirgin() {
+    return sinks == 0 && !closed && taken == 0 && usage == 0;
+  }
+
   @Override
-  public void consume(Consumer<E> consumer) {
+  public void consume(Consumer<E> consumer) throws InterruptedException {
     try (Source<E> src = source()) {
       for (E item : src) {
-        consumer.consume(item);
+        consumer.accept(item);
       }
+      if (Thread.interrupted()) throw new InterruptedException();
     }
   }
 
   @Override
-  public long capacity() {
+  public long length() {
     final ReentrantLock lock = this.lock;
     lock.lock();
     try {
@@ -227,11 +253,47 @@ public class ArrayBlockingQueue<E> implements BlockingQueue<E> {
   }
 
   @Override
-  public void close() {
+  public Date blockedSince() {
     final ReentrantLock lock = this.lock;
     lock.lock();
     try {
-      shutDown();
+      if (usage == 0 || usage == data.length) {
+        return new Date(blockedSince);
+      }
+      return null;
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  @Override
+  public long numberOfSinks() {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+      return sinks;
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  @Override
+  public long numberOfSources() {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+      return sources;
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  @Override
+  public void close(boolean immediately) {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+      if (immediately) shutDownNow(); else shutDown();
     } finally {
       lock.unlock();
     }
@@ -249,7 +311,15 @@ public class ArrayBlockingQueue<E> implements BlockingQueue<E> {
   }
 
   private void shutDown() {
+    if (closed) return;
     closed = true;
+    notEmpty.signalAll();
+  }
+
+  private void shutDownNow() {
+    if (closed && usage == 0) return;
+    closed = true;
+    usage = 0;
     notEmpty.signalAll();
   }
 
@@ -263,7 +333,7 @@ public class ArrayBlockingQueue<E> implements BlockingQueue<E> {
       int count = usage;
       StringBuilder out = new StringBuilder();
       out.append('[');
-      for (int i = srcIndex;; i = inc(i)) {
+      for (int i = srcPointer;; i = inc(i)) {
         Object e = data[i];
         out.append(e == this ? "(this Queue)" : e);
         if (--count == 0) return out.append(']').toString();
@@ -276,9 +346,10 @@ public class ArrayBlockingQueue<E> implements BlockingQueue<E> {
 
   private class SinkImpl implements Sink<E> {
     private boolean closed;
+
     public SinkImpl() {
       if (ArrayBlockingQueue.this.isClosed()) {
-        throw new QueueCloseException();
+        throw new QueueClosedException();
       }
       final ReentrantLock lock = ArrayBlockingQueue.this.lock;
       lock.lock();
@@ -290,7 +361,7 @@ public class ArrayBlockingQueue<E> implements BlockingQueue<E> {
     }
 
     @Override
-    public void put(E e) throws InterruptedException, QueueCloseException {
+    public void put(E e) throws InterruptedException, QueueClosedException {
       if (closed) throw new IllegalStateException("This sink is already closed");
       ArrayBlockingQueue.this.put(e);
     }
@@ -303,7 +374,9 @@ public class ArrayBlockingQueue<E> implements BlockingQueue<E> {
         if (closed) return;
         --ArrayBlockingQueue.this.sinks;
         if (ArrayBlockingQueue.this.sinks <= 0) {
-          ArrayBlockingQueue.this.shutDown();
+          if (!(isVirgin() && waitNanos() > 0)){
+            ArrayBlockingQueue.this.shutDown();
+          }
           closed = true;
         }
       } finally {
@@ -314,10 +387,14 @@ public class ArrayBlockingQueue<E> implements BlockingQueue<E> {
 
   private class SourceImpl implements Source<E> {
     private boolean closed = false;
+
     public SourceImpl() {
       final ReentrantLock lock = ArrayBlockingQueue.this.lock;
       lock.lock();
       try {
+        if (ArrayBlockingQueue.this.closed && usage == 0) {
+          throw new QueueClosedException();
+        }
         ++sources;
       } finally {
         lock.unlock();

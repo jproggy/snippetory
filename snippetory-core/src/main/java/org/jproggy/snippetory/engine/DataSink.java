@@ -30,15 +30,17 @@ public interface DataSink {
   void set(String name, Object value);
 
   /**
+   *  <p>
    * Appends a String representation of the value to all variables with given name.
    * The exact value might differ according to different meta data associated with
    * each of these variables. Eventually set or appended data is kept and new data
    * is appended behind the last character.
+   * </p>
+   *  <p>
    * All matching formats and encodings are used. However, there is some
    * special handling for the interface (@link EncodedData). In this case the
    * provided encoding in determined to calculate the correct transcoding.
-   *
-   * @return the Template itself
+   * </p>
    */
   void append(String name, Object value);
 

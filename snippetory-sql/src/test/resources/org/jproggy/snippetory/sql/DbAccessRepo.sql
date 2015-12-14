@@ -38,6 +38,7 @@ CREATE TABLE simple (
   ext_id VARCHAR(45) NOT NULL);
 -- }$
 -- }$
+
 -- $fillSimpleTable{
 INSERT INTO simple 
 (name, price, ext_id) 
@@ -83,3 +84,15 @@ AND name = :name
 -- }mysql$
 -- }$
 
+-- $nulls{
+SELECT 
+  count(*),
+  cast(null as VARCHAR(255)) AS colNullStr, 
+  cast(null as Integer) AS colNullInt, 
+  'something' AS colStr, 
+  1 AS colNum 
+FROM simple
+-- $mysql{
+SELECT null AS colNullStr, null AS colNullInt, 'something' AS colStr, 1 AS colNum
+-- }$
+-- }$

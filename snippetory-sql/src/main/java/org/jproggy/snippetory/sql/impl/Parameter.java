@@ -34,6 +34,7 @@ import org.jproggy.snippetory.engine.Location;
 import org.jproggy.snippetory.engine.Metadata;
 import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Format;
+import org.jproggy.snippetory.spi.TemplateWrapper;
 
 public class Parameter extends Location implements StatementBinder {
   private List<Object> values = new ArrayList<Object>();
@@ -65,6 +66,11 @@ public class Parameter extends Location implements StatementBinder {
       value = "?";
     } else if (mine(name) && value instanceof StatementBinder) {
       values.add(value);
+    } else if (mine(name) && value instanceof TemplateWrapper) {
+      value = ((TemplateWrapper)value).getImplementation();
+      if (value instanceof StatementBinder) {
+        values.add(value);
+      }
     }
     return value;
   }
