@@ -49,8 +49,6 @@ public interface VoidFormat extends Format {
 
   /**
    * Provide a representation
-   * @param node
-   * @return
    */
   Object formatVoid(TemplateNode node);
 

@@ -71,10 +71,13 @@ public interface DataSink {
   void clear();
 
   /**
-   *
-   * @return
+   * The data of this sink represented as a char sequence including already set parameters.
+   * If the sink implements {@link CharSequence} it might just return {@code this} for sake of performance.
    */
   CharSequence format();
 
+  /**
+   * Acquire the sub sub-template selected by its name
+   */
   Region getChild(String name);
 }
