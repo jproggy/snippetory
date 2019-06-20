@@ -35,6 +35,7 @@ import org.jproggy.snippetory.engine.Metadata;
 import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.TemplateWrapper;
+import org.jproggy.snippetory.sql.SQL;
 
 public class Parameter extends Location implements StatementBinder {
   private List<Object> values = new ArrayList<Object>();
@@ -61,12 +62,17 @@ public class Parameter extends Location implements StatementBinder {
   }
 
   protected Object handleValue(String name, Object value) {
-    if (mine(name) && !(value instanceof EncodedData)) {
+    if (!mine(name)) return value;
+    // binding null to statement requires knowledge of sql type.
+    // As that's not available just use literal instead
+    // stmt.getParameterMetaData().getParameterType(offset) failed on first try
+    if (value == null) return SQL.markAsSql("NULL");  
+    if (!(value instanceof EncodedData)) {
       values.add(format(this, value));
       value = "?";
-    } else if (mine(name) && value instanceof StatementBinder) {
+    } else if (value instanceof StatementBinder) {
       values.add(value);
-    } else if (mine(name) && value instanceof TemplateWrapper) {
+    } else if (value instanceof TemplateWrapper) {
       value = ((TemplateWrapper)value).getImplementation();
       if (value instanceof StatementBinder) {
         values.add(value);
@@ -89,6 +95,8 @@ public class Parameter extends Location implements StatementBinder {
 
   private boolean isSupported(Object val) {
     if (val instanceof String) {
+      return true;
+    } else if (val instanceof Boolean) {
       return true;
     } else if (val instanceof BigDecimal) {
       return true;
@@ -128,6 +136,8 @@ public class Parameter extends Location implements StatementBinder {
       return true;
     } else if (val instanceof byte[]) {
       return true;
+    } else if (val == null) {
+      return true;
     }
     return false;
   }
@@ -138,8 +148,12 @@ public class Parameter extends Location implements StatementBinder {
       if (val instanceof StatementBinder) {
         offset = ((StatementBinder)val).bindTo(stmt, offset);
         continue;
+      } else if (val == null) {
+          stmt.setNull(offset, stmt.getParameterMetaData().getParameterType(offset));
       } else if (val instanceof String) {
-        stmt.setString(offset, (String)val);
+          stmt.setString(offset, (String)val);
+      } else if (val instanceof Boolean) {
+        stmt.setBoolean(offset, (Boolean)val);
       } else if (val instanceof BigDecimal) {
         stmt.setBigDecimal(offset, (BigDecimal)val);
       } else if (val instanceof Byte) {
