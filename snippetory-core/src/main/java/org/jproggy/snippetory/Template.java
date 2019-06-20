@@ -17,6 +17,7 @@ package org.jproggy.snippetory;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Writer;
+import java.util.Collections;
 import java.util.Set;
 
 import org.jproggy.snippetory.spi.EncodedData;
@@ -63,6 +64,87 @@ import org.jproggy.snippetory.spi.Encoding;
  */
 
 public interface Template extends EncodedData {
+    
+    Template NONE = new Template()
+    {
+        
+        @Override
+        public CharSequence toCharSequence()
+        {
+            return "";
+        }
+        
+        @Override
+        public String getEncoding()
+        {
+            return Encodings.NULL.name();
+        }
+        
+        @Override
+        public Template set(String name, Object value)
+        {
+            return this;
+        }
+        
+        @Override
+        public void render(PrintStream out) throws IOException
+        {
+        }
+        
+        @Override
+        public void render(Writer out) throws IOException
+        {
+        }
+        
+        @Override
+        public void render(Template target, String name)
+        {
+        }
+        
+        @Override
+        public void render(String siblingName)
+        {
+        }
+        
+        @Override
+        public void render()
+        {
+        }
+        
+        @Override
+        public Set<String> regionNames()
+        {
+            return Collections.emptySet();
+        }
+        
+        @Override
+        public Set<String> names()
+        {
+            return Collections.emptySet();
+        }
+        
+        @Override
+        public Template get(String... name)
+        {
+            return this;
+        }
+        
+        @Override
+        public Template clear()
+        {
+            return this;
+        }
+        
+        @Override
+        public Template append(String name, Object value)
+        {
+            return this;
+        }
+        
+        public boolean isPresent() {
+          return false;
+        };
+    };
 
   /**
    * Get further elements out of this repository.
@@ -192,4 +274,11 @@ public interface Template extends EncodedData {
    * is a subset of the names delivered by <code>names()</code>.
    */
   Set<String> regionNames();
+  
+  /**
+   * Check whether this instance represents a real template and not the 'null' template.
+   *
+   * @return {@code false} if this instance isn't a real template but rather a null object
+   */
+  public boolean isPresent();
 }

@@ -57,13 +57,13 @@ public class Region implements Template, Cloneable, CharSequence, SelfAppender {
   }
 
   @Override
-  public Region get(String... path) {
+  public Template get(String... path) {
     if (path.length == 0) return cleanCopy();
-    Region t = getChild(path[0]);
-    if (t == null) return null;
+    Template t = getChild(path[0]);
+    if (t == null) return Template.NONE;
     for (int i = 1; i < path.length; i++) {
       t = t.get(path[i]);
-      if (t == null) return null;
+      if (t == null) return Template.NONE;
     }
     return t;
   }
@@ -169,6 +169,11 @@ public class Region implements Template, Cloneable, CharSequence, SelfAppender {
   @Override
   public Set<String> regionNames() {
     return children.keySet();
+  }
+  
+  @Override
+  public boolean isPresent() {
+    return true;
   }
 
   protected Template getParent() {
