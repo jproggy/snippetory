@@ -174,6 +174,7 @@ public class RepositoryTest {
     verify(stmt).setInt(2, 2);
   }
 
+  @SuppressWarnings("resource")
   protected ConnectionProvider connectionProvider() throws Exception {
     ResultSet rs = mock(ResultSet.class);
     stmt = mock(PreparedStatement.class);

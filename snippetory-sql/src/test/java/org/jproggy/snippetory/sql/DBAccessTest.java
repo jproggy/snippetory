@@ -56,10 +56,14 @@ public class DBAccessTest {
     new File("target/test/db/sqlite").mkdirs();
     List<String[]> result = new ArrayList<String[]>();
     if (System.getProperty("snippetory.test.dbUser") != null) {
-      result.add(new String[]{
-          "jdbc:mysql://localhost:3306/snippetory_test",
-          System.getProperty("snippetory.test.dbUser"),
-          System.getProperty("snippetory.test.dbPassword")});
+        result.add(new String[]{
+            "jdbc:mysql://localhost:3306/snippetory_test",
+            System.getProperty("snippetory.test.dbUser"),
+            System.getProperty("snippetory.test.dbPassword")});
+        result.add(new String[]{
+            "jdbc:postgresql://localhost:5432/snippetory_test",
+            System.getProperty("snippetory.test.dbUser"),
+            System.getProperty("snippetory.test.dbPassword")});
     }
     result.addAll(Arrays.asList(
             new String[]{"jdbc:derby:target/test/db/derby/snippetory_test;create=true", null, null},
@@ -83,7 +87,7 @@ public class DBAccessTest {
     dbNames.put("Microsoft SQL Server", "mssql");
     dbNames.put("MySQL", "mysql");
     dbNames.put("Oracle", "oracle");
-    dbNames.put("PostgreSQL", "postgre");
+    dbNames.put("PostgreSQL", "postgres");
     dbNames.put("Apache Derby", "derby");
     dbNames.put("SQLite", "sqlite");
   }
@@ -103,17 +107,20 @@ public class DBAccessTest {
   }
 
   boolean hasSimpleTable(SqlContext ctx) throws Exception {
-    try (ResultSet rs = cons.getConnection().getMetaData().getTables(null, "%", "SIMPLE", null)) {
-      return rs.next();
+    try (ResultSet rs = cons.getConnection().getMetaData().getTables(null, "%", "%", null)) {
+      while (rs.next()) {
+        if ("simple".equalsIgnoreCase(rs.getString("TABLE_NAME"))) return true;
+      }
     }
+    return false;
   }
 
   @Test
   public void testInsDel() throws Exception {
     Statement insert = repo.get("insertSimpleTable");
     insert.get("values").set("name", "test1").set("price", 100.3).set("ext_id", "testinsert").render();
-    insert.get("values").set("name", "test3").set("price", 101.3).set("ext_id", "testinsert").render();
-    insert.get("values").set("name", "test5").set("price", 103.3).set("ext_id", "testinsert").render();
+    insert.get("values").set("name", "test3").set("price", null).set("ext_id", "testinsert").render();
+    insert.get("values").set("name", null).set("price", 103.3).set("ext_id", "testinsert").render();
     assertEquals(3, insert.executeUpdate());
     assertEquals(3, repo.get("deleteSimpleTable").set("ext_id", "testinsert").executeUpdate());
   }
@@ -145,6 +152,13 @@ public class DBAccessTest {
   }
 
   @Test
+  public void testName() throws Exception {
+      Statement stmt = repo.get("selectSimpleTable");
+      stmt.get("name").set("name", null).render();
+      assertEquals(0, stmt.list(SQL.asInteger()).size());
+  }
+
+  @Test
   public void testList() throws Exception {
     List<String> data = repo.get("selectSimpleTable").set("ext_id", "test").list(SQL.asString("name"));
     assertEquals(3, data.size());
@@ -172,7 +186,9 @@ public class DBAccessTest {
 
   @Test
   public void testOne() throws Exception {
-    Double data = repo.get("selectSimpleTable").set("name", "Karl").one(SQL.asDouble("price"));
+    Statement stmt = repo.get("selectSimpleTable");
+    stmt.get("name").set("name", "Karl").render();
+    Double data = stmt.one(SQL.asDouble("price"));
     assertEquals(101.300, data);
   }
 

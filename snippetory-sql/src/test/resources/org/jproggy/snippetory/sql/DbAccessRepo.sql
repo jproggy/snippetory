@@ -15,16 +15,16 @@
 -- $createSimpleTable{
 CREATE TABLE simple (
   simple_id INT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-  name VARCHAR(255) NOT NULL,
-  price DECIMAL(10,3) NOT NULL,
+  name VARCHAR(255),
+  price DECIMAL(10,3),
   ext_id VARCHAR(45) NOT NULL,
   PRIMARY KEY (simple_id))
   
 -- $mysql{
 CREATE TABLE simple (
   simple_id INT NOT NULL AUTO_INCREMENT,
-  name VARCHAR(255) NOT NULL,
-  price DECIMAL(10,3) NOT NULL,
+  name VARCHAR(255),
+  price DECIMAL(10,3),
   ext_id VARCHAR(45) NOT NULL,
   PRIMARY KEY (simple_id),
   INDEX ext_id (ext_id));
@@ -33,9 +33,18 @@ CREATE TABLE simple (
 -- $sqlite{
 CREATE TABLE simple (
   simple_id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name VARCHAR(255) NOT NULL,
-  price DECIMAL(10,3) NOT NULL,
+  name VARCHAR(255),
+  price DECIMAL(10,3),
   ext_id VARCHAR(45) NOT NULL);
+-- }$
+
+-- $postgres{
+CREATE TABLE simple (
+  simple_id serial NOT NULL,
+  name VARCHAR(255),
+  price DECIMAL(10,3),
+  ext_id VARCHAR(45) NOT NULL,
+  PRIMARY KEY (simple_id));
 -- }$
 -- }$
 
@@ -69,20 +78,13 @@ SELECT * FROM simple
 WHERE 1=1
 -- ${
 AND ext_id like :ext_id || '%'
--- }$ ${
-AND name = :name
--- }$
-
 -- $mysql{
-SELECT * FROM simple
-WHERE 1=1
--- ${
 AND ext_id like concat(:ext_id, '%')
--- }$ ${
-AND name = :name
 -- }$
--- }mysql$
+-- }$ $name{
+AND name /*$(default="IS NULL"){ */ = :name -- }$
 -- }$
+-- }selectSimpleTable$
 
 -- $nulls{
 SELECT 

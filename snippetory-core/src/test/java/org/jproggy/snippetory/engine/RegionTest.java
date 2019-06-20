@@ -126,7 +126,9 @@ public class RegionTest {
       }
       week.render();
     }
-    month.render(new FileWriter("target/calendarOut.html"));
+    FileWriter out = new FileWriter("target/calendarOut.html");
+    month.render(out);
+    out.close();
   }
 
   private Calendar getStart(Date day) {
@@ -199,6 +201,7 @@ public class RegionTest {
       }
       NUL nul = new NUL();
       template.render(nul);
+      nul.close();
     } catch (IOException e) {
       throw new RuntimeException(e);
     } finally {
