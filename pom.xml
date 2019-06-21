@@ -40,15 +40,21 @@
 		<developerConnection>scm:svn:https://svn.code.sf.net/p/snippetory/code/trunk</developerConnection>
 		<connection>scm:svn:svn://svn.code.sf.net/p/snippetory/code/trunk snippetory-code</connection>
 	</scm>
-	<distributionManagement>
-		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
+	<repositories>
 		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<id>gitlab-maven</id>
+			<url>https://gitlab.com/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
 		</repository>
+	</repositories>
+	<distributionManagement>
+		<repository>
+			<id>gitlab-maven</id>
+			<url>https://gitlab.com/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
+		</repository>
+		<snapshotRepository>
+			<id>gitlab-maven</id>
+			<url>https://gitlab.com/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
+		</snapshotRepository>
 	</distributionManagement>
 	<developers>
 		<developer>
