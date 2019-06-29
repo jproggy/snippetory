@@ -18,6 +18,7 @@ CREATE TABLE simple (
   name VARCHAR(255),
   price DECIMAL(10,3),
   ext_id VARCHAR(45) NOT NULL,
+  xx TIME,
   PRIMARY KEY (simple_id))
   
 -- $mysql{
@@ -26,6 +27,7 @@ CREATE TABLE simple (
   name VARCHAR(255),
   price DECIMAL(10,3),
   ext_id VARCHAR(45) NOT NULL,
+  xx TIME,
   PRIMARY KEY (simple_id),
   INDEX ext_id (ext_id));
 -- }$
@@ -35,7 +37,8 @@ CREATE TABLE simple (
   simple_id INTEGER PRIMARY KEY AUTOINCREMENT,
   name VARCHAR(255),
   price DECIMAL(10,3),
-  ext_id VARCHAR(45) NOT NULL);
+  ext_id VARCHAR(45) NOT NULL,
+  xx TIME);
 -- }$
 
 -- $postgres{
@@ -44,13 +47,14 @@ CREATE TABLE simple (
   name VARCHAR(255),
   price DECIMAL(10,3),
   ext_id VARCHAR(45) NOT NULL,
+  xx TIME,
   PRIMARY KEY (simple_id));
 -- }$
 -- }$
 
 -- $fillSimpleTable{
 INSERT INTO simple 
-(name, price, ext_id) 
+(name, price, ext_id)
 VALUES 
 ('Horst', 1.0, 'sale1'),
 ('Kuno', 22.0, 'test2'),
@@ -61,9 +65,9 @@ VALUES
   
 -- $insertSimpleTable{
 INSERT INTO simple 
-(name, price, ext_id) 
+(name, price, ext_id, xx)
 VALUES 
-/* $values(delimiter=",\n"){*/(:name, :price, :ext_id)/*}$*/
+/* $values(delimiter=",\n"){*/(:name, :price, :ext_id, :xx)/*}$*/
 -- }$
 
 -- $deleteSimpleTable{
@@ -74,7 +78,7 @@ WHERE ext_id = :ext_id
 -- }$
 
 -- $selectSimpleTable{
-SELECT * FROM simple
+SELECT simple_id, name, price, ext_id, xx FROM simple
 WHERE 1=1
 -- ${
 AND ext_id like :ext_id || '%'

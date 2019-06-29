@@ -27,6 +27,7 @@ import java.sql.SQLException;
 import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,6 +117,8 @@ public class Parameter extends Location implements StatementBinder {
       return true;
     } else if (val instanceof Time) {
       return true;
+    } else if (val instanceof LocalTime) {
+      return true;
     } else if (val instanceof Timestamp) {
       return true;
     } else if (val instanceof java.util.Date) {
@@ -172,6 +175,8 @@ public class Parameter extends Location implements StatementBinder {
         stmt.setDate(offset, (Date)val);
       } else if (val instanceof Time) {
         stmt.setTime(offset, (Time)val);
+      } else if (val instanceof LocalTime) {
+        stmt.setTime(offset, Time.valueOf((LocalTime)val));
       } else if (val instanceof Timestamp) {
         stmt.setTimestamp(offset, (Timestamp)val);
       } else if (val instanceof java.util.Date) {
