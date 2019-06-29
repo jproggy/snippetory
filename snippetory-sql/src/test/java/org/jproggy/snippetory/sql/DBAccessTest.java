@@ -23,6 +23,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -118,10 +122,15 @@ public class DBAccessTest {
   @Test
   public void testInsDel() throws Exception {
     Statement insert = repo.get("insertSimpleTable");
-    insert.get("values").set("name", "test1").set("price", 100.3).set("ext_id", "testinsert").render();
-    insert.get("values").set("name", "test3").set("price", null).set("ext_id", "testinsert").render();
-    insert.get("values").set("name", null).set("price", 103.3).set("ext_id", "testinsert").render();
+    LocalTime now = LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
+    insert.get("values").set("name", "test1").set("price", 100.3).set("ext_id", "testinsert").set("xx", now).render();
+    insert.get("values").set("name", "test3").set("price", null).set("ext_id", "testinsert").set("xx", LocalTime.of(0,0)).render();
+    insert.get("values").set("name", null).set("price", 103.3).set("ext_id", "testinsert").set("xx", LocalTime.MIDNIGHT).render();
     assertEquals(3, insert.executeUpdate());
+    List<Time> data = repo.get("selectSimpleTable").set("ext_id", "testinsert").list(rs -> rs.getTime("xx"));
+    assertEquals(data.get(0).getClass().getName(), Time.valueOf(now), data.get(0));
+    assertEquals(Time.valueOf(LocalTime.of(0,0)), data.get(1));
+    assertEquals(Time.valueOf(LocalTime.MIDNIGHT), data.get(2));
     assertEquals(3, repo.get("deleteSimpleTable").set("ext_id", "testinsert").executeUpdate());
   }
 
@@ -131,7 +140,7 @@ public class DBAccessTest {
     try ( Cursor<Map<String, Object>> data = repo.get("selectSimpleTable").directCursor(SQL.asMap());) {
       for (Map<String, Object> item: data) {
         count++;
-        assertEquals(4, item.size());
+        assertEquals(5, item.size());
         assertEquals(Integer.class, item.get("simple_id").getClass());
       }
     }
@@ -144,7 +153,7 @@ public class DBAccessTest {
     try ( Cursor<Object[]> data = repo.get("selectSimpleTable").readAheadCursor(SQL.asObjects());) {
       for (Object[] item: data) {
         count++;
-        assertEquals(4, item.length);
+        assertEquals(5, item.length);
         assertEquals(Integer.class, item[0].getClass());
       }
     }
