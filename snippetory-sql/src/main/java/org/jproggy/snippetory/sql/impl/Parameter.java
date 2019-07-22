@@ -39,7 +39,7 @@ import org.jproggy.snippetory.spi.TemplateWrapper;
 import org.jproggy.snippetory.sql.SQL;
 
 public class Parameter extends Location implements StatementBinder {
-  private List<Object> values = new ArrayList<Object>();
+  private List<Object> values = new ArrayList<>();
 
   public Parameter(Location parent, Metadata metadata) {
     super(parent, metadata);

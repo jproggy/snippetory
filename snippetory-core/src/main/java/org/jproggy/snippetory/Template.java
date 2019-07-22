@@ -58,99 +58,84 @@ import org.jproggy.snippetory.spi.Encoding;
  * organize the template structure as needed.
  * </p>
  *
- * @see Repo
- *
  * @author B. Ebertz
+ * @see Repo
  */
 
 public interface Template extends EncodedData {
-    
-    Template NONE = new Template()
-    {
-        
-        @Override
-        public CharSequence toCharSequence()
-        {
-            return "";
-        }
-        
-        @Override
-        public String getEncoding()
-        {
-            return Encodings.NULL.name();
-        }
-        
-        @Override
-        public Template set(String name, Object value)
-        {
-            return this;
-        }
-        
-        @Override
-        public void render(PrintStream out) throws IOException
-        {
-        }
-        
-        @Override
-        public void render(Writer out) throws IOException
-        {
-        }
-        
-        @Override
-        public void render(Template target, String name)
-        {
-        }
-        
-        @Override
-        public void render(String siblingName)
-        {
-        }
-        
-        @Override
-        public void render()
-        {
-        }
-        
-        @Override
-        public Set<String> regionNames()
-        {
-            return Collections.emptySet();
-        }
-        
-        @Override
-        public Set<String> names()
-        {
-            return Collections.emptySet();
-        }
-        
-        @Override
-        public Template get(String... name)
-        {
-            return this;
-        }
-        
-        @Override
-        public Template clear()
-        {
-            return this;
-        }
-        
-        @Override
-        public Template append(String name, Object value)
-        {
-            return this;
-        }
-        
-        public boolean isPresent() {
-          return false;
-        };
-    };
+
+  Template NONE = new Template() {
+
+    @Override
+    public CharSequence toCharSequence() {
+      return "";
+    }
+
+    @Override
+    public String getEncoding() {
+      return Encodings.NULL.name();
+    }
+
+    @Override
+    public Template set(String name, Object value) {
+      return this;
+    }
+
+    @Override
+    public void render(PrintStream out) {
+    }
+
+    @Override
+    public void render(Writer out) {
+    }
+
+    @Override
+    public void render(Template target, String name) {
+    }
+
+    @Override
+    public void render(String siblingName) {
+    }
+
+    @Override
+    public void render() {
+    }
+
+    @Override
+    public Set<String> regionNames() {
+      return Collections.emptySet();
+    }
+
+    @Override
+    public Set<String> names() {
+      return Collections.emptySet();
+    }
+
+    @Override
+    public Template get(String... name) {
+      return this;
+    }
+
+    @Override
+    public Template clear() {
+      return this;
+    }
+
+    @Override
+    public Template append(String name, Object value) {
+      return this;
+    }
+
+    @Override
+    public boolean isPresent() {
+      return false;
+    }
+  };
 
   /**
    * Get further elements out of this repository.
    *
    * @param name the path within the repository. This might consist of several elements.
-   *
    * @return a clean instance of the child template identified by the name  or null if
    * there is no child template with this name. It's undefined if this is a new copy or if only a
    * single instance exists. Though subsequent calls an get on the same instance with
@@ -205,17 +190,17 @@ public interface Template extends EncodedData {
    * To avoid sorting of elements by variant it has to be ensured that all variants
    * are rendered to the same target.
    * </p><p>
-   *  A template:
+   * A template:
    * </p>
-   *  <pre>
+   * <pre>
    *  &lt;ul&gt;
    *   {v:target}
    *   &lt;t:debit&gt;  &lt;li class="debit"&gt; {v:action} : {v:value} &lt;/li&gt; &lt;/t:debit&gt;
    *   &lt;t:credit&gt; &lt;li class="credit"&gt;{v:action} : {v:value} &lt;/li&gt; &lt;/t:credit&gt;
    *  &lt;/ul&gt;
    *  </pre>
-   *  And the logic:
-   *  <pre>
+   * And the logic:
+   * <pre>
    *   for (Booking b: bookings) {
    *     if (b.isCredit()) {
    *       snip.get("credit").set("action", b.getAction()).set("value", b.getValue()).render("target");
@@ -229,9 +214,10 @@ public interface Template extends EncodedData {
    * first and all credits afterwards. But in the example it's ensured that all data is written
    * to the same location, though, the order stays as defined.
    * </p><p>
+   *
    * @param siblingName names a child of the same parent. If using the name of this Snippetory
-   * it's the same as render() without parameter.
-   * </p>
+   *                    it's the same as render() without parameter.
+   *                    </p>
    */
   void render(String siblingName);
 
@@ -244,7 +230,7 @@ public interface Template extends EncodedData {
    * however an interceptor gets more information what's going on.
    *
    * @param target a Template to append to
-   * @param name the name of the place where the data should go to.
+   * @param name   the name of the place where the data should go to.
    */
   void render(Template target, String name);
 
@@ -274,11 +260,11 @@ public interface Template extends EncodedData {
    * is a subset of the names delivered by <code>names()</code>.
    */
   Set<String> regionNames();
-  
+
   /**
    * Check whether this instance represents a real template and not the 'null' template.
    *
    * @return {@code false} if this instance isn't a real template but rather a null object
    */
-  public boolean isPresent();
+  boolean isPresent();
 }

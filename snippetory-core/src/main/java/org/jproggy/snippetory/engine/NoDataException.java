@@ -23,8 +23,7 @@ public class NoDataException extends SnippetoryException {
   private final List<Exception> exceptions;
 
   public NoDataException(String message, List<Exception> exceptions) {
-    super(message);
-    if (!exceptions.isEmpty()) this.initCause(exceptions.get(0));
+    super(message, first(exceptions));
     this.exceptions = exceptions;
   }
 
@@ -40,5 +39,9 @@ public class NoDataException extends SnippetoryException {
 
   public List<Exception> getExceptions() {
     return exceptions;
+  }
+
+  private static Exception first(List<Exception> exceptions) {
+    return exceptions.isEmpty() ? null : exceptions.get(0);
   }
 }

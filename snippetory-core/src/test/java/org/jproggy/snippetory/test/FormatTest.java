@@ -23,32 +23,12 @@ import org.junit.Test;
 
 public class FormatTest {
   @Test
-  public void formatStretch() {
-    Template stretch = XML_ALIKE.parse("{v:test stretch='5r'}");
-    stretch.set("test", "x");
-    assertEquals("    x", stretch.toString());
-    stretch.set("test", "123456");
-    assertEquals("123456", stretch.toString());
-  }
-
-  @Test
   public void formatPad() {
     Template pad = XML_ALIKE.parse("{v:test pad='5' pad.align='right'}");
     pad.set("test", "x");
     assertEquals("    x", pad.toString());
     pad.set("test", "123456");
     assertEquals("123456", pad.toString());
-  }
-
-  @Test
-  public void formatShorten() {
-    Template shorten = XML_ALIKE.parse("{v:test shorten='5...'}");
-    shorten.set("test", "x");
-    assertEquals("x", shorten.toString());
-    shorten.set("test", "123456");
-    assertEquals("12...", shorten.toString());
-    shorten.set("test", "12345");
-    assertEquals("12345", shorten.toString());
   }
 
   @Test

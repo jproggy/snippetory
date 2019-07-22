@@ -59,7 +59,7 @@ public class PadFormatter implements FormatFactory {
       }
       String v = value.toString();
       String b = fill(length - v.length());
-      return (align == Alignment.right) ? b + v : v + b;
+      return (align == Alignment.right) ? (b + v) : (v + b);
     }
 
     private String fill(int i) {

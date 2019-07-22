@@ -14,6 +14,7 @@
 
 package org.jproggy.snippetory.test;
 
+import static org.jproggy.snippetory.Syntaxes.FLUYT;
 import static org.jproggy.snippetory.Syntaxes.FLUYT_CC;
 import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
 import static org.junit.Assert.assertEquals;
@@ -128,13 +129,13 @@ public class BasicTest {
 
   @Test
   public void syntaxSwitch() {
-    Template t1 = XML_ALIKE.parse(" {v:test} \n <s:C_COMMENTS />  \n /*${test}*/ \r\n  /*Syntax:FLUYT*/  \n $test ");
+    Template t1 = XML_ALIKE.parse(" {v:test} \n <s:FLUYT_CC />  \n /*$test*/ \r\n  /*Syntax:FLUYT*/  \n $test ");
     t1.set("test", "blub");
     assertEquals(" blub \n blub \r\n blub ", t1.toString());
-    t1 = XML_ALIKE.parse(" {v:test} \n // Syntax:C_COMMENTS   \n /*${test}*/ \r\n  /* Syntax:FLUYT */  \n $test ");
+    t1 = XML_ALIKE.parse(" {v:test} \n // Syntax:FLUYT_CC   \n /*$test*/ \r\n  /* Syntax:FLUYT */  \n $test ");
     t1.set("test", "blub");
     assertEquals(" blub \n blub \r\n blub ", t1.toString());
-    t1 = XML_ALIKE.parse(" {v:test} \n <!-- Syntax:C_COMMENTS -->  \n /*${test}*/ \r\n  # Syntax:FLUYT  \n $test ");
+    t1 = XML_ALIKE.parse(" {v:test} \n <!-- Syntax:FLUYT_CC -->  \n /*$test*/ \r\n  # Syntax:FLUYT  \n $test ");
     t1.set("test", "blub");
     assertEquals(" blub \n blub \r\n blub ", t1.toString());
   }
@@ -258,6 +259,7 @@ public class BasicTest {
   public void conditionalRegionsSimple() {
     Template t = XML_ALIKE.parse("before<t:>->{v:test null='null' delimiter=' '}<-</t:>after");
     assertEquals("beforeafter", t.toString());
+    assertEquals("[test]", t.names().toString());
     t.set("test", null);
     assertEquals("beforeafter", t.toString());
     t.set("blub", null);
@@ -267,6 +269,24 @@ public class BasicTest {
     t.append("test", "test");
     assertEquals("before->null null test<-after", t.toString());
     t.set("test", "blub");
+    assertEquals("before->blub<-after", t.toString());
+  }
+
+  @Test
+  public void conditionalRegionsWithRegionSimple() {
+    Template t = FLUYT.parse("before${->$region{content}$<-}$after");
+    assertEquals("beforeafter", t.toString());
+    assertEquals("[region]", t.names().toString());
+    assertEquals("[region]", t.regionNames().toString());
+    t.get("region").render();
+    assertEquals("before->content<-after", t.toString());
+    t.set("region", null);
+    assertEquals("before-><-after", t.toString());
+    t.clear();
+    assertEquals("beforeafter", t.toString());
+    t.append("region", "test");
+    assertEquals("before->test<-after", t.toString());
+    t.set("region", "blub");
     assertEquals("before->blub<-after", t.toString());
   }
 

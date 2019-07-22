@@ -103,7 +103,7 @@ public interface BlockingQueue<E> {
    *
    * @return the next item in the queue or {@code null} if no further item is expected
    */
-  public E take() throws InterruptedException;
+  E take() throws InterruptedException;
 
   /**
    * Will span a new {@link Source} and offer all items provided by this source to the consumer.
@@ -112,21 +112,21 @@ public interface BlockingQueue<E> {
    * <p>This call will return when the queue is closed and empty, the consumer throws an exception,
    * or the thread is interrupted
    */
-  public void consume(Consumer<E> consumer) throws InterruptedException, QueueClosedException;
+  void consume(Consumer<E> consumer) throws InterruptedException;
 
   /**
    * Creates a new sink, that allows a producer to be registered with the queue.
    * To unregister the producer has to close the sink.
    * @throws QueueClosedException if queue is already closed
    */
-  public Sink<E> sink() throws QueueClosedException;
+  Sink<E> sink();
 
   /**
    * Creates a new source, that allows a consumer to be registered with the queue.
    * To unregister the consumer has to close the source.
    * @throws QueueClosedException if the queue is closed and empty
    */
-  public Source<E> source() throws QueueClosedException;
+  Source<E> source();
 
   /**
    * Allows to close the the entire queue. All Sinks refuse the items offered
@@ -141,12 +141,12 @@ public interface BlockingQueue<E> {
                    false: item in the queue are offered to the sources, so that the 
 				   provided data will be processed.
    */
-  public void close(boolean clear);
+  void close(boolean clear);
 
   /**
    * @return true is the queue is closed, false otherwise.
    */
-  public boolean isClosed();
+  boolean isClosed();
 
   /**
    * The number of items contained in this queue at the moment.
@@ -157,17 +157,17 @@ public interface BlockingQueue<E> {
    * because it may be the case that another thread is about to
    * insert or remove an element.
    */
-  public long usage();
+  long usage();
 
   /**
    * Number of elements that can be stored in the queue.
    */
-  public long length();
+  long length();
 
   /**
    * Number of items, that are already been taken from that queue.
    */
-  public long taken();
+  long taken();
 
   /**
    * Allows to monitor blocking periods or write a watchdog to
@@ -175,7 +175,7 @@ public interface BlockingQueue<E> {
    * @return null if queue is neither full nor empty, the date
    * when entered current state, otherwise.
    */
-  public Date blockedSince();
+  Date blockedSince();
 
   /**
    * Number of producers that are registered with this queue.
@@ -183,7 +183,7 @@ public interface BlockingQueue<E> {
    * will be shut down automatically if the registration phase
    * has already finished.
    */
-  public long numberOfSinks();
+  long numberOfSinks();
 
   /**
    * Number of consumers that are registered with this queue.
@@ -191,5 +191,5 @@ public interface BlockingQueue<E> {
    * will be shut down automatically if the registration phase
    * has already finished.
    */
-  public long numberOfSources();
+  long numberOfSources();
 }

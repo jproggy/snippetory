@@ -97,7 +97,7 @@ public abstract class UriResolver {
    * as organizing template sets in different packages.
    */
   public static UriResolver resource(String prefix) {
-    final String realPF = (prefix.isEmpty() || prefix.endsWith("/")) ? prefix : prefix + '/';
+    final String realPF = (prefix.isEmpty() || prefix.endsWith("/")) ? prefix : (prefix + '/');
     return new UriResolver() {
 
       @Override

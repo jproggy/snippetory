@@ -47,31 +47,6 @@ public class Repo {
   }
 
   /**
-   * Short cut method for parsing a string into a template. With default syntax,
-   * null encoding and no locale support. 
-   * <p>
-   * This is sometimes useful for very short and simple templates replacing
-   * a complex string concatenation.
-   * </p>
-   * @deprecated prefer defining a syntax when parsing. I.e. use
-   * {@link Syntaxes#parse(CharSequence) Syntaxes.XML_ALIKE.parse(CharSequence)} instead
-   */
-  public static Template parse(CharSequence data) {
-    return new TemplateContext(data).parse();
-  }
-
-  /**
-   * Short cut method for parsing a string into a template. With default syntax,
-   * null encoding, but supporting a locale for formatting.
-   *
-   * @deprecated prefer defining a syntax when parsing. I.e. use
-   * {@link Syntaxes#parse(CharSequence, Locale) Syntaxes.XML_ALIKE.parse(CharSequence, Locale)} instead
-   */
-  public static Template parse(CharSequence data, Locale l) {
-    return new TemplateContext(data).locale(l).parse();
-  }
-
-  /**
    * The really short short cut for the simple jobs. This helps to scale from
    * a very low level, where any character hurts. At least for playing around
    * it's very handy.
@@ -124,6 +99,7 @@ public class Repo {
    * of configuring a UrlResolver by the ability to keep the data provided
    * during initialization.
    */
+  @SuppressWarnings("CastToConcreteClass")
   public static class TemplateContext extends org.jproggy.snippetory.TemplateContext {
     private final CharSequence data;
 

@@ -23,7 +23,7 @@ import java.util.Set;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.engine.chars.SelfAppender;
 
-public class Region implements Template, Cloneable, CharSequence, SelfAppender {
+public class Region implements Template, CharSequence, SelfAppender {
   private final Map<String, Region> children;
   private Region parent;
   protected DataSinks data;
@@ -168,7 +168,9 @@ public class Region implements Template, Cloneable, CharSequence, SelfAppender {
 
   @Override
   public Set<String> regionNames() {
-    return children.keySet();
+    Set<String> result = data.regionNames();
+    result.addAll(children.keySet());
+    return result;
   }
   
   @Override

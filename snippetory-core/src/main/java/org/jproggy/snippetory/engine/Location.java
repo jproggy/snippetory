@@ -151,7 +151,7 @@ public class Location implements DataSink, TemplateNode {
           return voidformat;
         }
       }
-      return voidformat = md;
+      voidformat = md;
     }
     return voidformat;
   }
