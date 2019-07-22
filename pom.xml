@@ -24,18 +24,6 @@
         an abstraction layer with support for different technologies and a powerful formatting
         engine.
     </description>
-	<developers>
-	<dependencyManagement>
-	<modules>
-		<module>snippetory-core</module>
-		<module>snippetory-sql</module>
-		<module>snippetory-toolyng</module>
-		<!-- module>snippetory-groovy</module -->
-	</modules>
-	<properties>
-		<gpg.keyname>Templa Project</gpg.keyname>
-	</properties>
-	<build>
     <url>http://www.jproggy.org/snippetory/</url>
     <licenses>
         <license>
@@ -54,26 +42,9 @@
     <modules>
         <module>snippetory-core</module>
         <module>snippetory-sql</module>
+        <module>snippetory-toolyng</module>
         <!-- module>snippetory-groovy</module -->
     </modules>
-    <scm>
-        <url>http://sourceforge.net/p/snippetory/code/HEAD/tree/trunk/</url>
-        <developerConnection>scm:svn:https://svn.code.sf.net/p/snippetory/code/trunk</developerConnection>
-        <connection>scm:svn:svn://svn.code.sf.net/p/snippetory/code/trunk snippetory-code</connection>
-    </scm>
-    <issueManagement>
-        <url>https://github.com/jproggy/Snippetory/issues</url>
-    </issueManagement>
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
     <properties>
         <gpg.keyname>Templa Project</gpg.keyname>
 		<!-- Sonar -->
@@ -117,6 +88,7 @@
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
+					<encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
             <plugin>
