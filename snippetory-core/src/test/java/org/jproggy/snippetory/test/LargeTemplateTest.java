@@ -51,14 +51,6 @@ public class LargeTemplateTest {
     assertEquals(17, section.toString().indexOf(","));
   }
 
-  @Test
-  public void cComments() {
-    Template fluyt = template.get("C_COMMENTS");
-    assertNotNull(fluyt);
-    renderAll(fluyt);
-    assertEquals(-1, fluyt.toString().indexOf('$'));
-  }
-
   private void renderAll(Template t) {
     Set<String> regions = t.regionNames();
     for (String name : regions) {

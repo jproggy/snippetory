@@ -30,7 +30,7 @@ public abstract class RegExSyntax implements Syntax {
   protected static final String NAME_CHAR = "[\\p{javaJavaIdentifierPart}\\.\\-&&[^\\$]]";
   protected static final String NAME = NAME_START_CHAR + NAME_CHAR + "*";
 
-  protected final static String ESCAPES = "\\\\\\\\|\\\\'|\\\\\"|\\\\n|\\\\r|\\\\b|\\\\t|\\\\f";
+  protected static final String ESCAPES = "\\\\\\\\|\\\\'|\\\\\"|\\\\n|\\\\r|\\\\b|\\\\t|\\\\f";
   private static final String QUOTE_VALUE = "\\\"(?:" + ESCAPES + "|[^\\\\\"])*\\\"";
   private static final String APOS_VALUE = "\\'(?:" + ESCAPES + "|[^\\\\'])*\\'";
   protected static final String ATTRIBUTE = NAME + "=(?:" + APOS_VALUE + "|" + QUOTE_VALUE + ")";
@@ -216,7 +216,7 @@ public abstract class RegExSyntax implements Syntax {
       return context;
     }
 
-    private final Pattern LINES = Pattern.compile("\\r\\n?|\\n|\\u0085|\\u2028|\\u2029", Pattern.MULTILINE);
+    private static final Pattern LINES = Pattern.compile("\\r\\n?|\\n|\\u0085|\\u2028|\\u2029", Pattern.MULTILINE);
 
     @Override
     public TextPosition getPosition(Token t) {

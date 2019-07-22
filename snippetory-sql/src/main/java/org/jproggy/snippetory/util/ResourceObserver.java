@@ -1,5 +1,7 @@
 package org.jproggy.snippetory.util;
 
+import org.jproggy.snippetory.engine.SnippetoryException;
+
 import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;
 import java.util.concurrent.ScheduledExecutorService;
@@ -9,12 +11,7 @@ public final class ResourceObserver {
   private final ReferenceQueue<Object> queue = new ReferenceQueue<>();
 
   public ResourceObserver(final ScheduledExecutorService cleaner) {
-    cleaner.scheduleAtFixedRate(new Runnable() {
-      @Override
-      public void run() {
-        cleanup();
-      }
-    }, 1, 1, TimeUnit.SECONDS);
+    cleaner.scheduleAtFixedRate(this::cleanup, 1, 1, TimeUnit.SECONDS);
   }
 
   private void cleanup() {
@@ -23,14 +20,14 @@ public final class ResourceObserver {
         queue.remove().clear();
       }
     } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
       // interrupt not expected, as item is checked to be there, and tasks should not be interrupted.
-      throw new RuntimeException(e);
+      throw new SnippetoryException(e);
     }
   }
 
   public Ref observe(Object gard, Runnable action) {
-    Ref ref = new Ref(gard, action);
-    return ref;
+    return new Ref(gard, action);
   }
 
   public final class Ref extends PhantomReference<Object> {
@@ -51,7 +48,7 @@ public final class ResourceObserver {
       try {
         if (action != null) action.run();
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        throw new SnippetoryException(e);
       } finally {
         close();
       }

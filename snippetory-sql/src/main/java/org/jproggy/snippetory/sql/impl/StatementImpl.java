@@ -94,7 +94,7 @@ public class StatementImpl extends Region implements Statement, StatementBinder 
   public void forEach(RowProcessor proc) {
     try (Connection connection = getConnection();
         PreparedStatement stmt = getStatement(connection);
-        ResultSet rs = stmt.executeQuery();) {
+        ResultSet rs = stmt.executeQuery()) {
       while (rs.next()) {
         proc.processRow(rs);
       }
@@ -148,12 +148,7 @@ public class StatementImpl extends Region implements Statement, StatementBinder 
     final Task<T> task = new Task<>(transformer, new ArrayBlockingQueue<T>(200));
     runner.execute(task);
     ReadAheadCursor<T> c = new ReadAheadCursor<>(task);
-    Ref handle = resources.observe(c, new Runnable() {
-      @Override
-      public void run() {
-        task.queue.close(true);
-      }
-    });
+    Ref handle = resources.observe(c, () -> task.queue.close(true));
     c.setHandle(handle);
     return c;
   }
@@ -191,7 +186,7 @@ public class StatementImpl extends Region implements Statement, StatementBinder 
   @Override
   public long executeUpdate() {
     try (Connection connection = getConnection();
-        PreparedStatement stmt = getStatement(connection);) {
+        PreparedStatement stmt = getStatement(connection)) {
         return stmt.executeUpdate();
       } catch (SQLException e) {
       throw new SnippetoryException(e);
@@ -354,7 +349,7 @@ public class StatementImpl extends Region implements Statement, StatementBinder 
       try (Sink<T> s = queue.sink();
           Connection con = getConnection();
           PreparedStatement ps = getStatement(con);
-          ResultSet rs = ps.executeQuery(); ) {
+          ResultSet rs = ps.executeQuery() ) {
         while (rs.next()) {
           s.put(transformer.transformRow(rs));
         }

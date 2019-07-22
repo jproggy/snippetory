@@ -25,7 +25,7 @@ import org.jproggy.snippetory.spi.SyntaxID;
 public class SqlSyntax extends FluytSyntax implements SyntaxID {
   @Override
   protected Map<Pattern, TokenType> createPatterns() {
-    Map<Pattern, TokenType> patterns = new LinkedHashMap<Pattern, TokenType>();
+    Map<Pattern, TokenType> patterns = new LinkedHashMap<>();
 
     patterns.put(SYNTAX_SELECTOR, TokenType.Syntax);
 

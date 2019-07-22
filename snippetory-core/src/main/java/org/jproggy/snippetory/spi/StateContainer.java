@@ -73,7 +73,7 @@ public abstract class StateContainer<V> {
   /**
    * Calculates the node to bind the state to based on node the node provided.
    */
-  public static abstract class KeyResolver {
+  public abstract static class KeyResolver {
     public static final KeyResolver PARENT = new KeyResolver() {
       @Override
       public TemplateNode resolve(TemplateNode org) {

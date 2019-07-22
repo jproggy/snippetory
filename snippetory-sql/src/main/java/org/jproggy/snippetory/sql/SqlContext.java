@@ -26,12 +26,7 @@ import org.jproggy.snippetory.sql.spi.PostProcessor;
 public class SqlContext {
   private ConnectionProvider connections;
   private TemplateContext ctx;
-  private PostProcessor proc = new PostProcessor() {
-    @Override
-    public Statement processRepository(Statement repo) {
-      return repo;
-    }
-  };
+  private PostProcessor proc = r -> r;
 
   public SqlContext() {
     super();
