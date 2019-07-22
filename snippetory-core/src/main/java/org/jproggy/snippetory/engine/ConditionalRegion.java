@@ -37,7 +37,7 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
     names = names();
     this.children = new HashMap<String, Region>();
     for (Map.Entry<String, Region> entry : template.children.entrySet()) {
-      this.children.put(entry.getKey(), entry.getValue().cleanCopy(getPlaceholder()));
+      this.children.put(entry.getKey(), entry.getValue().cleanCopy(super.getPlaceholder()));
     }
     appendMe = false;
   }

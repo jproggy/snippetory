@@ -111,7 +111,7 @@ public class DataSinks extends CharSequences implements DataSink {
     return this;
   }
 
-  public Location getPlaceholder() {
+  public final Location getPlaceholder() {
     return placeHolder;
   }
 

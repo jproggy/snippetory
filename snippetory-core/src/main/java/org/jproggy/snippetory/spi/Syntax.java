@@ -24,11 +24,9 @@ import org.jproggy.snippetory.engine.SnippetoryException;
 import org.jproggy.snippetory.engine.TextPosition;
 import org.jproggy.snippetory.engine.Token;
 import org.jproggy.snippetory.engine.build.TemplateBuilder;
-import org.jproggy.snippetory.engine.spi.CComments;
 import org.jproggy.snippetory.engine.spi.FluytCCSyntax;
 import org.jproggy.snippetory.engine.spi.FluytSyntax;
 import org.jproggy.snippetory.engine.spi.FluytXSyntax;
-import org.jproggy.snippetory.engine.spi.HiddenBlocksSyntax;
 import org.jproggy.snippetory.engine.spi.XMLAlikeSyntax;
 
 /**
@@ -40,14 +38,12 @@ import org.jproggy.snippetory.engine.spi.XMLAlikeSyntax;
  * @see RegExSyntax
  */
 public interface Syntax {
-  public class Registry {
+  final class Registry {
     private Map<String, Syntax> reg = new HashMap<String, Syntax>();
 
     @SuppressWarnings("deprecation")
     private Registry() {
-      register(Syntaxes.HIDDEN_BLOCKS, new HiddenBlocksSyntax());
       register(Syntaxes.XML_ALIKE, new XMLAlikeSyntax());
-      register(Syntaxes.C_COMMENTS, new CComments());
       register(Syntaxes.FLUYT, new FluytSyntax());
       register(Syntaxes.FLUYT_CC, new FluytCCSyntax());
       register(Syntaxes.FLUYT_X, new FluytXSyntax());

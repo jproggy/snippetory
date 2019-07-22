@@ -295,7 +295,7 @@ public class SQL implements Encoding, Configurer {
     return new RowTransformer<Map<String, Object>>() {
       @Override
       public Map<String, Object> transformRow(ResultSet rs) throws SQLException {
-        Map<String, Object> result = new HashMap<String, Object>(colNames.length);
+        Map<String, Object> result = new HashMap<>(colNames.length);
         for (String colName: colNames) {
           result.put(colName, rs.getObject(colName));
         }
@@ -327,7 +327,7 @@ public class SQL implements Encoding, Configurer {
     };
   }
 
-  public static abstract class ColumnTransformer<T> implements RowTransformer<T> {
+  public abstract static class ColumnTransformer<T> implements RowTransformer<T> {
     private final int index;
     private final String colName;
 

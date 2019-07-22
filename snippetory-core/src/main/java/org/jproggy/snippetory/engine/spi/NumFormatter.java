@@ -53,15 +53,6 @@ public class NumFormatter implements FormatFactory {
     return ctx.getLocale().equals(TemplateContext.TECH);
   }
 
-  private static NumberFormat toFormat(String definition, Locale l) {
-    if ("".equals(definition)) return NumberFormat.getNumberInstance(l);
-    if ("currency".equals(definition)) return NumberFormat.getCurrencyInstance(l);
-    if ("int".equals(definition)) return NumberFormat.getIntegerInstance(l);
-    if ("percent".endsWith(definition)) return NumberFormat.getPercentInstance(l);
-    if ("JS".equals(definition)) return NumberFormat.getNumberInstance(Locale.US);
-    return new DecimalFormat(definition, DecimalFormatSymbols.getInstance(l));
-  }
-
   public static class ToStringFormat extends SimpleFormat {
 
     public ToStringFormat() {}
@@ -94,6 +85,15 @@ public class NumFormatter implements FormatFactory {
     @Override
     public boolean supports(Object value) {
       return value instanceof Number;
+    }
+
+    private static NumberFormat toFormat(String definition, Locale l) {
+      if ("".equals(definition)) return NumberFormat.getNumberInstance(l);
+      if ("currency".equals(definition)) return NumberFormat.getCurrencyInstance(l);
+      if ("int".equals(definition)) return NumberFormat.getIntegerInstance(l);
+      if ("percent".endsWith(definition)) return NumberFormat.getPercentInstance(l);
+      if ("JS".equals(definition)) return NumberFormat.getNumberInstance(Locale.US);
+      return new DecimalFormat(definition, DecimalFormatSymbols.getInstance(l));
     }
   }
 

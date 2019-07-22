@@ -39,11 +39,6 @@ public enum Syntaxes implements SyntaxID {
    * It provides low risk of incompatibility to a certain output format.
    */
   XML_ALIKE,
-  /**
-   * @deprecated use FLUYT_CC instead
-   */
-  @Deprecated
-  C_COMMENTS,
 
   /**
    * The fluyt syntax is designed with an minimal overhead in mind. It very homogeneous,

@@ -36,8 +36,6 @@ import org.jproggy.snippetory.engine.spi.IntFormatter;
 import org.jproggy.snippetory.engine.spi.NullFormatter;
 import org.jproggy.snippetory.engine.spi.NumFormatter;
 import org.jproggy.snippetory.engine.spi.PadFormatter;
-import org.jproggy.snippetory.engine.spi.ShortenFormatter;
-import org.jproggy.snippetory.engine.spi.StretchFormatter;
 import org.jproggy.snippetory.engine.spi.ToggleFormatter;
 import org.jproggy.snippetory.spi.Configurer;
 import org.jproggy.snippetory.spi.DynamicAttributes;
@@ -188,9 +186,7 @@ public class Attributes {
     REGISTRY.register("suffix", Types.SUFFIX);
     REGISTRY.register(BACKWARD, Types.BACKWARD);
     FormatRegistry.INSTANCE.register("pad", new PadFormatter());
-    FormatRegistry.INSTANCE.register("stretch", new StretchFormatter());
     FormatRegistry.INSTANCE.register("crop", new CropFormatter());
-    FormatRegistry.INSTANCE.register("shorten", new ShortenFormatter());
     FormatRegistry.INSTANCE.register("number", new NumFormatter());
     FormatRegistry.INSTANCE.register("int", new IntFormatter());
     FormatRegistry.INSTANCE.register("decimal", new DecimalFormatter());
@@ -216,7 +212,7 @@ public class Attributes {
 
     public void register(String name, Types value) {
       Types old = attribs.get(name);
-      if (old != null && !old.equals(value)) {
+      if (old != null && old != value) {
         throw new SnippetoryException("attribute " + name + " already defined otherwise.");
       }
       attribs.put(name, value);
