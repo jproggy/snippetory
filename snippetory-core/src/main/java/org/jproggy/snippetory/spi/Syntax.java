@@ -27,6 +27,7 @@ import org.jproggy.snippetory.engine.build.TemplateBuilder;
 import org.jproggy.snippetory.engine.spi.FluytCCSyntax;
 import org.jproggy.snippetory.engine.spi.FluytSyntax;
 import org.jproggy.snippetory.engine.spi.FluytXSyntax;
+import org.jproggy.snippetory.engine.spi.HiddenBlocksSyntax;
 import org.jproggy.snippetory.engine.spi.XMLAlikeSyntax;
 
 /**
@@ -43,6 +44,7 @@ public interface Syntax {
 
     @SuppressWarnings("deprecation")
     private Registry() {
+      register(Syntaxes.HIDDEN_BLOCKS, new HiddenBlocksSyntax());
       register(Syntaxes.XML_ALIKE, new XMLAlikeSyntax());
       register(Syntaxes.FLUYT, new FluytSyntax());
       register(Syntaxes.FLUYT_CC, new FluytCCSyntax());

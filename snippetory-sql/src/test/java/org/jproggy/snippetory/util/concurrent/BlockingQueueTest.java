@@ -241,6 +241,7 @@ public class BlockingQueueTest {
   }
 
   @Test
+  @Ignore
   public void test1_10_10000() throws Exception {
     test1_10(new ArrayBlockingQueue<Integer>(10000));
   }
