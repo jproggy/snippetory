@@ -14,6 +14,8 @@
 
 package org.jproggy.snippetory;
 
+import static java.util.stream.Stream.of;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -43,18 +45,14 @@ import org.jproggy.snippetory.engine.SnippetoryException;
  *
  * @author B. Ebertz
  */
-public abstract class UriResolver {
+public interface UriResolver {
   /**
    * Creates a UriResolver that sequentially scans the provided
    * directories for a file that's represented by the uri and
    * returns the content of the first match.
    */
-  public static UriResolver directories(final String... dirs) {
-    File[] files = new File[dirs.length];
-    for (int i = 0; i < dirs.length; i++) {
-      files[i] = new File(dirs[i]);
-    }
-    return directories(files);
+  static UriResolver directories(final String... dirs) {
+    return directories(of(dirs).map(File::new).toArray(File[]::new));
   }
 
   /**
@@ -62,17 +60,13 @@ public abstract class UriResolver {
    * directories for a file that's represented by the uri and
    * returns the content of the first match.
    */
-  public static UriResolver directories(final File... dirs) {
-    return new UriResolver() {
-
-      @Override
-      public String resolve(String uri, TemplateContext context) {
-        for (File dir : dirs) {
-          File test = new File(dir, uri);
-          if (test.exists()) return ToString.file(test);
-        }
-        throw new NoDataException(uri + " not found.");
+  static UriResolver directories(final File... dirs) {
+    return (uri, context) -> {
+      for (File dir : dirs) {
+        File test = new File(dir, uri);
+        if (test.exists()) return ToString.file(test);
       }
+      throw new NoDataException(uri + " not found.");
     };
   }
 
@@ -80,38 +74,27 @@ public abstract class UriResolver {
    * Resolves to a resource. The resource has to be queried as described
    * in {@link ClassLoader#getResource(String)}. The used Classloader
    * is typically the {@link Thread#getContextClassLoader() ContextClassloader}
-   *
    */
-  public static UriResolver resource() {
-    return new UriResolver() {
-
-      @Override
-      public String resolve(String resource, TemplateContext context) {
-        return ToString.resource(resource);
-      }
-    };
+  static UriResolver resource() {
+    return (resource, context) -> ToString.resource(resource);
   }
 
   /**
    * Allows resource lookup from packages with a short name as well
    * as organizing template sets in different packages.
    */
-  public static UriResolver resource(String prefix) {
+  static UriResolver resource(String prefix) {
     final String realPF = (prefix.isEmpty() || prefix.endsWith("/")) ? prefix : (prefix + '/');
-    return new UriResolver() {
-
-      @Override
-      public String resolve(String resource, TemplateContext context) {
-        String path = realPF + (resource.startsWith("/") ? resource.substring(1) : resource);
-        return ToString.resource(path);
-      }
+    return (String resource, TemplateContext context) -> {
+      String path = realPF + (resource.startsWith("/") ? resource.substring(1) : resource);
+      return ToString.resource(path);
     };
   }
 
   /**
    * resolves uris relative to the base URL
    */
-  public static UriResolver url(String base) {
+  static UriResolver url(String base) {
     try {
       return url(new URL(base));
     } catch (MalformedURLException e) {
@@ -122,17 +105,13 @@ public abstract class UriResolver {
   /**
    * resolves uris relative to the base URL
    */
-  public static UriResolver url(final URL base) {
-    return new UriResolver() {
-
-      @Override
-      public String resolve(String url, TemplateContext context) {
-        try {
-          URL link = new URL(base, url);
-          return ToString.stream(link.openStream());
-        } catch (IOException e) {
-          throw new SnippetoryException(e);
-        }
+  static UriResolver url(final URL base) {
+    return (String url, TemplateContext context) -> {
+      try {
+        URL link = new URL(base, url);
+        return ToString.stream(link.openStream());
+      } catch (IOException e) {
+        throw new SnippetoryException(e);
       }
     };
   }
@@ -141,7 +120,7 @@ public abstract class UriResolver {
    * Build a more complex repository consisting of several other, searched in order
    * for and uri.
    */
-  public static RepoBuilder combine() {
+  static RepoBuilder combine() {
     return new RepoBuilder();
   }
 
@@ -151,5 +130,5 @@ public abstract class UriResolver {
    * The meaning of the uri may greatly differ depending on the
    * implementation. It may or may not map to a certain location.
    */
-  public abstract String resolve(String uri, TemplateContext context);
+  String resolve(String uri, TemplateContext context);
 }

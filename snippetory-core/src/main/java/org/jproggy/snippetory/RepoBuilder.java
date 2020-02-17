@@ -30,8 +30,8 @@ import org.jproggy.snippetory.engine.NoDataException;
  * (delivered as resources within a jar) by putting replacements on a ftp
  * server or in a folder in file system, whatever is appropriate.
  */
-public class RepoBuilder extends UriResolver {
-  private List<UriResolver> parts = new ArrayList<UriResolver>();
+public class RepoBuilder implements UriResolver {
+  private List<UriResolver> parts = new ArrayList<>();
 
   public RepoBuilder addDirectories(final String... dirs) {
     return add(UriResolver.directories(dirs));
@@ -91,7 +91,7 @@ public class RepoBuilder extends UriResolver {
     if (parts.isEmpty()) {
       throw new NoDataException("Empty repository. " + "Please use add... methods to build an meaningfull repository");
     }
-    List<Exception> exceptions = new ArrayList<Exception>();
+    List<Exception> exceptions = new ArrayList<>();
     for (UriResolver part : parts) {
       try {
         String result = part.resolve(uri, context);

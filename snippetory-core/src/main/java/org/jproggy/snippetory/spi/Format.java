@@ -22,7 +22,7 @@ import org.jproggy.snippetory.engine.FormatRegistry;
  * <h2>Format definition in template file</h2>
  * Formats are activated by a single attribute, that's evaluated by a {@link FormatFactory},
  * that parses this definition, found within the template file, in order to create an appropriate
- * {@code Format}. However, before creating he format itself there is another step to do:
+ * {@code Format}. However, before creating the format itself there is another step to do:
  * The FormatFactory returns a {@link FormatConfiguration} which takes additional parameters, called
  * sub-attributes. Sub attributes have the form {@code<main-attribute>.<sub-attribute>} and directly
  * follow the main attribute. For instance:

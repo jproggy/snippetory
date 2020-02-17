@@ -14,6 +14,8 @@
 
 package org.jproggy.snippetory;
 
+import static java.util.Collections.unmodifiableMap;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -22,7 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.util.Collections;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -71,12 +73,12 @@ public class TemplateContext implements Cloneable {
   private static final Map<String, String> DEFAULT_ATTRIBUTES;
 
   static {
-    Map<String, String> map = new HashMap<String, String>(2);
+    Map<String, String> map = new HashMap<>(2);
     map.put("date", "");
     map.put("int", "");
     map.put("decimal", "");
     map.put("null", "");
-    DEFAULT_ATTRIBUTES = Collections.unmodifiableMap(map);
+    DEFAULT_ATTRIBUTES = unmodifiableMap(map);
     TemplateBuilder.init();
   }
 
@@ -84,7 +86,7 @@ public class TemplateContext implements Cloneable {
   public TemplateContext clone() {
     try {
       TemplateContext result = (TemplateContext)super.clone();
-      if (baseAttribs != null) result.baseAttribs = new HashMap<String, String>(baseAttribs);
+      if (baseAttribs != null) result.baseAttribs = new HashMap<>(baseAttribs);
       return result;
     } catch (CloneNotSupportedException e) {
       throw new SnippetoryException(e);
@@ -152,7 +154,7 @@ public class TemplateContext implements Cloneable {
   }
 
   protected void initBaseAttribs() {
-    baseAttribs = new LinkedHashMap<String, String>(DEFAULT_ATTRIBUTES);
+    baseAttribs = new LinkedHashMap<>(DEFAULT_ATTRIBUTES);
   }
 
   /**
@@ -163,11 +165,11 @@ public class TemplateContext implements Cloneable {
    */
   public Map<String, String> getBaseAttribs() {
     if (baseAttribs == null) return DEFAULT_ATTRIBUTES;
-    return baseAttribs;
+    return unmodifiableMap(baseAttribs);
   }
 
   public void setBaseAttribs(Map<String, String> baseAttribs) {
-    this.baseAttribs = baseAttribs;
+    this.baseAttribs = new HashMap<>(baseAttribs);
   }
 
   /**
@@ -188,7 +190,6 @@ public class TemplateContext implements Cloneable {
   static class ToString {
     private ToString() {}
 
-    @SuppressWarnings("resource")
     public static String resource(String name) {
       ClassLoader loader = Thread.currentThread().getContextClassLoader();
       if (loader == null) {
@@ -202,7 +203,6 @@ public class TemplateContext implements Cloneable {
       return stream(stream);
     }
 
-    @SuppressWarnings("resource")
     public static String file(String fileName) {
       try {
         return stream(new FileInputStream(fileName));
@@ -211,7 +211,6 @@ public class TemplateContext implements Cloneable {
       }
     }
 
-    @SuppressWarnings("resource")
     public static String file(File in) {
       try {
         return stream(new FileInputStream(in));
@@ -221,11 +220,7 @@ public class TemplateContext implements Cloneable {
     }
 
     public static String stream(InputStream in) {
-      try {
-        return reader(new InputStreamReader(in, "utf-8"));
-      } catch (IOException e) {
-        throw new SnippetoryException(e);
-      }
+      return reader(new InputStreamReader(in, StandardCharsets.UTF_8));
     }
 
     public static String reader(Reader in) {
