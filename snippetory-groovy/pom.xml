@@ -11,73 +11,79 @@
 <!-- limitations under the License. -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<artifactId>snippetory</artifactId>
-		<groupId>org.jproggy</groupId>
-		<version>0.9.6-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <artifactId>snippetory</artifactId>
+        <groupId>org.jproggy</groupId>
+        <version>0.9.6-SNAPSHOT</version>
+    </parent>
 
-	<artifactId>snippetory-groovy</artifactId>
-	<name>Groovy integration for Snippetory</name>
+    <artifactId>snippetory-groovy</artifactId>
+    <name>Groovy integration for Snippetory</name>
 
-	<licenses>
-		<license>
-			<name>The Apache License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-	<issueManagement>
-	  <url>https://github.com/jproggy/Snippetory/issues</url>
-	</issueManagement>
-	<developers>
-		<developer>
-			<id>Sir RotN</id>
-			<name>Bernd Ebertz</name>
-			<email>bebertz@jproggy.org</email>
-		</developer>
-	</developers>
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <issueManagement>
+        <url>https://github.com/jproggy/Snippetory/issues</url>
+    </issueManagement>
+    <developers>
+        <developer>
+            <id>Sir RotN</id>
+            <name>Bernd Ebertz</name>
+            <email>bebertz@jproggy.org</email>
+        </developer>
+    </developers>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.codehaus.groovy</groupId>
-			<artifactId>groovy</artifactId>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.jproggy</groupId>
-			<artifactId>snippetory-core</artifactId>
-		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>org.jproggy</groupId>
+            <artifactId>snippetory-core</artifactId>
+        </dependency>
+    </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.gmaven</groupId>
-				<artifactId>groovy-maven-plugin</artifactId>
-				<version>2.0</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>generateStubs</goal>
-							<goal>compile</goal>
-							<goal>generateTestStubs</goal>
-							<goal>testCompile</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <version>1.8.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>addSources</goal>
+                            <goal>generateStubs</goal>
+                            <goal>compile</goal>
+                            <goal>generateTestStubs</goal>
+                            <goal>compileTests</goal>
+                            <goal>removeStubs</goal>
+                            <goal>removeTestStubs</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>
