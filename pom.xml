@@ -20,7 +20,7 @@
 
     <groupId>org.jproggy</groupId>
     <artifactId>snippetory</artifactId>
-    <version>0.9.6</version>
+    <version>0.9.7-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Snippetory Template Engine</name>
     <description>
@@ -50,9 +50,9 @@
         <module>snippetory-groovy</module>
     </modules>
     <scm>
-        <url>http://sourceforge.net/p/snippetory/code/HEAD/tree/tags/snippetory-0.9.6</url>
-        <developerConnection>scm:svn:https://svn.code.sf.net/p/snippetory/code/tags/snippetory-0.9.6</developerConnection>
-        <connection>scm:svn:svn://svn.code.sf.net/p/snippetory/code/trunk snippetory-code/tags/snippetory-0.9.6</connection>
+        <url>http://sourceforge.net/p/snippetory/code/HEAD/tree/trunk/</url>
+        <developerConnection>scm:svn:https://svn.code.sf.net/p/snippetory/code/trunk</developerConnection>
+        <connection>scm:svn:svn://svn.code.sf.net/p/snippetory/code/trunk snippetory-code</connection>
     </scm>
     <issueManagement>
         <url>https://github.com/jproggy/Snippetory/issues</url>
@@ -81,7 +81,7 @@
             <dependency>
                 <groupId>org.jproggy</groupId>
                 <artifactId>snippetory-core</artifactId>
-                <version>0.9.6</version>
+                <version>0.9.7-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
