@@ -15,7 +15,6 @@
 package org.jproggy.snippetory.groovy;
 
 import static org.junit.Assert.*
-import groovy.xml.MarkupBuilder
 
 import org.jproggy.snippetory.Encodings
 import org.jproggy.snippetory.Syntaxes
@@ -225,15 +224,6 @@ First name..........: Karl
 </table>"""      , t.toString());
   }
 
-  public void html1() {
-    def h = new MarkupBuilder()
-    println h.html {
-      head {
-        title "testdoc";
-        script()
-      }
-    }
-  }
   class Entry {
     String label;
     def value;
