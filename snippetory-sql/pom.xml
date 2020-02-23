@@ -15,7 +15,7 @@
 	<parent>
 		<groupId>org.jproggy</groupId>
 		<artifactId>snippetory</artifactId>
-		<version>0.9.6</version>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>snippetory-sql</artifactId>
 	<name>Snippeorty SQL Repository</name>
