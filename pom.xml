@@ -47,6 +47,7 @@
     <modules>
         <module>snippetory-core</module>
         <module>snippetory-sql</module>
+        <module>snippetory-toolyng</module>
         <module>snippetory-groovy</module>
     </modules>
     <scm>

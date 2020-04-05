@@ -18,11 +18,11 @@
 	</parent>
 	<artifactId>snippetory-core</artifactId>
 	<description>
-    Snippetory is a template engine for java with an integrated repository 
-    for organizing and reusing the template code. Logic and presentation are separated by 
-    an abstraction layer with support for different technologies and a powerful formatting 
-    engine.
-  </description>
+		Snippetory is a template engine for java with an integrated repository
+		for organizing and reusing the template code. Logic and presentation are separated by
+		an abstraction layer with support for different technologies and a powerful formatting
+		engine.
+	</description>
 	<licenses>
 		<license>
 			<name>The Apache License, Version 2.0</name>
