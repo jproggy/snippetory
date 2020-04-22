@@ -14,6 +14,17 @@
 
 package org.jproggy.snippetory.sql.impl;
 
+import org.jproggy.snippetory.engine.Location;
+import org.jproggy.snippetory.engine.Region;
+import org.jproggy.snippetory.engine.SnippetoryException;
+import org.jproggy.snippetory.sql.Cursor;
+import org.jproggy.snippetory.sql.Statement;
+import org.jproggy.snippetory.sql.spi.ConnectionProvider;
+import org.jproggy.snippetory.sql.spi.RowProcessor;
+import org.jproggy.snippetory.sql.spi.RowTransformer;
+import org.jproggy.snippetory.util.ResourceObserver;
+import org.jproggy.snippetory.util.ResourceObserver.Ref;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,22 +37,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-
-import org.jproggy.snippetory.engine.Location;
-import org.jproggy.snippetory.engine.Region;
-import org.jproggy.snippetory.engine.SnippetoryException;
-import org.jproggy.snippetory.sql.Cursor;
-import org.jproggy.snippetory.sql.Statement;
-import org.jproggy.snippetory.sql.spi.ConnectionProvider;
-import org.jproggy.snippetory.sql.spi.RowProcessor;
-import org.jproggy.snippetory.sql.spi.RowTransformer;
-import org.jproggy.snippetory.util.ResourceObserver;
-import org.jproggy.snippetory.util.ResourceObserver.Ref;
-import org.jproggy.snippetory.util.concurrent.ArrayBlockingQueue;
-import org.jproggy.snippetory.util.concurrent.BlockingQueue;
-import org.jproggy.snippetory.util.concurrent.QueueClosedException;
-import org.jproggy.snippetory.util.concurrent.Sink;
-import org.jproggy.snippetory.util.concurrent.Source;
 
 public class StatementImpl extends Region implements Statement, StatementBinder {
   private ConnectionProvider connectionProvider;
@@ -106,7 +101,7 @@ public class StatementImpl extends Region implements Statement, StatementBinder 
 
   @Override
   public <T> List<T> list(RowTransformer<T> transformer) {
-    try (Cursor<T> rows = directCursor(transformer)) {
+    try (Cursor<T> rows = cursor(transformer)) {
       List<T> result =  new ArrayList<>();
       for (T row: rows) {
         result.add(row);
@@ -136,19 +131,9 @@ public class StatementImpl extends Region implements Statement, StatementBinder 
   }
 
   @Override
-  public <T> Cursor<T> directCursor(RowTransformer<T> transformer) {
+  public <T> Cursor<T> cursor(RowTransformer<T> transformer) {
     DirectCursor<T> c = new DirectCursor<>(transformer);
     Ref handle = resources.observe(c, c.sql);
-    c.setHandle(handle);
-    return c;
-  }
-
-  @Override
-  public <T> Cursor<T> readAheadCursor(RowTransformer<T> transformer) {
-    final Task<T> task = new Task<>(transformer, new ArrayBlockingQueue<T>(200));
-    runner.execute(task);
-    ReadAheadCursor<T> c = new ReadAheadCursor<>(task);
-    Ref handle = resources.observe(c, () -> task.queue.close(true));
     c.setHandle(handle);
     return c;
   }
@@ -300,66 +285,6 @@ public class StatementImpl extends Region implements Statement, StatementBinder 
     @Override
     public void run() {
       close();
-    }
-  }
-  private static class ReadAheadCursor<T> implements Cursor<T> {
-    private final Task<T> task;
-    private final Source<T> source;
-    private Ref handle;
-
-    public ReadAheadCursor(Task<T> t) {
-      this.task = t;
-      this.source = task.queue.source();
-    }
-
-    @Override
-    public void close() {
-      source.close();
-      if (handle != null) {
-        handle.close();
-        handle = null;
-      }
-      if (task.throwable != null) {
-        throw new SnippetoryException(task.throwable);
-      }
-    }
-
-    @Override
-    public Iterator<T> iterator() {
-      return source.iterator();
-    }
-
-    public void setHandle(Ref handle) {
-      this.handle = handle;
-    }
-  }
-
-  private class Task<T> implements Runnable {
-    private final RowTransformer<T> transformer;
-    final BlockingQueue<T> queue;
-    volatile Throwable throwable;
-
-    public Task(RowTransformer<T> transformer, BlockingQueue<T> queue) {
-      this.queue = queue;
-      this.transformer = transformer;
-    }
-
-    @Override
-    public void run() {
-      try (Sink<T> s = queue.sink();
-          Connection con = getConnection();
-          PreparedStatement ps = getStatement(con);
-          ResultSet rs = ps.executeQuery() ) {
-        while (rs.next()) {
-          s.put(transformer.transformRow(rs));
-        }
-      } catch (QueueClosedException e) {
-        // ignored on the assumption that the client closed the queue
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-      } catch (Throwable e) {
-        throwable = e;
-      }
     }
   }
 }

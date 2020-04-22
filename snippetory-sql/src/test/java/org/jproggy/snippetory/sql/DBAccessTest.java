@@ -17,25 +17,6 @@ package org.jproggy.snippetory.sql;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
-import java.io.File;
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.jproggy.snippetory.UriResolver;
 import org.jproggy.snippetory.engine.SnippetoryException;
 import org.jproggy.snippetory.sql.spi.ConnectionProvider;
@@ -48,6 +29,24 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import java.io.File;
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 @RunWith(Parameterized.class)
 public class DBAccessTest {
   static ConnectionProvider cons;
@@ -58,7 +57,7 @@ public class DBAccessTest {
   @Parameters
   public static Iterable<String[]> dbUrls() {
     new File("target/test/db/sqlite").mkdirs();
-    List<String[]> result = new ArrayList<String[]>();
+    List<String[]> result = new ArrayList<>();
     if (System.getProperty("snippetory.test.dbUser") != null) {
         result.add(new String[]{
             "jdbc:mysql://localhost:3306/snippetory_test",
@@ -135,26 +134,13 @@ public class DBAccessTest {
   }
 
   @Test
-  public void testDirectCursor() throws Exception {
+  public void testCursor() throws Exception {
     int count = 0;
-    try ( Cursor<Map<String, Object>> data = repo.get("selectSimpleTable").directCursor(SQL.asMap());) {
+    try (Cursor<Map<String, Object>> data = repo.get("selectSimpleTable").cursor(SQL.asMap());) {
       for (Map<String, Object> item: data) {
         count++;
         assertEquals(5, item.size());
         assertEquals(Integer.class, item.get("simple_id").getClass());
-      }
-    }
-    assertEquals(5, count);
-  }
-
-  @Test
-  public void testReadaheadCursor() throws Exception {
-    int count = 0;
-    try ( Cursor<Object[]> data = repo.get("selectSimpleTable").readAheadCursor(SQL.asObjects());) {
-      for (Object[] item: data) {
-        count++;
-        assertEquals(5, item.length);
-        assertEquals(Integer.class, item[0].getClass());
       }
     }
     assertEquals(5, count);
