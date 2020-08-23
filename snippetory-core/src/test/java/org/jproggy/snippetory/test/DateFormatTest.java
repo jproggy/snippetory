@@ -30,7 +30,7 @@ public class DateFormatTest {
   }
 
   private static final java.sql.Date D1 = java.sql.Date.valueOf("2011-10-15");
-  private static final Date D1_TIME = new Date(D1.getTime() + 3915000l);
+  private static final Date D1_TIME = new Date(D1.getTime() + 3915000L);
 
   @Test
   public void jsDate() {
@@ -85,28 +85,28 @@ public class DateFormatTest {
   public void germanFullShort() {
     Template date = XML_ALIKE.parse("{v:test date='full_short'}", Locale.GERMAN);
     date.set("test", D1);
-    assertEquals("Samstag, 15. Oktober 2011 00:00", date.toString());
+    assertEquals("Samstag, 15. Oktober 2011, 00:00", date.toString());
   }
 
   @Test
   public void germanFullFull() {
     Template date = XML_ALIKE.parse("{v:test date=\"full_full\"}", Locale.GERMAN);
     date.set("test", D1);
-    assertEquals("Samstag, 15. Oktober 2011 00:00 Uhr GMT", date.toString());
+    assertEquals("Samstag, 15. Oktober 2011 um 00:00:00 Mittlere Greenwich-Zeit", date.toString());
   }
 
   @Test
   public void germanShortLong() {
     Template date = XML_ALIKE.parse("<t:test date='short_long'></t:test>", Locale.GERMAN);
     date.set("test", D1);
-    assertEquals("15.10.11 00:00:00 GMT", date.toString());
+    assertEquals("15.10.11, 00:00:00 GMT", date.toString());
   }
 
   @Test
   public void germanMask() {
     Template date = XML_ALIKE.parse("<t:test date=\"w/MM yyyy\"></t:test>", Locale.GERMAN);
     date.set("test", D1);
-    assertEquals("41/10 2011", date.toString());
+    assertEquals("42/10 2011", date.toString());
   }
 
   @Test
@@ -120,14 +120,14 @@ public class DateFormatTest {
   public void chinaShortFull() {
     Template date = XML_ALIKE.parse("{v:test date='short_full'}", Locale.SIMPLIFIED_CHINESE);
     date.set("test", D1_TIME);
-    assertEquals("11-10-15 上午01时05分15秒 GMT", date.toString());
+    assertEquals("2011/10/15 格林尼治标准时间 上午1:05:15", date.toString());
   }
 
   @Test
   public void china_medium() {
     Template date = XML_ALIKE.parse("{v:test date='_medium'}", Locale.SIMPLIFIED_CHINESE);
     date.set("test", D1_TIME);
-    assertEquals("1:05:15", date.toString());
+    assertEquals("上午1:05:15", date.toString());
   }
 
   @Test
@@ -141,7 +141,7 @@ public class DateFormatTest {
   public void usShortFull() {
     Template date = XML_ALIKE.parse("{v:test date='short_full'}", Locale.US);
     date.set("test", D1_TIME);
-    assertEquals("10/15/11 1:05:15 AM GMT", date.toString());
+    assertEquals("10/15/11, 1:05:15 AM Greenwich Mean Time", date.toString());
   }
 
   @Test
@@ -155,7 +155,7 @@ public class DateFormatTest {
   public void germanShortFull() {
     Template date = XML_ALIKE.parse("{v:test date='short_full'}", Locale.GERMAN);
     date.set("test", D1_TIME);
-    assertEquals("15.10.11 01:05 Uhr GMT", date.toString());
+    assertEquals("15.10.11, 01:05:15 Mittlere Greenwich-Zeit", date.toString());
   }
 
   @Test
@@ -169,21 +169,21 @@ public class DateFormatTest {
   public void jpLongLong() {
     Template date = XML_ALIKE.parse("{v:test date='long_long'}", Locale.JAPANESE);
     date.set("test", D1);
-    assertEquals("2011/10/15 0:00:00 GMT", date.toString());
+    assertEquals("2011年10月15日 0:00:00 GMT", date.toString());
   }
 
   @Test
   public void frFullLong() {
     Template date = XML_ALIKE.read("{v:test}").locale(Locale.FRENCH).attrib("date", "full_long").parse();
     date.set("test", D1);
-    assertEquals("samedi 15 octobre 2011 00:00:00 GMT", date.toString());
+    assertEquals("samedi 15 octobre 2011 à 00:00:00 GMT", date.toString());
   }
 
   @Test
   public void korean() {
     Template date = XML_ALIKE.parse("{v:test date=\"\"}", Locale.KOREAN);
     date.set("test", D1);
-    assertEquals("2011. 10. 15", date.toString());
+    assertEquals("2011. 10. 15.", date.toString());
   }
 
   @Test

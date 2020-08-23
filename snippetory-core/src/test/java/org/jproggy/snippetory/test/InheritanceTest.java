@@ -46,26 +46,26 @@ public class InheritanceTest {
       date.get("test").set("d1", D1).set("d2", D1_TIME).render();
       date.get("test").set("d1", D2).render();
       assertEquals(
-          "Date: Oct 15, 2011 12:00:00 AM GMT Other date: Oct 15, 2011 1:05:15 AM GMT\nDate: Oct 6, 2011 12:00:00 AM GMT\n",
+          "Date: Oct 15, 2011, 12:00:00 AM GMT Other date: Oct 15, 2011, 1:05:15 AM GMT\nDate: Oct 6, 2011, 12:00:00 AM GMT\n",
           date.toString());
 
       Template test = date.get("test");
       assertEquals("Date: {v:d1}\n", test.toString());
       test.set("d2", D2).set("d1", D2);
-      assertEquals("Date: Oct 6, 2011 12:00:00 AM GMT Other date: Oct 6, 2011 12:00:00 AM GMT\n", test.toString());
+      assertEquals("Date: Oct 6, 2011, 12:00:00 AM GMT Other date: Oct 6, 2011, 12:00:00 AM GMT\n", test.toString());
       assertEquals(
-          "Date: Oct 15, 2011 12:00:00 AM GMT Other date: Oct 15, 2011 1:05:15 AM GMT\nDate: Oct 6, 2011 12:00:00 AM GMT\n",
+          "Date: Oct 15, 2011, 12:00:00 AM GMT Other date: Oct 15, 2011, 1:05:15 AM GMT\nDate: Oct 6, 2011, 12:00:00 AM GMT\n",
           date.toString());
 
       date.set("test", D2);
-      assertEquals("Oct 6, 2011 12:00:00 AM GMT", date.toString());
+      assertEquals("Oct 6, 2011, 12:00:00 AM GMT", date.toString());
 
       date = date.get();
       assertEquals("", date.toString());
       date.get("test").set("d1", D1).set("d2", D1_TIME).render();
       date.get("test").set("d1", D2).render();
       assertEquals(
-          "Date: Oct 15, 2011 12:00:00 AM GMT Other date: Oct 15, 2011 1:05:15 AM GMT\nDate: Oct 6, 2011 12:00:00 AM GMT\n",
+          "Date: Oct 15, 2011, 12:00:00 AM GMT Other date: Oct 15, 2011, 1:05:15 AM GMT\nDate: Oct 6, 2011, 12:00:00 AM GMT\n",
           date.toString());
     }
 
@@ -76,21 +76,21 @@ public class InheritanceTest {
       Template test1 = date.get("test");
       test1.set("d2", D1_TIME).render();
       date.set("d1", D1);
-      assertEquals("Date: 10/15/11 12:00:00 AM Other date: 10/15/11 1:05:15 AM", date.toString());
+      assertEquals("Date: 10/15/11, 12:00:00 AM Other date: 10/15/11, 1:05:15 AM", date.toString());
       date.set("test", D2);
-      assertEquals("Date: 10/15/11 12:00:00 AM10/6/11 12:00:00 AM", date.toString());
+      assertEquals("Date: 10/15/11, 12:00:00 AM10/6/11, 12:00:00 AM", date.toString());
 
       Template test2 = date.get("test");
       assertEquals(" Other date: {v:d2}", test2.toString());
       test2.set("d2", D2);
-      assertEquals(" Other date: 10/15/11 1:05:15 AM", test1.toString());
-      assertEquals(" Other date: 10/6/11 12:00:00 AM", test2.toString());
+      assertEquals(" Other date: 10/15/11, 1:05:15 AM", test1.toString());
+      assertEquals(" Other date: 10/6/11, 12:00:00 AM", test2.toString());
 
       date = date.get();
       assertEquals("", date.toString());
       date.set("d1", D2).get("test").set("d2", D2).render();
       date.set("d1", D1);
-      assertEquals("Date: 10/15/11 12:00:00 AM Other date: 10/6/11 12:00:00 AM", date.toString());
+      assertEquals("Date: 10/15/11, 12:00:00 AM Other date: 10/6/11, 12:00:00 AM", date.toString());
     }
 
     @Test
@@ -101,21 +101,21 @@ public class InheritanceTest {
       Template test1 = date.get("test");
       test1.set("d2", D1_TIME).render();
       date.set("d1", D1);
-      assertEquals("Date: 10/15/11 12:00:00 AM Other date: 10/15/11 1:05:15 AM", date.toString());
+      assertEquals("Date: 10/15/11, 12:00:00 AM Other date: 10/15/11, 1:05:15 AM", date.toString());
       date.set("test", D2);
-      assertEquals("Date: 10/15/11 12:00:00 AM10/6/11 12:00:00 AM", date.toString());
+      assertEquals("Date: 10/15/11, 12:00:00 AM10/6/11, 12:00:00 AM", date.toString());
 
       Template test2 = date.get("test");
       assertEquals("", test2.toString());
       test2.set("d2", D2);
-      assertEquals(" Other date: 10/15/11 1:05:15 AM", test1.toString());
-      assertEquals(" Other date: 10/6/11 12:00:00 AM", test2.toString());
+      assertEquals(" Other date: 10/15/11, 1:05:15 AM", test1.toString());
+      assertEquals(" Other date: 10/6/11, 12:00:00 AM", test2.toString());
 
       date = date.get();
       assertEquals("", date.toString());
       date.set("d1", D2).get("test").set("d2", D2).render();
       date.set("d1", D1);
-      assertEquals("Date: 10/15/11 12:00:00 AM Other date: 10/6/11 12:00:00 AM", date.toString());
+      assertEquals("Date: 10/15/11, 12:00:00 AM Other date: 10/6/11, 12:00:00 AM", date.toString());
     }
   }
 
@@ -187,7 +187,7 @@ public class InheritanceTest {
           .get("test");
       date.set("d1", D1);
       date.set("d2", D2);
-      assertEquals("Date 1: 2011-10-15 Date 2: 06.10.11 00:00 Uhr GMT ", date.toString());
+      assertEquals("Date 1: 2011-10-15 Date 2: 06.10.11, 00:00:00 Mittlere Greenwich-Zeit ", date.toString());
 
     }
 
