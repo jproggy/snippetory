@@ -20,6 +20,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -41,6 +42,7 @@ import org.jproggy.snippetory.spi.Configurer;
 import org.jproggy.snippetory.spi.DynamicAttributes;
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.FormatConfiguration;
+import org.jproggy.snippetory.spi.Link;
 
 public class Attributes {
   public static final String BACKWARD = "backward";
@@ -55,12 +57,13 @@ public class Attributes {
     return result;
   }
 
-  Map<String, FormatConfiguration> formats = new LinkedHashMap<String, FormatConfiguration>();
+  Map<String, FormatConfiguration> formats = new LinkedHashMap<>();
   Encoding enc;
+  Link link;
   String delimiter;
   String prefix;
   String suffix;
-  private TemplateContext ctx;
+  private final TemplateContext ctx;
 
   Attributes(Location parent, TemplateContext ctx) {
     enc = parent == null ? Encodings.NULL : parent.md.enc;
@@ -112,11 +115,14 @@ public class Attributes {
     }
   }
 
-  @SuppressWarnings("unchecked")
   private PropertyEditor toEditor(PropertyDescriptor prop) throws InstantiationException, IllegalAccessException {
     Class<?> editorType = prop.getPropertyEditorClass();
     if (editorType != null) {
-      return (PropertyEditor)editorType.newInstance();
+      try {
+        return (PropertyEditor) editorType.getConstructor().newInstance();
+      } catch (InvocationTargetException | NoSuchMethodException e) {
+        throw new SnippetoryException(e);
+      }
     }
     Class<?> type = prop.getPropertyType();
     if (Enum.class.isAssignableFrom(type)) {
@@ -131,6 +137,16 @@ public class Attributes {
       void handle(Attributes target, String key, String value) {
         FormatConfiguration format = FormatRegistry.INSTANCE.get(key, value, target.ctx);
         target.formats.put(key, format);
+      }
+    },
+    LINK {
+      @Override
+      void handle(Attributes target, String key, String value) {
+        Link link = LinkRegistry.INSTANCE.get(key, value, target.ctx);
+        if (target.link != null) {
+          throw new SnippetoryException("Only one link per node possible");
+        }
+        target.link = link;
       }
     },
     ENCODING {
@@ -206,7 +222,7 @@ public class Attributes {
   }
 
   public static class Registry {
-    private final Map<String, Types> attribs = new HashMap<String, Types>();
+    private final Map<String, Types> attribs = new HashMap<>();
 
     private Registry() {}
 

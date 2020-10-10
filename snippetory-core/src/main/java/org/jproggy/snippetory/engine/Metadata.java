@@ -21,6 +21,7 @@ import java.util.Set;
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.FormatConfiguration;
+import org.jproggy.snippetory.spi.Link;
 import org.jproggy.snippetory.spi.TemplateNode;
 import org.jproggy.snippetory.spi.Transcoding;
 import org.jproggy.snippetory.spi.VoidFormat;
@@ -30,12 +31,13 @@ public class Metadata implements VoidFormat {
   public Metadata(String name, String fragment, Attributes attribs) {
     super();
     this.name = name;
-    this.formats = attribs.formats.values().toArray(new FormatConfiguration[attribs.formats.size()]);
+    this.formats = attribs.formats.values().toArray(new FormatConfiguration[0]);
     this.enc = attribs.enc;
     this.fragment = fragment;
     this.delimiter = attribs.delimiter;
     this.prefix = attribs.prefix;
     this.suffix = attribs.suffix;
+    this.link = attribs.link;
   }
 
   final String name;
@@ -45,6 +47,7 @@ public class Metadata implements VoidFormat {
   final String delimiter;
   final String prefix;
   final String suffix;
+  final Link link;
 
   public CharSequence getFallback() {
     if (prefix != null || suffix != null) return "";

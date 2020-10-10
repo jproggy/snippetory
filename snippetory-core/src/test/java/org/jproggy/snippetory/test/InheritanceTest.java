@@ -35,7 +35,7 @@ public class InheritanceTest {
 
   private static final java.sql.Date D2 = java.sql.Date.valueOf("2011-10-06");
   private static final java.sql.Date D1 = java.sql.Date.valueOf("2011-10-15");
-  private static final Date D1_TIME = new Date(D1.getTime() + 3915000l);
+  private static final Date D1_TIME = new Date(D1.getTime() + 3_915_000L);
 
   public static class FormRoot {
 
@@ -46,16 +46,19 @@ public class InheritanceTest {
       date.get("test").set("d1", D1).set("d2", D1_TIME).render();
       date.get("test").set("d1", D2).render();
       assertEquals(
-          "Date: Oct 15, 2011, 12:00:00 AM GMT Other date: Oct 15, 2011, 1:05:15 AM GMT\nDate: Oct 6, 2011, 12:00:00 AM GMT\n",
-          date.toString());
+              "Date: Oct 15, 2011, 12:00:00 AM GMT Other date: Oct 15, 2011, 1:05:15 AM GMT\nDate: Oct 6, 2011, 12:00:00 AM GMT\n",
+              date.toString());
 
       Template test = date.get("test");
       assertEquals("Date: {v:d1}\n", test.toString());
       test.set("d2", D2).set("d1", D2);
-      assertEquals("Date: Oct 6, 2011, 12:00:00 AM GMT Other date: Oct 6, 2011, 12:00:00 AM GMT\n", test.toString());
       assertEquals(
-          "Date: Oct 15, 2011, 12:00:00 AM GMT Other date: Oct 15, 2011, 1:05:15 AM GMT\nDate: Oct 6, 2011, 12:00:00 AM GMT\n",
-          date.toString());
+              "Date: Oct 6, 2011, 12:00:00 AM GMT Other date: Oct 6, 2011, 12:00:00 AM GMT\n",
+              test.toString()
+      );
+      assertEquals(
+              "Date: Oct 15, 2011, 12:00:00 AM GMT Other date: Oct 15, 2011, 1:05:15 AM GMT\nDate: Oct 6, 2011, 12:00:00 AM GMT\n",
+              date.toString());
 
       date.set("test", D2);
       assertEquals("Oct 6, 2011, 12:00:00 AM GMT", date.toString());

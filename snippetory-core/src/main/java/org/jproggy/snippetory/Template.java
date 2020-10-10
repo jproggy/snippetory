@@ -130,6 +130,16 @@ public interface Template extends EncodedData {
     public boolean isPresent() {
       return false;
     }
+
+    @Override
+    public Template getParent() {
+      return null;
+    }
+
+    @Override
+    public String toString() {
+      return "";
+    }
   };
 
   /**
@@ -260,6 +270,11 @@ public interface Template extends EncodedData {
    * is a subset of the names delivered by <code>names()</code>.
    */
   Set<String> regionNames();
+
+  /**
+   * The parent node of this node. If this node is absent or the root of a particular structure result might be null.
+   */
+  Template getParent();
 
   /**
    * Check whether this instance represents a real template and not the 'null' template.

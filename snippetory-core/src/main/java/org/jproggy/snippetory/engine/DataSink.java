@@ -16,6 +16,8 @@ package org.jproggy.snippetory.engine;
 
 import java.util.Set;
 
+import org.jproggy.snippetory.spi.Link;
+
 public interface DataSink {
 
   /**
@@ -79,5 +81,5 @@ public interface DataSink {
   /**
    * Acquire the sub sub-template selected by its name
    */
-  Region getChild(String name);
+  Link getChild(String name);
 }

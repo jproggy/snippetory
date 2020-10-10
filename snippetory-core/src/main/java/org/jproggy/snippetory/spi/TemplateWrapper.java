@@ -115,7 +115,12 @@ public abstract class TemplateWrapper implements Template {
   public Set<String> regionNames() {
     return wrapped.regionNames();
   }
-  
+
+  @Override
+  public Template getParent() {
+    return wrap(wrapped.getParent());
+  }
+
   @Override
   public boolean isPresent() {
     return wrapped.isPresent();

@@ -14,17 +14,6 @@
 
 package org.jproggy.snippetory.sql.impl;
 
-import org.jproggy.snippetory.engine.Location;
-import org.jproggy.snippetory.engine.Region;
-import org.jproggy.snippetory.engine.SnippetoryException;
-import org.jproggy.snippetory.sql.Cursor;
-import org.jproggy.snippetory.sql.Statement;
-import org.jproggy.snippetory.sql.spi.ConnectionProvider;
-import org.jproggy.snippetory.sql.spi.RowProcessor;
-import org.jproggy.snippetory.sql.spi.RowTransformer;
-import org.jproggy.snippetory.util.ResourceObserver;
-import org.jproggy.snippetory.util.ResourceObserver.Ref;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,6 +26,17 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+
+import org.jproggy.snippetory.engine.Location;
+import org.jproggy.snippetory.engine.Region;
+import org.jproggy.snippetory.engine.SnippetoryException;
+import org.jproggy.snippetory.sql.Cursor;
+import org.jproggy.snippetory.sql.Statement;
+import org.jproggy.snippetory.sql.spi.ConnectionProvider;
+import org.jproggy.snippetory.sql.spi.RowProcessor;
+import org.jproggy.snippetory.sql.spi.RowTransformer;
+import org.jproggy.snippetory.util.ResourceObserver;
+import org.jproggy.snippetory.util.ResourceObserver.Ref;
 
 public class StatementImpl extends Region implements Statement, StatementBinder {
   private ConnectionProvider connectionProvider;
@@ -103,23 +103,15 @@ public class StatementImpl extends Region implements Statement, StatementBinder 
   public <T> List<T> list(RowTransformer<T> transformer) {
     try (Cursor<T> rows = cursor(transformer)) {
       List<T> result =  new ArrayList<>();
-      for (T row: rows) {
-        result.add(row);
-      }
+      rows.forEach(result::add);
       return result;
     }
   }
 
   @Override
-  public <K, V> Map<K, V> map(final RowTransformer<K> key, final RowTransformer<V> value) {
-    final Map<K,V> result =  new LinkedHashMap<>();
-
-    forEach(new RowProcessor() {
-      @Override
-      public void processRow(ResultSet rs) throws SQLException {
-        result.put(key.transformRow(rs), value.transformRow(rs));
-      }
-    });
+  public <K, V> Map<K, V> map(RowTransformer<K> key, RowTransformer<V> value) {
+    final Map<K, V> result = new LinkedHashMap<>();
+    forEach(rs -> result.put(key.transformRow(rs), value.transformRow(rs)));
     return result;
   }
 
@@ -154,8 +146,8 @@ public class StatementImpl extends Region implements Statement, StatementBinder 
   }
 
   @Override
-  protected StatementImpl getParent() {
-    return (StatementImpl)super.getParent();
+  public StatementImpl getParent() {
+    return (StatementImpl) super.getParent();
   }
 
   private Connection getConnection() {
