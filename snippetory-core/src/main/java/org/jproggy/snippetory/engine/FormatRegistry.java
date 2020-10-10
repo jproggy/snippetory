@@ -23,7 +23,7 @@ import org.jproggy.snippetory.spi.FormatConfiguration;
 import org.jproggy.snippetory.spi.FormatFactory;
 
 public final class FormatRegistry {
-  private Map<String, FormatFactory> formats = new HashMap<String, FormatFactory>();
+  private Map<String, FormatFactory> formats = new HashMap<>();
 
   private FormatRegistry() {}
 
