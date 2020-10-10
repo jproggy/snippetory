@@ -28,6 +28,7 @@ import java.util.ServiceLoader;
 
 import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.TemplateContext;
+import org.jproggy.snippetory.engine.spi.AliasLink;
 import org.jproggy.snippetory.engine.spi.CaseFormatter;
 import org.jproggy.snippetory.engine.spi.CropFormatter;
 import org.jproggy.snippetory.engine.spi.DateFormatter;
@@ -60,6 +61,7 @@ public class Attributes {
   Map<String, FormatConfiguration> formats = new LinkedHashMap<>();
   Encoding enc;
   Link link;
+  String linkName;
   String delimiter;
   String prefix;
   String suffix;
@@ -81,29 +83,32 @@ public class Attributes {
   }
 
   private void subAttribute(String parent, String attrib, String value) {
-    FormatConfiguration format = formats.get(parent);
-    if (format == null) {
-      throw new SnippetoryException("Missing parent " + parent + " for sub-attribute " + attrib + "='" + value + '\'');
+    Object base = formats.get(parent);
+    if (base == null) {
+      if (!parent.equals(linkName)) {
+        throw new SnippetoryException("Missing parent " + parent + " for sub-attribute " + attrib + "='" + value + '\'');
+      }
+      base = link;
     }
     try {
-      BeanInfo desc = Introspector.getBeanInfo(format.getClass());
+      BeanInfo desc = Introspector.getBeanInfo(base.getClass());
       for (PropertyDescriptor prop : desc.getPropertyDescriptors()) {
         if (prop.getName().equals(attrib)) {
-          setProperty(format, prop, value);
+          setProperty(base, prop, value);
           return;
         }
       }
     } catch (IntrospectionException e) {
       throw new SnippetoryException(e);
     }
-    if (format instanceof DynamicAttributes) {
-      ((DynamicAttributes)format).setAttribute(attrib, value);
+    if (base instanceof DynamicAttributes) {
+      ((DynamicAttributes) base).setAttribute(attrib, value);
       return;
     }
     throw new SnippetoryException("Can't understand attribute " + parent + '.' + attrib + "='" + value + "'");
   }
 
-  private void setProperty(FormatConfiguration format, PropertyDescriptor prop, String value) {
+  private void setProperty(Object format, PropertyDescriptor prop, String value) {
     try {
       PropertyEditor editor = toEditor(prop);
       editor.setAsText(value);
@@ -147,6 +152,7 @@ public class Attributes {
           throw new SnippetoryException("Only one link per node possible");
         }
         target.link = link;
+        target.linkName = key;
       }
     },
     ENCODING {
@@ -211,6 +217,7 @@ public class Attributes {
     FormatRegistry.INSTANCE.register("case", new CaseFormatter());
     FormatRegistry.INSTANCE.register("default", new DefaultFormatter());
     FormatRegistry.INSTANCE.register("null", new NullFormatter());
+    LinkRegistry.INSTANCE.register("alias", AliasLink::new);
     for (Encodings e : Encodings.values()) {
       EncodingRegistry.INSTANCE.register(e);
     }

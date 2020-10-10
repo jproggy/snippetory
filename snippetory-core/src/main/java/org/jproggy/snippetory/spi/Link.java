@@ -15,6 +15,7 @@
 package org.jproggy.snippetory.spi;
 
 import org.jproggy.snippetory.Template;
+import org.jproggy.snippetory.engine.LinkRegistry;
 
 /**
  * A can be denoted on a named location and will turn it into a named region then.
@@ -22,5 +23,7 @@ import org.jproggy.snippetory.Template;
  * by the respective {@link Syntax}.
  */
 public interface Link {
-  Template getContents(Template parentNode);
+  LinkRegistry REGISTRY = LinkRegistry.INSTANCE;
+
+  Template getContents(Template parentNode, String nodeName);
 }

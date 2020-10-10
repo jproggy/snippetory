@@ -35,6 +35,7 @@ import java.util.Locale;
 
 import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.Repo;
+import org.jproggy.snippetory.Syntaxes;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.UriResolver;
@@ -52,9 +53,9 @@ public class RegionTest {
   @Test
   public void charAtTest() {
     Location placeHolder = new Location(null, new Metadata("", "", Attributes.parse(null,
-        Collections.<String, String> emptyMap(), null)));
-    List<DataSink> parts = Arrays.asList((DataSink)tf(""), tf("test"), tf("yagni"));
-    Region region = new Region(new DataSinks(parts, placeHolder), Collections.<String, Region> emptyMap());
+            Collections.emptyMap(), null)));
+    List<DataSink> parts = Arrays.asList(tf(""), tf("test"), tf("yagni"));
+    Region region = new Region(new DataSinks(parts, placeHolder), Collections.<String, Region>emptyMap());
     assertEquals('t', region.charAt(0));
     assertEquals('e', region.charAt(1));
     assertEquals('s', region.charAt(2));
@@ -86,19 +87,19 @@ public class RegionTest {
     } catch (Exception e) {
       // ignore --> expected
     }
-    parts = Arrays.asList((DataSink)tf("test"), tf(""), tf("yagni"), tf(""), tf("jproggy"));
-    region = new Region(new DataSinks(parts, placeHolder), Collections.<String, Region> emptyMap());
+    parts = Arrays.asList((DataSink) tf("test"), tf(""), tf("yagni"), tf(""), tf("jproggy"));
+    region = new Region(new DataSinks(parts, placeHolder), Collections.<String, Region>emptyMap());
     assertEquals('y', region.charAt(4));
     assertEquals('y', region.charAt(15));
   }
 
   private Template template;
-  private String[] variants = { "row1", "row2", "row3", };
-  private List<Object> data = new ArrayList<>();
+  private final String[] variants = {"row1", "row2", "row3", "row4",};
+  private final List<Object> data = new ArrayList<>();
 
   @Before
   public void init() {
-    template = Repo.readResource("testTable.htm").locale(Locale.US).parse();
+    template = Syntaxes.FLUYT.context().uriResolver(UriResolver.resource()).locale(Locale.US).getTemplate("testTable.htm");
     for (int i = 0; i < 111; i++) {
       data.add(String.valueOf(i));
     }
@@ -138,7 +139,7 @@ public class RegionTest {
       }
       weekTpl.render();
     }
-    try (FileWriter out = new FileWriter("target/calendarOut.html");) {
+    try (FileWriter out = new FileWriter("target/calendarOut.html")) {
       calendar.render(out);
     }
   }
@@ -195,9 +196,8 @@ public class RegionTest {
       nul.close();
     } catch (IOException e) {
       throw new RuntimeException(e);
-    } finally {
-      Assert.assertEquals(n, i);
     }
+    Assert.assertEquals(n, i);
   }
 
   private static class NUL extends Writer {

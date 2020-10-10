@@ -80,7 +80,7 @@ public class Region implements Template, CharSequence, SelfAppender {
     }
     Link child = data.getChild(name);
     if (child == null) return null;
-    return child.getContents(this);
+    return child.getContents(this, name);
   }
 
   protected Region cleanChild(Region child) {

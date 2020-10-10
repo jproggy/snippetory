@@ -25,7 +25,7 @@ public class Reference implements Link {
   }
 
   @Override
-  public Template getContents(Template parentNode) {
+  public Template getContents(Template parentNode, String name) {
     if (target == null) return null;
     target.setParent((Region) parentNode);
     return target;

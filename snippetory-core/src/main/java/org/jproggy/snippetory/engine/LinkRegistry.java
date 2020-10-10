@@ -23,18 +23,18 @@ import org.jproggy.snippetory.spi.Link;
 import org.jproggy.snippetory.spi.LinkFactory;
 
 public final class LinkRegistry {
-  private Map<String, LinkFactory> formats = new HashMap<>();
+  private Map<String, LinkFactory> links = new HashMap<>();
 
   private LinkRegistry() {
   }
 
   public void register(String name, LinkFactory value) {
     Attributes.REGISTRY.register(name, Types.LINK);
-    formats.put(name, value);
+    links.put(name, value);
   }
 
   public Link get(String name, String definition, TemplateContext ctx) {
-    LinkFactory f = formats.get(name);
+    LinkFactory f = links.get(name);
     if (f == null) {
       return null;
     }
