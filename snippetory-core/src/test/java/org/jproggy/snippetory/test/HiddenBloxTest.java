@@ -15,14 +15,14 @@
 package org.jproggy.snippetory.test;
 
 import static org.jproggy.snippetory.Syntaxes.HIDDEN_BLOCKS;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.jproggy.snippetory.Template;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class HiddenBloxTest {
+class HiddenBloxTest {
   @Test
-  public void hiddenBlox() {
+  void hiddenBlox() {
     Template t1 = HIDDEN_BLOCKS.parse("/*t:test*/ i++; /*!t:test*/");
     assertEquals(" i++; ", t1.get("test").toString());
     Template t2 = HIDDEN_BLOCKS.parse("<!--t:test enc='url'*/ i++; /*!t:test-->");
@@ -40,7 +40,7 @@ public class HiddenBloxTest {
   }
 
   @Test
-  public void lineRemovalHB() {
+  void lineRemovalHB() {
     Template t1 = HIDDEN_BLOCKS.parse("  /*t:test*/  \n i++; \n   /*!t:test*/  \n");
     t1.append("test", t1.get("test"));
     assertEquals(" i++; \n", t1.toString());
@@ -64,7 +64,7 @@ public class HiddenBloxTest {
   }
 
   @Test
-  public void delimiter() {
+  void delimiter() {
     Template t1 = HIDDEN_BLOCKS.parse("in ({v:test delimiter=', '})");
     t1.append("test", 5);
     assertEquals("in (5)", t1.toString());
@@ -80,7 +80,7 @@ public class HiddenBloxTest {
   }
 
   @Test
-  public void childTempates() {
+  void childTempates() {
     Template t1 = HIDDEN_BLOCKS.parse("in/*t:test*/ and out/*!t:test*/ and around");
     assertEquals("in and around", t1.toString());
     t1.append("test", t1.get("test"));
@@ -90,7 +90,7 @@ public class HiddenBloxTest {
     t1.clear();
     assertEquals("in and around", t1.toString());
     Template t2 = HIDDEN_BLOCKS.parse("/*t:outer*/in/*t:test*/ and {v:test}/*!t:test*/ and around/*!t:outer*/").get(
-        "outer");
+            "outer");
     t2.get("test").append("test", "hallo").render();
     assertEquals("in and hallo and around", t2.toString());
   }

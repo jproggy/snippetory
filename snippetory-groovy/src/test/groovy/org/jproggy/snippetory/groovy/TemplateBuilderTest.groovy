@@ -12,33 +12,33 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-package org.jproggy.snippetory.groovy;
-
-import static org.junit.Assert.*
+package org.jproggy.snippetory.groovy
 
 import org.jproggy.snippetory.Encodings
 import org.jproggy.snippetory.Syntaxes
-import org.junit.Test
+import org.junit.jupiter.api.Test
+
+import static org.junit.jupiter.api.Assertions.assertEquals
 
 class TemplateBuilderTest {
 
   @Test
-  public void test1() {
+  void test1() {
     def t = new TemplateBuilder('$region(delimiter=" "){text$x}$');
-    t.region(x:"test");
-    t.region{x "other"};
+    t.region(x: "test");
+    t.region { x "other" };
     assertEquals("texttest textother", t.toString());
   }
 
   @Test
-  public void test2() {
+  void test2() {
     def t = new TemplateBuilder('$region(delimiter=" "){text$x}$');
     t.region("test").region("other");
     assertEquals("test other", t.toString());
   }
 
   @Test
-  public void test3() {
+  void test3() {
     def t = new TemplateBuilder('$region(delimiter=" "){text$x}$');
     t {
       region "test"
@@ -48,7 +48,7 @@ class TemplateBuilderTest {
   }
 
   @Test
-  public void test4() {
+  void test4() {
     def t = new TemplateBuilder('$region{text$x(delimiter=" ")}$');
     t.region {
       x "test"
@@ -58,16 +58,16 @@ class TemplateBuilderTest {
   }
 
   @Test
-  public void test5() {
+  void test5() {
     def t = new TemplateBuilder('$region{text$x(delimiter=" ")}$');
     t.region {
-      x ("test", "other")
+      x("test", "other")
     }
     assertEquals("texttest other", t.toString());
   }
 
   @Test
-  public void addTpl() {
+  void addTpl() {
     def t = new TemplateBuilder('$region(delimiter=" "){text$x}$');
     def tpl = Syntaxes.FLUYT.parse('$greeting $greeted')
     t.region {

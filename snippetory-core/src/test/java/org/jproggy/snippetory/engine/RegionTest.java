@@ -14,8 +14,8 @@
 
 package org.jproggy.snippetory.engine;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -39,19 +39,18 @@ import org.jproggy.snippetory.Syntaxes;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.UriResolver;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-public class RegionTest {
+class RegionTest {
 
   private static TemplateFragment tf(String v) {
     return new TemplateFragment(v);
   }
 
   @Test
-  public void charAtTest() {
+  void charAtTest() {
     Location placeHolder = new Location(null, new Metadata("", "", Attributes.parse(null,
             Collections.emptyMap(), null)));
     List<DataSink> parts = Arrays.asList(tf(""), tf("test"), tf("yagni"));
@@ -81,24 +80,19 @@ public class RegionTest {
     assertEquals('y', child.charAt(1));
     assertEquals(2, child.length());
     assertEquals("ty", child.toString());
-    try {
-      region.charAt(9);
-      fail();
-    } catch (Exception e) {
-      // ignore --> expected
-    }
+    assertThrows(Exception.class, () -> region.charAt(9));
     parts = Arrays.asList((DataSink) tf("test"), tf(""), tf("yagni"), tf(""), tf("jproggy"));
-    region = new Region(new DataSinks(parts, placeHolder), Collections.<String, Region>emptyMap());
-    assertEquals('y', region.charAt(4));
-    assertEquals('y', region.charAt(15));
+    Region region2 = new Region(new DataSinks(parts, placeHolder), Collections.<String, Region>emptyMap());
+    assertEquals('y', region2.charAt(4));
+    assertEquals('y', region2.charAt(15));
   }
 
   private Template template;
   private final String[] variants = {"row1", "row2", "row3", "row4",};
   private final List<Object> data = new ArrayList<>();
 
-  @Before
-  public void init() {
+  @BeforeEach
+  void init() {
     template = Syntaxes.FLUYT.context().uriResolver(UriResolver.resource()).locale(Locale.US).getTemplate("testTable.htm");
     for (int i = 0; i < 111; i++) {
       data.add(String.valueOf(i));
@@ -106,7 +100,7 @@ public class RegionTest {
   }
 
   @Test
-  public void read() throws MalformedURLException {
+  void read() throws MalformedURLException {
     TemplateContext context = new TemplateContext().uriResolver(UriResolver.directories("src/test/resources"));
     context.getTemplate("testTable.htm");
     context.uriResolver(UriResolver.directories(new File("src/test/resources")));
@@ -116,7 +110,7 @@ public class RegionTest {
   }
 
   @Test
-  public void calendar() throws IOException {
+  void calendar() throws IOException {
     TemporalField weekField = WeekFields.of(Locale.GERMANY).dayOfWeek();
     YearMonth month = YearMonth.of(1980, Month.FEBRUARY);
 
@@ -145,17 +139,17 @@ public class RegionTest {
   }
 
   @Test
-  public void test100() {
+  void test100() {
     testN(100);
   }
 
   @Test
-  public void test1000() {
+  void test1000() {
     testN(1000);
   }
 
   @Test
-  public void test100_1000() {
+  void test100_1000() {
     for (int i = 0; i < 1000; i++) {
       template.clear();
       testN(100);
@@ -163,22 +157,22 @@ public class RegionTest {
   }
 
   @Test
-  public void test10_000() {
+  void test10_000() {
     testN(10000);
   }
 
   @Test
-  public void test100_000() {
+  void test100_000() {
     testN(100000);
   }
 
   @Test
-  @Ignore
-  public void test1000_000() {
+  @Disabled
+  void test1000_000() {
     testN(1000000);
   }
 
-  public void testN(int n) {
+  void testN(int n) {
     int i = 0;
     try {
       int count = 0;
@@ -197,7 +191,7 @@ public class RegionTest {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-    Assert.assertEquals(n, i);
+    assertEquals(n, i);
   }
 
   private static class NUL extends Writer {

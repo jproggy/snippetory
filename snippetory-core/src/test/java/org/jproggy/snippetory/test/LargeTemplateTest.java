@@ -14,27 +14,27 @@
 
 package org.jproggy.snippetory.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Set;
 
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.UriResolver;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class LargeTemplateTest {
+class LargeTemplateTest {
   private static Template template;
 
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {
+  @BeforeAll
+  static void setUpBeforeClass() throws Exception {
     template = new TemplateContext().uriResolver(UriResolver.resource()).getTemplate("large.tpl");
   }
 
   @Test
-  public void fluyt() {
+  void fluyt() {
     Template fluyt = template.get("FLUYT");
     assertNotNull(fluyt);
     renderAll(fluyt);
@@ -42,7 +42,7 @@ public class LargeTemplateTest {
   }
 
   @Test
-  public void xmlAlike() {
+  void xmlAlike() {
     Template section = template.get("XML_ALIKE");
     assertNotNull(section);
     renderAll(section);

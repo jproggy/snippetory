@@ -12,24 +12,23 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-package org.jproggy.snippetory.groovy;
+package org.jproggy.snippetory.groovy
 
-import static org.junit.Assert.*;
+import org.jproggy.snippetory.Syntaxes
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
-import org.jproggy.snippetory.Repo;
-import org.jproggy.snippetory.Syntaxes;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TemplateDynamizerTest {
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeEach
+  void setUp() throws Exception {
     TemplateDynamizer.init();
   }
 
   @Test
-  public void test() {
+  void test() {
     def tpl = Syntaxes.FLUYT.parse('$x{test}$')
     def y = tpl.x
     assert y.toString() == "test"
@@ -37,5 +36,4 @@ class TemplateDynamizerTest {
     assert tpl.toString() == "blah"
     assertEquals("test", tpl["x"].toString())
   }
-
 }

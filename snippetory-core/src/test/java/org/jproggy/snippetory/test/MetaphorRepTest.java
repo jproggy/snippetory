@@ -15,7 +15,7 @@
 package org.jproggy.snippetory.test;
 
 import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,11 +27,11 @@ import java.util.ResourceBundle;
 import org.jproggy.snippetory.Repo;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.test.Page.Section;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MetaphorRepTest {
   @Test
-  public void test1() throws Exception {
+  void test1() throws Exception {
     // prepare necessary data
     ResourceBundle labels = ResourceBundle.getBundle("labels", Locale.US);
     Map<String, String> errors = new HashMap<>();
@@ -72,6 +72,5 @@ public class MetaphorRepTest {
 
     // finally put it all out
     assertEquals(Repo.readResource("MRResult.htm").parse().toString(), page.toString());
-
   }
 }

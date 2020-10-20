@@ -14,40 +14,40 @@
 
 package org.jproggy.snippetory;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.URL;
 
 import org.jproggy.snippetory.engine.SnippetoryException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class RepoBuilderTest {
+class RepoBuilderTest {
 
-  public void fileResourceTest() {
+  @Test
+  void fileResourceTest() {
     TemplateContext ctx = new TemplateContext();
     UriResolver resolver = UriResolver.combine().addDirectories("src/test/resources").addResource("org/jproggy");
     assertEquals("mini", resolver.resolve("mini.txt", ctx));
     assertEquals("org.jproggy.mini2", resolver.resolve("mini2.txt", ctx));
   }
 
-  @Test(expected = SnippetoryException.class)
-  public void fileResourceTestNotFound() {
+  @Test
+  void fileResourceTestNotFound() {
     TemplateContext ctx = new TemplateContext();
     UriResolver resolver = UriResolver.combine().addDirectories("src/test/resources").addResource("org/jproggy");
-    resolver.resolve("mini3.txt", ctx);
-    fail();
+    assertThrows(SnippetoryException.class, () -> resolver.resolve("mini3.txt", ctx));
   }
 
   @Test
-  public void resourceFileTest() {
+  void resourceFileTest() {
     TemplateContext ctx = new TemplateContext();
     UriResolver resolver = UriResolver.combine().addResource("org/jproggy").addDirectories("src/test/resources");
     assertEquals("org.jproggy.mini", resolver.resolve("mini.txt", ctx));
   }
 
   @Test
-  public void urlTest() {
+  void urlTest() {
     TemplateContext ctx = new TemplateContext();
     URL url = this.getClass().getResource("/mini.txt");
     UriResolver resolver = UriResolver.combine().addUrl(url);

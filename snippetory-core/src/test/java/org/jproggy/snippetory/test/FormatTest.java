@@ -15,15 +15,15 @@
 package org.jproggy.snippetory.test;
 
 import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.jproggy.snippetory.Template;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class FormatTest {
+class FormatTest {
   @Test
-  public void formatPad() {
+  void formatPad() {
     Template pad = XML_ALIKE.parse("{v:test pad='5' pad.align='right'}");
     pad.set("test", "x");
     assertEquals("    x", pad.toString());
@@ -32,7 +32,7 @@ public class FormatTest {
   }
 
   @Test
-  public void formatCrop() {
+  void formatCrop() {
     Template crop = XML_ALIKE.parse("{v:test crop='5' crop.mark='...'}");
     crop.set("test", "x");
     assertEquals("x", crop.toString());
@@ -43,7 +43,7 @@ public class FormatTest {
   }
 
   @Test
-  public void formatDefaultLocaion() {
+  void formatDefaultLocaion() {
     Template t = XML_ALIKE.parse("{v:test default='not set'}");
     assertEquals("not set", t.toString());
     t.set("test", "test");
@@ -51,7 +51,7 @@ public class FormatTest {
   }
 
   @Test
-  public void formatDefaultRegion() {
+  void formatDefaultRegion() {
     Template t = XML_ALIKE.parse("<t:test default='not set'></t:test>");
     assertEquals("not set", t.toString());
     t.set("test", "test");
@@ -59,7 +59,7 @@ public class FormatTest {
   }
 
   @Test
-  public void formatDefaultCondRegion() {
+  void formatDefaultCondRegion() {
     Template t = XML_ALIKE.parse("<t: default='not set'>{v:test}</t:>");
     assertEquals("not set", t.toString());
     t.set("test", "test");
@@ -67,7 +67,7 @@ public class FormatTest {
   }
 
   @Test
-  public void formatCase() {
+  void formatCase() {
     Template t = XML_ALIKE.parse("{v:test case='upper'}");
     t.set("test", "test");
     assertEquals("TEST", t.toString());
@@ -104,7 +104,7 @@ public class FormatTest {
   }
 
   @Test
-  public void toggle() {
+  void toggle() {
     Template t = XML_ALIKE.parse("<t:test>{v:toggle='1;2;3'}. {v: toggle='unpair;pair'}\n</t:test>");
     bindPLain(t);
     assertEquals("1. unpair\n2. pair\n3. unpair\n", t.toString());
@@ -155,30 +155,17 @@ public class FormatTest {
   }
 
   @Test
-  public void unkown() {
-    try {
-      XML_ALIKE.parse("{v: bal='blupp'}");
-      fail();
-    } catch (RuntimeException e) {
-      assertEquals("Can't understand attribute bal='blupp'", e.getCause().getMessage());
-    }
-    try {
-      XML_ALIKE.parse("{v: crop='20' crop.blub='xx'}");
-      fail();
-    } catch (RuntimeException e) {
-      assertEquals("Can't understand attribute crop.blub='xx'", e.getCause().getMessage());
-    }
-    try {
-      XML_ALIKE.parse("{v: crop='20' crap.mark='xx'}");
-      fail();
-    } catch (RuntimeException e) {
-      assertEquals("Missing parent crap for sub-attribute mark='xx'", e.getCause().getMessage());
-    }
-    try {
-      XML_ALIKE.parse("{v: crop.mark='xx'}");
-      fail();
-    } catch (RuntimeException e) {
-      assertEquals("Missing parent crop for sub-attribute mark='xx'", e.getCause().getMessage());
-    }
+  void unkown() {
+    RuntimeException e = assertThrows(RuntimeException.class, () -> XML_ALIKE.parse("{v: bal='blupp'}"));
+    assertEquals("Can't understand attribute bal='blupp'", e.getCause().getMessage());
+
+    e = assertThrows(RuntimeException.class, () -> XML_ALIKE.parse("{v: crop='20' crop.blub='xx'}"));
+    assertEquals("Can't understand attribute crop.blub='xx'", e.getCause().getMessage());
+
+    e = assertThrows(RuntimeException.class, () -> XML_ALIKE.parse("{v: crop='20' crap.mark='xx'}"));
+    assertEquals("Missing parent crap for sub-attribute mark='xx'", e.getCause().getMessage());
+
+    e = assertThrows(RuntimeException.class, () -> XML_ALIKE.parse("{v: crop.mark='xx'}"));
+    assertEquals("Missing parent crop for sub-attribute mark='xx'", e.getCause().getMessage());
   }
 }
