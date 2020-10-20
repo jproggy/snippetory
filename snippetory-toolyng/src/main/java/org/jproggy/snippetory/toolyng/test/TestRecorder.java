@@ -12,7 +12,7 @@ import org.jproggy.snippetory.Template;
 public class TestRecorder implements Template {
   Template repo;
   Template region;
-  Map<String, Template> appends = new HashMap<String, Template>();
+  Map<String, Template> appends = new HashMap<>();
 
   public TestRecorder(Template repo, Template region) {
     super();
@@ -20,19 +20,23 @@ public class TestRecorder implements Template {
     this.region = region;
   }
 
+  @Override
   public String getEncoding() {
     return repo.getEncoding();
   }
 
+  @Override
   public CharSequence toCharSequence() {
     return repo.toCharSequence();
   }
 
+  @Override
   public Template set(String name, Object val) {
     repo.get("set").set("name", name).set("data", "value").render();
     return this;
   }
 
+  @Override
   public Template append(String name, Object val) {
     if (!appends.containsKey(name)) {
       appends.put(name, repo.get("append"));
@@ -41,13 +45,14 @@ public class TestRecorder implements Template {
     return this;
   }
 
+  @Override
   public Template clear() {
     return this;
   }
 
+  @Override
   public Template get(String... name) {
     if (name.length == 0) return this;
-    @SuppressWarnings("unchecked")
     Template child = new TestRecorder(repo, region.get(name[0]));
     if (name.length > 1) {
       String[] tempNames = new String[name.length - 1];
@@ -57,40 +62,53 @@ public class TestRecorder implements Template {
     return child;
   }
 
+  @Override
   public Set<String> names() {
     // TODO Auto-generated method stub
     return null;
   }
 
+  @Override
   public Set<String> regionNames() {
     // TODO Auto-generated method stub
     return null;
   }
 
+  @Override
+  public Template getParent() {
+    return null;
+  }
+
+  @Override
   public void render() {
     // TODO Auto-generated method stub
 
   }
 
+  @Override
   public void render(String name) {
     // TODO Auto-generated method stub
 
   }
 
+  @Override
   public void render(Writer out) throws IOException {
     // TODO Auto-generated method stub
 
   }
 
+  @Override
   public boolean isPresent() {
     return false;
   }
 
+  @Override
   public void render(PrintStream out) throws IOException {
     // TODO Auto-generated method stub
 
   }
 
+  @Override
   public void render(Template arg0, String name) {
     // TODO Auto-generated method stub
 
