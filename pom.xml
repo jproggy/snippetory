@@ -70,15 +70,12 @@
     </distributionManagement>
     <properties>
         <gpg.keyname>Templa Project</gpg.keyname>
+        <!-- versions -->
+        <junit-jupiter.version>5.5.0</junit-jupiter.version>
+        <junit.version>4.13.1</junit.version>
     </properties>
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.12</version>
-                <scope>test</scope>
-            </dependency>
             <dependency>
                 <groupId>org.jproggy</groupId>
                 <artifactId>snippetory-core</artifactId>
