@@ -35,10 +35,10 @@ public class SqlSyntax extends FluytSyntax implements SyntaxID {
     createBlockPattern(patterns, TokenType.BlockEnd, END_TOKEN);
     createInlinePattern(patterns, TokenType.BlockEnd, END_TOKEN);
 
-    String field = "\\:(" + NAME + "/\\*(?:" + PLAIN_ATTRIBS + ")?)\\*/";
+    String field = "[:$](" + NAME + "/\\*(?:" + PLAIN_ATTRIBS + ")?)\\*/";
     createFieldPattern(patterns, SyntaxVariant.Named, field);
 
-    field = "\\:(" + NAME + ")" ;
+    field = "[:$](" + NAME + ")" ;
     createFieldPattern(patterns, SyntaxVariant.Named, field);
 
     field = "/\\*\\$(" + NAME + ")\\*/" ;

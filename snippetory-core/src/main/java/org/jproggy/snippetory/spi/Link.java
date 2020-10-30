@@ -12,25 +12,18 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-package org.jproggy.snippetory.util.concurrent;
+package org.jproggy.snippetory.spi;
+
+import org.jproggy.snippetory.Template;
+import org.jproggy.snippetory.engine.LinkRegistry;
 
 /**
- * Represents an operation that accepts a single input argument and returns no
- * result. Unlike most other functional interfaces, {@code Consumer} is expected
- * to operate via side-effects.
- *
- * <p>This is a functional interface. It might be replaced the respective interface
- * of Java 8 in the future.
- *
- * @author B.Ebertz
- *
- * @param <T> the type of the input to the operation
+ * A can be denoted on a named location and will turn it into a named region then.
+ * Analog to a {@link Format} a Link will be denoted via attributes in most cases, but exact rules are defined
+ * by the respective {@link Syntax}.
  */
-public interface Consumer<T> {
-  /**
-   * Performs this operation on the given argument.
-   *
-   * @param item the input argument
-   */
-  public void accept(T item);
+public interface Link {
+  LinkRegistry REGISTRY = LinkRegistry.INSTANCE;
+
+  Template getContents(Template parentNode, String nodeName);
 }

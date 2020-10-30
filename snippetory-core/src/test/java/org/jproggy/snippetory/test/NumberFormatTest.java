@@ -15,17 +15,17 @@
 package org.jproggy.snippetory.test;
 
 import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Locale;
 
 import org.jproggy.snippetory.Template;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class NumberFormatTest {
+class NumberFormatTest {
 
   @Test
-  public void formatNumber() {
+  void formatNumber() {
     Template number = XML_ALIKE.parse("{v:test number=\"0.00#\"}", Locale.GERMAN);
     number.set("test", "x");
     assertEquals("x", number.toString());
@@ -74,7 +74,7 @@ public class NumberFormatTest {
   }
 
   @Test
-  public void formatInt() {
+  void formatInt() {
     Template number = XML_ALIKE.parse("{v:test int=\"0.00#\"}", Locale.GERMAN);
     number.set("test", "x");
     assertEquals("x", number.toString());
@@ -111,7 +111,7 @@ public class NumberFormatTest {
   }
 
   @Test
-  public void formatNumberInheritance() {
+  void formatNumberInheritance() {
     Template t = XML_ALIKE.parse("before<t: number='000'>->{v:test}<-</t:>after", Locale.GERMAN);
     assertEquals("beforeafter", t.toString());
     t.set("test", 5.1);

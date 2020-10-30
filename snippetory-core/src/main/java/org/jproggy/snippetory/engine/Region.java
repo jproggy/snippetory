@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.engine.chars.SelfAppender;
+import org.jproggy.snippetory.spi.Link;
 
 public class Region implements Template, CharSequence, SelfAppender {
   private final Map<String, Region> children;
@@ -72,15 +73,14 @@ public class Region implements Template, CharSequence, SelfAppender {
     return new Region(this, parent);
   }
 
-  protected Region getChild(String name) {
+  protected Template getChild(String name) {
     if (children.containsKey(name)) {
       Region child = children.get(name);
       return cleanChild(child);
     }
-    Region child = data.getChild(name);
+    Link child = data.getChild(name);
     if (child == null) return null;
-    child.setParent(this);
-    return child;
+    return child.getContents(this, name);
   }
 
   protected Region cleanChild(Region child) {
@@ -156,7 +156,7 @@ public class Region implements Template, CharSequence, SelfAppender {
   }
 
   @Override
-  public void render(PrintStream out) throws IOException {
+  public void render(PrintStream out) {
     appendTo(out);
     out.flush();
   }
@@ -178,7 +178,8 @@ public class Region implements Template, CharSequence, SelfAppender {
     return true;
   }
 
-  protected Template getParent() {
+  @Override
+  public Template getParent() {
     return parent;
   }
 

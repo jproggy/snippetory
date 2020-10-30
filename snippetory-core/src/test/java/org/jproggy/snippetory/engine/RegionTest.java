@@ -14,44 +14,48 @@
 
 package org.jproggy.snippetory.engine;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.MalformedURLException;
-import java.sql.Date;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.YearMonth;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
 import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.Repo;
+import org.jproggy.snippetory.Syntaxes;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.UriResolver;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-public class RegionTest {
+class RegionTest {
 
   private static TemplateFragment tf(String v) {
     return new TemplateFragment(v);
   }
 
   @Test
-  public void charAtTest() {
+  void charAtTest() {
     Location placeHolder = new Location(null, new Metadata("", "", Attributes.parse(null,
-        Collections.<String, String> emptyMap(), null)));
-    List<DataSink> parts = Arrays.asList((DataSink)tf(""), tf("test"), tf("yagni"));
-    Region region = new Region(new DataSinks(parts, placeHolder), Collections.<String, Region> emptyMap());
+            Collections.emptyMap(), null)));
+    List<DataSink> parts = Arrays.asList(tf(""), tf("test"), tf("yagni"));
+    Region region = new Region(new DataSinks(parts, placeHolder), Collections.<String, Region>emptyMap());
     assertEquals('t', region.charAt(0));
     assertEquals('e', region.charAt(1));
     assertEquals('s', region.charAt(2));
@@ -77,93 +81,76 @@ public class RegionTest {
     assertEquals('y', child.charAt(1));
     assertEquals(2, child.length());
     assertEquals("ty", child.toString());
-    try {
-      region.charAt(9);
-      fail();
-    } catch (Exception e) {
-      // ignore --> expected
-    }
-    parts = Arrays.asList((DataSink)tf("test"), tf(""), tf("yagni"), tf(""), tf("jproggy"));
-    region = new Region(new DataSinks(parts, placeHolder), Collections.<String, Region> emptyMap());
-    assertEquals('y', region.charAt(4));
-    assertEquals('y', region.charAt(15));
+    assertThrows(Exception.class, () -> region.charAt(9));
+    parts = Arrays.asList((DataSink) tf("test"), tf(""), tf("yagni"), tf(""), tf("jproggy"));
+    Region region2 = new Region(new DataSinks(parts, placeHolder), Collections.<String, Region>emptyMap());
+    assertEquals('y', region2.charAt(4));
+    assertEquals('y', region2.charAt(15));
   }
 
   private Template template;
-  private String[] variants = { "row1", "row2", "row3", };
-  private List<Object> data = new ArrayList<Object>();
+  private final String[] variants = {"row1", "row2", "row3", "row4",};
+  private final List<Object> data = new ArrayList<>();
 
-  @Before
-  public void init() {
-    template = Repo.readResource("testTable.htm").locale(Locale.US).parse();
+  @BeforeEach
+  void init() {
+    template = Syntaxes.FLUYT.context().uriResolver(UriResolver.resource()).locale(Locale.US).getTemplate("testTable.htm");
     for (int i = 0; i < 111; i++) {
       data.add(String.valueOf(i));
     }
   }
 
   @Test
-  public void read() throws MalformedURLException {
+  void read() throws MalformedURLException {
     TemplateContext context = new TemplateContext().uriResolver(UriResolver.directories("src/test/resources"));
-    context.getTemplate("testTable.htm");
+    assertTrue(context.getTemplate("testTable.htm").isPresent());
     context.uriResolver(UriResolver.directories(new File("src/test/resources")));
-    context.getTemplate("testTable.htm");
+    assertTrue(context.getTemplate("testTable.htm").isPresent());
     context.uriResolver(UriResolver.url(new File("src/test/resources").toURI().toURL()));
-    context.getTemplate("testTable.htm");
+    assertTrue(context.getTemplate("testTable.htm").isPresent());
   }
 
   @Test
-  public void calendar() throws IOException {
-    Date day = Date.valueOf("1979-02-02");
-    Template month = Repo.readResource("calendar.html").encoding(Encodings.html).locale(Locale.GERMAN).parse();
-    month.set("day", day);
-    Calendar dayCounter = getStart(day);
-    Calendar end = getEnd(day);
-    while (dayCounter.before(end)) {
-      Template week = month.get("week");
-      for (int i = 1; i <= 7; i++) {
-        week.get("day").set("day", dayCounter).render();
-        dayCounter.add(Calendar.DAY_OF_YEAR, 1);
-      }
-      week.render();
+  void calendar() throws IOException {
+    TemporalField weekField = WeekFields.of(Locale.GERMANY).dayOfWeek();
+    YearMonth month = YearMonth.of(1980, Month.FEBRUARY);
+
+    LocalDate dayCounter = month.atDay(1).with(weekField, 1);
+    LocalDate end = month.atEndOfMonth().with(weekField, 7).plusDays(1);
+
+    Template calendar = Repo.readResource("calendar.html").encoding(Encodings.html).locale(Locale.GERMANY).parse();
+    calendar.set("month", month);
+
+    for (long i = 1; i <= 7; i++) {
+      calendar.get("caption").set("week-day", dayCounter.with(weekField, i)).render();
     }
-    FileWriter out = new FileWriter("target/calendarOut.html");
-    month.render(out);
-    out.close();
-  }
 
-  private Calendar getStart(Date day) {
-    Calendar result = Calendar.getInstance();
-    result.setTime(day);
-    int daysOfMonth = result.get(Calendar.DAY_OF_MONTH);
-    result.add(Calendar.DAY_OF_YEAR, daysOfMonth * -1);
-    int daysOfWeek = result.get(Calendar.DAY_OF_WEEK) - result.getFirstDayOfWeek();
-    if (daysOfWeek < 0) daysOfWeek += 7;
-    result.add(Calendar.DAY_OF_YEAR, daysOfWeek * -1);
-    return result;
-  }
-
-  private Calendar getEnd(Date day) {
-    Calendar result = Calendar.getInstance();
-    result.setTime(day);
-    int days = result.getActualMaximum(Calendar.DAY_OF_MONTH) - result.get(Calendar.DAY_OF_MONTH);
-    result.add(Calendar.DAY_OF_YEAR, days);
-    days = result.getActualMaximum(Calendar.DAY_OF_WEEK) - result.get(Calendar.DAY_OF_WEEK);
-    result.add(Calendar.DAY_OF_YEAR, days);
-    return result;
+    while (dayCounter.isBefore(end)) {
+      Template weekTpl = calendar.get("week");
+      for (int i = 1; i <= 7; i++) {
+        String tpl = YearMonth.from(dayCounter).equals(month) ? "day-in" : "day-out";
+        weekTpl.get(tpl).set("day", dayCounter.atStartOfDay()).render("target");
+        dayCounter = dayCounter.plusDays(1);
+      }
+      weekTpl.render();
+    }
+    try (FileWriter out = new FileWriter("target/calendarOut.html")) {
+      calendar.render(out);
+    }
   }
 
   @Test
-  public void test100() {
+  void test100() {
     testN(100);
   }
 
   @Test
-  public void test1000() {
+  void test1000() {
     testN(1000);
   }
 
   @Test
-  public void test100_1000() {
+  void test100_1000() {
     for (int i = 0; i < 1000; i++) {
       template.clear();
       testN(100);
@@ -171,22 +158,22 @@ public class RegionTest {
   }
 
   @Test
-  public void test10_000() {
+  void test10_000() {
     testN(10000);
   }
 
   @Test
-  public void test100_000() {
+  void test100_000() {
     testN(100000);
   }
 
   @Test
-  @Ignore
-  public void test1000_000() {
+  @Disabled
+  void test1000_000() {
     testN(1000000);
   }
 
-  public void testN(int n) {
+  void testN(int n) {
     int i = 0;
     try {
       int count = 0;
@@ -204,9 +191,8 @@ public class RegionTest {
       nul.close();
     } catch (IOException e) {
       throw new RuntimeException(e);
-    } finally {
-      Assert.assertEquals(n, i);
     }
+    assertEquals(n, i);
   }
 
   private static class NUL extends Writer {

@@ -14,7 +14,7 @@
 
 package org.jproggy.snippetory.sql;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -27,15 +27,15 @@ import java.sql.ResultSet;
 
 import org.jproggy.snippetory.UriResolver;
 import org.jproggy.snippetory.sql.spi.ConnectionProvider;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class RepositoryTest {
+class RepositoryTest {
   PreparedStatement stmt;
   SqlContext ctx;
   Repository repo;
 
-  @Before
+  @BeforeEach
   public void init() {
     ctx = new SqlContext().uriResolver(UriResolver.resource("org/jproggy/snippetory/sql"));
   }
@@ -174,7 +174,6 @@ public class RepositoryTest {
     verify(stmt).setInt(2, 2);
   }
 
-  @SuppressWarnings("resource")
   protected ConnectionProvider connectionProvider() throws Exception {
     ResultSet rs = mock(ResultSet.class);
     stmt = mock(PreparedStatement.class);

@@ -13,16 +13,22 @@
 /// limitations under the License.
 <html>
 <body>
-<table>
-  <caption>{v:day date="MMM yyyy"}</caption>
+<table >
+  <caption>{v:month date="MMMM yyyy"}</caption>
+    <tr>
+      <t:caption>
+      <th>{v:week-day date="EEEE"}</th>
+      </t:caption>
+    </tr>
     <t:week>
     <tr>
-      <t:day>
-      <td>
-        <div class="dayOfMonth">{v:day date="d"}</div>
-        <div class="weekDay">{v:day date="EEEE"}</div>
-      </td>
-      </t:day>
+      {v:target}
+      <t:day-in>
+      <td style="text-align:right;">{v:day date="d"}</td>
+      </t:day-in>
+      <t:day-out>
+      <td style="color:grey; text-align:right;">{v:day date="d"}</td>
+      </t:day-out>
     </tr>
     </t:week>
 </table>

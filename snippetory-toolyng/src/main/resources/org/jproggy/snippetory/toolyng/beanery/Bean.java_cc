@@ -1,0 +1,32 @@
+//Syntax:C_COMMENTS
+package /*${package*/org.jproggy.snippetory.toolyng.beanery/*}*/;
+
+import org.jproggy.snippetory.Template;
+import org.jproggy.snippetory.spi.TemplateWrapper;
+// ${ class
+
+/*${i}*/public class /*${name case="camelizeUpper"*/Bean/*}*/ extends TemplateWrapper {
+/*${i}*/	public /*${name case="camelizeUpper"*/Bean/*}*/ (Template template) {
+/*${i}*/			super(template);
+/*${i}*/	}
+/*${i}*/	public Template wrap(Template template) {
+/*${i}*/			return new /*${name case="camelizeUpper"*/Bean/*}*(template);
+/*${i}*/	}
+//${ region prefix="\n"
+/*${i}*/	public /*${name case="camelizeUpper"*/Bean/*}*/ get/*${name case="camelizeUpper"}*/() {
+/*${i}*/		return new /*${name case="camelizeUpper"*/Bean/*}*/(get("/*${name}*/")); 
+/*${i}*/	} 
+// region }
+//${ location prefix="\n"
+/*${i}*/	public /*${parent case="camelizeUpper"*/Bean/*}*/ set/*${name case="camelizeUpper"}*/(Object value) {
+/*${i}*/		set("/*${name}*/", value);	
+/*${i}*/		return this; 
+/*${i}*/	} 
+// location }
+/// use region with full line mark up to avoid additional line breaks 
+//${ classes
+//   classes }
+/*${i*/	
+
+/*i}*/} 
+// class }

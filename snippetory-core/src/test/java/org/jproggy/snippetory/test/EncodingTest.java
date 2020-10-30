@@ -14,20 +14,20 @@
 
 package org.jproggy.snippetory.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.Syntaxes;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.engine.IncompatibleEncodingException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EncodingTest {
 
   @Test
-  public void encodingXML() throws Exception {
+  void encodingXML() throws Exception {
     TemplateContext ctx = new TemplateContext().encoding(Encodings.xml).syntax(Syntaxes.FLUYT);
     Template t = ctx.parse("$test");
     t.set("test", "<test>\n&amp;\n</test>");
@@ -36,18 +36,13 @@ public class EncodingTest {
     assertEquals("<test>&amp;</test>", t.toString());
     t.set("test", Encodings.html.wrap("<test>&amp;</test>"));
     assertEquals("<test>&amp;</test>", t.toString());
-    try {
-      t.set("test", Encodings.string.wrap("<test>&amp;</test>"));
-      fail();
-    } catch (IncompatibleEncodingException e) {
-      //expected
-    }
+    assertThrows(IncompatibleEncodingException.class, () -> t.set("test", Encodings.string.wrap("<test>&amp;</test>")));
     t.set("test", Encodings.NULL.wrap("<test>\n&amp;\n</test>"));
     assertEquals("<test>\n&amp;\n</test>", t.toString());
   }
 
   @Test
-  public void encodingHTML() throws Exception {
+  void encodingHTML() throws Exception {
     TemplateContext ctx = new TemplateContext().encoding(Encodings.html).syntax(Syntaxes.FLUYT);
     Template t = ctx.parse("$test");
     t.set("test", "<test>&amp;</test>\n\rfoo\rbar");
@@ -56,18 +51,13 @@ public class EncodingTest {
     assertEquals("<test>&amp;</test>", t.toString());
     t.set("test", Encodings.html.wrap("<test>&amp;</test>"));
     assertEquals("<test>&amp;</test>", t.toString());
-    try {
-      t.set("test", Encodings.string.wrap("<test>&amp;</test>"));
-      fail();
-    } catch (IncompatibleEncodingException e) {
-      //expected
-    }
+    assertThrows(IncompatibleEncodingException.class, () -> t.set("test", Encodings.string.wrap("<test>&amp;</test>")));
     t.set("test", Encodings.NULL.wrap("<test>\n&amp;\n</test>"));
     assertEquals("<test>\n&amp;\n</test>", t.toString());
   }
 
   @Test
-  public void encodingString() throws Exception {
+  void encodingString() throws Exception {
     TemplateContext ctx = new TemplateContext().encoding(Encodings.string).syntax(Syntaxes.FLUYT);
     Template t = ctx.parse("$test");
     t.set("test", "<test>&amp;</test>\n\rfoo\rbar");
@@ -85,41 +75,21 @@ public class EncodingTest {
   }
 
   @Test
-  public void encodingPlain() throws Exception {
+  void encodingPlain() throws Exception {
     TemplateContext ctx = new TemplateContext().encoding(Encodings.plain).syntax(Syntaxes.FLUYT);
     Template t = ctx.parse("$test");
     t.set("test", "<test>&amp;</test>\n\rfoo\rbar");
     assertEquals("<test>&amp;</test>\n\rfoo\rbar", t.toString());
-    try {
-      t.set("test", Encodings.xml.wrap("<test>&amp;</test>"));
-      fail();
-    } catch (IncompatibleEncodingException e) {
-      //expected
-    }
-    try {
-      t.set("test", Encodings.html.wrap("<test>&amp;</test>"));
-      fail();
-    } catch (IncompatibleEncodingException e) {
-      //expected
-    }
-    try {
-      t.set("test", Encodings.string.wrap("<test>&amp;</test>"));
-      fail();
-    } catch (IncompatibleEncodingException e) {
-      //expected
-    }
-    try {
-      t.set("test", Encodings.html_string.wrap("<test>&amp;</test>"));
-      fail();
-    } catch (IncompatibleEncodingException e) {
-      //expected
-    }
+    assertThrows(IncompatibleEncodingException.class, () -> t.set("test", Encodings.xml.wrap("<test>&amp;</test>")));
+    assertThrows(IncompatibleEncodingException.class, () -> t.set("test", Encodings.html.wrap("<test>&amp;</test>")));
+    assertThrows(IncompatibleEncodingException.class, () -> t.set("test", Encodings.string.wrap("<test>&amp;</test>")));
+    assertThrows(IncompatibleEncodingException.class, () -> t.set("test", Encodings.html_string.wrap("<test>&amp;</test>")));
     t.set("test", Encodings.NULL.wrap("<test>\n&amp;\n</test>"));
     assertEquals("<test>\n&amp;\n</test>", t.toString());
   }
 
   @Test
-  public void encodingURL() throws Exception {
+  void encodingURL() throws Exception {
     TemplateContext ctx = new TemplateContext().encoding(Encodings.url).syntax(Syntaxes.FLUYT);
     Template t = ctx.parse("$test");
     t.set("test", "a.b cä+");
@@ -127,7 +97,7 @@ public class EncodingTest {
   }
 
   @Test
-  public void encodingHtmlString() throws Exception {
+  void encodingHtmlString() throws Exception {
     TemplateContext ctx = new TemplateContext().encoding(Encodings.html_string).syntax(Syntaxes.FLUYT);
     Template t = ctx.parse("$test");
     t.set("test", "<test>&amp;</test>\n\rfoo\rbar");
@@ -138,21 +108,14 @@ public class EncodingTest {
     assertEquals("<test>\\n&amp;\\n</test>", t.toString());
     t.set("test", Encodings.NULL.wrap("<test>\n&amp;\n</test>"));
     assertEquals("<test>\n&amp;\n</test>", t.toString());
-    try {
-      t.set("test", Encodings.string.wrap("<test>&amp;</test>"));
-      fail();
-    } catch (IncompatibleEncodingException e) {
-      //expected
-    }
+    assertThrows(IncompatibleEncodingException.class, () -> t.set("test", Encodings.string.wrap("<test>&amp;</test>")));
   }
 
   @Test
-  public void unkown() {
-    try {
-      Syntaxes.FLUYT.parse("$test(enc='test')");
-      fail();
-    } catch (RuntimeException e) {
-      assertEquals("Encoding test not found.", e.getCause().getMessage());
-    }
+  void unkown() {
+    RuntimeException e = assertThrows(RuntimeException.class, () ->
+            Syntaxes.FLUYT.parse("$test(enc='test')")
+    );
+    assertEquals("Encoding test not found.", e.getCause().getMessage());
   }
 }

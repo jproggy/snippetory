@@ -14,16 +14,16 @@
 
 package org.jproggy.snippetory.sql.spi;
 
+import org.jproggy.snippetory.Template;
+import org.jproggy.snippetory.spi.TemplateWrapper;
+import org.jproggy.snippetory.sql.Cursor;
+import org.jproggy.snippetory.sql.Statement;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
-import org.jproggy.snippetory.Template;
-import org.jproggy.snippetory.spi.TemplateWrapper;
-import org.jproggy.snippetory.sql.Cursor;
-import org.jproggy.snippetory.sql.Statement;
 
 public abstract class StatementWrapper extends TemplateWrapper implements Statement {
 
@@ -74,13 +74,8 @@ public abstract class StatementWrapper extends TemplateWrapper implements Statem
   }
 
   @Override
-  public <T> Cursor<T> directCursor(RowTransformer<T> transformer) {
-    return wrapped().directCursor(transformer);
-  }
-
-  @Override
-  public <T> Cursor<T> readAheadCursor(RowTransformer<T> transformer) {
-    return wrapped().readAheadCursor(transformer);
+  public <T> Cursor<T> cursor(RowTransformer<T> transformer) {
+    return wrapped().cursor(transformer);
   }
 
   @Override

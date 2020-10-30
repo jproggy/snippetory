@@ -17,27 +17,25 @@ package org.jproggy.snippetory.test;
 import static org.jproggy.snippetory.Syntaxes.FLUYT;
 import static org.jproggy.snippetory.Syntaxes.FLUYT_CC;
 import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Method;
 import java.util.TimeZone;
 
-import junit.framework.Assert;
-
 import org.jproggy.snippetory.Repo;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.engine.ParseError;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class BasicTest {
+class BasicTest {
   static {
     TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
   }
 
   @Test
-  public void delimiter() {
+  void delimiter() {
     Template t1 = XML_ALIKE.parse("in ({v:test delimiter=', '})");
     t1.append("test", 5);
     assertEquals("in (5)", t1.toString());
@@ -48,7 +46,7 @@ public class BasicTest {
   }
 
   @Test
-  public void delimiterEscaped() throws Exception {
+  void delimiterEscaped() throws Exception {
     Template t2 = XML_ALIKE.parse("\"{v:test delimiter='\",\"'}\"");
     assertEquals("\"{v:test delimiter='\",\"'}\"", t2.toString());
     t2.append("test", 5);
@@ -58,7 +56,7 @@ public class BasicTest {
   }
 
   @Test
-  public void indexDemo() throws Exception {
+  void indexDemo() throws Exception {
     Method def = Template.class.getMethod("render", Template.class, String.class);
 
     // Repo provides methods to read this from class path, file, Reader and so on.
@@ -81,9 +79,9 @@ public class BasicTest {
   }
 
   @Test
-  public void comments() {
+  void comments() {
     Template t1 = XML_ALIKE
-        .parse("/// comment on start  \n  <t:test>  \n i++; \n   ///another comment  \n   </t:test>  \n");
+            .parse("/// comment on start  \n  <t:test>  \n i++; \n   ///another comment  \n   </t:test>  \n");
     assertEquals("", t1.toString());
     t1.append("test", t1.get("test"));
     assertEquals(" i++; \n", t1.toString());
@@ -98,7 +96,7 @@ public class BasicTest {
   }
 
   @Test
-  public void childTempates() {
+  void childTempates() {
     Template t1 = XML_ALIKE.parse("in<t:test> and out</t:test> and around");
     t1.render();
     assertEquals("in and around", t1.toString());
@@ -111,24 +109,22 @@ public class BasicTest {
   }
 
   @Test
-  public void childTempatesNested() throws Exception {
+  void childTempatesNested() throws Exception {
     Template t2 = XML_ALIKE.parse("<t:outer>in<t:test> and {v:test}</t:test> and around</t:outer>").get("outer");
     t2.get("test").append("test", "hallo").render();
     assertEquals("in and hallo and around", t2.toString());
   }
 
   @Test
-  public void syntaxSwitchFail() {
-    try {
-      XML_ALIKE.parse(" {v:test} \n <s:C_COMMENTS_X />  \n /*${test}*/ \r\n  /*Syntax:FLUYT*/  \n #test ");
-      fail();
-    } catch (RuntimeException e) {
-      assertEquals("Unkown syntax: C_COMMENTS_X", e.getCause().getMessage());
-    }
+  void syntaxSwitchFail() {
+    RuntimeException e = assertThrows(RuntimeException.class, () -> XML_ALIKE.parse(
+            " {v:test} \n <s:C_COMMENTS_X />  \n /*${test}*/ \r\n  /*Syntax:FLUYT*/  \n #test "
+    ));
+    assertEquals("Unkown syntax: C_COMMENTS_X", e.getCause().getMessage());
   }
 
   @Test
-  public void syntaxSwitch() {
+  void syntaxSwitch() {
     Template t1 = XML_ALIKE.parse(" {v:test} \n <s:FLUYT_CC />  \n /*$test*/ \r\n  /*Syntax:FLUYT*/  \n $test ");
     t1.set("test", "blub");
     assertEquals(" blub \n blub \r\n blub ", t1.toString());
@@ -141,7 +137,7 @@ public class BasicTest {
   }
 
   @Test
-  public void attributeEscaping() {
+  void attributeEscaping() {
     Template t = XML_ALIKE.parse("{v:x delimiter='\\''\tprefix=\"\\\"\" suffix='\\\\'}");
     assertEquals("", t.toString());
     t.append("x", "1").append("x", 2).append("x", "3");
@@ -157,106 +153,73 @@ public class BasicTest {
   }
 
   @Test
-  public void backward() {
+  void backward() {
     Template t = XML_ALIKE.parse("<a href='test.html'>Here</a> " + "<t:test_bw backward=\"href='(.*)'\" enc=\"url\">"
-        + "{v:path delimiter='/'}/{v:file}.html" + "</t:test_bw>");
+            + "{v:path delimiter='/'}/{v:file}.html" + "</t:test_bw>");
     t.get("test_bw").append("path", "x s").append("path", "xy+z").set("file", "tesst").render();
     assertEquals("<a href='x+s/xy%2Bz/tesst.html'>Here</a> ", t.toString());
 
-    try {
-      XML_ALIKE.parse("lsdfkjsdfl {v:x backward='test'}");
-      Assert.fail();
-    } catch (ParseError e) {
-      assertTrue(e.getMessage().contains("target not found"));
-      assertTrue(e.getMessage().contains("test"));
-      assertTrue(e.getMessage().contains("{v:x backward='test'}"));
-    }
+    ParseError e = assertThrows(ParseError.class, () -> XML_ALIKE.parse("lsdfkjsdfl {v:x backward='test'}"));
+    assertTrue(e.getMessage().contains("target not found"), e.getMessage());
+    assertTrue(e.getMessage().contains("test"), e.getMessage());
+    assertTrue(e.getMessage().contains("{v:x backward='test'}"), e.getMessage());
 
-    Template t2 = XML_ALIKE
-        .parse("Hello world{v:x backward='Hello' default='Liahallo'}{v:x backward='world' default='Welt'}");
+    Template t2 = XML_ALIKE.parse(
+            "Hello world{v:x backward='Hello' default='Liahallo'}{v:x backward='world' default='Welt'}"
+    );
     assertEquals("Liahallo Welt", t2.toString());
 
-    try {
-      XML_ALIKE.parse("Hello world{v:x backward='world' default='Welt'}{v:x backward='Hello' default='Liahallo'}");
-      fail();
-    } catch (ParseError e) {
-      assertTrue(e.getMessage().contains("target not found"));
-      assertTrue(e.getMessage().contains("Hello"));
-      assertTrue(e.getMessage().contains("{v:x backward='Hello' default='Liahallo'}"));
-    }
+    e = assertThrows(ParseError.class, () -> XML_ALIKE.parse(
+            "Hello world{v:x backward='world' default='Welt'}{v:x backward='Hello' default='Liahallo'}"
+    ));
+    assertTrue(e.getMessage().contains("target not found"), e.getMessage());
+    assertTrue(e.getMessage().contains("Hello"), e.getMessage());
+    assertTrue(e.getMessage().contains("{v:x backward='Hello' default='Liahallo'}"), e.getMessage());
 
-    try {
-      XML_ALIKE.parse("Hello world{v:x backward='(Hello)(v)' default='Liahallo'}{v:x backward='world' default='Welt'}");
-      fail();
-    } catch (ParseError e) {
-      assertTrue(e.getMessage(), e.getMessage().contains("target not found: (Hello)(v)"));
-      assertTrue(e.getMessage(), e.getMessage().contains("{v:x backward='(Hello)(v)' default='Liahallo'}"));
-    }
+    e = assertThrows(ParseError.class, () -> XML_ALIKE.parse(
+            "Hello world{v:x backward='(Hello)(v)' default='Liahallo'}{v:x backward='world' default='Welt'}"
+    ));
+    assertTrue(e.getMessage().contains("target not found: (Hello)(v)"), e.getMessage());
+    assertTrue(e.getMessage().contains("{v:x backward='(Hello)(v)' default='Liahallo'}"), e.getMessage());
 
-    try {
-      XML_ALIKE
-          .parse("Hello Hello world{v:x backward='(Hello)' default='Liahallo'}{v:x backward='world' default='Welt'}");
-      fail();
-    } catch (ParseError e) {
-      assertTrue(e.getMessage(), e.getMessage().contains("backward target ambigous: (Hello)"));
-      assertTrue(e.getMessage(), e.getMessage().contains("{v:x backward='(Hello)' default='Liahallo'}"));
-    }
+    e = assertThrows(ParseError.class, () -> XML_ALIKE.parse(
+            "Hello Hello world{v:x backward='(Hello)' default='Liahallo'}{v:x backward='world' default='Welt'}"
+    ));
+    assertTrue(e.getMessage().contains("backward target ambigous: (Hello)"), e.getMessage());
+    assertTrue(e.getMessage().contains("{v:x backward='(Hello)' default='Liahallo'}"), e.getMessage());
 
-    try {
-      XML_ALIKE.parse("Hello world{v:x backward='(Hel)(lo)' default='Liahallo'}{v:x backward='world' default='Welt'}");
-      fail();
-    } catch (ParseError e) {
-      assertTrue(e.getMessage(), e.getMessage().contains("only one match group allowed: (Hel)(lo)"));
-      assertTrue(e.getMessage(), e.getMessage().contains("{v:x backward='(Hel)(lo)' default='Liahallo'}"));
-    }
+    e = assertThrows(ParseError.class, () -> XML_ALIKE.parse(
+            "Hello world{v:x backward='(Hel)(lo)' default='Liahallo'}{v:x backward='world' default='Welt'}"
+    ));
+    assertTrue(e.getMessage().contains("only one match group allowed: (Hel)(lo)"), e.getMessage());
+    assertTrue(e.getMessage().contains("{v:x backward='(Hel)(lo)' default='Liahallo'}"), e.getMessage());
   }
 
   @Test
-  public void errors() {
-    try {
-      XML_ALIKE.parse("before<t:>startend</t:>after");
-      fail();
-    } catch (Exception e) {
-      assertEquals(
-          "Conditional region needs to contain at least one named location, or will never be rendered  Error while parsing </t:> at line 1 character 18",
-          e.getMessage());
-    }
-    try {
-      XML_ALIKE.parse("before\n<t:>\rstartend\r\n</t:end>\r\nafter");
-      fail();
-    } catch (Exception e) {
-      assertEquals("1 unclosed conditional regions detected  Error while parsing </t:end>\r\n at line 4 character 1",
-          e.getMessage());
-    }
-    try {
-      XML_ALIKE.parse("before<t:start>startend</t:end>after");
-      fail();
-    } catch (Exception e) {
-      assertEquals("end found but start expected  Error while parsing </t:end> at line 1 character 23", e.getMessage());
-    }
-    try {
-      XML_ALIKE.parse("before<t:x>startend</tx>after");
-      fail();
-    } catch (Exception e) {
-      assertEquals("No end element for x  Error while parsing startend</tx>after at line 1 character 11",
-          e.getMessage());
-    }
-    try {
-      XML_ALIKE.parse("before<tx>startend</t:x>after");
-      fail();
-    } catch (Exception e) {
-      assertEquals("x found but file end expected  Error while parsing </t:x> at line 1 character 18", e.getMessage());
-    }
-    try {
-      XML_ALIKE.parse("before<tx>startend</t:x>after");
-      fail();
-    } catch (Exception e) {
-      assertEquals("x found but file end expected  Error while parsing </t:x> at line 1 character 18", e.getMessage());
-    }
+  void errors() {
+    ParseError e = assertThrows(ParseError.class, () -> XML_ALIKE.parse("before<t:>startend</t:>after"));
+    assertEquals(
+            "Conditional region needs to contain at least one named location, or will never be rendered  Error while parsing </t:> at line 1 character 18",
+            e.getMessage()
+    );
+    e = assertThrows(ParseError.class, () -> XML_ALIKE.parse("before\n<t:>\rstartend\r\n</t:end>\r\nafter"));
+    assertEquals("1 unclosed conditional regions detected  Error while parsing </t:end>\r\n at line 4 character 1",
+            e.getMessage());
+    e = assertThrows(ParseError.class, () -> XML_ALIKE.parse("before<t:start>startend</t:end>after"));
+    assertEquals("end found but start expected  Error while parsing </t:end> at line 1 character 23", e.getMessage());
+
+    e = assertThrows(ParseError.class, () -> XML_ALIKE.parse("before<t:x>startend</tx>after"));
+    assertEquals("No end element for x  Error while parsing startend</tx>after at line 1 character 11", e.getMessage());
+
+    e = assertThrows(ParseError.class, () -> XML_ALIKE.parse("before<tx>startend</t:x>after"));
+    assertEquals("x found but file end expected  Error while parsing </t:x> at line 1 character 18", e.getMessage());
+
+    e = assertThrows(ParseError.class, () -> XML_ALIKE.parse("before<tx>startend</t:x>after"));
+    assertEquals("x found but file end expected  Error while parsing </t:x> at line 1 character 18", e.getMessage());
   }
 
   @Test
-  public void conditionalRegionsSimple() {
+  void conditionalRegionsSimple() {
     Template t = XML_ALIKE.parse("before<t:>->{v:test null='null' delimiter=' '}<-</t:>after");
     assertEquals("beforeafter", t.toString());
     assertEquals("[test]", t.names().toString());
@@ -273,7 +236,7 @@ public class BasicTest {
   }
 
   @Test
-  public void conditionalRegionsWithRegionSimple() {
+  void conditionalRegionsWithRegionSimple() {
     Template t = FLUYT.parse("before${->$region{content}$<-}$after");
     assertEquals("beforeafter", t.toString());
     assertEquals("[region]", t.names().toString());
@@ -291,11 +254,10 @@ public class BasicTest {
   }
 
   @Test
-  public void conditionalRegions() {
-    Template t = XML_ALIKE
-        .read(
-            "before-><t:test><t: pad='30' pad.align='right'><t: pad='12' pad.fill='.'>start{v:test}</t:><middle>{v:test}end</t:></t:test><-after")
-        .parse();
+  void conditionalRegions() {
+    Template t = XML_ALIKE.read(
+            "before-><t:test><t: pad='30' pad.align='right'><t: pad='12' pad.fill='.'>start{v:test}</t:><middle>{v:test}end</t:></t:test><-after"
+    ).parse();
     assertEquals("before-><-after", t.toString());
     Template test = t.get("test");
     assertEquals("", test.toString());
@@ -350,5 +312,4 @@ public class BasicTest {
     test2.render();
     assertEquals("before->    startxxx....<middle>xxxend   start222s...<middle>222send<-after", t.toString());
   }
-
 }

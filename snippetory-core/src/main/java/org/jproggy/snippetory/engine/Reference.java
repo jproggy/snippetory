@@ -12,12 +12,22 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-package org.jproggy.snippetory.util.concurrent;
+package org.jproggy.snippetory.engine;
 
-public class QueueClosedException extends RuntimeException {
-  private static final long serialVersionUID = -1717965808724704393L;
+import org.jproggy.snippetory.Template;
+import org.jproggy.snippetory.spi.Link;
 
-  public QueueClosedException() {
-    super("Queue already closed");
+public class Reference implements Link {
+  private final Region target;
+
+  public Reference(Region target) {
+    this.target = target;
+  }
+
+  @Override
+  public Template getContents(Template parentNode, String name) {
+    if (target == null) return null;
+    target.setParent((Region) parentNode);
+    return target;
   }
 }

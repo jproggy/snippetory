@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jproggy.snippetory.spi.EncodedData;
+import org.jproggy.snippetory.spi.Link;
 
 public class ConditionalRegion extends DataSinks implements EncodedData {
   private final Set<String> names;
@@ -29,13 +30,13 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
   public ConditionalRegion(Location formatter, List<DataSink> parts, Map<String, Region> children) {
     super(parts, formatter);
     names = names();
-    this.children = children;
+    this.children = new HashMap<>(children);
   }
 
   protected ConditionalRegion(ConditionalRegion template, Location parent) {
     super(template, template.getPlaceholder().cleanCopy(parent));
     names = names();
-    this.children = new HashMap<String, Region>();
+    this.children = new HashMap<>();
     for (Map.Entry<String, Region> entry : template.children.entrySet()) {
       this.children.put(entry.getKey(), entry.getValue().cleanCopy(super.getPlaceholder()));
     }
@@ -64,10 +65,10 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
   }
 
   @Override
-  public Region getChild(String name) {
+  public Link getChild(String name) {
     Region child = children.get(name);
     if (child != null) child = child.cleanCopy(getPlaceholder());
-    return child;
+    return new Reference(child);
   }
 
   @Override
