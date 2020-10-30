@@ -16,6 +16,7 @@ package org.jproggy.snippetory.engine;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -102,11 +103,11 @@ class RegionTest {
   @Test
   void read() throws MalformedURLException {
     TemplateContext context = new TemplateContext().uriResolver(UriResolver.directories("src/test/resources"));
-    context.getTemplate("testTable.htm");
+    assertTrue(context.getTemplate("testTable.htm").isPresent());
     context.uriResolver(UriResolver.directories(new File("src/test/resources")));
-    context.getTemplate("testTable.htm");
+    assertTrue(context.getTemplate("testTable.htm").isPresent());
     context.uriResolver(UriResolver.url(new File("src/test/resources").toURI().toURL()));
-    context.getTemplate("testTable.htm");
+    assertTrue(context.getTemplate("testTable.htm").isPresent());
   }
 
   @Test
