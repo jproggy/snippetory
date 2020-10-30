@@ -10,12 +10,17 @@
 <!-- See the License for the specific language governing permissions and -->
 <!-- limitations under the License. -->
 
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>9</version>
+    </parent>
+
     <groupId>org.jproggy</groupId>
     <artifactId>snippetory</artifactId>
-    <version>0.9.6-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Snippetory Template Engine</name>
     <description>
@@ -42,12 +47,13 @@
     <modules>
         <module>snippetory-core</module>
         <module>snippetory-sql</module>
-        <!-- module>snippetory-groovy</module -->
+        <module>snippetory-toolyng</module>
+        <module>snippetory-groovy</module>
     </modules>
     <scm>
-        <url>http://sourceforge.net/p/snippetory/code/HEAD/tree/trunk/</url>
-        <developerConnection>scm:svn:https://svn.code.sf.net/p/snippetory/code/trunk</developerConnection>
-        <connection>scm:svn:svn://svn.code.sf.net/p/snippetory/code/trunk snippetory-code</connection>
+        <url>http://sourceforge.net/p/snippetory/code/HEAD/tree/tags/snippetory-0.9.6</url>
+        <developerConnection>scm:svn:https://svn.code.sf.net/p/snippetory/code/tags/snippetory-0.9.6</developerConnection>
+        <connection>scm:svn:svn://svn.code.sf.net/p/snippetory/code/trunk snippetory-code/tags/snippetory-0.9.6</connection>
     </scm>
     <issueManagement>
         <url>https://github.com/jproggy/Snippetory/issues</url>
@@ -64,19 +70,16 @@
     </distributionManagement>
     <properties>
         <gpg.keyname>Templa Project</gpg.keyname>
+        <!-- versions -->
+        <junit-jupiter.version>5.5.0</junit-jupiter.version>
+        <junit.version>4.13.1</junit.version>
     </properties>
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.12</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.jproggy</groupId>
                 <artifactId>snippetory-core</artifactId>
-                <version>0.9.6-SNAPSHOT</version>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
@@ -84,28 +87,30 @@
                 <version>1.9.5</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>org.codehaus.groovy</groupId>
-                <artifactId>groovy</artifactId>
-                <version>2.3.7</version>
-                <scope>provided</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
+                <version>2.4</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -139,10 +144,10 @@
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
-            <!--plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.5</version>
+                <version>1.6</version>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
@@ -152,7 +157,18 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin-->
+            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+				<configuration>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
+					<useReleaseProfile>false</useReleaseProfile>
+					<releaseProfiles>release</releaseProfiles>
+					<goals>deploy</goals>
+				</configuration>
+			</plugin>
         </plugins>
     </build>
 </project>
