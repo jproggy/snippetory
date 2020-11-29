@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jproggy.snippetory.engine.Location;
-import org.jproggy.snippetory.engine.Metadata;
+import org.jproggy.snippetory.engine.MetaDescriptor;
 import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.TemplateWrapper;
@@ -41,7 +41,7 @@ import org.jproggy.snippetory.sql.SQL;
 public class Parameter extends Location implements StatementBinder {
   private List<Object> values = new ArrayList<>();
 
-  public Parameter(Location parent, Metadata metadata) {
+  public Parameter(Location parent, MetaDescriptor metadata) {
     super(parent, metadata);
   }
 

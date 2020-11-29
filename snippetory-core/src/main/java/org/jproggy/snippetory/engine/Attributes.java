@@ -54,11 +54,13 @@ public class Attributes {
     for (Map.Entry<String, String> attr : attribs.entrySet()) {
       Types type = Attributes.REGISTRY.type(attr.getKey());
       type.handle(result, attr.getKey(), attr.getValue());
+      result.attribs.put(attr.getKey(), attr.getValue());
     }
     return result;
   }
 
   Map<String, FormatConfiguration> formats = new LinkedHashMap<>();
+  Map<String, String> attribs = new LinkedHashMap<>();
   Encoding enc;
   Link link;
   String linkName;

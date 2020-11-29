@@ -16,19 +16,21 @@ package org.jproggy.snippetory.engine;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.FormatConfiguration;
 import org.jproggy.snippetory.spi.Link;
+import org.jproggy.snippetory.spi.Metadata;
 import org.jproggy.snippetory.spi.TemplateNode;
 import org.jproggy.snippetory.spi.Transcoding;
 import org.jproggy.snippetory.spi.VoidFormat;
 
-public class Metadata implements VoidFormat {
+public class MetaDescriptor implements VoidFormat, Metadata {
 
-  public Metadata(String name, String fragment, Attributes attribs) {
+  public MetaDescriptor(String name, String fragment, Attributes attribs) {
     super();
     this.name = name;
     this.formats = attribs.formats.values().toArray(new FormatConfiguration[0]);
@@ -38,6 +40,7 @@ public class Metadata implements VoidFormat {
     this.prefix = attribs.prefix;
     this.suffix = attribs.suffix;
     this.link = attribs.link;
+    this.attribs = attribs.attribs;
   }
 
   final String name;
@@ -48,6 +51,7 @@ public class Metadata implements VoidFormat {
   final String prefix;
   final String suffix;
   final Link link;
+  final Map<String, String> attribs;
 
   public CharSequence getFallback() {
     if (prefix != null || suffix != null) return "";
@@ -96,13 +100,25 @@ public class Metadata implements VoidFormat {
   }
 
   @Override
-  public void set(String name, Object value) {}
+  public void set(String name, Object value) {
+  }
 
   @Override
-  public void append(String name, Object value) {}
+  public void append(String name, Object value) {
+  }
 
   @Override
   public Set<String> names() {
     return Collections.emptySet();
+  }
+
+  @Override
+  public String getName() {
+    return name;
+  }
+
+  @Override
+  public Attribute attrib(String name) {
+    return () -> attribs.get(name);
   }
 }
