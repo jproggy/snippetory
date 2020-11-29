@@ -21,25 +21,11 @@ import java.beans.PropertyDescriptor;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.ServiceLoader;
 
 import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.TemplateContext;
-import org.jproggy.snippetory.engine.spi.AliasLink;
-import org.jproggy.snippetory.engine.spi.CaseFormatter;
-import org.jproggy.snippetory.engine.spi.CropFormatter;
-import org.jproggy.snippetory.engine.spi.DateFormatter;
-import org.jproggy.snippetory.engine.spi.DecimalFormatter;
-import org.jproggy.snippetory.engine.spi.DefaultFormatter;
-import org.jproggy.snippetory.engine.spi.IntFormatter;
-import org.jproggy.snippetory.engine.spi.NullFormatter;
-import org.jproggy.snippetory.engine.spi.NumFormatter;
-import org.jproggy.snippetory.engine.spi.PadFormatter;
-import org.jproggy.snippetory.engine.spi.ToggleFormatter;
-import org.jproggy.snippetory.spi.Configurer;
 import org.jproggy.snippetory.spi.DynamicAttributes;
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.FormatConfiguration;
@@ -47,12 +33,11 @@ import org.jproggy.snippetory.spi.Link;
 
 public class Attributes {
   public static final String BACKWARD = "backward";
-  static final Registry REGISTRY = new Registry();
 
   public static Attributes parse(Location parent, Map<String, String> attribs, TemplateContext ctx) {
     Attributes result = new Attributes(parent, ctx);
     for (Map.Entry<String, String> attr : attribs.entrySet()) {
-      Types type = Attributes.REGISTRY.type(attr.getKey());
+      Types type = AttributesRegistry.INSTANCE.type(attr.getKey());
       type.handle(result, attr.getKey(), attr.getValue());
       result.attribs.put(attr.getKey(), attr.getValue());
     }
@@ -72,6 +57,10 @@ public class Attributes {
   Attributes(Location parent, TemplateContext ctx) {
     enc = parent == null ? Encodings.NULL : parent.md.enc;
     this.ctx = ctx;
+  }
+
+  public static void register(String name, Types type) {
+    AttributesRegistry.INSTANCE.register(name, type);
   }
 
   void unregisteredAttribute(String key, String value) {
@@ -115,9 +104,7 @@ public class Attributes {
       PropertyEditor editor = toEditor(prop);
       editor.setAsText(value);
       prop.getWriteMethod().invoke(format, editor.getValue());
-    } catch (RuntimeException e) {
-      throw e;
-    } catch (Exception e) {
+    } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
       throw new SnippetoryException(e);
     }
   }
@@ -203,49 +190,4 @@ public class Attributes {
     // noop -> just called to ensure initializer is called.
   }
 
-  static {
-    REGISTRY.register("enc", Types.ENCODING);
-    REGISTRY.register("delimiter", Types.DELIMITER);
-    REGISTRY.register("prefix", Types.PREFIX);
-    REGISTRY.register("suffix", Types.SUFFIX);
-    REGISTRY.register(BACKWARD, Types.BACKWARD);
-    FormatRegistry.INSTANCE.register("pad", new PadFormatter());
-    FormatRegistry.INSTANCE.register("crop", new CropFormatter());
-    FormatRegistry.INSTANCE.register("number", new NumFormatter());
-    FormatRegistry.INSTANCE.register("int", new IntFormatter());
-    FormatRegistry.INSTANCE.register("decimal", new DecimalFormatter());
-    FormatRegistry.INSTANCE.register("date", new DateFormatter());
-    FormatRegistry.INSTANCE.register("toggle", new ToggleFormatter());
-    FormatRegistry.INSTANCE.register("case", new CaseFormatter());
-    FormatRegistry.INSTANCE.register("default", new DefaultFormatter());
-    FormatRegistry.INSTANCE.register("null", new NullFormatter());
-    LinkRegistry.INSTANCE.register("alias", AliasLink::new);
-    for (Encodings e : Encodings.values()) {
-      EncodingRegistry.INSTANCE.register(e);
-    }
-    for (Configurer c : ServiceLoader.load(Configurer.class)) {
-      // avoid optimize this loop, as iterating is necessary to load the classes
-      // i.e. to initialize the extensions
-      c.getClass();
-    }
-  }
-
-  public static class Registry {
-    private final Map<String, Types> attribs = new HashMap<>();
-
-    private Registry() {}
-
-    public void register(String name, Types value) {
-      Types old = attribs.get(name);
-      if (old != null && old != value) {
-        throw new SnippetoryException("attribute " + name + " already defined otherwise.");
-      }
-      attribs.put(name, value);
-    }
-
-    public Types type(String name) {
-      if (!attribs.containsKey(name)) return Types.UNREGISTERED;
-      return attribs.get(name);
-    }
-  }
 }

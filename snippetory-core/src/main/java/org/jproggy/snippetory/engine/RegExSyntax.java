@@ -39,11 +39,11 @@ public abstract class RegExSyntax implements Syntax {
 
   private static final String QUOTE_CONTENT = "\"((?>" + ESCAPES + "|[^\\\\\"])*)\")";
   private static final String APOS_CONTENT = "'((?>" + ESCAPES + "|[^'])*)'";
-  protected static final String CONTENT = "(" + NAME + ")=(?>" + APOS_CONTENT + "|" + QUOTE_CONTENT + "|(" + NAME + ")";
+  private static final String CONTENT = "(" + NAME + ")=(?>" + APOS_CONTENT + "|" + QUOTE_CONTENT + "|(" + NAME + ")";
 
   private static final String REM_START = "(?://|/\\*|<!--|--|#|'|rem)";
   protected static final Pattern SYNTAX_SELECTOR = Pattern.compile(LINE_START + "(?:" + REM_START
-      + "[ \\t]*Syntax|<s):(" + NAME + ")(?:\\*/|-|/|>| |\\t)*" + LINE_END, Pattern.MULTILINE);
+          + "[ \\t]*Syntax|<s):(" + NAME + ")(?:\\*/|-|/|>| |\\t)*" + LINE_END, Pattern.MULTILINE);
 
   @Override
   public abstract RegexParser parse(CharSequence data, TemplateContext ctx);
@@ -135,7 +135,7 @@ public abstract class RegExSyntax implements Syntax {
           if (m.group(4) != null) continue;
         }
         if (m.group(4) != null) throw new ParseError("don't understand " + varDef, token);
-        if (Attributes.REGISTRY.type(m.group(1)) == null) {
+        if (AttributesRegistry.INSTANCE.type(m.group(1)) == null) {
           throw new ParseError("unkown attribute name " + m.group(1), token);
         }
         String value = m.group(2);

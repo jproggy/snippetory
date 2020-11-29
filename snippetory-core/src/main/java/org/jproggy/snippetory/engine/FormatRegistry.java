@@ -28,7 +28,7 @@ public final class FormatRegistry {
   private FormatRegistry() {}
 
   public void register(String name, FormatFactory value) {
-    Attributes.REGISTRY.register(name, Types.FORMAT);
+    Attributes.register(name, Types.FORMAT);
     formats.put(name, value);
   }
 
