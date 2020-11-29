@@ -15,15 +15,12 @@
 package org.jproggy.snippetory.engine.spi;
 
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoZonedDateTime;
@@ -125,10 +122,10 @@ public class DateFormatter implements FormatFactory {
         return format(location, Instant.ofEpochMilli(((Calendar)value).getTime().getTime()));
       }
       if (value instanceof ChronoLocalDate) {
-        return ((LocalDate) value).format(impl);
+        return ((ChronoLocalDate) value).format(impl);
       }
       if (value instanceof ChronoLocalDateTime) {
-        return ((LocalDateTime) value).format(impl);
+        return ((ChronoLocalDateTime<?>) value).format(impl);
       }
       if (value instanceof OffsetDateTime) {
         return ((OffsetDateTime) value).format(impl);
@@ -137,7 +134,7 @@ public class DateFormatter implements FormatFactory {
         return ((OffsetTime) value).format(impl);
       }
       if (value instanceof ChronoZonedDateTime) {
-        return ((ZonedDateTime) value).format(impl);
+        return ((ChronoZonedDateTime<?>) value).format(impl);
       }
       if (value instanceof YearMonth) {
         return ((YearMonth) value).format(impl);

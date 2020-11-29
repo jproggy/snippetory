@@ -23,15 +23,15 @@ import org.jproggy.snippetory.engine.RegExSyntax;
 import org.jproggy.snippetory.engine.Token.TokenType;
 
 public class XMLAlikeSyntax extends RegExSyntax {
-  protected static final String START_TOKEN = "\\<t\\:((?:" + NAME + ")?" + ATTRIBUTES + ")\\s*\\>";
-  protected static final String END_TOKEN = "</t\\:(" + NAME + ")?\\>";
+  protected static final String START_TOKEN = "<t:((?:" + NAME + ")?" + ATTRIBUTES + ")\\s*>";
+  protected static final String END_TOKEN = "</t:(" + NAME + ")?>";
 
-  protected static final String NAMED_LOC = "\\{v\\:(" + NAME + ATTRIBUTES + ")[ \\t]*\\}";
-  protected static final String NAMELESS_TOKEN = "\\{v\\:\\s*(" + ATTRIBUTE + ATTRIBUTES + ")\\s*\\}";
+  protected static final String NAMED_LOC = "\\{v:(" + NAME + ATTRIBUTES + ")[ \\t]*}";
+  protected static final String NAMELESS_TOKEN = "\\{v:\\s*(" + ATTRIBUTE + ATTRIBUTES + ")\\s*}";
 
   @Override
   public RegexParser parse(CharSequence data, TemplateContext ctx) {
-    Map<Pattern, TokenType> patterns = new LinkedHashMap<Pattern, TokenType>();
+    Map<Pattern, TokenType> patterns = new LinkedHashMap<>();
 
     patterns.put(SYNTAX_SELECTOR, TokenType.Syntax);
 
