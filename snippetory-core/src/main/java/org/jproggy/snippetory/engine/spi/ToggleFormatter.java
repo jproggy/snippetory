@@ -14,9 +14,6 @@
 
 package org.jproggy.snippetory.engine.spi;
 
-import java.util.Collections;
-import java.util.Set;
-
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.engine.chars.EncodedContainer;
 import org.jproggy.snippetory.spi.FormatConfiguration;
@@ -67,17 +64,6 @@ public class ToggleFormatter implements FormatFactory {
     @Override
     public void clear(TemplateNode location) {
       count = 1;
-    }
-
-    @Override
-    public void set(String name, Object value) {}
-
-    @Override
-    public void append(String name, Object value) {}
-
-    @Override
-    public Set<String> names() {
-      return Collections.emptySet();
     }
   }
 

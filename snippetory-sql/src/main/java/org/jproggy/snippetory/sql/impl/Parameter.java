@@ -95,7 +95,9 @@ public class Parameter extends Location implements StatementBinder {
   }
 
   private boolean isSupported(Object val) {
-    if (val instanceof String) {
+    if (val == null) {
+      return true;
+    } else if (val instanceof String) {
       return true;
     } else if (val instanceof Boolean) {
       return true;
@@ -129,17 +131,15 @@ public class Parameter extends Location implements StatementBinder {
       return true;
     } else if (val instanceof Blob) {
       return true;
-    } else if (val instanceof Clob) {
-      return true;
     } else if (val instanceof NClob) {
+      return true;
+    } else if (val instanceof Clob) {
       return true;
     } else if (val instanceof Ref) {
       return true;
     } else if (val instanceof SQLXML) {
       return true;
     } else if (val instanceof byte[]) {
-      return true;
-    } else if (val == null) {
       return true;
     }
     return false;
@@ -186,17 +186,17 @@ public class Parameter extends Location implements StatementBinder {
       } else if (val instanceof Array) {
         stmt.setArray(offset, (Array)val);
       } else if (val instanceof Blob) {
-        stmt.setBlob(offset, (Blob)val);
-      } else if (val instanceof Clob) {
-        stmt.setClob(offset, (Clob)val);
+        stmt.setBlob(offset, (Blob) val);
       } else if (val instanceof NClob) {
-        stmt.setNClob(offset, (NClob)val);
+        stmt.setNClob(offset, (NClob) val);
+      } else if (val instanceof Clob) {
+        stmt.setClob(offset, (Clob) val);
       } else if (val instanceof Ref) {
-        stmt.setRef(offset, (Ref)val);
+        stmt.setRef(offset, (Ref) val);
       } else if (val instanceof SQLXML) {
-        stmt.setSQLXML(offset, (SQLXML)val);
+        stmt.setSQLXML(offset, (SQLXML) val);
       } else if (val instanceof byte[]) {
-        stmt.setBytes(offset, (byte[])val);
+        stmt.setBytes(offset, (byte[]) val);
       }
       offset++;
     }

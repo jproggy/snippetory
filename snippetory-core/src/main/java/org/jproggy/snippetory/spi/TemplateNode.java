@@ -28,8 +28,8 @@ public interface TemplateNode {
       }
 
       @Override
-      public Attribute attrib(String name) {
-        return () -> null;
+      public Annotation annotation(String name) {
+        return new Annotation(name, null);
       }
     };
   }

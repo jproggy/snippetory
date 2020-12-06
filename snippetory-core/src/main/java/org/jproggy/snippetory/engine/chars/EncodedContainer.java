@@ -24,7 +24,6 @@ public class EncodedContainer implements EncodedData, CharSequence, SelfAppender
   private final String encoding;
 
   public EncodedContainer(CharSequence data, String encoding) {
-    super();
     this.data = data;
     this.encoding = encoding;
   }
@@ -70,16 +69,16 @@ public class EncodedContainer implements EncodedData, CharSequence, SelfAppender
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public final boolean equals(Object obj) {
     if (this == obj) return true;
     if (!(obj instanceof EncodedContainer)) return false;
-    EncodedContainer encodedContainer = (EncodedContainer)obj;
+    EncodedContainer encodedContainer = (EncodedContainer) obj;
     if (!encoding.equals(encodedContainer.encoding)) return false;
     return toString().equals(encodedContainer.toString());
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return data.hashCode();
   }
 }

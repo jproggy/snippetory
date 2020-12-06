@@ -39,13 +39,12 @@ public class Attributes {
     for (Map.Entry<String, String> attr : attribs.entrySet()) {
       Types type = AttributesRegistry.INSTANCE.type(attr.getKey());
       type.handle(result, attr.getKey(), attr.getValue());
-      result.attribs.put(attr.getKey(), attr.getValue());
     }
     return result;
   }
 
   Map<String, FormatConfiguration> formats = new LinkedHashMap<>();
-  Map<String, String> attribs = new LinkedHashMap<>();
+  Map<String, String> annotations = new LinkedHashMap<>();
   Encoding enc;
   Link link;
   String linkName;
@@ -177,12 +176,19 @@ public class Attributes {
         throw new SnippetoryException("Internal error: BACKWARD is not expected here");
       }
     },
+    ANNOTATION {
+      @Override
+      void handle(Attributes target, String key, String value) {
+        target.annotations.put(key, value);
+      }
+    },
     UNREGISTERED {
       @Override
       void handle(Attributes target, String key, String value) {
         target.unregisteredAttribute(key, value);
       }
     };
+
     abstract void handle(Attributes target, String key, String value);
   }
 

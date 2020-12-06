@@ -15,9 +15,7 @@
 package org.jproggy.snippetory.engine;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Format;
@@ -40,7 +38,7 @@ public class MetaDescriptor implements VoidFormat, Metadata {
     this.prefix = attribs.prefix;
     this.suffix = attribs.suffix;
     this.link = attribs.link;
-    this.attribs = attribs.attribs;
+    this.annotations = attribs.annotations;
   }
 
   final String name;
@@ -51,7 +49,7 @@ public class MetaDescriptor implements VoidFormat, Metadata {
   final String prefix;
   final String suffix;
   final Link link;
-  final Map<String, String> attribs;
+  final Map<String, String> annotations;
 
   public CharSequence getFallback() {
     if (prefix != null || suffix != null) return "";
@@ -82,16 +80,6 @@ public class MetaDescriptor implements VoidFormat, Metadata {
   }
 
   @Override
-  public Object format(TemplateNode location, Object value) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public boolean supports(Object value) {
-    return false;
-  }
-
-  @Override
   public void clear(TemplateNode location) {}
 
   @Override
@@ -99,18 +87,6 @@ public class MetaDescriptor implements VoidFormat, Metadata {
     return getFallback();
   }
 
-  @Override
-  public void set(String name, Object value) {
-  }
-
-  @Override
-  public void append(String name, Object value) {
-  }
-
-  @Override
-  public Set<String> names() {
-    return Collections.emptySet();
-  }
 
   @Override
   public String getName() {
@@ -118,7 +94,8 @@ public class MetaDescriptor implements VoidFormat, Metadata {
   }
 
   @Override
-  public Attribute attrib(String name) {
-    return () -> attribs.get(name);
+  public Annotation annotation(String name) {
+    return new Annotation(name, annotations.get(name));
   }
+
 }
