@@ -146,7 +146,8 @@ public interface Metadata {
          * function to the value of this {@code Annotation}, if it is
          * present, otherwise an empty {@code Optional}
          * @throws NullPointerException if the mapping function is {@code null}
-         * @apiNote This method supports post-processing on {@code Annotation} values, without
+         *
+         * This method supports post-processing on {@code Annotation} values, without
          * the need to explicitly check for a return status. For example, the
          * following code converts the value of the {@code Annotation} to an enum value:
          *
