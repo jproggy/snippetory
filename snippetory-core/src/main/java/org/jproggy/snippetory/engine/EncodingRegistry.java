@@ -27,25 +27,22 @@ import org.jproggy.snippetory.spi.Transcoding;
  * Handles registration of encoding and transcoding overwrites.
  * See <a href="http://www.jproggy.org/snippetory/Encodings.html">offical documentation</a>
  * for additional information
+ *
  * @author B. Ebertz
  */
 public final class EncodingRegistry {
-  private Map<String, Encoding> encodings = new HashMap<String, Encoding>();
-  private Map<String, Collection<Transcoding>> overwrites = new HashMap<String, Collection<Transcoding>>();
+  private final Map<String, Encoding> encodings = new HashMap<>();
+  private final Map<String, Collection<Transcoding>> overwrites = new HashMap<>();
 
-  private EncodingRegistry() {}
+  private EncodingRegistry() {
+  }
 
   public void register(Encoding value) {
     encodings.put(value.getName(), value);
   }
 
   public void registerOverwite(Encoding target, Transcoding overwrite) {
-    Collection<Transcoding> values = overwrites.get(target.getName());
-    if (values == null) {
-      values = new ArrayList<Transcoding>();
-      overwrites.put(target.getName(), values);
-    }
-    values.add(overwrite);
+    overwrites.computeIfAbsent(target.getName(), k -> new ArrayList<>()).add(overwrite);
   }
 
   /**
@@ -57,9 +54,7 @@ public final class EncodingRegistry {
   }
 
   public Collection<Transcoding> getOverwrites(Encoding target) {
-    Collection<Transcoding> result = overwrites.get(target.getName());
-    if (result == null) return Collections.emptyList();
-    return result;
+    return overwrites.getOrDefault(target.getName(), Collections.emptyList());
   }
 
   public static final EncodingRegistry INSTANCE = new EncodingRegistry();

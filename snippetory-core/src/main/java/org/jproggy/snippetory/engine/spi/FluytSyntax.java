@@ -49,7 +49,7 @@ public class FluytSyntax extends RegExSyntax {
   }
 
   protected Map<Pattern, TokenType> createPatterns() {
-    Map<Pattern, TokenType> patterns = new LinkedHashMap<Pattern, TokenType>();
+    Map<Pattern, TokenType> patterns = new LinkedHashMap<>();
 
     patterns.put(SYNTAX_SELECTOR, TokenType.Syntax);
 

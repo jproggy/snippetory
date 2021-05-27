@@ -29,7 +29,7 @@ public final class LinkRegistry {
   }
 
   public void register(String name, LinkFactory value) {
-    Attributes.REGISTRY.register(name, Types.LINK);
+    Attributes.register(name, Types.LINK);
     links.put(name, value);
   }
 

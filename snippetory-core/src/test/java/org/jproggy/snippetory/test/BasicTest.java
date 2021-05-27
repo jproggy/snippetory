@@ -18,6 +18,9 @@ import static org.jproggy.snippetory.Syntaxes.FLUYT;
 import static org.jproggy.snippetory.Syntaxes.FLUYT_CC;
 import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -27,6 +30,9 @@ import java.util.TimeZone;
 import org.jproggy.snippetory.Repo;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.engine.ParseError;
+import org.jproggy.snippetory.engine.SnippetoryException;
+import org.jproggy.snippetory.spi.Metadata;
+import org.jproggy.snippetory.spi.Metadata.Annotation;
 import org.junit.jupiter.api.Test;
 
 class BasicTest {
@@ -46,7 +52,7 @@ class BasicTest {
   }
 
   @Test
-  void delimiterEscaped() throws Exception {
+  void delimiterEscaped() {
     Template t2 = XML_ALIKE.parse("\"{v:test delimiter='\",\"'}\"");
     assertEquals("\"{v:test delimiter='\",\"'}\"", t2.toString());
     t2.append("test", 5);
@@ -109,7 +115,7 @@ class BasicTest {
   }
 
   @Test
-  void childTempatesNested() throws Exception {
+  void childTempatesNested() {
     Template t2 = XML_ALIKE.parse("<t:outer>in<t:test> and {v:test}</t:test> and around</t:outer>").get("outer");
     t2.get("test").append("test", "hallo").render();
     assertEquals("in and hallo and around", t2.toString());
@@ -142,7 +148,7 @@ class BasicTest {
     assertEquals("", t.toString());
     t.append("x", "1").append("x", 2).append("x", "3");
     assertEquals("\"1'2'3\\", t.toString());
-    t = XML_ALIKE.parse("{v:x delimiter='\\n'\tprefix=\"\\t\" suffix='\\r\'}");
+    t = XML_ALIKE.parse("{v:x delimiter='\\n'\tprefix=\"\\t\" suffix='\\r'}");
     assertEquals("", t.toString());
     t.append("x", "1").append("x", 2).append("x", "3");
     assertEquals("\t1\n2\n3\r", t.toString());
@@ -216,6 +222,41 @@ class BasicTest {
 
     e = assertThrows(ParseError.class, () -> XML_ALIKE.parse("before<tx>startend</t:x>after"));
     assertEquals("x found but file end expected  Error while parsing </t:x> at line 1 character 18", e.getMessage());
+  }
+
+  @Test
+  void annotationUnknown() {
+    SnippetoryException x = assertThrows(SnippetoryException.class, () -> XML_ALIKE.parse("{v:x test1='xx'}"));
+    assertEquals("Can't understand attribute test1='xx'", x.getCause().getMessage());
+  }
+
+  @Test
+  void annotation() {
+    Metadata.registerAnnotation("test");
+    Template t = XML_ALIKE.parse("<t:x test='xx'></t:x><t:y></t:y>");
+
+    Annotation x = t.get("x").metadata().annotation("test");
+    assertEquals("xx", x.get());
+    assertFalse(x.isAbsent());
+    assertTrue(x.is("xx"));
+    assertTrue(x.matches("x*"));
+    assertFalse(x.matches("x"));
+    assertSame(x, x.defaultTo("yy"));
+    assertEquals("xx", x.orElse("yy"));
+    SnippetoryException eX = assertThrows(SnippetoryException.class, () -> x.verify(s -> false));
+    assertEquals("xx is not supported for annotation test", eX.getMessage());
+    assertSame(x, x.verify(s -> true));
+
+    Annotation y = t.get("y").metadata().annotation("test");
+    assertNull(y.get());
+    assertTrue(y.isAbsent());
+    assertTrue(y.is(null));
+    assertTrue(y.defaultTo("yy").is("yy"));
+    assertFalse(y.is("yy"));
+    assertFalse(y.matches("x"));
+    assertEquals("yy", y.orElse("yy"));
+    SnippetoryException eY = assertThrows(SnippetoryException.class, () -> y.verify(s -> false));
+    assertEquals("The mandatory annotation test is not provided", eY.getMessage());
   }
 
   @Test

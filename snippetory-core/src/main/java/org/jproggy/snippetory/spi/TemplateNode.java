@@ -18,4 +18,20 @@ public interface TemplateNode {
   TemplateNode getParent();
 
   String getEncoding();
+
+
+  default Metadata metadata() {
+    return new Metadata() {
+      @Override
+      public String getName() {
+        return null;
+      }
+
+      @Override
+      public Annotation annotation(String name) {
+        return new Annotation(name, null);
+      }
+    };
+  }
+
 }

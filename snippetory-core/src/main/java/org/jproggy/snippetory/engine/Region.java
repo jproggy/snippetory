@@ -23,6 +23,7 @@ import java.util.Set;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.engine.chars.SelfAppender;
 import org.jproggy.snippetory.spi.Link;
+import org.jproggy.snippetory.spi.Metadata;
 
 public class Region implements Template, CharSequence, SelfAppender {
   private final Map<String, Region> children;
@@ -185,6 +186,11 @@ public class Region implements Template, CharSequence, SelfAppender {
 
   final void setParent(Region parent) {
     this.parent = parent;
+  }
+
+  @Override
+  public Metadata metadata() {
+    return data.getPlaceholder().metadata();
   }
 
   @Override

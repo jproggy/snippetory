@@ -37,10 +37,10 @@ public class CaseHelper {
   }
 
   protected static boolean noLowerCase(String val) {
-    return !CharMatcher.JAVA_LOWER_CASE.matchesAnyOf(val);
+    return CharMatcher.javaLowerCase().matchesNoneOf(val);
   }
 
   protected static boolean noUpperCase(String val) {
-    return !CharMatcher.JAVA_UPPER_CASE.matchesAnyOf(val);
+    return CharMatcher.javaUpperCase().matchesNoneOf(val);
   }
 }

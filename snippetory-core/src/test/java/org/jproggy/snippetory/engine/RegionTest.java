@@ -52,7 +52,7 @@ class RegionTest {
 
   @Test
   void charAtTest() {
-    Location placeHolder = new Location(null, new Metadata("", "", Attributes.parse(null,
+    Location placeHolder = new Location(null, new MetaDescriptor("", "", Attributes.parse(null,
             Collections.emptyMap(), null)));
     List<DataSink> parts = Arrays.asList(tf(""), tf("test"), tf("yagni"));
     Region region = new Region(new DataSinks(parts, placeHolder), Collections.<String, Region>emptyMap());

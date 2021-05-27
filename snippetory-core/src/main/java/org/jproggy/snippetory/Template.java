@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Encoding;
+import org.jproggy.snippetory.spi.TemplateNode;
 
 /**
  * <p>
@@ -62,7 +63,7 @@ import org.jproggy.snippetory.spi.Encoding;
  * @see Repo
  */
 
-public interface Template extends EncodedData {
+public interface Template extends EncodedData, TemplateNode {
 
   Template NONE = new Template() {
 
@@ -91,14 +92,6 @@ public interface Template extends EncodedData {
 
     @Override
     public void render(Template target, String name) {
-    }
-
-    @Override
-    public void render(String siblingName) {
-    }
-
-    @Override
-    public void render() {
     }
 
     @Override
@@ -190,7 +183,9 @@ public interface Template extends EncodedData {
    * it was created. (I.e. got from)
    * This works pretty fine for the really simple cases.
    */
-  void render();
+  default void render() {
+    render(metadata().getName());
+  }
 
   /**
    * <p>
@@ -229,7 +224,9 @@ public interface Template extends EncodedData {
    *                    it's the same as render() without parameter.
    *                    </p>
    */
-  void render(String siblingName);
+  default void render(String siblingName) {
+    render(getParent(), siblingName);
+  }
 
   /**
    * Appends the textual representation of this Template to an arbitrary location.
@@ -274,6 +271,7 @@ public interface Template extends EncodedData {
   /**
    * The parent node of this node. If this node is absent or the root of a particular structure result might be null.
    */
+  @Override
   Template getParent();
 
   /**

@@ -56,11 +56,6 @@ public abstract class TemplateWrapper implements Template {
     return t;
   }
 
-  /**
-   *
-   * @param toBeWrapped
-   * @return
-   */
   protected abstract Template wrap(Template toBeWrapped);
 
   @Override
@@ -127,6 +122,11 @@ public abstract class TemplateWrapper implements Template {
   }
 
   @Override
+  public Metadata metadata() {
+    return wrapped.metadata();
+  }
+
+  @Override
   public String toString() {
     return wrapped.toString();
   }
@@ -135,11 +135,12 @@ public abstract class TemplateWrapper implements Template {
    * Unwraps all layers of TemplateWrapper around the template.
    * Be aware, that there might be wrappers, that aren't derived
    * from TemplateWrapper. Those won't be unwrapped by this implementation.
+   *
    * @return the unwrapped template
    */
   public Template getImplementation() {
     if (wrapped instanceof TemplateWrapper) {
-      return ((TemplateWrapper)wrapped).getImplementation();
+      return ((TemplateWrapper) wrapped).getImplementation();
     }
     return wrapped;
   }

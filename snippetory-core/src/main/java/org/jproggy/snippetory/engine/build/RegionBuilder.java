@@ -33,8 +33,8 @@ public class RegionBuilder {
   private static final String BACKWARD = Attributes.BACKWARD;
 
   final Location placeHolder;
-  final List<DataSink> parts = new ArrayList<DataSink>();
-  final Map<String, Region> children = new HashMap<String, Region>();
+  final List<DataSink> parts = new ArrayList<>();
+  final Map<String, Region> children = new HashMap<>();
 
   public RegionBuilder(Location parent) {
     super();
@@ -52,21 +52,18 @@ public class RegionBuilder {
     TemplateFragment end = null;
     if (t.getAttributes().containsKey(BACKWARD)) {
       String target = t.getAttributes().get(BACKWARD);
-      TemplateFragment value = (TemplateFragment)parts.get(parts.size() - 1);
+      TemplateFragment value = (TemplateFragment) parts.get(parts.size() - 1);
       Matcher m = Pattern.compile(target).matcher(value);
-      if (m.find()) {
-        int group = 0;
-        if (m.groupCount() == 1) {
-          group = 1;
-        } else if (m.groupCount() > 1) {
-          throw new ParseError("only one match group allowed: " + target, t);
-        }
-        parts.set(parts.size() - 1, value.start(m.start(group)));
-        end = value.end(m.end(group));
-        if (m.find()) throw new ParseError("backward target ambigous: " + target, t);
-      } else {
+      if (!m.find()) {
         throw new ParseError("target not found: " + target, t);
       }
+      int group = m.groupCount();
+      if (group > 1) {
+        throw new ParseError("only one match group allowed: " + target, t);
+      }
+      parts.set(parts.size() - 1, value.start(m.start(group)));
+      end = value.end(m.end(group));
+      if (m.find()) throw new ParseError("backward target ambigous: " + target, t);
       t.getAttributes().remove(BACKWARD);
     }
     return end;
