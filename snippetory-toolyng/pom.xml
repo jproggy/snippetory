@@ -1,34 +1,3 @@
-<<<<<<< HEAD
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.jproggy</groupId>
-		<artifactId>snippetory</artifactId>
-		<version>0.9.6-SNAPSHOT</version>
-	</parent>
-  <artifactId>snippetory-toolyng</artifactId>
-  <version>0.9.6-SNAPSHOT</version>
-  <name>Snippetory Toolyng</name>
-  <description>Tool support for Snippetory templating solution</description>
-  <dependencies>
-  	<dependency>
-  		<groupId>org.jproggy</groupId>
-  		<artifactId>snippetory-core</artifactId>
-  		<version>0.9.6-SNAPSHOT</version>
-  	</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>12.0</version>
-		</dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.10</version>
-			<scope>compile</scope>
-    </dependency>
-  </dependencies>
-=======
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -78,5 +47,4 @@
             <artifactId>snippetory-core</artifactId>
         </dependency>
     </dependencies>
->>>>>>> master
 </project>
