@@ -28,7 +28,7 @@ import org.jproggy.snippetory.spi.Metadata;
 public class Region implements Template, CharSequence, SelfAppender {
   private final Map<String, Region> children;
   private Region parent;
-  protected DataSinks data;
+  protected final DataSinks data;
 
   public Region(DataSinks data, Map<String, Region> children) {
     super();
@@ -133,7 +133,7 @@ public class Region implements Template, CharSequence, SelfAppender {
   public void render() {
     // ignore render calls on root node as they don't make any sense.
     if (isRoot()) return;
-    render(data.getPlaceholder().md.name);
+    render(metadata().getName());
   }
 
   private boolean isRoot() {

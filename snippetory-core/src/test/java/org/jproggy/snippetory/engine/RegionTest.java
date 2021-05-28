@@ -196,14 +196,30 @@ class RegionTest {
   }
 
   private static class NUL extends Writer {
+    @Override
+    public Writer append(char c) {
+      return this;
+    }
 
     @Override
-    public void write(char[] cbuf, int off, int len) throws IOException {}
+    public Writer append(CharSequence csq) throws IOException {
+      return this;
+    }
 
     @Override
-    public void flush() throws IOException {}
+    public void write(char[] cbuf, int off, int len) {
+    }
 
     @Override
-    public void close() throws IOException {}
+    public void write(String str, int off, int len) throws IOException {
+    }
+
+    @Override
+    public void flush() throws IOException {
+    }
+
+    @Override
+    public void close() throws IOException {
+    }
   }
 }
