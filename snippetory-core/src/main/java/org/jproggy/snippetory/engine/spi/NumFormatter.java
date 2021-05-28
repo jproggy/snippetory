@@ -91,7 +91,7 @@ public class NumFormatter implements FormatFactory {
       if ("".equals(definition)) return NumberFormat.getNumberInstance(l);
       if ("currency".equals(definition)) return NumberFormat.getCurrencyInstance(l);
       if ("int".equals(definition)) return NumberFormat.getIntegerInstance(l);
-      if ("percent".endsWith(definition)) return NumberFormat.getPercentInstance(l);
+      if ("percent".equals(definition)) return NumberFormat.getPercentInstance(l);
       if ("JS".equals(definition)) return NumberFormat.getNumberInstance(Locale.US);
       return new DecimalFormat(definition, DecimalFormatSymbols.getInstance(l));
     }
