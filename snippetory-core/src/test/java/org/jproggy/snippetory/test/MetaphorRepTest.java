@@ -15,6 +15,7 @@
 package org.jproggy.snippetory.test;
 
 import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,19 +24,17 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import junit.framework.Assert;
-
 import org.jproggy.snippetory.Repo;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.test.Page.Section;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MetaphorRepTest {
   @Test
-  public void test1() throws Exception {
+  void test1() throws Exception {
     // prepare necessary data
     ResourceBundle labels = ResourceBundle.getBundle("labels", Locale.US);
-    Map<String, String> errors = new HashMap<String, String>();
+    Map<String, String> errors = new HashMap<>();
     errors.put("field12", "Error messages might be red");
     String data11 = "val1";
     String data12 = "val2";
@@ -72,7 +71,6 @@ public class MetaphorRepTest {
     section3.addDescription(explanation).render();
 
     // finally put it all out
-    Assert.assertEquals(Repo.readResource("MRResult.htm").parse().toString(), page.toString());
-
+    assertEquals(Repo.readResource("MRResult.htm").parse().toString(), page.toString());
   }
 }

@@ -14,19 +14,24 @@
 
 package org.jproggy.snippetory.engine;
 
-import java.util.Collections;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.singleton;
+
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import org.jproggy.snippetory.engine.chars.CharSequences;
 import org.jproggy.snippetory.spi.CharDataSupport;
 import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Format;
+import org.jproggy.snippetory.spi.Link;
+import org.jproggy.snippetory.spi.Metadata;
 import org.jproggy.snippetory.spi.TemplateNode;
 import org.jproggy.snippetory.spi.VoidFormat;
 
 public class Location implements DataSink, TemplateNode {
-  protected final Metadata md;
+  protected final MetaDescriptor md;
   private StringBuilder target;
   private final Location parent;
 
@@ -34,7 +39,7 @@ public class Location implements DataSink, TemplateNode {
   private VoidFormat voidformat = null;
   private Format[] formats = null;
 
-  public Location(Location parent, Metadata metadata) {
+  public Location(Location parent, MetaDescriptor metadata) {
     this.parent = parent;
     this.md = metadata;
   }
@@ -188,17 +193,19 @@ public class Location implements DataSink, TemplateNode {
 
   @Override
   public Set<String> regionNames() {
-    return Collections.emptySet();
+    if (md.link != null) return singleton(md.name);
+    return emptySet();
   }
 
   @Override
-  public Region getChild(String name) {
+  public Link getChild(String name) {
+    if (Objects.equals(name, md.name) && md.link != null) return md.link;
     return null;
   }
 
   @Override
   public Set<String> names() {
-    HashSet<String> result = new HashSet<String>(getVoidFormat().names());
+    Set<String> result = new HashSet<>(getVoidFormat().names());
     if (getName() != null) result.add(getName());
     return result;
   }
@@ -206,5 +213,10 @@ public class Location implements DataSink, TemplateNode {
   @Override
   public Location cleanCopy(Location parent) {
     return new Location(parent, md);
+  }
+
+  @Override
+  public Metadata metadata() {
+    return md;
   }
 }

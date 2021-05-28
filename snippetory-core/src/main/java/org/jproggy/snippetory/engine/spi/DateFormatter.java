@@ -14,9 +14,18 @@
 
 package org.jproggy.snippetory.engine.spi;
 
-import java.text.DateFormat;
-import java.text.FieldPosition;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.chrono.ChronoZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -29,13 +38,13 @@ import org.jproggy.snippetory.spi.SimpleFormat;
 import org.jproggy.snippetory.spi.TemplateNode;
 
 public class DateFormatter implements FormatFactory {
-  private static final Map<String, Integer> LENGTHS = new TreeMap<String, Integer>(String.CASE_INSENSITIVE_ORDER);
+  private static final Map<String, FormatStyle> LENGTHS = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
   static {
-    LENGTHS.put("short", DateFormat.SHORT);
-    LENGTHS.put("medium", DateFormat.MEDIUM);
-    LENGTHS.put("long", DateFormat.LONG);
-    LENGTHS.put("full", DateFormat.FULL);
+    LENGTHS.put("short", FormatStyle.SHORT);
+    LENGTHS.put("medium", FormatStyle.MEDIUM);
+    LENGTHS.put("long", FormatStyle.LONG);
+    LENGTHS.put("full", FormatStyle.FULL);
   }
 
   @Override
@@ -43,23 +52,27 @@ public class DateFormatter implements FormatFactory {
     return new DateFormatWrapper(toFormat(definition, ctx.getLocale()));
   }
 
-  private DateFormat toFormat(String definition, Locale l) {
+  private DateTimeFormatter toFormat(String definition, Locale l) {
     if ("".equals(definition) && isTechLocale(l)) {
       definition = "sql_sql";
     }
 
-    if ("".equals(definition)) return DateFormat.getDateInstance(DateFormat.DEFAULT, l);
-
+    if ("".equals(definition)) return DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(l);
     // sql
-    if ("sql".equals(definition)) return new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-    if ("_sql".equals(definition)) return new SimpleDateFormat("HH:mm:ss", Locale.US);
-    if ("sql_sql".equals(definition)) return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+    if ("iso".equals(definition)) return DateTimeFormatter.ISO_DATE;
+    if ("_iso".equals(definition)) return DateTimeFormatter.ISO_TIME;
+    if ("iso_iso".equals(definition)) return DateTimeFormatter.ISO_DATE_TIME;
+
+    // iso
+    if ("sql".equals(definition)) return DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US);
+    if ("_sql".equals(definition)) return DateTimeFormatter.ofPattern("HH:mm:ss", Locale.US);
+    if ("sql_sql".equals(definition)) return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US);
 
     // JS
-    if ("JS".equals(definition)) return new SimpleDateFormat("'new Date('yyyy', 'MM', 'dd')'", Locale.US);
-    if ("_JS".equals(definition)) return new SimpleDateFormat("'new Date(0, 0, 0, 'HH', 'mm', 'ss')'", Locale.US);
+    if ("JS".equals(definition)) return DateTimeFormatter.ofPattern("'new Date('yyyy', 'MM', 'dd')'", Locale.US);
+    if ("_JS".equals(definition)) return DateTimeFormatter.ofPattern("'new Date(0, 0, 0, 'HH', 'mm', 'ss')'", Locale.US);
     if ("JS_JS".equals(definition))
-      return new SimpleDateFormat("'new Date('yyyy', 'MM', 'dd', 'HH', 'mm', 'ss')'", Locale.US);
+      return DateTimeFormatter.ofPattern("'new Date('yyyy', 'MM', 'dd', 'HH', 'mm', 'ss')'", Locale.US);
 
     return evaluateLengths(definition, l);
   }
@@ -68,51 +81,84 @@ public class DateFormatter implements FormatFactory {
     return l.equals(TemplateContext.TECH);
   }
 
-  private DateFormat evaluateLengths(String definition, Locale l) {
+  private DateTimeFormatter evaluateLengths(String definition, Locale l) {
     // data by length
-    Integer f = LENGTHS.get(definition);
+    FormatStyle f = LENGTHS.get(definition);
     if (f != null) {
-      return DateFormat.getDateInstance(f, l);
+      return DateTimeFormatter.ofLocalizedDate(f).withLocale(l);
     }
     // time by length
     if (definition.charAt(0) == '_') {
       f = LENGTHS.get(definition.substring(1));
     }
     if (f != null) {
-      return DateFormat.getTimeInstance(f, l);
+      return DateTimeFormatter.ofLocalizedTime(f).withLocale(l);
     }
     // date time by length
     String[] both = definition.split("_");
     if (both.length == 2) {
       f = LENGTHS.get(both[0]);
-      Integer t = LENGTHS.get(both[1]);
+      FormatStyle t = LENGTHS.get(both[1]);
       if (f != null && t != null) {
-        return DateFormat.getDateTimeInstance(f, t, l);
+        return DateTimeFormatter.ofLocalizedDateTime(f, t).withLocale(l);
       }
     }
-    return new SimpleDateFormat(definition, l);
+    return DateTimeFormatter.ofPattern(definition, l);
   }
 
   public static class DateFormatWrapper extends SimpleFormat {
-    private final DateFormat impl;
+    private final DateTimeFormatter impl;
 
-    public DateFormatWrapper(DateFormat d) {
+    public DateFormatWrapper(DateTimeFormatter d) {
       impl = d;
     }
 
     @Override
     public Object format(TemplateNode location, Object value) {
+      if (value instanceof Date) {
+        return format(location, Instant.ofEpochMilli(((Date) value).getTime()));
+      }
       if (value instanceof Calendar) {
-        return format(location, ((Calendar)value).getTime());
+        return format(location, Instant.ofEpochMilli(((Calendar)value).getTime().getTime()));
       }
-      synchronized (impl) {
-        return impl.format(value, new StringBuffer(), new FieldPosition(0));
+      if (value instanceof ChronoLocalDate) {
+        return ((ChronoLocalDate) value).format(impl);
       }
+      if (value instanceof ChronoLocalDateTime) {
+        return ((ChronoLocalDateTime<?>) value).format(impl);
+      }
+      if (value instanceof OffsetDateTime) {
+        return ((OffsetDateTime) value).format(impl);
+      }
+      if (value instanceof OffsetTime) {
+        return ((OffsetTime) value).format(impl);
+      }
+      if (value instanceof ChronoZonedDateTime) {
+        return ((ChronoZonedDateTime<?>) value).format(impl);
+      }
+      if (value instanceof YearMonth) {
+        return ((YearMonth) value).format(impl);
+      }
+      if (value instanceof Year) {
+        return ((Year) value).format(impl);
+      }
+      if (value instanceof Instant) {
+        return ((Instant) value).atZone(ZoneId.systemDefault()).format(impl);
+      }
+      throw new IllegalArgumentException("Unsupported type" + value);
     }
 
     @Override
     public boolean supports(Object value) {
       if (value instanceof Date) return true;
+      if (value instanceof ChronoLocalDate) return true;
+      if (value instanceof LocalTime) return true;
+      if (value instanceof ChronoLocalDateTime) return true;
+      if (value instanceof ChronoZonedDateTime) return true;
+      if (value instanceof OffsetTime) return true;
+      if (value instanceof OffsetDateTime) return true;
+      if (value instanceof YearMonth) return true;
+      if (value instanceof Year) return true;
       if (value instanceof Calendar) return true;
       return false;
     }

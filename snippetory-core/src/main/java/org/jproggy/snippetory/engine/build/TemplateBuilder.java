@@ -26,7 +26,7 @@ import org.jproggy.snippetory.engine.ConditionalRegion;
 import org.jproggy.snippetory.engine.DataSink;
 import org.jproggy.snippetory.engine.DataSinks;
 import org.jproggy.snippetory.engine.Location;
-import org.jproggy.snippetory.engine.Metadata;
+import org.jproggy.snippetory.engine.MetaDescriptor;
 import org.jproggy.snippetory.engine.ParseError;
 import org.jproggy.snippetory.engine.Region;
 import org.jproggy.snippetory.engine.SnippetoryException;
@@ -55,13 +55,13 @@ public class TemplateBuilder {
 
   public static Template parse(TemplateContext ctx, CharSequence data) {
     TemplateBuilder builder = new TemplateBuilder(ctx.clone(), data);
-    Location root = new Location(null, new Metadata(null, "", Attributes.parse(null, ctx.getBaseAttribs(), ctx)));
+    Location root = new Location(null, new MetaDescriptor(null, "", Attributes.parse(null, ctx.getBaseAttribs(), ctx)));
     return builder.parse(root);
   }
 
   protected Region parse(Location parent) {
     RegionBuilder reg = new RegionBuilder(parent);
-    Deque<RegionBuilder> regionStack = new ArrayDeque<RegionBuilder>();
+    Deque<RegionBuilder> regionStack = new ArrayDeque<>();
     Token t = null;
     while (parser.hasNext()) {
       t = parser.next();
@@ -148,12 +148,12 @@ public class TemplateBuilder {
   }
 
   protected Location location(Location parent, Token t) {
-    return new Location(parent, new Metadata(t.getName(), t.getContent(), Attributes.parse(parent, t.getAttributes(),
-        ctx)));
+    return new Location(parent, new MetaDescriptor(t.getName(), t.getContent(), Attributes.parse(parent, t.getAttributes(),
+            ctx)));
   }
 
   protected Location placeHolder(Location parent, Token t) {
-    return new Location(parent, new Metadata(t.getName(), "", Attributes.parse(parent, t.getAttributes(), ctx)));
+    return new Location(parent, new MetaDescriptor(t.getName(), "", Attributes.parse(parent, t.getAttributes(), ctx)));
   }
 
   private void setSyntax(Syntax s) {

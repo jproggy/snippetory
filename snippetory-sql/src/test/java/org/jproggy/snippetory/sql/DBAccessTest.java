@@ -14,8 +14,8 @@
 
 package org.jproggy.snippetory.sql;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -24,7 +24,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -41,51 +40,40 @@ import org.jproggy.snippetory.engine.SnippetoryException;
 import org.jproggy.snippetory.sql.spi.ConnectionProvider;
 import org.jproggy.snippetory.sql.spi.RowProcessor;
 import org.jproggy.snippetory.util.VariantResolver;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
-public class DBAccessTest {
-  static ConnectionProvider cons;
+class DBAccessTest {
   static Repository repo;
   static Map<String, String> dbNames = new HashMap<>();
   String dbType;
 
-  @Parameters
-  public static Iterable<String[]> dbUrls() {
+  static Iterable<ConnectionFab> dbUrls() {
     new File("target/test/db/sqlite").mkdirs();
-    List<String[]> result = new ArrayList<String[]>();
+    List<ConnectionFab> result = new ArrayList<>();
     if (System.getProperty("snippetory.test.dbUser") != null) {
-        result.add(new String[]{
-            "jdbc:mysql://localhost:3306/snippetory_test",
-            System.getProperty("snippetory.test.dbUser"),
-            System.getProperty("snippetory.test.dbPassword")});
-        result.add(new String[]{
-            "jdbc:postgresql://localhost:5432/snippetory_test",
-            System.getProperty("snippetory.test.dbUser"),
-            System.getProperty("snippetory.test.dbPassword")});
+      result.add(new ConnectionFab(
+              "jdbc:mysql://localhost:3306/snippetory_test",
+              System.getProperty("snippetory.test.dbUser"),
+              System.getProperty("snippetory.test.dbPassword")));
+      result.add(new ConnectionFab(
+              "jdbc:postgresql://localhost:5432/snippetory_test",
+              System.getProperty("snippetory.test.dbUser"),
+              System.getProperty("snippetory.test.dbPassword")));
     }
     result.addAll(Arrays.asList(
-            new String[]{"jdbc:derby:target/test/db/derby/snippetory_test;create=true", null, null},
-            new String[]{"jdbc:derby:memory:snippetory_test;create=true", null, null},
-            new String[]{"jdbc:sqlite:target/test/db/sqlite/snippetory_test.db", null, null},
-            new String[]{"jdbc:hsqldb:mem:snippetory_test", null, null},
-            new String[]{"jdbc:hsqldb:file:target/test/db/hsql/snippetory_test", null, null}
-        ));
+            new ConnectionFab("jdbc:derby:target/test/db/derby/snippetory_test;create=true", null, null),
+            new ConnectionFab("jdbc:derby:memory:snippetory_test;create=true", null, null),
+            new ConnectionFab("jdbc:sqlite:target/test/db/sqlite/snippetory_test.db", null, null),
+            new ConnectionFab("jdbc:hsqldb:mem:snippetory_test", null, null),
+            new ConnectionFab("jdbc:hsqldb:file:target/test/db/hsql/snippetory_test", null, null)
+    ));
     return result;
   }
 
-  public DBAccessTest(String url, String user, String pw) throws Exception {
-    cons = new ConnectionFab(url, user, pw);
-  }
-
-
-  @BeforeClass
-  public static void prepare() throws Exception {
+  @BeforeAll
+  static void prepare() throws Exception {
     dbNames.put("HSQL Database Engine", "hsql");
     dbNames.put("Microsoft SQL Server Database", "mssql");
     dbNames.put("Microsoft SQL Server", "mssql");
@@ -96,21 +84,20 @@ public class DBAccessTest {
     dbNames.put("SQLite", "sqlite");
   }
 
-  @Before
-  public void init() throws Exception {
+  void init(ConnectionProvider cons) throws Exception {
     SqlContext ctx = new SqlContext().conntecions(cons);
     String prodName = cons.getConnection().getMetaData().getDatabaseProductName();
     dbType = dbNames.get(prodName);
     ctx.postProcessor(VariantResolver.wrap(dbType));
     ctx.uriResolver(UriResolver.resource("org/jproggy/snippetory/sql"));
     repo = ctx.getRepository("DbAccessRepo.sql");
-    if (!hasSimpleTable(ctx)) {
+    if (!hasSimpleTable(ctx, cons)) {
       repo.get("createSimpleTable").executeUpdate();
       repo.get("fillSimpleTable").executeUpdate();
     }
   }
 
-  boolean hasSimpleTable(SqlContext ctx) throws Exception {
+  boolean hasSimpleTable(SqlContext ctx, ConnectionProvider cons) throws Exception {
     try (ResultSet rs = cons.getConnection().getMetaData().getTables(null, "%", "%", null)) {
       while (rs.next()) {
         if ("simple".equalsIgnoreCase(rs.getString("TABLE_NAME"))) return true;
@@ -119,26 +106,30 @@ public class DBAccessTest {
     return false;
   }
 
-  @Test
-  public void testInsDel() throws Exception {
+  @ParameterizedTest
+  @MethodSource("dbUrls")
+  void testInsDel(ConnectionProvider cons) throws Exception {
+    init(cons);
     Statement insert = repo.get("insertSimpleTable");
     LocalTime now = LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
     insert.get("values").set("name", "test1").set("price", 100.3).set("ext_id", "testinsert").set("xx", now).render();
-    insert.get("values").set("name", "test3").set("price", null).set("ext_id", "testinsert").set("xx", LocalTime.of(0,0)).render();
+    insert.get("values").set("name", "test3").set("price", null).set("ext_id", "testinsert").set("xx", LocalTime.of(0, 0)).render();
     insert.get("values").set("name", null).set("price", 103.3).set("ext_id", "testinsert").set("xx", LocalTime.MIDNIGHT).render();
     assertEquals(3, insert.executeUpdate());
     List<Time> data = repo.get("selectSimpleTable").set("ext_id", "testinsert").list(rs -> rs.getTime("xx"));
-    assertEquals(data.get(0).getClass().getName(), Time.valueOf(now), data.get(0));
-    assertEquals(Time.valueOf(LocalTime.of(0,0)), data.get(1));
+    assertEquals(Time.valueOf(now), data.get(0), data.get(0).getClass().getName());
+    assertEquals(Time.valueOf(LocalTime.of(0, 0)), data.get(1));
     assertEquals(Time.valueOf(LocalTime.MIDNIGHT), data.get(2));
     assertEquals(3, repo.get("deleteSimpleTable").set("ext_id", "testinsert").executeUpdate());
   }
 
-  @Test
-  public void testDirectCursor() throws Exception {
+  @ParameterizedTest
+  @MethodSource("dbUrls")
+  void testCursor(ConnectionProvider cons) throws Exception {
+    init(cons);
     int count = 0;
-    try ( Cursor<Map<String, Object>> data = repo.get("selectSimpleTable").directCursor(SQL.asMap());) {
-      for (Map<String, Object> item: data) {
+    try (Cursor<Map<String, Object>> data = repo.get("selectSimpleTable").cursor(SQL.asMap())) {
+      for (Map<String, Object> item : data) {
         count++;
         assertEquals(5, item.size());
         assertEquals(Integer.class, item.get("simple_id").getClass());
@@ -147,35 +138,28 @@ public class DBAccessTest {
     assertEquals(5, count);
   }
 
-  @Test
-  public void testReadaheadCursor() throws Exception {
-    int count = 0;
-    try ( Cursor<Object[]> data = repo.get("selectSimpleTable").readAheadCursor(SQL.asObjects());) {
-      for (Object[] item: data) {
-        count++;
-        assertEquals(5, item.length);
-        assertEquals(Integer.class, item[0].getClass());
-      }
-    }
-    assertEquals(5, count);
+  @ParameterizedTest
+  @MethodSource("dbUrls")
+  void testName(ConnectionProvider cons) throws Exception {
+    init(cons);
+    Statement stmt = repo.get("selectSimpleTable");
+    stmt.get("name").set("name", null).render();
+    assertEquals(0, stmt.list(SQL.asInteger()).size());
   }
 
-  @Test
-  public void testName() throws Exception {
-      Statement stmt = repo.get("selectSimpleTable");
-      stmt.get("name").set("name", null).render();
-      assertEquals(0, stmt.list(SQL.asInteger()).size());
-  }
-
-  @Test
-  public void testList() throws Exception {
+  @ParameterizedTest
+  @MethodSource("dbUrls")
+  void testList(ConnectionProvider cons) throws Exception {
+    init(cons);
     List<String> data = repo.get("selectSimpleTable").set("ext_id", "test").list(SQL.asString("name"));
     assertEquals(3, data.size());
     assertEquals("[Kuno, Karl, Egon]", data.toString());
   }
 
-  @Test
-  public void testMap() throws Exception {
+  @ParameterizedTest
+  @MethodSource("dbUrls")
+  void testMap(ConnectionProvider cons) throws Exception {
+    init(cons);
     Statement stmt = repo.get("selectSimpleTable").set("ext_id", "test");
     Map<String, Map<String, Object>> data = stmt.map(SQL.asString("name"), SQL.asMap("ext_id", "price"));
     assertEquals(3, data.size());
@@ -193,16 +177,20 @@ public class DBAccessTest {
     assertEquals("test6", row3.get("ext_id"));
   }
 
-  @Test
-  public void testOne() throws Exception {
+  @ParameterizedTest
+  @MethodSource("dbUrls")
+  void testOne(ConnectionProvider cons) throws Exception {
+    init(cons);
     Statement stmt = repo.get("selectSimpleTable");
     stmt.get("name").set("name", "Karl").render();
     Double data = stmt.one(SQL.asDouble("price"));
     assertEquals(101.300, data);
   }
 
-  @Test
-  public void testForEach() throws Exception {
+  @ParameterizedTest
+  @MethodSource("dbUrls")
+  void testForEach(ConnectionProvider cons) throws Exception {
+    init(cons);
     final int[] count = {0};
     final Set<Integer> ids = new HashSet<>();
     repo.get("selectSimpleTable").forEach(new RowProcessor() {
@@ -216,8 +204,10 @@ public class DBAccessTest {
     assertEquals(5, count[0]);
   }
 
-  @Test
-  public void nullhandling() throws Exception {
+  @ParameterizedTest
+  @MethodSource("dbUrls")
+  void nullhandling(ConnectionProvider cons) throws Exception {
+    init(cons);
     assertEquals("[x]", repo.get("nulls").list(SQL.asString("colNullStr").orElse("x")).toString());
     assertEquals("something", repo.get("nulls").one(SQL.asString("colStr").orElse("x")));
     assertEquals("1", repo.get("nulls").one(SQL.asString("colNullStr").orElse(SQL.asInteger("colNum").asString())));

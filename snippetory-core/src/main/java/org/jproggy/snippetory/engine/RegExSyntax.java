@@ -17,6 +17,7 @@ package org.jproggy.snippetory.engine;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.engine.Token.TokenType;
@@ -26,8 +27,8 @@ public abstract class RegExSyntax implements Syntax {
   protected static final String LINE_END = "[ \\t]*(?>(?>\\r\\n?)|\\n|\\u0085|\\u2028|\\u2029|\\Z)";
   protected static final String LINE_START = "^[ \\t]*";
 
-  protected static final String NAME_START_CHAR = "[\\p{javaJavaIdentifierStart}&&[^\\$]]";
-  protected static final String NAME_CHAR = "[\\p{javaJavaIdentifierPart}\\.\\-&&[^\\$]]";
+  protected static final String NAME_START_CHAR = "[\\p{javaJavaIdentifierStart}&&[^$]]";
+  protected static final String NAME_CHAR = "[\\p{javaJavaIdentifierPart}.\\-&&[^$]]";
   protected static final String NAME = NAME_START_CHAR + NAME_CHAR + "*";
 
   protected static final String ESCAPES = "\\\\\\\\|\\\\'|\\\\\"|\\\\n|\\\\r|\\\\b|\\\\t|\\\\f";
@@ -36,13 +37,13 @@ public abstract class RegExSyntax implements Syntax {
   protected static final String ATTRIBUTE = NAME + "=(?:" + APOS_VALUE + "|" + QUOTE_VALUE + ")";
   protected static final String ATTRIBUTES = "(?:\\s+" + ATTRIBUTE + ")*";
 
-  private static final String QUOTE_CONTENT = "\\\"((?>" + ESCAPES + "|[^\\\\\"])*)\\\")";
-  private static final String APOS_CONTENT = "\\'((?>" + ESCAPES + "|[^\\'])*)\\'";
-  protected static final String CONTENT = "(" + NAME + ")=(?>" + APOS_CONTENT + "|" + QUOTE_CONTENT + "|(" + NAME + ")";
+  private static final String QUOTE_CONTENT = "\"((?>" + ESCAPES + "|[^\\\\\"])*)\")";
+  private static final String APOS_CONTENT = "'((?>" + ESCAPES + "|[^'])*)'";
+  private static final String CONTENT = "(" + NAME + ")=(?>" + APOS_CONTENT + "|" + QUOTE_CONTENT + "|(" + NAME + ")";
 
-  private static final String REM_START = "(?://|/\\*|<!--|--|#|\\'|rem)";
+  private static final String REM_START = "(?://|/\\*|<!--|--|#|'|rem)";
   protected static final Pattern SYNTAX_SELECTOR = Pattern.compile(LINE_START + "(?:" + REM_START
-      + "[ \\t]*Syntax|<s):(" + NAME + ")(?:\\*/|-|/|>| |\\t)*" + LINE_END, Pattern.MULTILINE);
+          + "[ \\t]*Syntax|<s):(" + NAME + ")(?:\\*/|-|/|>| |\\t)*" + LINE_END, Pattern.MULTILINE);
 
   @Override
   public abstract RegexParser parse(CharSequence data, TemplateContext ctx);
@@ -64,11 +65,9 @@ public abstract class RegExSyntax implements Syntax {
 
     public RegexParser(CharSequence data, TemplateContext ctx, Map<Pattern, TokenType> patterns) {
       this.patterns = patterns;
-      String compoundPattern = "";
-      for (Pattern p : patterns.keySet()) {
-        if (compoundPattern.length() > 0) compoundPattern += "|";
-        compoundPattern += "(?:" + p.pattern() + ')';
-      }
+      String compoundPattern = patterns.keySet().stream()
+              .map(p -> "(?:" + p.pattern() + ')')
+              .collect(Collectors.joining("|"));
       matcher = Pattern.compile(compoundPattern, Pattern.MULTILINE).matcher(data);
       this.data = data;
       this.context = ctx;
@@ -136,7 +135,7 @@ public abstract class RegExSyntax implements Syntax {
           if (m.group(4) != null) continue;
         }
         if (m.group(4) != null) throw new ParseError("don't understand " + varDef, token);
-        if (Attributes.REGISTRY.type(m.group(1)) == null) {
+        if (AttributesRegistry.INSTANCE.type(m.group(1)) == null) {
           throw new ParseError("unkown attribute name " + m.group(1), token);
         }
         String value = m.group(2);

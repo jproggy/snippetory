@@ -86,11 +86,7 @@ public interface Statement extends Template {
   /**
    *
    */
-  <T> Cursor<T> directCursor(RowTransformer<T> transformer);
-  /**
-   *
-   */
-  <T> Cursor<T> readAheadCursor(RowTransformer<T> transformer);
+  <T> Cursor<T> cursor(RowTransformer<T> transformer);
   /**
    *
    */

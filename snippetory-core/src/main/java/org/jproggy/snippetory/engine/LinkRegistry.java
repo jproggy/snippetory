@@ -19,30 +19,31 @@ import java.util.Map;
 
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.engine.Attributes.Types;
-import org.jproggy.snippetory.spi.FormatConfiguration;
-import org.jproggy.snippetory.spi.FormatFactory;
+import org.jproggy.snippetory.spi.Link;
+import org.jproggy.snippetory.spi.LinkFactory;
 
-public final class FormatRegistry {
-  private final Map<String, FormatFactory> formats = new HashMap<>();
+public final class LinkRegistry {
+  private Map<String, LinkFactory> links = new HashMap<>();
 
-  private FormatRegistry() {}
-
-  public void register(String name, FormatFactory value) {
-    Attributes.register(name, Types.FORMAT);
-    formats.put(name, value);
+  private LinkRegistry() {
   }
 
-  public FormatConfiguration get(String name, String definition, TemplateContext ctx) {
-    FormatFactory f = formats.get(name);
+  public void register(String name, LinkFactory value) {
+    Attributes.register(name, Types.LINK);
+    links.put(name, value);
+  }
+
+  public Link get(String name, String definition, TemplateContext ctx) {
+    LinkFactory f = links.get(name);
     if (f == null) {
       return null;
     }
-    FormatConfiguration created = f.create(definition, ctx);
+    Link created = f.create(definition, ctx);
     if (created == null) {
-      throw new SnippetoryException("Format " + name + " doesn't support " + definition);
+      throw new SnippetoryException("Link " + name + " doesn't support " + definition);
     }
     return created;
   }
 
-  public static final FormatRegistry INSTANCE = new FormatRegistry();
+  public static final LinkRegistry INSTANCE = new LinkRegistry();
 }

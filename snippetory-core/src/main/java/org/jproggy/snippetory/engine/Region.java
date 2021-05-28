@@ -22,11 +22,13 @@ import java.util.Set;
 
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.engine.chars.SelfAppender;
+import org.jproggy.snippetory.spi.Link;
+import org.jproggy.snippetory.spi.Metadata;
 
 public class Region implements Template, CharSequence, SelfAppender {
   private final Map<String, Region> children;
   private Region parent;
-  protected DataSinks data;
+  protected final DataSinks data;
 
   public Region(DataSinks data, Map<String, Region> children) {
     super();
@@ -72,15 +74,14 @@ public class Region implements Template, CharSequence, SelfAppender {
     return new Region(this, parent);
   }
 
-  protected Region getChild(String name) {
+  protected Template getChild(String name) {
     if (children.containsKey(name)) {
       Region child = children.get(name);
       return cleanChild(child);
     }
-    Region child = data.getChild(name);
+    Link child = data.getChild(name);
     if (child == null) return null;
-    child.setParent(this);
-    return child;
+    return child.getContents(this, name);
   }
 
   protected Region cleanChild(Region child) {
@@ -132,7 +133,7 @@ public class Region implements Template, CharSequence, SelfAppender {
   public void render() {
     // ignore render calls on root node as they don't make any sense.
     if (isRoot()) return;
-    render(data.getPlaceholder().md.name);
+    render(metadata().getName());
   }
 
   private boolean isRoot() {
@@ -156,7 +157,7 @@ public class Region implements Template, CharSequence, SelfAppender {
   }
 
   @Override
-  public void render(PrintStream out) throws IOException {
+  public void render(PrintStream out) {
     appendTo(out);
     out.flush();
   }
@@ -178,12 +179,18 @@ public class Region implements Template, CharSequence, SelfAppender {
     return true;
   }
 
-  protected Template getParent() {
+  @Override
+  public Template getParent() {
     return parent;
   }
 
   final void setParent(Region parent) {
     this.parent = parent;
+  }
+
+  @Override
+  public Metadata metadata() {
+    return data.getPlaceholder().metadata();
   }
 
   @Override

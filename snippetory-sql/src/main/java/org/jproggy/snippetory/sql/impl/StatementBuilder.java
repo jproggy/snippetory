@@ -22,7 +22,7 @@ import org.jproggy.snippetory.engine.Attributes;
 import org.jproggy.snippetory.engine.ConditionalRegion;
 import org.jproggy.snippetory.engine.DataSink;
 import org.jproggy.snippetory.engine.Location;
-import org.jproggy.snippetory.engine.Metadata;
+import org.jproggy.snippetory.engine.MetaDescriptor;
 import org.jproggy.snippetory.engine.Region;
 import org.jproggy.snippetory.engine.TemplateFragment;
 import org.jproggy.snippetory.engine.Token;
@@ -37,19 +37,19 @@ public class StatementBuilder extends TemplateBuilder {
 
   public static StatementImpl parse(TemplateContext ctx, CharSequence data) {
     StatementBuilder builder = new StatementBuilder(ctx.clone(), data);
-    Parameter root = new Parameter(null, new Metadata(null, "", Attributes.parse(null, ctx.getBaseAttribs(), ctx)));
+    Parameter root = new Parameter(null, new MetaDescriptor(null, "", Attributes.parse(null, ctx.getBaseAttribs(), ctx)));
     return (StatementImpl)builder.parse(root);
   }
 
   @Override
   protected Location location(Location parent, Token t) {
-    return new Parameter(parent, new Metadata(t.getName(), t.getContent(), Attributes.parse(parent, t.getAttributes(),
-        ctx)));
+    return new Parameter(parent, new MetaDescriptor(t.getName(), t.getContent(), Attributes.parse(parent, t.getAttributes(),
+            ctx)));
   }
 
   @Override
   protected Location placeHolder(Location parent, Token t) {
-    return new Parameter(parent, new Metadata(t.getName(), "", Attributes.parse(parent, t.getAttributes(), ctx)));
+    return new Parameter(parent, new MetaDescriptor(t.getName(), "", Attributes.parse(parent, t.getAttributes(), ctx)));
   }
 
   @Override

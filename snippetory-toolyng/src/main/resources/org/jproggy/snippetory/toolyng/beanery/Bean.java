@@ -6,7 +6,11 @@ import org.jproggy.snippetory.spi.TemplateWrapper;
 // $class{
 
 /*$i*/public class $RegionTpl$ extends TemplateWrapper {
+<<<<<<< HEAD
 /*$i*/	public $RegionTpl$ (Template template) {
+=======
+/*$i*/	public $RegionTpl$(Template template) {
+>>>>>>> master
 /*$i*/		super(template);
 /*$i*/	}
 /*$i*/	@Override

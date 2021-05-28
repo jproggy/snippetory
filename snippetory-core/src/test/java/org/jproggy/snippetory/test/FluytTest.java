@@ -17,17 +17,17 @@ package org.jproggy.snippetory.test;
 import static org.jproggy.snippetory.Syntaxes.FLUYT;
 import static org.jproggy.snippetory.Syntaxes.FLUYT_CC;
 import static org.jproggy.snippetory.Syntaxes.FLUYT_X;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jproggy.snippetory.Repo;
 import org.jproggy.snippetory.Syntaxes;
 import org.jproggy.snippetory.Template;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class FluytTest {
+class FluytTest {
   @Test
-  public void basic() {
+  void basic() {
     Template t = FLUYT.parse("$test");
     assertEquals(" i++; ", t.set("test", " i++; ").toString());
 
@@ -82,7 +82,7 @@ public class FluytTest {
   }
 
   @Test
-  public void x() {
+  void x() {
     Template t = FLUYT_X.parse("$test");
     assertEquals(" i++; ", t.set("test", " i++; ").toString());
 
@@ -118,7 +118,7 @@ public class FluytTest {
   }
 
   @Test
-  public void cc() {
+  void cc() {
     Template t = FLUYT_CC.parse("// $test");
     assertEquals(" i++; ", t.set("test", " i++; ").toString());
 
@@ -156,7 +156,7 @@ public class FluytTest {
   }
 
   @Test
-  public void attribs() {
+  void attribs() {
     Template t = FLUYT.parse("$test(enc='url')");
     t.set("test", "i++");
     assertEquals("i%2B%2B", t.toString());
@@ -178,7 +178,7 @@ public class FluytTest {
   }
 
   @Test
-  public void comments() {
+  void comments() {
     Template t1 = FLUYT.parse("/// comment on start  \n  $test{  \n i++; \n   ///another comment  \n   }test$  \n");
     assertEquals("", t1.toString());
     t1.append("test", t1.get("test"));
@@ -194,7 +194,7 @@ public class FluytTest {
   }
 
   @Test
-  public void lineRemoval() {
+  void lineRemoval() {
     Template t = FLUYT.parse("  $test{  \n i++; \n   }test$  \n");
     t.append("test", t.get("test"));
     assertEquals(" i++; \n", t.toString());
@@ -218,7 +218,7 @@ public class FluytTest {
   }
 
   @Test
-  public void lineRemovalCond() {
+  void lineRemovalCond() {
     Template t = FLUYT.parse("  ${  \n $test \n   }$  \n");
     t.append("test", "i++;");
     assertEquals(" i++; \n", t.toString());
@@ -241,7 +241,7 @@ public class FluytTest {
   }
 
   @Test
-  public void delimiter() {
+  void delimiter() {
     Template t = FLUYT.parse("in ($test(delimiter=', '))");
     t.append("test", 5);
     assertEquals("in (5)", t.toString());
@@ -257,7 +257,7 @@ public class FluytTest {
   }
 
   @Test
-  public void childTempates() {
+  void childTempates() {
     Template t = FLUYT.parse("in$test{ and out}test$ and around");
     assertEquals("in and around", t.toString());
     t.append("test", t.get("test"));
@@ -272,7 +272,7 @@ public class FluytTest {
   }
 
   @Test
-  public void conditionalRegionsSimple() {
+  void conditionalRegionsSimple() {
     Template t = FLUYT.parse("before$t1{${->${$test}$<-}$}t1$after");
     t.get("t1").render();
     assertEquals("beforeafter", t.toString());
@@ -297,9 +297,9 @@ public class FluytTest {
   }
 
   @Test
-  public void conditionalRegions() {
+  void conditionalRegions() {
     Template t = Repo.read("before$(default='nothing'){$test{ start$(pad='10'){$tust$middle}$$test$end }$}$after")
-        .syntax(Syntaxes.FLUYT).parse();
+            .syntax(Syntaxes.FLUYT).parse();
     assertEquals("beforenothingafter", t.toString());
     Template test = t.get("test");
     assertEquals(" start$test$end ", test.toString());
@@ -329,7 +329,7 @@ public class FluytTest {
   }
 
   @Test
-  public void noParse() {
+  void noParse() {
     Template t = FLUYT.parse("$test(");
     t.set("test", "hallo");
     assertEquals("$test(", t.toString());
