@@ -52,8 +52,13 @@
 		<!-- Sonar -->
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-		<jacoco.reportPath>${project.basedir}/../target/jacoco.exec</jacoco.reportPath>
 		<sonar.language>java</sonar.language>
+        <sonar.coverage.jacoco.xmlReportPaths>
+          ${project.basedir}/../snippetory-core/target/site/jacoco-aggregate/jacoco.xml,
+          ${project.basedir}/../snippetory-sql/target/site/jacoco-aggregate/jacoco.xml,
+          ${project.basedir}/../snippetory-toolyng/target/site/jacoco-aggregate/jacoco.xml,
+          ${project.basedir}/../snippetory-groovy/target/site/jacoco-aggregate/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -129,19 +134,20 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.4</version>
+				<version>0.8.6</version>
 				<configuration>
 					<destFile>${jacoco.reportPath}</destFile>
 					<append>true</append>
 				</configuration>
 				<executions>
-					<execution>
-						<id>agent</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-				</executions>
+                  <execution>
+                    <id>report-aggregate</id>
+                    <phase>verify</phase>
+                    <goals>
+                      <goal>report-aggregate</goal>
+                    </goals>
+                  </execution>
+                </executions>
 			</plugin>
             <!--plugin>
                 <groupId>org.apache.maven.plugins</groupId>
