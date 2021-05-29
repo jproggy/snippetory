@@ -67,17 +67,17 @@ public interface Syntax {
 
   interface Tokenizer {
     /**
-     * Returns <tt>true</tt> if more tokens have been recognized. (In other
-     * words, returns <tt>true</tt> if <tt>next</tt> would return a valid token
+     * Returns <code>true</code> if more tokens have been recognized. (In other
+     * words, returns <code>true</code> if <code>next</code> would return a valid token
      * rather than throwing an exception or returning an invalid token.)
      *
-     * @return <tt>true</tt> if the tokenizer has recognized more tokens.
+     * @return <code>true</code> if the tokenizer has recognized more tokens.
      */
     boolean hasNext();
 
     /**
-     * Returns the next token found in the input data as long as <tt>hasNext</tt>
-     * has returned <tt>true</tt> immediately before this call.
+     * Returns the next token found in the input data as long as <code>hasNext</code>
+     * has returned <code>true</code> immediately before this call.
      *
      * @return the next element in the iteration.
      */
@@ -90,8 +90,8 @@ public interface Syntax {
 
     /**
      *
-     * @return the start position of the token the <tt>next</tt> method will provide
-     * by it's next call. Or <tt>getData().length()</tt> if no further token present.
+     * @return the start position of the token the <code>next</code> method will provide
+     * by it's next call. Or <code>getData().length()</code> if no further token present.
      */
     int getPosition();
 
@@ -119,7 +119,7 @@ public interface Syntax {
   Tokenizer parse(CharSequence data, TemplateContext ctx);
 
   /**
-   * similar to <tt>parse</tt> but additionally preserves parse position
+   * similar to <code>parse</code> but additionally preserves parse position
    * @param data a tokenizer, that already parsed a portion of the data.
    * @return a tokenizer providing the token stream
    */

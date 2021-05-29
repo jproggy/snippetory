@@ -39,7 +39,8 @@ public enum Encodings implements Encoding {
   /**
    * It's assumed that Snippetory is used in a modern Unicode based
    * environment. Only a minimal escaping is done:
-   * <table width="150" summary="list of encoding actions">
+   * <table>
+   *     <caption>list of encoding actions</caption>
    * <tr>
    * <td>&lt;</td>
    * <td>--&gt;</td>
