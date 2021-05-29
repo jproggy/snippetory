@@ -53,12 +53,6 @@
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
 		<sonar.language>java</sonar.language>
-        <sonar.coverage.jacoco.xmlReportPaths>
-          ${project.basedir}/../snippetory-core/target/site/jacoco-aggregate/jacoco.xml,
-          ${project.basedir}/../snippetory-sql/target/site/jacoco-aggregate/jacoco.xml,
-          ${project.basedir}/../snippetory-toolyng/target/site/jacoco-aggregate/jacoco.xml,
-          ${project.basedir}/../snippetory-groovy/target/site/jacoco-aggregate/jacoco.xml
-        </sonar.coverage.jacoco.xmlReportPaths>
     </properties>
     <dependencyManagement>
         <dependencies>
