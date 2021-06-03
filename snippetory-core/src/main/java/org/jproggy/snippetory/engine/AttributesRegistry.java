@@ -26,6 +26,7 @@ import org.jproggy.snippetory.engine.spi.CropFormatter;
 import org.jproggy.snippetory.engine.spi.DateFormatter;
 import org.jproggy.snippetory.engine.spi.DecimalFormatter;
 import org.jproggy.snippetory.engine.spi.DefaultFormatter;
+import org.jproggy.snippetory.engine.spi.EnvFormatter;
 import org.jproggy.snippetory.engine.spi.IntFormatter;
 import org.jproggy.snippetory.engine.spi.NullFormatter;
 import org.jproggy.snippetory.engine.spi.NumFormatter;
@@ -69,6 +70,7 @@ public class AttributesRegistry {
         FormatRegistry.INSTANCE.register("case", new CaseFormatter());
         FormatRegistry.INSTANCE.register("default", new DefaultFormatter());
         FormatRegistry.INSTANCE.register("null", new NullFormatter());
+        FormatRegistry.INSTANCE.register("env", new EnvFormatter());
         LinkRegistry.INSTANCE.register("alias", AliasLink::new);
         for (Encodings e : Encodings.values()) {
             EncodingRegistry.INSTANCE.register(e);
