@@ -1,5 +1,7 @@
 package org.jproggy.snippetory.engine.spi;
 
+import java.util.Objects;
+
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.spi.FormatFactory;
 import org.jproggy.snippetory.spi.SimpleFormat;
@@ -17,7 +19,7 @@ public class EnvFormatter implements FormatFactory {
         private final String value;
 
         private EnvFormat(String name) {
-            this.value = System.getenv(name);
+            this.value = Objects.toString(System.getenv(name), "");
         }
 
         @Override
