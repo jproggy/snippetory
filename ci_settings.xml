@@ -12,5 +12,10 @@
          </httpHeaders>
        </configuration>
      </server>
+     <server>
+       <id>ossrh</id>
+       <username>${env.OSSRH_USER}</username>
+       <password>${env.OSSRH_PW}</password>
+     </server>
    </servers>
  </settings>
