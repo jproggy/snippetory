@@ -17,12 +17,18 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>snippetory-core</artifactId>
+	<name>Snippetory Template Engine</name>
 	<description>
 		Snippetory is a template engine for java with an integrated repository
-		for organizing and reusing the template code. Logic and presentation are separated by
+		for organizing and re-using the template code. Logic and presentation are separated by
 		an abstraction layer with support for different technologies and a powerful formatting
 		engine.
 	</description>
+	<url>https://www.jproggy.org/snippetory/intact-templates/</url>
+	<organization>
+		<url>https://gitlab.com/jproggy</url>
+		<name>JProggy</name>
+	</organization>
 	<licenses>
 		<license>
 			<name>The Apache License, Version 2.0</name>
@@ -38,6 +44,7 @@
 			<id>Sir RotN</id>
 			<name>Bernd Ebertz</name>
 			<email>bebertz@jproggy.org</email>
+			<url>https://rotnworld.blogspot.com</url>
 		</developer>
 	</developers>
 	<dependencies>

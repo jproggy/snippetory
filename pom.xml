@@ -3,7 +3,7 @@
 <!-- Licensed under the Apache License, Version 2.0 (the "License"); -->
 <!-- you may not use this file except in compliance with the License. -->
 <!-- You may obtain a copy of the License at -->
-<!-- -> http://www.apache.org/licenses/LICENSE-2.0 <- -->
+<!-- -> https://www.apache.org/licenses/LICENSE-2.0 <- -->
 <!-- Unless required by applicable law or agreed to in writing, software -->
 <!-- distributed under the License is distributed on an "AS IS" BASIS, -->
 <!-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. -->
@@ -12,22 +12,29 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>9</version>
+    </parent>
     <groupId>org.jproggy</groupId>
     <artifactId>snippetory</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Snippetory Template Engine</name>
+    <name>Snippetory Templating Platform</name>
     <description>
-        Snippetory is a template engine for java with an integrated repository
-        for organizing and reusing the template code. Logic and presentation are separated by
-        an abstraction layer with support for different technologies and a powerful formatting
-        engine.
+        Snippetory is a templating platform for Java. Modules feature a general purpose template engine
+        as well as handling of prepared statements on JDBC and tight integrations in other JVM languages
     </description>
-    <url>http://www.jproggy.org/snippetory/</url>
+    <url>https://www.jproggy.org/snippetory/</url>
+    <organization>
+        <url>https://www.jproggy.org</url>
+        <name>JProggy</name>
+    </organization>
     <licenses>
         <license>
             <name>The Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -44,15 +51,22 @@
         <module>snippetory-toolyng</module>
         <module>snippetory-groovy</module>
     </modules>
-    <properties>
-        <gpg.keyname>Templa Project</gpg.keyname>
-        <!-- versions -->
-        <junit-jupiter.version>5.5.0</junit-jupiter.version>
-        <junit.version>4.13.1</junit.version>
-		<!-- Sonar -->
-		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-		<sonar.language>java</sonar.language>
-    </properties>
+    <scm>
+        <url>https://gitlab.com/jproggy/Snippetory</url>
+    </scm>
+    <issueManagement>
+        <url>https://github.com/jproggy/Snippetory/issues</url>
+    </issueManagement>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -68,6 +82,15 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+    <properties>
+        <gpg.keyname>Templa Project</gpg.keyname>
+        <!-- versions -->
+        <junit-jupiter.version>5.5.0</junit-jupiter.version>
+        <junit.version>4.13.1</junit.version>
+        <!-- Sonar -->
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.language>java</sonar.language>
+    </properties>
     <build>
         <plugins>
             <plugin>
@@ -187,29 +210,4 @@
 			</plugin>
         </plugins>
     </build>
-	<issueManagement>
-		<url>https://github.com/jproggy/Snippetory/issues</url>
-	</issueManagement>
-	<scm>
-		<url>http://sourceforge.net/p/snippetory/code/HEAD/tree/trunk/</url>
-		<developerConnection>scm:svn:https://svn.code.sf.net/p/snippetory/code/trunk</developerConnection>
-		<connection>scm:svn:svn://svn.code.sf.net/p/snippetory/code/trunk snippetory-code</connection>
-	</scm>
-	<repositories>
-		<repository>
-			<id>gitlab-maven</id>
-			<url>https://gitlab.com/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
-		</repository>
-	</repositories>
-	<distributionManagement>
-		<repository>
-			<id>gitlab-maven</id>
-			<url>https://gitlab.com/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
-		</repository>
-		<snapshotRepository>
-			<id>gitlab-maven</id>
-			<url>https://gitlab.com/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 </project>

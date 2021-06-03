@@ -23,6 +23,11 @@
 	   Snippetory SQL Repository provides storage of SQL statements based on a named parameter scheme and providing a rich 
 	   set of functionality to handle alternatives of those statements
 	</description>
+	<url>https://www.jproggy.org/snippetory/sql/</url>
+	<organization>
+		<url>https://github.com/jproggy</url>
+		<name>JProggy</name>
+	</organization>
 	<licenses>
 		<license>
 			<name>The Apache License, Version 2.0</name>

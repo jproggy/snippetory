@@ -45,7 +45,7 @@ import org.jproggy.snippetory.engine.FormatRegistry;
  * of course you've to take care for handling the state appropriately. Returning a new instance per
  * call of {@link FormatConfiguration#getFormat} will do the job.
  *
- * @see <a href="http://www.jproggy.org/snippetory/Formats.html">Official documentation on formats</a>
+ * @see <a href="https://www.jproggy.org/snippetory/formats/">Official documentation on formats</a>
  * @see FormatFactory
  * @see FormatConfiguration
  * @see SimpleFormat

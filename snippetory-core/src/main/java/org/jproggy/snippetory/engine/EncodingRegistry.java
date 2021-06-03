@@ -25,7 +25,7 @@ import org.jproggy.snippetory.spi.Transcoding;
 
 /**
  * Handles registration of encoding and transcoding overwrites.
- * See <a href="http://www.jproggy.org/snippetory/Encodings.html">offical documentation</a>
+ * See <a href="https://www.jproggy.org/snippetory/encodings/">official documentation</a>
  * for additional information
  *
  * @author B. Ebertz

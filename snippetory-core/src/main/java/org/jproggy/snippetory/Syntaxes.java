@@ -21,9 +21,8 @@ import org.jproggy.snippetory.spi.SyntaxID;
 /**
  * Provides direct access to the predefined syntaxes.
  * For more information see
- * <a href="http://www.jproggy.org/snippetory/Syntax.html">
- * syntaxes in official documentation
- * </a>.
+ * <a href="https://www.jproggy.org/snippetory/syntax/">
+ * syntaxes in official documentation</a>.
  * @author B.Ebertz
  */
 public enum Syntaxes implements SyntaxID {
