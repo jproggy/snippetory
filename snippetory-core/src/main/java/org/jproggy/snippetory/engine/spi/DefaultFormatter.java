@@ -15,6 +15,7 @@
 package org.jproggy.snippetory.engine.spi;
 
 import org.jproggy.snippetory.TemplateContext;
+import org.jproggy.snippetory.engine.chars.EncodedContainer;
 import org.jproggy.snippetory.spi.FormatFactory;
 import org.jproggy.snippetory.spi.SimpleFormat;
 import org.jproggy.snippetory.spi.TemplateNode;
@@ -36,7 +37,7 @@ public class DefaultFormatter implements FormatFactory {
 
     @Override
     public Object formatVoid(TemplateNode node) {
-      return value;
+      return new EncodedContainer(value, node.getEncoding());
     }
   }
 }
