@@ -1,5 +1,7 @@
 package org.jproggy.snippetory.toolyng.test;
 
+import static java.util.Collections.emptySet;
+
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Writer;
@@ -38,10 +40,11 @@ public class TestRecorder implements Template {
 
   @Override
   public Template append(String name, Object val) {
-    if (!appends.containsKey(name)) {
-      appends.put(name, repo.get("append"));
-    }
-    appends.get(name).get("value").set("name", name).set("data", "value").render();
+    appends.computeIfAbsent(name, (k) -> repo.get("append"))
+            .get("value")
+            .set("name", name)
+            .set("data", "value")
+            .render();
     return this;
   }
 
@@ -64,14 +67,12 @@ public class TestRecorder implements Template {
 
   @Override
   public Set<String> names() {
-    // TODO Auto-generated method stub
-    return null;
+    return emptySet();
   }
 
   @Override
   public Set<String> regionNames() {
-    // TODO Auto-generated method stub
-    return null;
+    return emptySet();
   }
 
   @Override
@@ -80,21 +81,7 @@ public class TestRecorder implements Template {
   }
 
   @Override
-  public void render() {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void render(String name) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
   public void render(Writer out) throws IOException {
-    // TODO Auto-generated method stub
-
   }
 
   @Override
@@ -104,14 +91,10 @@ public class TestRecorder implements Template {
 
   @Override
   public void render(PrintStream out) throws IOException {
-    // TODO Auto-generated method stub
-
   }
 
   @Override
-  public void render(Template arg0, String name) {
-    // TODO Auto-generated method stub
-
+  public void render(Template target, String name) {
   }
 
 }

@@ -40,10 +40,7 @@ public class VerifyingTemplate implements Template {
   }
 
   protected Iterator<Object> iterator(String name) {
-    if (!iterators.containsKey(name)) {
-      iterators.put(name, ((Iterable<Object>) data.get(name)).iterator());
-    }
-    return iterators.get(name);
+    return iterators.computeIfAbsent(name, (k) -> ((Iterable<Object>) data.get(name)).iterator());
   }
 
   @Override
@@ -81,16 +78,6 @@ public class VerifyingTemplate implements Template {
   @Override
   public boolean isPresent() {
     return true;
-  }
-
-  @Override
-  public void render() {
-    // nothing to do
-  }
-
-  @Override
-  public void render(String name) {
-    // nothing to do
   }
 
   @Override
