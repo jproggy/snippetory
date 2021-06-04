@@ -40,7 +40,7 @@ public class TestRecorder implements Template {
 
   @Override
   public Template append(String name, Object val) {
-    appends.computeIfAbsent(name, (k) -> repo.get("append"))
+    appends.computeIfAbsent(name, k -> repo.get("append"))
             .get("value")
             .set("name", name)
             .set("data", "value")

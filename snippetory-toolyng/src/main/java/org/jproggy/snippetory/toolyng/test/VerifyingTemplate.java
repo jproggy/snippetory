@@ -39,11 +39,13 @@ public class VerifyingTemplate implements Template {
     return this;
   }
 
+  @SuppressWarnings("unchecked")
   protected Iterator<Object> iterator(String name) {
-    return iterators.computeIfAbsent(name, (k) -> ((Iterable<Object>) data.get(name)).iterator());
+    return iterators.computeIfAbsent(name, k -> ((Iterable<Object>) data.get(name)).iterator());
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public Template get(String... name) {
     if (name.length == 0) return this;
     Map<String, Object> childData = (Map<String, Object>) data.get(name[0]);
