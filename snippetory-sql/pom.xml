@@ -35,9 +35,6 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	<issueManagement>
-	  <url>https://github.com/jproggy/Snippetory/issues</url>
-	</issueManagement>
 	<developers>
 		<developer>
 			<id>Sir RotN</id>
@@ -45,6 +42,9 @@
 			<email>bebertz@jproggy.org</email>
 		</developer>
 	</developers>
+	<issueManagement>
+		<url>https://github.com/jproggy/Snippetory/issues</url>
+	</issueManagement>
 	<dependencies>
 		<dependency>
 			<groupId>org.jproggy</groupId>

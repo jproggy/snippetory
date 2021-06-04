@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 
 public class Type {
     private final String name;
@@ -37,6 +38,6 @@ public class Type {
     public Writer getTarget(String targetDir) throws IOException {
         File targetPath = new File(targetDir, toString().replace(".", "/") + ".java");
         targetPath.getParentFile().mkdirs();
-        return new OutputStreamWriter(new FileOutputStream(targetPath), "utf-8");
+        return new OutputStreamWriter(new FileOutputStream(targetPath), StandardCharsets.UTF_8);
     }
 }

@@ -31,7 +31,7 @@ import org.jproggy.snippetory.engine.spi.ToggleFormatter;
  * @see ToggleFormatter
  */
 public abstract class StateContainer<V> {
-  private final Map<TemplateNode, V> data = new WeakHashMap<TemplateNode, V>();
+  private final Map<TemplateNode, V> data = new WeakHashMap<>();
   private final KeyResolver resolver;
 
   /**
@@ -53,12 +53,7 @@ public abstract class StateContainer<V> {
    */
   public V get(TemplateNode key) {
     key = resolver.resolve(key);
-    if (!data.containsKey(key)) {
-      V value = createValue(key);
-      data.put(key, value);
-      return value;
-    }
-    return data.get(key);
+    return data.computeIfAbsent(key, this::createValue);
   }
 
   public void clear(TemplateNode key) {

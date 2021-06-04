@@ -256,7 +256,7 @@ public class StatementImpl extends Region implements Statement, StatementBinder 
     }
 
     @Override
-    public void close() {
+    public final void close() {
       Exception e = close(con, close(ps, close(rs, null)));
       if (e != null) {
         throw new SnippetoryException(e);

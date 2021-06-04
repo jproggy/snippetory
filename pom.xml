@@ -67,6 +67,15 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
+    <properties>
+        <gpg.keyname>Templa Project</gpg.keyname>
+        <!-- versions -->
+        <junit-jupiter.version>5.5.0</junit-jupiter.version>
+        <junit.version>4.13.1</junit.version>
+        <!-- Sonar -->
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.language>java</sonar.language>
+    </properties>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -82,15 +91,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    <properties>
-        <gpg.keyname>Templa Project</gpg.keyname>
-        <!-- versions -->
-        <junit-jupiter.version>5.5.0</junit-jupiter.version>
-        <junit.version>4.13.1</junit.version>
-        <!-- Sonar -->
-        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-        <sonar.language>java</sonar.language>
-    </properties>
     <build>
         <plugins>
             <plugin>

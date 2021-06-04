@@ -55,7 +55,7 @@ class RegionTest {
     Location placeHolder = new Location(null, new MetaDescriptor("", "", Attributes.parse(null,
             Collections.emptyMap(), null)));
     List<DataSink> parts = Arrays.asList(tf(""), tf("test"), tf("yagni"));
-    Region region = new Region(new DataSinks(parts, placeHolder), Collections.<String, Region>emptyMap());
+    Region region = new Region(new DataSinks(parts, placeHolder), Collections.emptyMap());
     assertEquals('t', region.charAt(0));
     assertEquals('e', region.charAt(1));
     assertEquals('s', region.charAt(2));
@@ -82,8 +82,8 @@ class RegionTest {
     assertEquals(2, child.length());
     assertEquals("ty", child.toString());
     assertThrows(Exception.class, () -> region.charAt(9));
-    parts = Arrays.asList((DataSink) tf("test"), tf(""), tf("yagni"), tf(""), tf("jproggy"));
-    Region region2 = new Region(new DataSinks(parts, placeHolder), Collections.<String, Region>emptyMap());
+    parts = Arrays.asList(tf("test"), tf(""), tf("yagni"), tf(""), tf("jproggy"));
+    Region region2 = new Region(new DataSinks(parts, placeHolder), Collections.emptyMap());
     assertEquals('y', region2.charAt(4));
     assertEquals('y', region2.charAt(15));
   }
@@ -137,6 +137,7 @@ class RegionTest {
     try (FileWriter out = new FileWriter("target/calendarOut.html")) {
       calendar.render(out);
     }
+    assertTrue(new File("target/calendarOut.html").exists());
   }
 
   @Test

@@ -139,10 +139,10 @@ public class Repo {
     }
 
     /**
-     * @deprecated Configuring the resolver is not allowed within Repo.
+     * @deprecated Configuring the resolver is not allowed within Repo.Method is inherited, but can't be used here
      */
     @Override
-    @Deprecated
+    @Deprecated(since = "ever", forRemoval = false)
     public void setUriResolver(UriResolver urlResolver) {
       throw new UnsupportedOperationException("UrlResolver can't be set here");
     }

@@ -10,12 +10,12 @@ public class TestRecorderTpl {
 	// ${ region
 	public Map<String, Object> getData() {/*${name backward="Data" case="camelizeUpper"}*/
 		List<Object> values;
-		Map<String, Object> data = new HashMap<String, Object>();
+		Map<String, Object> data = new HashMap<>();
 		// ${ set
 		data.put("${name enc='string'}", /*${data*/10/*}*/); 
 		// set }
 		// ${ append
-		values = new ArrayList<Object>();
+		values = new ArrayList<>();
 		// ${ value
 		values.add(/*${data*/10/*}*/);
 		// value }

@@ -4,10 +4,9 @@ import java.util.Set;
 
 import com.google.common.base.CaseFormat;
 import com.google.common.base.CharMatcher;
-import com.google.common.collect.ImmutableSet;
 
 public class CaseHelper {
-  private static final Set<String> RESERVED_WORDS = ImmutableSet.of("abstract", "continue", "for", "new", "switch", 
+  private static final Set<String> RESERVED_WORDS = Set.of("abstract", "continue", "for", "new", "switch",
       "assert", "default", "goto", "package", "synchronized", "boolean", "do", "if", "private", "this", 
       "break", "double", "implements", "protected", "throw", "byte", "else", "import", "public", "throws", 
       "case", "enum", "instanceof", "return", "transient", "catch", "extends", "int", "short", "try", 

@@ -36,9 +36,6 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	<issueManagement>
-		<url>https://github.com/jproggy/Snippetory/issues</url>
-	</issueManagement>
 	<developers>
 		<developer>
 			<id>Sir RotN</id>
@@ -47,6 +44,9 @@
 			<url>https://rotnworld.blogspot.com</url>
 		</developer>
 	</developers>
+	<issueManagement>
+		<url>https://github.com/jproggy/Snippetory/issues</url>
+	</issueManagement>
 	<dependencies>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>

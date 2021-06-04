@@ -40,9 +40,8 @@ import org.jproggy.snippetory.engine.spi.XMLAlikeSyntax;
  */
 public interface Syntax {
   final class Registry {
-    private Map<String, Syntax> reg = new HashMap<String, Syntax>();
+    private Map<String, Syntax> reg = new HashMap<>();
 
-    @SuppressWarnings("deprecation")
     private Registry() {
       register(Syntaxes.HIDDEN_BLOCKS, new HiddenBlocksSyntax());
       register(Syntaxes.XML_ALIKE, new XMLAlikeSyntax());

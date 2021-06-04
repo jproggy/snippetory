@@ -225,7 +225,7 @@ public class TemplateContext implements Cloneable {
 
     public static String reader(Reader in) {
       try {
-        try {
+        try (in) {
           char[] buffer = new char[255];
           StringWriter s = new StringWriter();
           int c;
@@ -233,8 +233,6 @@ public class TemplateContext implements Cloneable {
             s.write(buffer, 0, c);
           }
           return s.toString();
-        } finally {
-          in.close();
         }
       } catch (IOException e) {
         throw new SnippetoryException(e);

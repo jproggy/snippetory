@@ -53,7 +53,7 @@ public class Token {
     Comment
   }
 
-  private final LinkedHashMap<String, String> attributes = new LinkedHashMap<String, String>();
+  private final LinkedHashMap<String, String> attributes = new LinkedHashMap<>();
   private final String name;
   private final String content;
   private final TokenType type;
