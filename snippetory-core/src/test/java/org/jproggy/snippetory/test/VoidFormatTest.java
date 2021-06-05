@@ -2,6 +2,7 @@ package org.jproggy.snippetory.test;
 
 import static org.jproggy.snippetory.Syntaxes.FLUYT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assumptions.assumingThat;
 
 import org.jproggy.snippetory.Template;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,15 @@ class VoidFormatTest {
         assertEquals("not found", val.toString());
         val = FLUYT.parse("$(property='user.name' default='abc')");
         assertEquals(System.getProperty("user.name"), val.toString());
-        val = FLUYT.parse("$(property='path')");
-        assertEquals(System.getenv("path"), val.toString());
+    }
+
+    @Test
+    void envTest() {
+        assumingThat(System.getenv("JAVA_HOME") != null,
+                () -> {
+                    Template val = FLUYT.parse("$(property='JAVA_HOME')");
+                    assertEquals(System.getenv("JAVA_HOME"), val.toString());
+                }
+        );
     }
 }
