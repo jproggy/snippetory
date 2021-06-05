@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.jproggy.snippetory.Template;
-import org.jproggy.snippetory.engine.spi.DefaultFormatter;
+import org.jproggy.snippetory.engine.spi.DefaultFormat;
 import org.jproggy.snippetory.engine.spi.ToggleFormatter;
 
 /**
@@ -46,7 +46,7 @@ import org.jproggy.snippetory.engine.spi.ToggleFormatter;
  * @author B. Ebertz
  *
  * @see Format
- * @see DefaultFormatter
+ * @see DefaultFormat
  * @see ToggleFormatter
  *
  */

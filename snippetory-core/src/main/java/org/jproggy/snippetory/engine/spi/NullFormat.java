@@ -16,28 +16,27 @@ package org.jproggy.snippetory.engine.spi;
 
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.engine.chars.EncodedContainer;
-import org.jproggy.snippetory.spi.FormatFactory;
 import org.jproggy.snippetory.spi.SimpleFormat;
 import org.jproggy.snippetory.spi.TemplateNode;
-import org.jproggy.snippetory.spi.VoidFormat;
 
-public class DefaultFormatter implements FormatFactory {
+public class NullFormat extends SimpleFormat {
+  private final String value;
 
-  @Override
-  public DefaultFormat create(String definition, TemplateContext ctx) {
-    return new DefaultFormat(definition);
+  public NullFormat(String value) {
+    this.value = value;
   }
 
-  public static class DefaultFormat extends SimpleFormat implements VoidFormat {
-    private final String value;
+  @Override
+  public Object format(TemplateNode location, Object value) {
+    return new EncodedContainer(this.value, location.getEncoding());
+  }
 
-    private DefaultFormat(String value) {
-      this.value = value;
-    }
+  @Override
+  public boolean supports(Object value) {
+    return value == null;
+  }
 
-    @Override
-    public Object formatVoid(TemplateNode node) {
-      return new EncodedContainer(value, node.getEncoding());
-    }
+  public static NullFormat create(String definition, TemplateContext ctx) {
+    return new NullFormat(definition);
   }
 }
