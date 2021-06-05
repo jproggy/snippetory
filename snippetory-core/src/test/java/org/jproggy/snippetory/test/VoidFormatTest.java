@@ -2,7 +2,7 @@ package org.jproggy.snippetory.test;
 
 import static org.jproggy.snippetory.Syntaxes.FLUYT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assumptions.assumingThat;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import org.jproggy.snippetory.Template;
 import org.junit.jupiter.api.Test;
@@ -24,11 +24,8 @@ class VoidFormatTest {
 
     @Test
     void envTest() {
-        assumingThat(System.getenv("JAVA_HOME") != null,
-                () -> {
-                    Template val = FLUYT.parse("$(property='JAVA_HOME')");
-                    assertEquals(System.getenv("JAVA_HOME"), val.toString());
-                }
-        );
+        assumeTrue(System.getenv("JAVA_HOME") != null);
+        Template val = FLUYT.parse("$(property='JAVA_HOME')");
+        assertEquals(System.getenv("JAVA_HOME"), val.toString());
     }
 }
