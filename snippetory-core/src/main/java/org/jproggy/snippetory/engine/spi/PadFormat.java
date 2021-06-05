@@ -15,6 +15,7 @@
 package org.jproggy.snippetory.engine.spi;
 
 import org.jproggy.snippetory.TemplateContext;
+import org.jproggy.snippetory.engine.chars.EncodedContainer;
 import org.jproggy.snippetory.spi.CharDataSupport;
 import org.jproggy.snippetory.spi.FormatConfiguration;
 import org.jproggy.snippetory.spi.SimpleFormat;
@@ -49,9 +50,10 @@ public class PadFormat extends SimpleFormat {
     if (CharDataSupport.length(value) >= length) {
       return value;
     }
+    String encoding = CharDataSupport.getEncoding(value);
     String v = value.toString();
     String b = fill(length - v.length());
-    return (align == Alignment.right) ? (b + v) : (v + b);
+    return new EncodedContainer((align == Alignment.right) ? (b + v) : (v + b), encoding);
   }
 
   private String fill(int i) {

@@ -55,15 +55,22 @@ public class Location implements DataSink, TemplateNode {
       if (md.suffix != null) return target.toString() + md.suffix;
       return target;
     }
-    Object f = getVoidFormat().formatVoid(this);
-    if (f instanceof EncodedData) {
-      EncodedData data = (EncodedData)f;
-      if (getEncoding().equals(data.getEncoding())) {
-        return data.toCharSequence();
-      }
-      return md.transcode(new StringBuilder(), data.toCharSequence(), data.getEncoding());
+    Object value = getVoidFormat().formatVoid(this);
+    if (getVoidFormat() instanceof Metadata) {
+      return value.toString();
     }
-    return f.toString();
+    value = toCharData(this, value);
+    for (Format format : getFormats()) {
+      if (format != getVoidFormat() && format.supports(value)) {
+        value = format.format(this, value);
+      }
+    }
+    String encoding = CharDataSupport.getEncoding(value);
+    CharSequence data = CharDataSupport.toCharSequence(value);
+    if (getEncoding().equals(encoding)) {
+      return data;
+    }
+    return md.transcode(new StringBuilder(), data, encoding);
   }
 
   protected void set(Object value) {
@@ -86,11 +93,11 @@ public class Location implements DataSink, TemplateNode {
     }
   }
 
-  private void writeToTarget(Object formated, String sourceEnc) {
+  private void writeToTarget(Object formatted, String sourceEnc) {
     if (sourceEnc.equals(getEncoding())) {
-      CharSequences.append(target, formated);
+      CharSequences.append(target, formatted);
     } else {
-      md.transcode(target, CharDataSupport.toCharSequence(formated), sourceEnc);
+      md.transcode(target, CharDataSupport.toCharSequence(formatted), sourceEnc);
     }
   }
 
