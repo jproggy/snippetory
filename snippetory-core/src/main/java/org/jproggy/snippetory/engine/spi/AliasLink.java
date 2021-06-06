@@ -82,11 +82,6 @@ public class AliasLink implements Link {
         }
 
         @Override
-        public void render(String siblingName) {
-            render(parent, siblingName);
-        }
-
-        @Override
         public Template getParent() {
             return parent;
         }

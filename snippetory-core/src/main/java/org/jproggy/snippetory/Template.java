@@ -22,7 +22,7 @@ import java.util.Set;
 
 import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Encoding;
-import org.jproggy.snippetory.spi.TemplateNode;
+import org.jproggy.snippetory.spi.Metadata;
 
 /**
  * <p>
@@ -63,7 +63,7 @@ import org.jproggy.snippetory.spi.TemplateNode;
  * @see Repo
  */
 
-public interface Template extends EncodedData, TemplateNode {
+public interface Template extends EncodedData {
 
   Template NONE = new Template() {
 
@@ -271,7 +271,6 @@ public interface Template extends EncodedData, TemplateNode {
   /**
    * The parent node of this node. If this node is absent or the root of a particular structure result might be null.
    */
-  @Override
   Template getParent();
 
   /**
@@ -280,4 +279,18 @@ public interface Template extends EncodedData, TemplateNode {
    * @return {@code false} if this instance isn't a real template but rather a null object
    */
   boolean isPresent();
+
+  default Metadata metadata() {
+    return new Metadata() {
+      @Override
+      public String getName() {
+        return null;
+      }
+
+      @Override
+      public Annotation annotation(String name) {
+        return new Annotation(name, null);
+      }
+    };
+  }
 }

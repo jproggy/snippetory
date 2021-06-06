@@ -132,7 +132,9 @@ public class TemplateBuilder {
 
   protected ConditionalRegion
       buildConditional(Location placeHolder, List<DataSink> parts, Map<String, Region> children) {
-    return new ConditionalRegion(placeHolder, parts, children);
+    ConditionalRegion region = new ConditionalRegion(placeHolder, parts, children);
+    placeHolder.metadata().linkConditionalRegion(region);
+    return region;
   }
 
   protected TemplateFragment buildFragment(Token t) {
@@ -140,7 +142,9 @@ public class TemplateBuilder {
   }
 
   protected Region build(Location placeHolder, List<DataSink> parts, Map<String, Region> children) {
-    return new Region(new DataSinks(parts, placeHolder), children);
+    Region region = new Region(new DataSinks(parts, placeHolder), children);
+    placeHolder.metadata().linkRegion(region);
+    return region;
   }
 
   private void verifyRootNode(Location parent, Token t) {

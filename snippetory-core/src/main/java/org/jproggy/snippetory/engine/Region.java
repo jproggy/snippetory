@@ -141,11 +141,6 @@ public class Region implements Template, CharSequence, SelfAppender {
   }
 
   @Override
-  public void render(String target) {
-    render(getParent(), target);
-  }
-
-  @Override
   public void render(Template target, String key) {
     target.append(key, this);
   }

@@ -14,24 +14,14 @@
 
 package org.jproggy.snippetory.spi;
 
+import org.jproggy.snippetory.Template;
+
 public interface TemplateNode {
   TemplateNode getParent();
 
   String getEncoding();
 
+  Metadata metadata();
 
-  default Metadata metadata() {
-    return new Metadata() {
-      @Override
-      public String getName() {
-        return null;
-      }
-
-      @Override
-      public Annotation annotation(String name) {
-        return new Annotation(name, null);
-      }
-    };
-  }
-
+  Template region();
 }
