@@ -14,55 +14,19 @@
 
 package org.jproggy.snippetory.engine.spi;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import org.jproggy.snippetory.TemplateContext;
-import org.jproggy.snippetory.engine.RegExSyntax;
-import org.jproggy.snippetory.engine.Token.TokenType;
-
-public class HiddenBlocksSyntax extends RegExSyntax {
-  private static final String PREFIX = "(?:<!--|/\\*)";
-  private static final String SUFFIX = "[ \\t]*(?:-->|\\*/)";
-
-  protected static final String START_TOKEN = PREFIX + "t:((?:" + NAME + ")?" + ATTRIBUTES + ")\\s*" + SUFFIX;
-  protected static final String END_TOKEN = PREFIX + "!t:(" + NAME + ")?" + SUFFIX;
-
-  protected static final String NAMED_LOC = "\\{v:(" + NAME + ATTRIBUTES + ")[ \\t]*}";
-  protected static final String NAMELESS_TOKEN = "\\{v:\\s*(" + ATTRIBUTE + ATTRIBUTES + ")\\s*}";
-
+public class HiddenBlocksSyntax extends JBSyntax {
   @Override
-  public RegexParser parse(CharSequence data, TemplateContext ctx) {
-    Map<Pattern, TokenType> patterns = new LinkedHashMap<>();
-
-    patterns.put(SYNTAX_SELECTOR, TokenType.Syntax);
-
-    addRegionPatterns(patterns);
-
-    Pattern field = Pattern.compile(NAMED_LOC, Pattern.MULTILINE);
-    patterns.put(field, TokenType.Field);
-
-    Pattern nameless = Pattern.compile(NAMELESS_TOKEN, Pattern.MULTILINE);
-    patterns.put(nameless, TokenType.Field);
-
-    Pattern comment = Pattern.compile(LINE_START + "///.*" + LINE_END, Pattern.MULTILINE);
-    patterns.put(comment, TokenType.Comment);
-
-    return new RegexParser(data, ctx, patterns);
+  protected String regionPrefix() {
+    return "(?:<!--|/\\*)";
   }
 
-  protected static void addRegionPatterns(Map<Pattern, TokenType> patterns) {
-    Pattern start = Pattern.compile(LINE_START + START_TOKEN + LINE_END, Pattern.MULTILINE);
-    patterns.put(start, TokenType.BlockStart);
+  @Override
+  protected String regionSuffix() {
+    return "[ \\t]*(?:-->|\\*/)";
+  }
 
-    start = Pattern.compile(START_TOKEN, Pattern.MULTILINE);
-    patterns.put(start, TokenType.BlockStart);
-
-    Pattern end = Pattern.compile(LINE_START + END_TOKEN + LINE_END, Pattern.MULTILINE);
-    patterns.put(end, TokenType.BlockEnd);
-
-    end = Pattern.compile(END_TOKEN, Pattern.MULTILINE);
-    patterns.put(end, TokenType.BlockEnd);
+  @Override
+  protected String endSign() {
+    return "!";
   }
 }

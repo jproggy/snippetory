@@ -24,7 +24,7 @@ public class FluytXSyntax extends FluytSyntax {
   @Override
   protected Map<Pattern, TokenType> createPatterns() {
     Map<Pattern, TokenType> patterns = super.createPatterns();
-    XMLAlikeSyntax.addRegionPatterns(patterns);
+    new XMLAlikeSyntax().addRegions(patterns);
     return patterns;
   }
 
