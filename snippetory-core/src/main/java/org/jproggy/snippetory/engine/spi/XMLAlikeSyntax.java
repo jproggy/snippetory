@@ -22,10 +22,10 @@ import org.jproggy.snippetory.engine.Token.TokenType;
 public class XMLAlikeSyntax extends JBSyntax {
   public static final String NAMESPACE_URI = " xmlns:t=\"http://www.jproggy.org/snippetory/xml_alike.xsd\"";
 
+  @Override
   protected void addComments(Map<Pattern, TokenType> patterns) {
     super.addComments(patterns);
     Pattern ns = Pattern.compile(NAMESPACE_URI, Pattern.LITERAL);
     patterns.put(ns, TokenType.Comment);
   }
-
 }
