@@ -48,7 +48,7 @@ public class MetaDescriptor implements VoidFormat, Metadata {
   final String delimiter;
   final String prefix;
   final String suffix;
-  final Link link;
+  Link link;
   final Map<String, String> annotations;
 
   public CharSequence getFallback() {
@@ -98,4 +98,17 @@ public class MetaDescriptor implements VoidFormat, Metadata {
     return new Annotation(name, annotations.get(name));
   }
 
+  public void linkRegion(Region target) {
+    if (link != null) {
+      throw new SnippetoryException("A region must not have a link");
+    }
+    link = new Reference(target);
+  }
+
+  public void linkConditionalRegion(ConditionalRegion target) {
+    if (link != null) {
+      throw new SnippetoryException("A region must not have a link");
+    }
+    link = new ConditionalRegion.Ref(target);
+  }
 }

@@ -23,33 +23,46 @@ import org.jproggy.snippetory.engine.RegExSyntax;
 import org.jproggy.snippetory.engine.Token.TokenType;
 
 public class HiddenBlocksSyntax extends RegExSyntax {
+  private static final String PREFIX = "(?:<!--|/\\*)";
+  private static final String SUFFIX = "[ \\t]*(?:-->|\\*/)";
+
+  protected static final String START_TOKEN = PREFIX + "t:((?:" + NAME + ")?" + ATTRIBUTES + ")\\s*" + SUFFIX;
+  protected static final String END_TOKEN = PREFIX + "!t:(" + NAME + ")?" + SUFFIX;
+
+  protected static final String NAMED_LOC = "\\{v:(" + NAME + ATTRIBUTES + ")[ \\t]*}";
+  protected static final String NAMELESS_TOKEN = "\\{v:\\s*(" + ATTRIBUTE + ATTRIBUTES + ")\\s*}";
 
   @Override
   public RegexParser parse(CharSequence data, TemplateContext ctx) {
     Map<Pattern, TokenType> patterns = new LinkedHashMap<>();
 
-    String pref = "(?:<!--|/\\*)";
-    String suff = "[ \\t]*(?:-->|\\*/)";
-
     patterns.put(SYNTAX_SELECTOR, TokenType.Syntax);
-    Pattern start = Pattern.compile(LINE_START + pref + "t:(" + NAME + ATTRIBUTES + ")?" + suff + LINE_END,
-        Pattern.MULTILINE);
-    patterns.put(start, TokenType.BlockStart);
 
-    start = Pattern.compile(pref + "t:(" + NAME + ATTRIBUTES + ")?" + suff);
-    patterns.put(start, TokenType.BlockStart);
+    addRegionPatterns(patterns);
 
-    Pattern end = Pattern.compile(LINE_START + pref + "!t:(" + NAME + ")?" + suff + LINE_END, Pattern.MULTILINE);
-    patterns.put(end, TokenType.BlockEnd);
-
-    end = Pattern.compile(pref + "!t:(" + NAME + ")?" + suff);
-    patterns.put(end, TokenType.BlockEnd);
-
-    Pattern field = Pattern.compile("\\{v:(" + NAME + ATTRIBUTES + ")[ \\t]*}");
+    Pattern field = Pattern.compile(NAMED_LOC, Pattern.MULTILINE);
     patterns.put(field, TokenType.Field);
 
-    Pattern nameless = Pattern.compile("\\{v:[ \\t]*(" + ATTRIBUTE + ATTRIBUTES + ")[ \\t]*}");
+    Pattern nameless = Pattern.compile(NAMELESS_TOKEN, Pattern.MULTILINE);
     patterns.put(nameless, TokenType.Field);
+
+    Pattern comment = Pattern.compile(LINE_START + "///.*" + LINE_END, Pattern.MULTILINE);
+    patterns.put(comment, TokenType.Comment);
+
     return new RegexParser(data, ctx, patterns);
+  }
+
+  protected static void addRegionPatterns(Map<Pattern, TokenType> patterns) {
+    Pattern start = Pattern.compile(LINE_START + START_TOKEN + LINE_END, Pattern.MULTILINE);
+    patterns.put(start, TokenType.BlockStart);
+
+    start = Pattern.compile(START_TOKEN, Pattern.MULTILINE);
+    patterns.put(start, TokenType.BlockStart);
+
+    Pattern end = Pattern.compile(LINE_START + END_TOKEN + LINE_END, Pattern.MULTILINE);
+    patterns.put(end, TokenType.BlockEnd);
+
+    end = Pattern.compile(END_TOKEN, Pattern.MULTILINE);
+    patterns.put(end, TokenType.BlockEnd);
   }
 }

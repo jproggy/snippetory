@@ -53,8 +53,10 @@ public class StatementBuilder extends TemplateBuilder {
   }
 
   @Override
-  protected StatementImpl build(Location parent, List<DataSink> parts, Map<String, Region> children) {
-    return new StatementImpl(new SqlSinks(parts, parent), children);
+  protected StatementImpl build(Location placeHolder, List<DataSink> parts, Map<String, Region> children) {
+    StatementImpl statement = new StatementImpl(new SqlSinks(parts, placeHolder), children);
+    placeHolder.metadata().linkRegion(statement);
+    return statement;
   }
 
   @Override
@@ -65,6 +67,8 @@ public class StatementBuilder extends TemplateBuilder {
   @Override
   protected ConditionalRegion
       buildConditional(Location placeHolder, List<DataSink> parts, Map<String, Region> children) {
-    return new ConditionalSqlRegion(placeHolder, parts, children);
+    ConditionalSqlRegion region = new ConditionalSqlRegion(placeHolder, parts, children);
+    placeHolder.metadata().linkConditionalRegion(region);
+    return region;
   }
 }

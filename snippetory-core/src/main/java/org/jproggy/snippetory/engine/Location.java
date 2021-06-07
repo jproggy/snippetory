@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.engine.chars.CharSequences;
 import org.jproggy.snippetory.spi.CharDataSupport;
 import org.jproggy.snippetory.spi.EncodedData;
@@ -155,7 +156,7 @@ public class Location implements DataSink, TemplateNode {
     return value;
   }
 
-  private VoidFormat getVoidFormat() {
+  public VoidFormat getVoidFormat() {
     if (voidformat == null) {
       for (Format f : getFormats()) {
         if (f instanceof VoidFormat) {
@@ -178,7 +179,7 @@ public class Location implements DataSink, TemplateNode {
   }
 
   @Override
-  public TemplateNode getParent() {
+  public Location getParent() {
     return parent;
   }
 
@@ -223,7 +224,18 @@ public class Location implements DataSink, TemplateNode {
   }
 
   @Override
-  public Metadata metadata() {
+  public MetaDescriptor metadata() {
     return md;
+  }
+
+  @Override
+  public Template region() {
+    if (md.link == null) {
+      return Template.NONE;
+    }
+    Template parentNode = parent == null ? Template.NONE : parent.region();
+    Template r = md.link.getContents(parentNode.isPresent() ? parentNode : null, md.name);
+    if (r == null) return Template.NONE;
+    return r;
   }
 }

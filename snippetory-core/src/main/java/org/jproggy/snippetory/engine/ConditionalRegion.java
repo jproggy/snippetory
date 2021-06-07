@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Link;
 
@@ -106,4 +107,16 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
     return getPlaceholder().getEncoding();
   }
 
+  public static class Ref implements Link {
+    private final ConditionalRegion target;
+
+    public Ref(ConditionalRegion target) {
+      this.target = target;
+    }
+
+    @Override
+    public Template getContents(Template parentNode, String nodeName) {
+      return new ConditionalRegionAdapter(target, parentNode);
+    }
+  }
 }
