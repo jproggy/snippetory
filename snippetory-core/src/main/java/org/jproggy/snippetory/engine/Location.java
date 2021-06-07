@@ -156,7 +156,7 @@ public class Location implements DataSink, TemplateNode {
     return value;
   }
 
-  private VoidFormat getVoidFormat() {
+  public VoidFormat getVoidFormat() {
     if (voidformat == null) {
       for (Format f : getFormats()) {
         if (f instanceof VoidFormat) {

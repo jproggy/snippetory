@@ -86,7 +86,7 @@ public class TemplateBuilder {
         case BlockEnd:
           if (t.getName() == null && !regionStack.isEmpty()) {
             ConditionalRegion r = buildConditional(reg.placeHolder, reg.parts, reg.children);
-            if (r.names().isEmpty()) {
+            if (r.names().isEmpty() && reg.placeHolder.getVoidFormat() instanceof MetaDescriptor) {
               throw new ParseError(
                   "Conditional region needs to contain at least one named location, or will never be rendered", t);
             }
