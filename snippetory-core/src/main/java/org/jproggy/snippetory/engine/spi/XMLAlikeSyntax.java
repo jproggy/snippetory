@@ -28,6 +28,7 @@ public class XMLAlikeSyntax extends RegExSyntax {
 
   protected static final String NAMED_LOC = "\\{v:(" + NAME + ATTRIBUTES + ")[ \\t]*}";
   protected static final String NAMELESS_TOKEN = "\\{v:\\s*(" + ATTRIBUTE + ATTRIBUTES + ")\\s*}";
+  public static final String NAMESPACE_URI = " xmlns:t=\"http://www.jproggy.org/snippetory/xml_alike.xsd\"";
 
   @Override
   public RegexParser parse(CharSequence data, TemplateContext ctx) {
@@ -45,6 +46,9 @@ public class XMLAlikeSyntax extends RegExSyntax {
 
     Pattern comment = Pattern.compile(LINE_START + "///.*" + LINE_END, Pattern.MULTILINE);
     patterns.put(comment, TokenType.Comment);
+
+    Pattern ns = Pattern.compile(NAMESPACE_URI, Pattern.LITERAL);
+    patterns.put(ns, TokenType.Comment);
 
     return new RegexParser(data, ctx, patterns);
   }
