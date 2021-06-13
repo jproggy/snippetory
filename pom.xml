@@ -23,10 +23,10 @@
     <packaging>pom</packaging>
     <name>Snippetory Templating Platform</name>
     <description>
-        Snippetory is a templating platform for Java. Modules feature a general purpose template engine
+        Snippetory is a code generation platform for Java. Modules feature a general purpose template engine
         as well as handling of prepared statements on JDBC and tight integrations in other JVM languages
     </description>
-    <url>https://www.jproggy.org/snippetory/</url>
+    <url>https://www.jproggy.org/snippetory/intact-templates</url>
     <organization>
         <url>https://www.jproggy.org</url>
         <name>JProggy</name>
@@ -70,8 +70,8 @@
     <properties>
         <gpg.keyname>Templa Project</gpg.keyname>
         <!-- versions -->
-        <junit-jupiter.version>5.5.0</junit-jupiter.version>
-        <junit.version>4.13.1</junit.version>
+        <junit-jupiter.version>5.7.2</junit-jupiter.version>
+        <junit.version>4.13.2</junit.version>
         <!-- Sonar -->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
     </properties>
@@ -85,7 +85,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-all</artifactId>
-                <version>1.9.5</version>
+                <version>1.10.19</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -144,7 +144,7 @@
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.3</version>
+                <version>1.6.8</version>
                 <extensions>true</extensions>
                 <configuration>
                     <serverId>ossrh</serverId>
@@ -155,7 +155,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.6</version>
+				<version>0.8.7</version>
 				<configuration>
 					<append>true</append>
 				</configuration>

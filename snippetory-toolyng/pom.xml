@@ -8,7 +8,8 @@
     <artifactId>snippetory-toolyng</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>Snippetory Toolyng</name>
-    <description>Tool support for Snippetory templating solution</description>
+    <description>Tool support for Snippetory code generation platform</description>
+    <url>https://www.jproggy.org/snippetory/intact-templates</url>
     <licenses>
         <license>
             <name>The Apache License, Version 2.0</name>
@@ -20,7 +21,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>30.1-jre</version>
+            <version>30.1.1-jre</version>
         </dependency>
 
         <dependency>
