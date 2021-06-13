@@ -23,7 +23,7 @@
     <packaging>pom</packaging>
     <name>Snippetory Templating Platform</name>
     <description>
-        Snippetory is a code generation platform for Java. Modules feature a general purpose template engine
+        Snippetory is a code generation platform for Java. Most importantly it supports intact templates,
         as well as handling of prepared statements on JDBC and tight integrations in other JVM languages
     </description>
     <url>https://www.jproggy.org/snippetory/intact-templates</url>
