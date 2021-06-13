@@ -80,16 +80,18 @@ public class Attributes {
       }
       base = link;
     }
-    try {
-      BeanInfo desc = Introspector.getBeanInfo(base.getClass());
-      for (PropertyDescriptor prop : desc.getPropertyDescriptors()) {
-        if (prop.getName().equals(attrib)) {
-          setProperty(base, prop, value);
-          return;
+    if (!"class".equals(attrib)) { // attribute name class would clash with getClass()
+      try {
+        BeanInfo desc = Introspector.getBeanInfo(base.getClass());
+        for (PropertyDescriptor prop : desc.getPropertyDescriptors()) {
+          if (prop.getName().equals(attrib)) {
+            setProperty(base, prop, value);
+            return;
+          }
         }
+      } catch (IntrospectionException e) {
+        throw new SnippetoryException(e);
       }
-    } catch (IntrospectionException e) {
-      throw new SnippetoryException(e);
     }
     if (base instanceof DynamicAttributes) {
       ((DynamicAttributes) base).setAttribute(attrib, value);
@@ -118,9 +120,6 @@ public class Attributes {
       }
     }
     Class<?> type = prop.getPropertyType();
-    if (Enum.class.isAssignableFrom(type)) {
-      return new EnumEditor((Class<Enum<?>>)type);
-    }
     return PropertyEditorManager.findEditor(type);
   }
 

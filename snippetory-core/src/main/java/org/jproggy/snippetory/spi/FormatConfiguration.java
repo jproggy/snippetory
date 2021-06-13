@@ -16,13 +16,15 @@ package org.jproggy.snippetory.spi;
 
 /**
  * The FormatConfiguration allows Snippetory to support complex state handling approaches
- * like counting invokations on several nodes. However, most Formats are state less and such
+ * like counting invocations on several nodes. However, most Formats are state less and such
  * don't need any state handling at all. In those cases SimpleFormat is a great alternative.
- * No matter wether implemented directly or via SimpleFormat it allows one to implement
+ * No matter whether implemented directly or via SimpleFormat it allows one to implement
  * sub-attributes by providing setter-methods or by implementing DynamicAttributes.
  * The types supported by those setter methods are  numbers, boolean, enums and String.
  * This can be extended by registering {@link  java.beans.PropertyEditor PropertyEditors} on
  * {@link java.beans.PropertyEditorManager PropertyEditorManager}
+ * <em>An attribute called 'class' is not possible using this mechanism due to a name clash with getClass().
+ * Use {@link DynamicAttributes} to work around this.</em>
  *
  * @author B. Ebertz
  */

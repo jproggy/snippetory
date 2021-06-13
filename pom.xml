@@ -21,7 +21,7 @@
     <artifactId>snippetory</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Snippetory Templating Platform</name>
+    <name>Snippetory Code Generation Platform</name>
     <description>
         Snippetory is a code generation platform for Java. Most importantly it supports intact templates,
         as well as handling of prepared statements on JDBC and tight integrations in other JVM languages
