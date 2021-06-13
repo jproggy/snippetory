@@ -16,6 +16,7 @@ package org.jproggy.snippetory.sql.spi;
 
 import java.sql.Connection;
 
+@FunctionalInterface
 public interface ConnectionProvider {
   Connection getConnection();
 }

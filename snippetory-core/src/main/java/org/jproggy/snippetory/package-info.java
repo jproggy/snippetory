@@ -13,16 +13,19 @@
 /// limitations under the License.
 
 /**
- * The classes necessary for the work with the Snippetory Template Engine.
+ * The classes necessary generate code with Snippetory.
  * This package contains all classes that are intended to be the interface for the
- * usage of the template engine. I.e. reading the templates, composing the texts,
+ * generating the code you need. I.e. loading templates, composing the texts,
  * binding the data and so on.
  * <p>
- * In most cases it should be fine to start with {@link org.jproggy.snippetory.Repo Repo} and select proposals
- * of your IDE. The fluent interface offers great guidance here.
+ * There a several ways to load a {@link org.jproggy.snippetory.Template Template} form a very short
+ * <code>{@code Syntaxes.FLUYT.parse()}</code> or {@link org.jproggy.snippetory.Repo} or even setting up a full
+ * blown {@link org.jproggy.snippetory.TemplateContext}
  * </p>
  * <p>
- * At some point you will have to deal with several {@link org.jproggy.snippetory.Template Templates}
+ * {@link org.jproggy.snippetory.Syntaxes} allow to <a href="https://www.jproggy.org/snippetory/intact-templates">
+ *     intact templates</a>.
  * </p>
+ * @see <a href="https://www.jproggy.org/snippetory/best-practice">Best practice for generating code with Snippetory</a>
  */
 package org.jproggy.snippetory;

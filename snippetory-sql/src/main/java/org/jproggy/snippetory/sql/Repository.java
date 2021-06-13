@@ -31,6 +31,9 @@ public class Repository {
     return (Statement)repo.get(name);
   }
 
+  /**
+   * @return the underlying Template
+   */
   public Template toTemplate() {
     return repo;
   }

@@ -18,6 +18,7 @@ import org.jproggy.snippetory.sql.Statement;
  * @see Statement 
  * @see SQL  
  */
+@FunctionalInterface
 public interface RowTransformer<T> {
 
   /**

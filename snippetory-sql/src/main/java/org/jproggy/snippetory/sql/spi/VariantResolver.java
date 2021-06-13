@@ -12,13 +12,24 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-package org.jproggy.snippetory.util;
+package org.jproggy.snippetory.sql.spi;
 
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.sql.Statement;
-import org.jproggy.snippetory.sql.spi.PostProcessor;
-import org.jproggy.snippetory.sql.spi.StatementWrapper;
 
+/**
+ *
+ * <pre>
+ * SELECT name, ext_id FROM myTable
+ * WHERE 1=1
+ * -- ${
+ * AND ext_id like :ext_id || '%'
+ * -- $mysql{
+ * AND ext_id like concat(:ext_id, '%')
+ * -- }$
+ * -- }$
+ * </pre>
+ */
 public class VariantResolver extends StatementWrapper {
   private final String variant;
 

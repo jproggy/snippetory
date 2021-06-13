@@ -18,14 +18,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 import org.jproggy.snippetory.engine.Location;
 import org.jproggy.snippetory.engine.Region;
@@ -35,13 +32,9 @@ import org.jproggy.snippetory.sql.Statement;
 import org.jproggy.snippetory.sql.spi.ConnectionProvider;
 import org.jproggy.snippetory.sql.spi.RowProcessor;
 import org.jproggy.snippetory.sql.spi.RowTransformer;
-import org.jproggy.snippetory.util.ResourceObserver;
-import org.jproggy.snippetory.util.ResourceObserver.Ref;
 
 public class StatementImpl extends Region implements Statement, StatementBinder {
   private ConnectionProvider connectionProvider;
-  private static final ScheduledExecutorService runner = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 3);
-  private static final ResourceObserver resources = new ResourceObserver(runner);
 
   public StatementImpl(SqlSinks data, Map<String, Region> children) {
     super(data, children);
@@ -100,17 +93,8 @@ public class StatementImpl extends Region implements Statement, StatementBinder 
   }
 
   @Override
-  public <T> List<T> list(RowTransformer<T> transformer) {
-    try (Cursor<T> rows = cursor(transformer)) {
-      List<T> result =  new ArrayList<>();
-      rows.forEach(result::add);
-      return result;
-    }
-  }
-
-  @Override
   public <K, V> Map<K, V> map(RowTransformer<K> key, RowTransformer<V> value) {
-    final Map<K, V> result = new LinkedHashMap<>();
+    Map<K, V> result = new LinkedHashMap<>();
     forEach(rs -> result.put(key.transformRow(rs), value.transformRow(rs)));
     return result;
   }
@@ -124,10 +108,7 @@ public class StatementImpl extends Region implements Statement, StatementBinder 
 
   @Override
   public <T> Cursor<T> cursor(RowTransformer<T> transformer) {
-    DirectCursor<T> c = new DirectCursor<>(transformer);
-    Ref handle = resources.observe(c, c.sql);
-    c.setHandle(handle);
-    return c;
+    return new DirectCursor<>(transformer);
   }
 
   @Override
@@ -183,23 +164,14 @@ public class StatementImpl extends Region implements Statement, StatementBinder 
     private final RowTransformer<T> transformer;
     private final SqlResources sql;
     private Boolean moveResult;
-    private Ref handle;
 
     public DirectCursor(RowTransformer<T> transformer) {
       sql = new SqlResources();
       this.transformer = transformer;
     }
 
-    public void setHandle(Ref handle) {
-      this.handle = handle;
-    }
-
     @Override
     public void close() {
-      if (handle != null) {
-        handle.close();
-        handle = null;
-      }
       sql.close();
     }
 

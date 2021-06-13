@@ -17,6 +17,7 @@ package org.jproggy.snippetory.sql;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -74,21 +75,29 @@ public interface Statement extends Template {
    * @param transformer The RowProcessor will be called as long as ResultSet.next
    *        returns true.
    */
-  <T> List<T> list(RowTransformer<T> transformer);
+  default <T> List<T> list(RowTransformer<T> transformer) {
+    try (Cursor<T> rows = cursor(transformer)) {
+      List<T> result =  new ArrayList<>();
+      rows.forEach(result::add);
+      return result;
+    }
+  }
   /**
-   *
+   * As long a the key is unique, the order of the query result is preserved.
    */
   <K, V> Map<K, V> map(RowTransformer<K> key, RowTransformer<V> value);
   /**
-   *
+   * @throws ResultCountException if the conversion to a list doesn't result in a list with size == 1
    */
   <T> T one(RowTransformer<T> transformer) throws ResultCountException;
   /**
-   *
+   * In most cases it's preferable to use {@link #forEach(RowProcessor)}. The Cursor is a bit more flexible in some
+   * cases, but also more complicated in usage.
    */
   <T> Cursor<T> cursor(RowTransformer<T> transformer);
   /**
-   *
+   * Executes the query as an update.
+   * @return number of rows affected by the update.
    */
   long executeUpdate();
 }

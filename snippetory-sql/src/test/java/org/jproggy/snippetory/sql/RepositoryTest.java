@@ -43,7 +43,7 @@ class RepositoryTest {
   @Test
   public void test1() throws Exception {
     ConnectionProvider cp = connectionProvider();
-    repo = ctx.conntecions(cp).getRepository("TestRepo.sql");
+    repo = ctx.connections(cp).getRepository("TestRepo.sql");
     Statement statement = repo.get("test1");
     statement.set("value1", "test");
     assertEquals(TestResults.test1(), statement.toString());
@@ -54,7 +54,7 @@ class RepositoryTest {
   @Test
   public void test2() throws Exception {
     ConnectionProvider cp = connectionProvider();
-    repo = ctx.conntecions(cp).getRepository("TestRepo.sql");
+    repo = ctx.connections(cp).getRepository("TestRepo.sql");
     Statement statement = repo.get("test2");
     statement.set("value1", "test1");
     statement.set("value2", "test2");
@@ -67,7 +67,7 @@ class RepositoryTest {
   @Test
   public void test2_1() throws Exception {
     ConnectionProvider cp = connectionProvider();
-    repo = ctx.conntecions(cp).getRepository("TestRepo.sql");
+    repo = ctx.connections(cp).getRepository("TestRepo.sql");
     Statement statement = repo.get("test2");
     statement.set("value2", 2f);
     statement.set("value1", Date.valueOf("2014-01-01"));
@@ -80,7 +80,7 @@ class RepositoryTest {
   @Test
   public void test3() throws Exception {
     ConnectionProvider cp = connectionProvider();
-    repo = ctx.conntecions(cp).getRepository("TestRepo.sql");
+    repo = ctx.connections(cp).getRepository("TestRepo.sql");
     Statement statement = repo.get("test3");
     statement.set("value1", (byte)1);
     statement.set("value2", 2);
@@ -95,7 +95,7 @@ class RepositoryTest {
   @Test
   public void test4() throws Exception {
     ConnectionProvider cp = connectionProvider();
-    repo = ctx.conntecions(cp).getRepository("TestRepo.sql");
+    repo = ctx.connections(cp).getRepository("TestRepo.sql");
     Statement statement = repo.get("test4");
     statement.set("value1", (byte)1);
     statement.set("value2", 2);
@@ -110,7 +110,7 @@ class RepositoryTest {
   @Test
   public void test4_1() throws Exception {
     ConnectionProvider cp = connectionProvider();
-    repo = ctx.conntecions(cp).getRepository("TestRepo.sql");
+    repo = ctx.connections(cp).getRepository("TestRepo.sql");
     Statement statement = repo.get("test4");
     statement.set("value1", (byte)1);
     statement.get("t1").set("value", 3.0).render();
@@ -123,7 +123,7 @@ class RepositoryTest {
   @Test
   public void test4_2() throws Exception {
     ConnectionProvider cp = connectionProvider();
-    repo = ctx.conntecions(cp).getRepository("TestRepo.sql");
+    repo = ctx.connections(cp).getRepository("TestRepo.sql");
     Statement statement = repo.get("test4");
     statement.set("value1", (byte)1);
     statement.set("value2", 3.0);
@@ -136,7 +136,7 @@ class RepositoryTest {
   @Test
   public void test4_3() throws Exception {
     ConnectionProvider cp = connectionProvider();
-    repo = ctx.conntecions(cp).getRepository("TestRepo.sql");
+    repo = ctx.connections(cp).getRepository("TestRepo.sql");
     Statement statement = repo.get("test4");
     statement.set("value1", (byte)1);
     statement.get("t1").set("value", 3.0).render();
@@ -151,7 +151,7 @@ class RepositoryTest {
   @Test
   public void test4_34() throws Exception {
     ConnectionProvider cp = connectionProvider();
-    repo = ctx.conntecions(cp).getRepository("TestRepo.sql");
+    repo = ctx.connections(cp).getRepository("TestRepo.sql");
     Statement statement = repo.get("test4");
     statement.set("value1", (byte)1);
     assertEquals(TestResults.test1(), statement.toString());
@@ -162,7 +162,7 @@ class RepositoryTest {
   @Test
   public void test5() throws Exception {
     ConnectionProvider cp = connectionProvider();
-    repo = ctx.conntecions(cp).getRepository("TestRepo.sql");
+    repo = ctx.connections(cp).getRepository("TestRepo.sql");
     Statement statement = repo.get("test5");
     statement.set("value1", (byte)1);
     statement.set("value2", 2);

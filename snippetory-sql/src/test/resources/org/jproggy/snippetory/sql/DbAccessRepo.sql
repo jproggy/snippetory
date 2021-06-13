@@ -82,12 +82,19 @@ SELECT simple_id, name, price, ext_id, xx FROM simple
 WHERE 1=1
 -- ${
 AND ext_id like :ext_id || '%'
--- $mysql{
-AND ext_id like concat(:ext_id, '%')
--- }$
 -- }$ $name{
 AND name /*$(default="IS NULL"){ */ = :name -- }$
 -- }$
+
+-- $mysql{
+SELECT simple_id, name, price, ext_id, xx FROM simple
+WHERE 1=1
+-- ${
+AND ext_id like concat(:ext_id, '%')
+-- }$ $name{
+AND name /*$(default="IS NULL"){ */ = :name -- }$
+-- }$
+-- }mysql$
 -- }selectSimpleTable$
 
 -- $nulls{

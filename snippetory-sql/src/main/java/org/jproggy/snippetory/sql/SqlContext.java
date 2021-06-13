@@ -60,8 +60,8 @@ public class SqlContext {
     return proc;
   }
 
-  public SqlContext conntecions(ConnectionProvider conntions) {
-    this.connections = conntions;
+  public SqlContext connections(ConnectionProvider connections) {
+    this.connections = connections;
     return this;
   }
 

@@ -25,13 +25,13 @@ import org.jproggy.snippetory.spi.Encoding;
 
 /**
  * <p>
- * Provides direct access to the predefined encodings. Even though the
- * functionality of identifying an format and the default implementation for
- * this format are done nearby, the Snippetory template engine always uses
- * implementation, that's registered. This allows to overwrite to default
- * implementation and still use this enum to identify a format. </p>
+ * Provides direct access to the predefined <a href="http://www.jproggy.org/snippetory/encodings/">encodings</a>.
+ * Even though the functionality of identifying an format and the default implementation for
+ * this format are done nearby, Snippetory always uses the implementation,
+ * that's registered. This allows to overwrite to default
+ * implementation and still use this enum to identify an encoding. </p>
  * All default implementations defined here respect <code>NULL</code> as a wild
- * card that never has to be transcoded.
+ * card that never has to be trans-coded.
  *
  * @author B. Ebertz
  */
@@ -270,7 +270,7 @@ public enum Encodings implements Encoding {
   /**
    * Marks the data to be encoded according to specified encodinng.
    */
-  public EncodedData wrap(final CharSequence data) {
+  public EncodedData wrap(CharSequence data) {
     return new EncodedContainer(data, getName());
   }
 

@@ -38,8 +38,7 @@ import java.util.Set;
 import org.jproggy.snippetory.UriResolver;
 import org.jproggy.snippetory.engine.SnippetoryException;
 import org.jproggy.snippetory.sql.spi.ConnectionProvider;
-import org.jproggy.snippetory.sql.spi.RowProcessor;
-import org.jproggy.snippetory.util.VariantResolver;
+import org.jproggy.snippetory.sql.spi.VariantResolver;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -85,7 +84,7 @@ class DBAccessTest {
   }
 
   void init(ConnectionProvider cons) throws Exception {
-    SqlContext ctx = new SqlContext().conntecions(cons);
+    SqlContext ctx = new SqlContext().connections(cons);
     String prodName = cons.getConnection().getMetaData().getDatabaseProductName();
     dbType = dbNames.get(prodName);
     ctx.postProcessor(VariantResolver.wrap(dbType));
@@ -191,14 +190,11 @@ class DBAccessTest {
   @MethodSource("dbUrls")
   void testForEach(ConnectionProvider cons) throws Exception {
     init(cons);
-    final int[] count = {0};
-    final Set<Integer> ids = new HashSet<>();
-    repo.get("selectSimpleTable").forEach(new RowProcessor() {
-      @Override
-      public void processRow(ResultSet rs) throws SQLException {
-        count[0]++;
-        assertTrue(ids.add(rs.getInt("simple_id")));
-      }
+    int[] count = {0};
+    Set<Integer> ids = new HashSet<>();
+    repo.get("selectSimpleTable").forEach(rs -> {
+      count[0]++;
+      assertTrue(ids.add(rs.getInt("simple_id")));
     });
 
     assertEquals(5, count[0]);

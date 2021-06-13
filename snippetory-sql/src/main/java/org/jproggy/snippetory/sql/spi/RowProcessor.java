@@ -27,6 +27,7 @@ import java.sql.SQLException;
  * @author B.Ebertz
  *
  */
+@FunctionalInterface
 public interface RowProcessor {
 
   /**

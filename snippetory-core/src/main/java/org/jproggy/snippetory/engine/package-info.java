@@ -14,7 +14,8 @@
 
 /**
  * The core implementation of the Snippetory Template Engine. It is almost completely
- * hidden behind a facade.
+ * hidden behind a facade. <br>
+ * Classes in this package can change without prior notice. You should not rely on them.
  */
 package org.jproggy.snippetory.engine;
 
