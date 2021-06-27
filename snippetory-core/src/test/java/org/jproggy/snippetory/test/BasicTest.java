@@ -126,7 +126,7 @@ class BasicTest {
     RuntimeException e = assertThrows(RuntimeException.class, () -> XML_ALIKE.parse(
             " {v:test} \n <s:C_COMMENTS_X />  \n /*${test}*/ \r\n  /*Syntax:FLUYT*/  \n #test "
     ));
-    assertEquals("Unkown syntax: C_COMMENTS_X", e.getCause().getMessage());
+    assertEquals("Unknown syntax: C_COMMENTS_X", e.getCause().getMessage());
   }
 
   @Test
