@@ -136,7 +136,7 @@ public abstract class RegExSyntax implements Syntax {
         }
         if (m.group(4) != null) throw new ParseError("don't understand " + varDef, token);
         if (AttributesRegistry.INSTANCE.type(m.group(1)) == null) {
-          throw new ParseError("unkown attribute name " + m.group(1), token);
+          throw new ParseError("unknown attribute name " + m.group(1), token);
         }
         String value = m.group(2);
         if (value == null) value = m.group(3);

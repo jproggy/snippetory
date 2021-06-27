@@ -85,6 +85,30 @@ public enum Syntaxes implements SyntaxID {
   FLUYT_CC,
 
   /**
+   * <p>
+   *     For commented variants this is the same as FLUYT_CC. But comment coating is mandatory for
+   *     locations and block starts. Block ends and comment are unchanged. In addition there's
+   *     simple variable that's marked by '__' at the beginning and optionally at the end. The name is
+   *     mandatory, attributes are not supported in the special variant. Such names can contain single underscores.
+   * </p>
+   * <p>
+   *     This syntax is meant for syntax integration with languages like Kotlin where $ in names is not
+   *     allowed and $name is already a syntactical construct.
+   *     Pronounced: UnderUnderScory
+   * </p>
+   * <pre>
+   * &#47;* $name(default='def'){ *&#47;<b>some text</b>//$other-name}name$
+   * <b>some text</b>/*$variable(*&#47;some mock up/*)*&#47;<b>more text</b>
+   * <b>some text</b>__CONSTANT_NAME_WITH_SINGLE_UNDER_SCORES__<b>more text</b>
+   * /* ${<b>if and only if </b>__variable<b> is set</b>}$*&#47;
+   * // $empty-region{
+   * // }$
+   * /// <i>however, the comment does not support additional coating</i>
+   * </pre>
+   */
+  __SCORY,
+
+  /**
    * Adds tag with a name space specifier 't' for region definition to a full fluyt syntax. This allows
    * more convenient integration within XML editors and is invisible within HTML files. As such it allows
    * HTML templates that are viewable in the browser, while the fluyt syntax allows concise in tag logic.

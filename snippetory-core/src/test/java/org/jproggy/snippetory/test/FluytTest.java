@@ -17,6 +17,7 @@ package org.jproggy.snippetory.test;
 import static org.jproggy.snippetory.Syntaxes.FLUYT;
 import static org.jproggy.snippetory.Syntaxes.FLUYT_CC;
 import static org.jproggy.snippetory.Syntaxes.FLUYT_X;
+import static org.jproggy.snippetory.Syntaxes.__SCORY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -152,6 +153,52 @@ class FluytTest {
 
     t = FLUYT_CC.parse("/*\t$test$\t*/bla");
     t.set("test", "xy");
+    assertEquals("xybla", t.toString());
+  }
+
+  @Test
+  void __scory() {
+    Template t = __SCORY.parse("// $test");
+    assertEquals(" i++; ", t.set("test", " i++; ").toString());
+
+    t = __SCORY.parse("/*$test{*/ i++; /* }test$ */");
+    assertEquals(" i++; ", t.get("test").toString());
+
+    t = __SCORY.parse("/* $test{ */ i++; /*}$*/");
+    assertEquals(" i++; ", t.get("test").toString());
+
+    t = __SCORY.parse("/* $test{ */ \n i++; \n/*}$*/");
+    assertEquals(" i++; \n", t.get("test").toString());
+
+    t = __SCORY.parse("/*${ __test i++; }$*/");
+    assertEquals("", t.toString());
+    t.set("test", "");
+    assertEquals("  i++; ", t.toString());
+    t.set("test", "blub");
+    assertEquals(" blub i++; ", t.toString());
+
+    t = __SCORY.parse("/*\t$test\t*/bla");
+    t.set("test", "xy");
+    assertEquals("xybla", t.toString());
+
+    t = __SCORY.parse("/*\t$test(*/test/*)*/bla");
+    t.set("test", "xy");
+    assertEquals("xybla", t.toString());
+
+    t = __SCORY.parse("/*\t$test(pad='5'\t*/test/*)*/bla");
+    t.set("test", "xy");
+    assertEquals("xy   bla", t.toString());
+
+    t = __SCORY.parse("/*\t$test$\t*/bla");
+    t.set("test", "xy");
+    assertEquals("xybla", t.toString());
+
+    t = __SCORY.parse("__test__bla");
+    t.set("test", "xy");
+    assertEquals("xybla", t.toString());
+
+    t = __SCORY.parse("__FIELD_NAME__bla");
+    t.set("FIELD_NAME", "xy");
     assertEquals("xybla", t.toString());
   }
 

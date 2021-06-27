@@ -28,6 +28,7 @@ import org.jproggy.snippetory.engine.spi.FluytCCSyntax;
 import org.jproggy.snippetory.engine.spi.FluytSyntax;
 import org.jproggy.snippetory.engine.spi.FluytXSyntax;
 import org.jproggy.snippetory.engine.spi.HiddenBlocksSyntax;
+import org.jproggy.snippetory.engine.spi.UnderUnderScorySyntax;
 import org.jproggy.snippetory.engine.spi.XMLAlikeSyntax;
 
 /**
@@ -40,7 +41,7 @@ import org.jproggy.snippetory.engine.spi.XMLAlikeSyntax;
  */
 public interface Syntax {
   final class Registry {
-    private Map<String, Syntax> reg = new HashMap<>();
+    private final Map<String, Syntax> reg = new HashMap<>();
 
     private Registry() {
       register(Syntaxes.HIDDEN_BLOCKS, new HiddenBlocksSyntax());
@@ -48,6 +49,7 @@ public interface Syntax {
       register(Syntaxes.FLUYT, new FluytSyntax());
       register(Syntaxes.FLUYT_CC, new FluytCCSyntax());
       register(Syntaxes.FLUYT_X, new FluytXSyntax());
+      register(Syntaxes.__SCORY, new UnderUnderScorySyntax());
     }
 
     public void register(SyntaxID name, Syntax syntax) {
@@ -56,7 +58,7 @@ public interface Syntax {
 
     public Syntax byName(String name) {
       if (!reg.containsKey(name)) {
-        throw new SnippetoryException("Unkown syntax: " + name);
+        throw new SnippetoryException("Unknown syntax: " + name);
       }
       return reg.get(name);
     }
