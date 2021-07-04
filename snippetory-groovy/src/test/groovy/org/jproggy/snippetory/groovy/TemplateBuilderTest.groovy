@@ -22,24 +22,27 @@ import static org.junit.jupiter.api.Assertions.assertEquals
 
 class TemplateBuilderTest {
 
+
+  public static final String TEMPLATE = '$region(delimiter=" "){text$x}$'
+
   @Test
   void test1() {
-    def t = new TemplateBuilder('$region(delimiter=" "){text$x}$');
-    t.region(x: "test");
-    t.region { x "other" };
+    def t = new TemplateBuilder(TEMPLATE);
+    t.region(x: "test", y: "bla");  // y doesn't exist -> will be ignored
+    t.region { x = "other" };
     assertEquals("texttest textother", t.toString());
   }
 
   @Test
   void test2() {
-    def t = new TemplateBuilder('$region(delimiter=" "){text$x}$');
+    def t = new TemplateBuilder(TEMPLATE);
     t.region("test").region("other");
     assertEquals("test other", t.toString());
   }
 
   @Test
   void test3() {
-    def t = new TemplateBuilder('$region(delimiter=" "){text$x}$');
+    def t = new TemplateBuilder(TEMPLATE);
     t {
       region "test"
       region("other");
@@ -68,7 +71,7 @@ class TemplateBuilderTest {
 
   @Test
   void addTpl() {
-    def t = new TemplateBuilder('$region(delimiter=" "){text$x}$');
+    def t = new TemplateBuilder(TEMPLATE);
     def tpl = Syntaxes.FLUYT.parse('$greeting $greeted')
     t.region {
       x "test"
@@ -84,14 +87,14 @@ class TemplateBuilderTest {
   }
 
   @Test
-  public void testJson() {
+  void testJson() {
     def t = new TemplateBuilder('{numbers:[$i(delimiter=", ")] }', Syntaxes.FLUYT, Encodings.string);
     t.i((2..10) + 5)
     assertEquals("{numbers:[2, 3, 4, 5, 6, 7, 8, 9, 10, 5] }", t.toString());
   }
 
   @Test
-  public void testPlain() {
+  void testPlain() {
     def t = new TemplateBuilder('$attrib{$value(pad="20" pad.fill="."): $data\n}$', Syntaxes.FLUYT, Encodings.plain);
     t.attrib(new Entry(label:"Age", value:45), new Entry(label:"Name", value:"John"), new Entry(label:"First name", value:"Karl") ) {
       value it.label; data it.value
@@ -104,7 +107,7 @@ First name..........: Karl
   }
 
   @Test
-  public void testHtml1() {
+  void testHtml1() {
     def t = new TemplateBuilder(
 '''<table>
 <t:row>

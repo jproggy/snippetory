@@ -34,6 +34,8 @@ class TemplateDynamizerTest {
     assert y.toString() == "test"
     tpl.x = "blah";
     assert tpl.toString() == "blah"
+    tpl.x.render()
+    assert tpl.toString() == "blahtest"
     assertEquals("test", tpl["x"].toString())
   }
 }
