@@ -60,8 +60,8 @@ public class EncodingTest {
   void encodingString() throws Exception {
     TemplateContext ctx = new TemplateContext().encoding(Encodings.string).syntax(Syntaxes.FLUYT);
     Template t = ctx.parse("$test");
-    t.set("test", "<test>&amp;</test>\n\rfoo\rbar");
-    assertEquals("<test>&amp;</test>\\n\\rfoo\\rbar", t.toString());
+    t.set("test", "<test>&amp;</test>\n\rfoo\rbar\u0000");
+    assertEquals("<test>&amp;</test>\\n\\rfoo\\rbar\\u0000", t.toString());
     t.set("test", Encodings.xml.wrap("<test>&amp;</test>"));
     assertEquals("<test>&amp;</test>", t.toString());
     t.set("test", Encodings.html.wrap("<test>&amp;</test>"));

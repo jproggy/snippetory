@@ -162,7 +162,7 @@ public enum Encodings implements Encoding {
             target.append('r');
             break;
           default:
-            // ignore no practical meaning
+            target.append("\\u").append(hex(ch, 4));
             break;
           }
         } else {
@@ -173,7 +173,7 @@ public enum Encodings implements Encoding {
             target.append('\\');
             break;
           default:
-            // ignore no practical meaning
+            // will be appended afterwards
             break;
           }
           target.append(ch);
@@ -244,6 +244,11 @@ public enum Encodings implements Encoding {
       escape(target, value);
     }
   };
+
+  private static String hex(char ch, int length) {
+    String hex = Integer.toHexString(ch);
+    return "0".repeat(length - hex.length()) + hex;
+  }
 
   protected abstract void escape(Appendable target, CharSequence val) throws IOException;
 
