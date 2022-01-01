@@ -139,19 +139,18 @@ public interface Template extends EncodedData {
    * Get further elements out of this repository.
    *
    * @param name the path within the repository. This might consist of several elements.
-   * @return a clean instance of the child template identified by the name  or null if
-   * there is no child template with this name. It's undefined if this is a new copy or if only a
-   * single instance exists. Though subsequent calls an get on the same instance with
-   * the same name might clear the instances returned by previous call or not.
+   * @return a clean instance of the child template identified by the name. Whether
+   * such a template was found, is reflected {@link Template#isPresent} method of the template.
+   * Implementation must not return null, but could use {@link Template#NONE} instead.
    */
   Template get(String... name);
 
   /**
    * Sets all variables with given name to a String representation of the value.
-   * Exact value might differ according to different meta data associated with
+   * Exact value might differ according to different metadata associated with
    * each of these variables. Eventually set or appended data is overwritten.
    * All matching formats and encodings are used. However, there is some
-   * special handling for the interface (@link EncodedData). In this case the
+   * special handling for the interface {@link EncodedData}. In this case the
    * provided encoding in determined to calculate the correct transcoding.
    *
    * @return the Template itself
@@ -160,11 +159,11 @@ public interface Template extends EncodedData {
 
   /**
    * Appends a String representation of the value to all variables with given name.
-   * The exact value might differ according to different meta data associated with
+   * The exact value might differ according to different metadata associated with
    * each of these variables. Eventually set or appended data is kept and new data
    * is appended behind the last character.
    * All matching formats and encodings are used. However, there is some
-   * special handling for the interface (@link EncodedData). In this case the
+   * special handling for the interface {@link EncodedData}. In this case the
    * provided encoding in determined to calculate the correct transcoding.
    *
    * @return the Template itself

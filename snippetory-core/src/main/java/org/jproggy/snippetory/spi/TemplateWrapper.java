@@ -46,7 +46,14 @@ public abstract class TemplateWrapper implements Template {
 
   @Override
   public Template get(String... name) {
-    return wrap(wrapped.get(name));
+    if (name.length == 0) return wrap(wrapped.get());
+    if (name.length == 1) return wrap(wrapped.get(name));
+    Template t = this;
+    for (String part : name) {
+      t = t.get(part);
+      if (t == null) return Template.NONE;
+    }
+    return t;
   }
 
   protected abstract Template wrap(Template toBeWrapped);

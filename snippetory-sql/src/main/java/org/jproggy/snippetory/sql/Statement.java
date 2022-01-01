@@ -83,7 +83,7 @@ public interface Statement extends Template {
     }
   }
   /**
-   * As long a the key is unique, the order of the query result is preserved.
+   * As long as the key is unique, the order of the query result is preserved.
    */
   <K, V> Map<K, V> map(RowTransformer<K> key, RowTransformer<V> value);
   /**
