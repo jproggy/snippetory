@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import org.jproggy.snippetory.Repo;
 import org.jproggy.snippetory.Template;
-
-import com.google.common.base.CaseFormat;
+import org.jproggy.snippetory.toolyng.letter.CaseFormat;
+import org.jproggy.snippetory.toolyng.letter.CaseHelper;
 
 public class Beanery {
   private Template beanTpl = Repo.readStream(getClass().getResourceAsStream("Bean.java")).parse();
