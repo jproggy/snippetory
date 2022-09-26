@@ -18,7 +18,7 @@ import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.engine.LinkRegistry;
 
 /**
- * A can be denoted on a named location and will turn it into a named region then.
+ * A {@link Link}can be denoted on a named location and will turn it into a named region then.
  * Analog to a {@link Format} a Link will be denoted via attributes in most cases, but exact rules are defined
  * by the respective {@link Syntax}.
  */

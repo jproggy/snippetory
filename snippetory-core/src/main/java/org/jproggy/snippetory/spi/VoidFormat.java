@@ -31,7 +31,7 @@ import org.jproggy.snippetory.engine.spi.ToggleFormatter;
  * </p>
  * <p>
  * VoidFormats are often used to provide some kind of static data. This can be taken from
- * some resource files like other templates or .properties. It's posible to then provide
+ * some resource files like other templates or .properties. It's possible to then provide
  * parameters inside said templates via the surroundings template {@link Template#set} or
  * {@link Template#append} method. In that case the template snippet is more or less
  * imported into the surrounding template.
@@ -59,8 +59,8 @@ public interface VoidFormat extends Format {
 
   /**
    * Offers a value to the callee. The callee is responsible for filtering out
-   * the relevant names. Thus it's expected to ignore all names, that aren't
-   * listed in it's names(). However, the caller may do this filtering, too,
+   * the relevant names. It's expected to ignore all names, that aren't
+   * listed in its names(). However, the caller may do this filtering, too,
    * as far as it provides a names declared by the names() method. The set
    * method is intended to keep only a single value.
    */
@@ -69,7 +69,7 @@ public interface VoidFormat extends Format {
 
   /**
    * Appends a String representation of the value to all variables with given
-   * name. The exact value might differ according to different meta data
+   * name. The exact value might differ according to different metadata
    * associated with each of these variables. Eventually set or appended data
    * is kept and new data is appended behind the last character. All matching
    * formats and encodings are used. However, there is some special handling

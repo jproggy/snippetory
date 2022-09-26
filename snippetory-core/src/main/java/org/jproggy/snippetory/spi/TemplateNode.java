@@ -23,5 +23,8 @@ public interface TemplateNode {
 
   Metadata metadata();
 
+  /**
+   * If the node represents neither a region nor a link, the returned region will be absent.
+   */
   Template region();
 }

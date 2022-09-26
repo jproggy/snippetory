@@ -199,7 +199,7 @@ public class TemplateContext implements Cloneable {
         loader = ClassLoader.getSystemClassLoader();
       }
       InputStream stream = loader.getResourceAsStream(name);
-      if (stream == null) throw new NoDataException("Ressource " + name + " not found");
+      if (stream == null) throw new NoDataException("Resource " + name + " not found");
       return stream(stream);
     }
 

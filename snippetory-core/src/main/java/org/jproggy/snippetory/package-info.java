@@ -13,7 +13,7 @@
 /// limitations under the License.
 
 /**
- * The classes necessary generate code with Snippetory.
+ * The classes necessary to generate code with Snippetory.
  * This package contains all classes that are intended to be the interface for the
  * generating the code you need. I.e. loading templates, composing the texts,
  * binding the data and so on.

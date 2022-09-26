@@ -16,6 +16,7 @@ package org.jproggy.snippetory;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import org.jproggy.snippetory.engine.IncompatibleEncodingException;
 import org.jproggy.snippetory.engine.chars.CharSequences;
@@ -88,7 +89,7 @@ public enum Encodings implements Encoding {
    * to enable transporting of simple formatting within the data bound. Be
    * aware: this applies to data bound, not to some kind of source code like
    * in HTML pages, so we do not break with the good practice of separating
-   * the layout of source code and it's resulting appearance.
+   * the layout of source code, and it's resulting appearance.
    */
   html {
     @Override
@@ -126,7 +127,7 @@ public enum Encodings implements Encoding {
   url {
     @Override
     public void escape(Appendable target, CharSequence val) throws IOException {
-      target.append(URLEncoder.encode(val.toString(), "utf-8"));
+      target.append(URLEncoder.encode(val.toString(), StandardCharsets.UTF_8));
     }
   },
   /**
@@ -191,7 +192,7 @@ public enum Encodings implements Encoding {
     }
   },
   /**
-   * In JavaScript I've sometimes data that is transported in a string before
+   * In JavaScript, I've sometimes data that is transported in a string before
    * it's displayed as HTML.
    */
   html_string {
@@ -218,7 +219,7 @@ public enum Encodings implements Encoding {
     }
   },
   /**
-   * Plain text. You will get an IllegalEncodingExcption if you try to bind
+   * Plain text. You will get an IllegalEncodingException if you try to bind
    * encoded data to it.
    */
   plain {

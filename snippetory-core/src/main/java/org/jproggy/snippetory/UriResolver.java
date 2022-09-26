@@ -45,13 +45,14 @@ import org.jproggy.snippetory.engine.SnippetoryException;
  *
  * @author B. Ebertz
  */
+@FunctionalInterface
 public interface UriResolver {
   /**
    * Creates a UriResolver that sequentially scans the provided
    * directories for a file that's represented by the uri and
    * returns the content of the first match.
    */
-  static UriResolver directories(final String... dirs) {
+  static UriResolver directories(String... dirs) {
     return directories(of(dirs).map(File::new).toArray(File[]::new));
   }
 
@@ -60,7 +61,7 @@ public interface UriResolver {
    * directories for a file that's represented by the uri and
    * returns the content of the first match.
    */
-  static UriResolver directories(final File... dirs) {
+  static UriResolver directories(File... dirs) {
     return (uri, context) -> {
       for (File dir : dirs) {
         File test = new File(dir, uri);
@@ -84,7 +85,7 @@ public interface UriResolver {
    * as organizing template sets in different packages.
    */
   static UriResolver resource(String prefix) {
-    final String realPF = (prefix.isEmpty() || prefix.endsWith("/")) ? prefix : (prefix + '/');
+    String realPF = (prefix.isEmpty() || prefix.endsWith("/")) ? prefix : (prefix + '/');
     return (String resource, TemplateContext context) -> {
       String path = realPF + (resource.startsWith("/") ? resource.substring(1) : resource);
       return ToString.resource(path);
@@ -105,7 +106,7 @@ public interface UriResolver {
   /**
    * resolves uris relative to the base URL
    */
-  static UriResolver url(final URL base) {
+  static UriResolver url(URL base) {
     return (String url, TemplateContext context) -> {
       try {
         URL link = new URL(base, url);

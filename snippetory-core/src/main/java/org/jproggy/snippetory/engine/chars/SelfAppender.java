@@ -24,7 +24,7 @@ package org.jproggy.snippetory.engine.chars;
  */
 public interface SelfAppender {
   /**
-   *
+   * Append own data in chunks to the appendable
    */
   <T extends Appendable> T appendTo(T to);
 }

@@ -32,6 +32,7 @@ public interface DynamicAttributes {
    *   $(button='Test' button.id='btn_id' button.onclick='buttonClicked()')
    * </pre>
    * <p>
+   * Available setter methods still take precedence over <code>setAttribute</code>.
    * If there is a setter method <code>setId(String val)</code> this will be called
    * with parameter <code>"btn_id"</code> and <code>setAttribute</code> will
    * be called with <code>("onclick", "buttonClicked()")</code>.

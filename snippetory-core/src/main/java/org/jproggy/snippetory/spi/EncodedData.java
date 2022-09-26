@@ -15,26 +15,27 @@
 package org.jproggy.snippetory.spi;
 
 import org.jproggy.snippetory.engine.EncodingRegistry;
+import org.jproggy.snippetory.engine.chars.SelfAppender;
 
 /**
  * Combines character data as pay load with information about it's encoding
- * as additional meta data.
+ * as additional metadata.
  *
  * @author B. Ebertz
  *
  */
 public interface EncodedData {
   /**
-   * The encoding is represented by it's name. The name can be resolved
+   * The encoding is represented by its name. The name can be resolved
    * by  {@link EncodingRegistry#get(String) Encoding.REGISTRY.get(String)}.
    */
   String getEncoding();
 
   /**
    * Convert to a char sequence.
-   * This methods is added, because a toString method might be more expensive
-   * in many cases. This method allows to return a StringBuilder instead of a String.
-   * This might avoid copying the data from the StringBuilder into a String.
+   * A toString method might be more expensive in many cases, especially if a lot of characters are held in a
+   * structured template. Some implementations of EncodedData implement CharSequence to allow a quick conversion.
+   * To also allow quick appending it often makes sense to alsa implement {@link SelfAppender}
    */
   CharSequence toCharSequence();
 }

@@ -17,12 +17,12 @@ package org.jproggy.snippetory.spi;
 import org.jproggy.snippetory.engine.FormatRegistry;
 
 /**
- * The format allows to encapsulate and reuse portions of view logic in a simple and generic
- * way.
+ * The format allows one to encapsulate and reuse portions of view logic in a simple and generic
+ * manner.
  * <h2>Format definition in template file</h2>
  * Formats are activated by a single attribute, that's evaluated by a {@link FormatFactory},
  * that parses this definition, found within the template file, in order to create an appropriate
- * {@code Format}. However, before creating the format itself there is another step to do:
+ * {@code Format}. However, before creating the format itself there is another step to take:
  * The FormatFactory returns a {@link FormatConfiguration} which takes additional parameters, called
  * sub-attributes. Sub attributes have the form {@code<main-attribute>.<sub-attribute>} and directly
  * follow the main attribute. For instance:
@@ -62,9 +62,10 @@ public interface Format {
   /**
    * Will only be called for supported values.
    *
-   * @param location gives some additional information to the this call
+   * @param location gives some additional information to this call
    * like the target encoding
-   * @param value
+   * @param value will be turned into character data
+   * @return value as character data. So either a String, a StringBuilder or EncodedData
    */
   Object format(TemplateNode location, Object value);
 
@@ -78,7 +79,7 @@ public interface Format {
    * Resets the state of the format to initialization value.
    * As most formats are state-less they can safely ignore this method.
    *
-   * @param location
+   * @param location In some cases state is bound to specific nodes
    */
   void clear(TemplateNode location);
 }

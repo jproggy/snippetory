@@ -14,18 +14,12 @@
 
 package org.jproggy.snippetory.engine;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.jproggy.snippetory.engine.Attributes.Types;
 
 public class AnnotationRegistry {
     public static final AnnotationRegistry INSTANCE = new AnnotationRegistry();
 
-    private final Set<String> annotations = new HashSet<>();
-
     public void registerAnnotation(String name) {
-        annotations.add(name);
         AttributesRegistry.INSTANCE.register(name, Types.ANNOTATION);
     }
 }

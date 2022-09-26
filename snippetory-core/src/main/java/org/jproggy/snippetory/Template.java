@@ -275,10 +275,13 @@ public interface Template extends EncodedData {
   /**
    * Check whether this instance represents a real template and not the 'null' template.
    *
-   * @return {@code false} if this instance isn't a real template but rather a null object
+   * @return {@code false} if this instance isn't a real template but rather a null object, also called absent
    */
   boolean isPresent();
 
+  /**
+   * The metadata of a template region
+   */
   default Metadata metadata() {
     return new Metadata() {
       @Override
