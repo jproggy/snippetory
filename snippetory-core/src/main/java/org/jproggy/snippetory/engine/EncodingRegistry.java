@@ -27,8 +27,6 @@ import org.jproggy.snippetory.spi.Transcoding;
  * Handles registration of encoding and transcoding overwrites.
  * See <a href="https://www.jproggy.org/snippetory/encodings/">official documentation</a>
  * for additional information
- *
- * @author B. Ebertz
  */
 public final class EncodingRegistry {
   private final Map<String, Encoding> encodings = new HashMap<>();

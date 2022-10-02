@@ -107,7 +107,7 @@ public class MetaDescriptor implements VoidFormat, Metadata {
 
   public void linkConditionalRegion(ConditionalRegion target) {
     if (link != null) {
-      throw new SnippetoryException("A region must not have a link");
+      throw new SnippetoryException("A conditional region must not have a link");
     }
     link = new ConditionalRegion.Ref(target);
   }

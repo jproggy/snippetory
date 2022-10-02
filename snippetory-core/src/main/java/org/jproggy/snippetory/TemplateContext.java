@@ -45,9 +45,9 @@ import org.jproggy.snippetory.spi.SyntaxID;
  * of interceptors.
  * </p>
  *
- * <p>In fact the TemplatCcontext is designed to be extended to be integrated into
+ * <p>In fact the TemplateContext is designed to be extended to be integrated into
  * your global data. For example some applications configure presentation attributes
- * like number formating at user level. In this case you can easily add the user
+ * like number formatting at user level. In this case you can easily add the user
  * to the TemplateContext and replace the numb Formatter by one the values the user.
  * </p>
  *
@@ -55,8 +55,6 @@ import org.jproggy.snippetory.spi.SyntaxID;
  * be considered single threaded! For reuse over several threads one would need to
  * ensure immutability. However, the clone method allows fast creation of copies.
  * </p>
- *
- * @author B. Ebertz
  */
 public class TemplateContext implements Cloneable {
   public static final Locale TECH = new Locale("en", "US", "tech");
@@ -174,7 +172,7 @@ public class TemplateContext implements Cloneable {
 
   /**
    * Get the Template identified by the uri. The uri is resolved by the configured uri resolver.
-   * Thus configuring a UriRelover is mandatory,
+   * Thus configuring a UriResolver is mandatory,
    */
   public Template getTemplate(String uri) {
     if (uriResolver == null) {

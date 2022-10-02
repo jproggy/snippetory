@@ -29,7 +29,7 @@ import org.jproggy.snippetory.TemplateContext;
  * it. The creation process of a {@link Format} consists of three steps. First an instance of
  * {@code FormatFactory} is registered at {@link Format#REGISTRY}. The FormatFactory
  * creates a {@link FormatConfiguration}. The  FormatConfiguration in turn will get the
- * sub-attributes provided via setter-methods. The FormatConcigutation is stored, and
+ * sub-attributes provided via setter-methods. The FormatConfiguration is stored, and
  * every time a new Location is copied the configuration will be asked for a format instance.
  * </p>
  *
@@ -46,7 +46,7 @@ public interface FormatFactory {
    *
    * @param definition the attribute value from the template
    * @param ctx the TemplateContext provides additional information like the locale
-   * @return a FormatConfiguration that will be kept as meta data of this node
+   * @return a FormatConfiguration that will be kept as metadata of this node
    */
   FormatConfiguration create(String definition, TemplateContext ctx);
 }

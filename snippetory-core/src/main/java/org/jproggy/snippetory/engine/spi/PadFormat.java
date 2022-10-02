@@ -27,7 +27,7 @@ public class PadFormat extends SimpleFormat {
     left, right
   }
 
-  private int length;
+  private final int length;
   private Alignment align = Alignment.left;
   private String fill = "                       ";
 

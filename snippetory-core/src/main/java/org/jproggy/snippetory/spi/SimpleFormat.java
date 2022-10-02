@@ -18,8 +18,6 @@ package org.jproggy.snippetory.spi;
  * Simplifies creation of new Formats by unifying the concepts of {@link Format}
  * and {@link FormatConfiguration}. This only works as long as no sophisticated
  * state management is needed. So it's fine for all state less Formats.
- *
- * @author B. Ebertz
  */
 public abstract class SimpleFormat implements Format, FormatConfiguration {
 

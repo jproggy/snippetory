@@ -14,6 +14,11 @@
 
 package org.jproggy.snippetory.engine;
 
+import org.jproggy.snippetory.spi.Transcoding;
+
+/**
+ * Transcoding is not supported. This can be solved by registering a matching {@link Transcoding}
+ */
 public class IncompatibleEncodingException extends SnippetoryException {
   private static final long serialVersionUID = 1L;
 

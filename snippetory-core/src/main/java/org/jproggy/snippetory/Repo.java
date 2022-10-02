@@ -20,6 +20,7 @@ import java.io.Reader;
 import java.util.Locale;
 
 import org.jproggy.snippetory.TemplateContext.ToString;
+import org.jproggy.snippetory.engine.NoDataException;
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Syntax;
 import org.jproggy.snippetory.spi.SyntaxID;
@@ -38,6 +39,7 @@ import org.jproggy.snippetory.spi.SyntaxID;
  *
  * @see org.jproggy.snippetory.TemplateContext TemplateContext
  * @see Template
+ * @see NoDataException
  *
  * @author B. Ebertz
  */
@@ -47,7 +49,7 @@ public class Repo {
   }
 
   /**
-   * The really short short cut for the simple jobs. This helps to scale from
+   * The really short shortcut for the simple jobs. This helps to scale from
    * a very low level, where any character hurts. At least for playing around
    * it's very handy.
    */
@@ -57,15 +59,30 @@ public class Repo {
 
   /**
    * The data for the TemplateContext is searched on class path
+   *
+   * @throws NoDataException if the resource is not found. If you need control over the classloader readStream might
+   *              be the better choice
    */
   public static TemplateContext readResource(String name) {
     return new TemplateContext(ToString.resource(name));
   }
 
+  /**
+   * The data for the TemplateContext is read from the file.
+   *
+   * @param fileName name of the file
+   * @throws NoDataException if the file is not found.
+   */
   public static TemplateContext readFile(String fileName) {
     return new TemplateContext(ToString.file(fileName));
   }
 
+  /**
+   * The data for the TemplateContext is read from the file.
+   *
+   * @param fileName name of the file
+   * @throws NoDataException if the file is not found.
+   */
   public static TemplateContext readFile(File fileName) {
     return new TemplateContext(ToString.file(fileName));
   }
@@ -142,11 +159,14 @@ public class Repo {
      * @deprecated Configuring the resolver is not allowed within Repo.Method is inherited, but can't be used here
      */
     @Override
-    @Deprecated(since = "ever", forRemoval = false)
+    @Deprecated(since = "0.9.0")
     public void setUriResolver(UriResolver urlResolver) {
       throw new UnsupportedOperationException("UrlResolver can't be set here");
     }
 
+    /**
+     * Parse the data, loaded in the factory method into a template
+     */
     public Template parse() {
       return parse(data);
     }

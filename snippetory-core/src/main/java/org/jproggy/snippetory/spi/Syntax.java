@@ -36,7 +36,6 @@ import org.jproggy.snippetory.engine.spi.XMLAlikeSyntax;
  * For this job it provides an {@link Tokenizer} which in turn does the real work
  * to chop the template data into handy tokens.
  *
- * @author B. Ebertz
  * @see RegExSyntax
  */
 public interface Syntax {
@@ -94,7 +93,7 @@ public interface Syntax {
     /**
      *
      * @return the start position of the token the <code>next</code> method will provide
-     * by it's next call. Or <code>getData().length()</code> if no further token present.
+     * by its next call. Or <code>getData().length()</code> if no further token present.
      */
     int getPosition();
 
@@ -129,7 +128,7 @@ public interface Syntax {
   Tokenizer takeOver(Tokenizer data);
 
   /**
-   * To be able select a syntax via the <a href="/snippetory/Syntax.html#Syntax">syntax selector</a>
+   * To be able to select a syntax via the <a href="/snippetory/Syntax.html#Syntax">syntax selector</a>
    * it has to be registered.
    */
   Registry REGISTRY = new Registry();

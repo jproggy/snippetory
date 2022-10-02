@@ -62,8 +62,8 @@ public interface DataSink {
 
   /**
    * Create a new, clean instance. The returned instance has to be decoupled
-   * in that status changes are not reflected on the called instance. Thus
-   * immutable instance may return themselves.
+   * in that status changes are not reflected on the called instance. Thus,
+   * immutable instances may return themselves.
    */
   DataSink cleanCopy(Location parent);
 
@@ -79,7 +79,7 @@ public interface DataSink {
   CharSequence format();
 
   /**
-   * Acquire the sub sub-template selected by its name
+   * Acquire the sub-template selected by its name
    */
   Link getChild(String name);
 }

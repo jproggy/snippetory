@@ -17,6 +17,11 @@ package org.jproggy.snippetory.engine;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Parsing failed, because no data was found to begin with. Snippetory does support complex structures where the right
+ * template is looked up. In those cases several approaches to look the template up might fail, but if all approaches
+ * fail all exceptions are collected and provided via getExceptions.
+ */
 public class NoDataException extends SnippetoryException {
   private static final long serialVersionUID = 1L;
 
@@ -37,6 +42,9 @@ public class NoDataException extends SnippetoryException {
     this.exceptions = Collections.emptyList();
   }
 
+  /**
+   * If several way to collect data failed, all the failures are provided here.
+   */
   public List<Exception> getExceptions() {
     return exceptions;
   }

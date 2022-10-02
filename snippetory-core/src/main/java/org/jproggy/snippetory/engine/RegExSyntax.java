@@ -182,7 +182,7 @@ public abstract class RegExSyntax implements Syntax {
             break;
 
           default:
-            throw new ParseError("Unkown escaped character. " + val.charAt(i), t);
+            throw new ParseError("Unknown escaped character. " + val.charAt(i), t);
           }
           bsFound = false;
         } else {

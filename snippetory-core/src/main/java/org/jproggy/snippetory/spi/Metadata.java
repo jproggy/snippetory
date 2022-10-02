@@ -34,7 +34,7 @@ public interface Metadata {
     String getName();
 
     /**
-     * Get a specific annotation of a template element. Annotations represents arbitrary value, that can be placed in
+     * Get a specific annotation of a template element. Annotations represent arbitrary values, that can be placed in
      * templates to tag regions for further processing. Annotations can also be denoted to locations, but then only
      * being read via Formats or Links.
      * Typical analysis pattern are:

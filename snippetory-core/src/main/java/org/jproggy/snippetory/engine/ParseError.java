@@ -14,6 +14,9 @@
 
 package org.jproggy.snippetory.engine;
 
+/**
+ * Something went wrong during parsing.
+ */
 public class ParseError extends SnippetoryException {
   private static final long serialVersionUID = 1L;
 

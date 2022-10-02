@@ -24,7 +24,7 @@ import org.jproggy.snippetory.Template;
 /**
  * A TemplateWrapper is a utility class for conveniently implementing decorators
  * for templates.
- * It makes sure, that all templates returned from it's methods are wrapped, too.
+ * It makes sure, that all templates returned from its methods are wrapped, too.
  * The only exception is {@link #getImplementation()}.
  */
 public abstract class TemplateWrapper implements Template {

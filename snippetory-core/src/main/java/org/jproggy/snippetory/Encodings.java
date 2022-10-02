@@ -254,13 +254,13 @@ public enum Encodings implements Encoding {
   protected abstract void escape(Appendable target, CharSequence val) throws IOException;
 
   @Override
-  public void transcode(Appendable target, CharSequence value, String encodingName) throws IOException {
-    if (in(encodingName, NULL)) {
+  public void transcode(Appendable target, CharSequence value, String sourceEncoding) throws IOException {
+    if (in(sourceEncoding, NULL)) {
       CharSequences.append(target, value);
-    } else if (in(encodingName, plain)) {
+    } else if (in(sourceEncoding, plain)) {
       escape(target, value);
     } else {
-      throw new IncompatibleEncodingException("can't convert encoding " + encodingName + " into " + name());
+      throw new IncompatibleEncodingException("can't convert encoding " + sourceEncoding + " into " + name());
     }
   }
 
@@ -274,7 +274,7 @@ public enum Encodings implements Encoding {
   }
 
   /**
-   * Marks the data to be encoded according to specified encodinng.
+   * Marks the data to be encoded according to specified encoding.
    */
   public EncodedData wrap(CharSequence data) {
     return new EncodedContainer(data, getName());

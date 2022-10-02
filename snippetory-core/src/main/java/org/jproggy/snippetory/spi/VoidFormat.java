@@ -43,12 +43,9 @@ import org.jproggy.snippetory.engine.spi.ToggleFormatter;
  * <b>Be aware that VoidFormats are not inherited through the template tree.</b>
  * </p>
  *
- * @author B. Ebertz
- *
  * @see Format
  * @see DefaultFormat
  * @see ToggleFormatter
- *
  */
 public interface VoidFormat extends Format {
 

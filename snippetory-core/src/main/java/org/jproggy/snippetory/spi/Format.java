@@ -24,7 +24,7 @@ import org.jproggy.snippetory.engine.FormatRegistry;
  * that parses this definition, found within the template file, in order to create an appropriate
  * {@code Format}. However, before creating the format itself there is another step to take:
  * The FormatFactory returns a {@link FormatConfiguration} which takes additional parameters, called
- * sub-attributes. Sub attributes have the form {@code<main-attribute>.<sub-attribute>} and directly
+ * sub-attributes. Sub attributes have the form {@code <main-attribute>.<sub-attribute>} and directly
  * follow the main attribute. For instance:
  * <p>
  * {@code stretch="20" stretch.align="left"}

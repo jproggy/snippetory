@@ -34,7 +34,7 @@ import org.jproggy.snippetory.spi.Syntax;
  */
 public class Token {
   /**
-   * The token type classifies he meaning of a template element.
+   * The token type classifies the meaning of a template element.
    *
    * @author B. Ebertz
    */
@@ -107,8 +107,8 @@ public class Token {
   }
 
   /**
-   *  the position where the content starts within the entire template data.
-   *  It dosen't matter where this syntax started to be used.
+   *  The position where the content starts within the entire template data.
+   *  It doesn't matter where this syntax started to be used.
    */
   public int getPosition() {
     return position;

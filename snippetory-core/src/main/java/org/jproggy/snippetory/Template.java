@@ -233,7 +233,7 @@ public interface Template extends EncodedData {
    * <pre>
    * target.append(name, thisOne);
    * </pre>
-   * however an interceptor gets more information what's going on.
+   * however, an interceptor gets more information what's going on.
    *
    * @param target a Template to append to
    * @param name   the name of the place where the data should go to.

@@ -53,7 +53,7 @@ public class Location implements DataSink, TemplateNode {
   @Override
   public CharSequence format() {
     if (target != null) {
-      if (md.suffix != null) return target.toString() + md.suffix;
+      if (md.suffix != null) return target + md.suffix;
       return target;
     }
     Object value = getVoidFormat().formatVoid(this);

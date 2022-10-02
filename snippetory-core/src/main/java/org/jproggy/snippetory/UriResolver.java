@@ -42,8 +42,6 @@ import org.jproggy.snippetory.engine.SnippetoryException;
  * for the moment none of them draws the context into account. But
  * more sophisticated algorithms are likely to be based on Locale
  * or Encoding.
- *
- * @author B. Ebertz
  */
 @FunctionalInterface
 public interface UriResolver {

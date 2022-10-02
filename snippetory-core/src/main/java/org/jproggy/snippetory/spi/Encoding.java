@@ -79,12 +79,12 @@ public interface Encoding {
 	 *            result of the action has to be appended to target.
 	 * @param value
 	 *            has be transcoded
-	 * @param encodingName
+	 * @param sourceEncoding
 	 *            Value is already encoded with this encoding
 	 * @throws IncompatibleEncodingException
 	 *             if the encoding can't be taken as is and can't be decoded.
 	 */
-  void transcode(Appendable target, CharSequence value, String encodingName) throws IOException,
+  void transcode(Appendable target, CharSequence value, String sourceEncoding) throws IOException,
       IncompatibleEncodingException;
 
   /**

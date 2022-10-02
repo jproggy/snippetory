@@ -10,9 +10,9 @@ public class PropertyFormat extends SimpleFormat implements VoidFormat {
     private final String value;
 
     private PropertyFormat(String name) {
-        String val = System.getenv(name);
+        String val = System.getProperty(name);
         if (val == null) {
-            val = System.getProperty(name);
+            val = System.getenv(name);
         }
         value = val;
     }

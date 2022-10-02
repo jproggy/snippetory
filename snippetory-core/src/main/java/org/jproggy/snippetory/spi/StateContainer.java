@@ -26,8 +26,7 @@ import org.jproggy.snippetory.engine.spi.ToggleFormatter;
  * In some cases it is necessary to collect data over more than one node. Like counters for instance.
  * It handles resolving the right key and creating new objects.
  *
- * @param <V> is the type of the values kept in this container. Typically this is a {@link Format}.
- * @author B. Ebertz
+ * @param <V> is the type of the values kept in this container. Typically, this is a {@link Format}.
  * @see ToggleFormatter
  */
 public abstract class StateContainer<V> {
@@ -43,13 +42,13 @@ public abstract class StateContainer<V> {
   }
 
   /**
-   * Create a new instance to handle your state. Typically this will create a
-   * {@link Format}. This method is only called if there is
+   * Create a new instance to handle your state. Typically, this will create a
+   * {@link Format}. This method is only called if there is no value crated yet for the same node.
    */
   protected abstract V createValue(TemplateNode key);
 
   /**
-   * Create a
+   * Get the state handler for the given node. The node will be resolved, according to the KeyResolver.
    */
   public V get(TemplateNode key) {
     key = resolver.resolve(key);
@@ -68,13 +67,8 @@ public abstract class StateContainer<V> {
   /**
    * Calculates the node to bind the state to based on node the node provided.
    */
-  public abstract static class KeyResolver {
-    public static final KeyResolver PARENT = new KeyResolver() {
-      @Override
-      public TemplateNode resolve(TemplateNode org) {
-        return org.getParent();
-      }
-    };
+  public interface KeyResolver {
+    KeyResolver PARENT = TemplateNode::getParent;
 
     /**
      * Binds the state to an instance of a template even but not on a copy
@@ -82,37 +76,21 @@ public abstract class StateContainer<V> {
      * Be aware such a copy uses same instance of FormatConfiguration
      * but should be completely independent.
      */
-    public static final KeyResolver ROOT = new KeyResolver() {
-      @Override
-      public TemplateNode resolve(TemplateNode org) {
-        while (org.getParent() != null)
-          org = org.getParent();
-        return org;
-      }
+    KeyResolver ROOT = org -> {
+      while (org.getParent() != null)
+        org = org.getParent();
+      return org;
     };
 
-    public static KeyResolver up(int levels) {
-      return new LevelNavigator(levels);
-    }
-
-    private static class LevelNavigator extends KeyResolver {
-      final int levels;
-
-      public LevelNavigator(int levels) {
-        super();
-        this.levels = levels;
-      }
-
-      @Override
-      public TemplateNode resolve(TemplateNode org) {
-        for (int i = 0; (i < levels) && (org != null); i++) {
+    static KeyResolver up(int levels) {
+      return org -> {
+        for (int i = 0; (i < levels) && (org.getParent() != null); i++) {
           org = org.getParent();
         }
         return org;
-      }
-
+      };
     }
 
-    public abstract TemplateNode resolve(TemplateNode org);
+    TemplateNode resolve(TemplateNode org);
   }
 }

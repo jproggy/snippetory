@@ -15,6 +15,7 @@
 package org.jproggy.snippetory.spi;
 
 import org.jproggy.snippetory.Encodings;
+import org.jproggy.snippetory.engine.chars.EncodedContainer;
 
 /**
  * The Snippetory templating solution works with two different form of character data:
@@ -25,10 +26,7 @@ import org.jproggy.snippetory.Encodings;
  *     {@link EncodedData}.
  *   </li>
  * </ol>
- * This class is inteded to handle both types in a common way.
- *
- * @author B. Ebertz
- *
+ * This class is intended to handle both types in a common way.
  */
 public class CharDataSupport {
   /**
@@ -58,6 +56,13 @@ public class CharDataSupport {
       return ((EncodedData)chars).toCharSequence();
     }
     return chars.toString();
+  }
+
+  public static Object sameEncoding(Object template, CharSequence data) {
+    if (template instanceof  EncodedData) {
+      return new EncodedContainer(data, ((EncodedData) template).getEncoding());
+    }
+    return data;
   }
 
   /**
