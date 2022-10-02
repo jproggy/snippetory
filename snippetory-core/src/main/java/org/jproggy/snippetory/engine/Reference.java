@@ -15,19 +15,17 @@
 package org.jproggy.snippetory.engine;
 
 import org.jproggy.snippetory.Template;
-import org.jproggy.snippetory.spi.Link;
 
-public class Reference implements Link {
-  private final Region target;
-
-  public Reference(Region target) {
-    this.target = target;
+public interface Reference {
+  static Reference to(ConditionalRegion target) {
+    return p -> new ConditionalRegionAdapter(target, p);
+  }
+  static Reference to(Region node) {
+    return p -> {
+      node.setParent(p);
+      return node;
+    };
   }
 
-  @Override
-  public Template getContents(Template parentNode, String name) {
-    if (target == null) return null;
-    target.setParent((Region) parentNode);
-    return target;
-  }
+  Template resolve(Region parentNode);
 }

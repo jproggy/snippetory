@@ -27,6 +27,15 @@ import org.jproggy.snippetory.spi.Transcoding;
 import org.jproggy.snippetory.spi.VoidFormat;
 
 public class MetaDescriptor implements VoidFormat, Metadata {
+  final String name;
+  final FormatConfiguration[] formats;
+  final Encoding enc;
+  final String fragment;
+  final String delimiter;
+  final String prefix;
+  final String suffix;
+  Reference link;
+  final Map<String, String> annotations;
 
   public MetaDescriptor(String name, String fragment, Attributes attribs) {
     super();
@@ -37,19 +46,9 @@ public class MetaDescriptor implements VoidFormat, Metadata {
     this.delimiter = attribs.delimiter;
     this.prefix = attribs.prefix;
     this.suffix = attribs.suffix;
-    this.link = attribs.link;
+    this.link = to(attribs.link);
     this.annotations = attribs.annotations;
   }
-
-  final String name;
-  final FormatConfiguration[] formats;
-  final Encoding enc;
-  final String fragment;
-  final String delimiter;
-  final String prefix;
-  final String suffix;
-  Link link;
-  final Map<String, String> annotations;
 
   public CharSequence getFallback() {
     if (prefix != null || suffix != null) return "";
@@ -102,13 +101,18 @@ public class MetaDescriptor implements VoidFormat, Metadata {
     if (link != null) {
       throw new SnippetoryException("A region must not have a link");
     }
-    link = new Reference(target);
+    link = Reference.to(target);
   }
 
   public void linkConditionalRegion(ConditionalRegion target) {
     if (link != null) {
       throw new SnippetoryException("A conditional region must not have a link");
     }
-    link = new ConditionalRegion.Ref(target);
+    link = Reference.to(target);
+  }
+
+  private Reference to(Link link) {
+    if (link == null) return null;
+    return p -> link.getContents(p, this);
   }
 }

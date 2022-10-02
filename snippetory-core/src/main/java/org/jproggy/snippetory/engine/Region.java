@@ -22,7 +22,6 @@ import java.util.Set;
 
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.engine.chars.SelfAppender;
-import org.jproggy.snippetory.spi.Link;
 import org.jproggy.snippetory.spi.Metadata;
 
 public class Region implements Template, CharSequence, SelfAppender {
@@ -79,9 +78,9 @@ public class Region implements Template, CharSequence, SelfAppender {
       Region child = children.get(name);
       return cleanChild(child);
     }
-    Link child = data.getChild(name);
+    Reference child = data.getChild(name);
     if (child == null) return null;
-    return child.getContents(this, name);
+    return child.resolve(this);
   }
 
   protected Region cleanChild(Region child) {

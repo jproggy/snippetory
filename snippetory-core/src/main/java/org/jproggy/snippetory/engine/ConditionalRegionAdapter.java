@@ -6,13 +6,12 @@ import java.io.Writer;
 import java.util.Set;
 
 import org.jproggy.snippetory.Template;
-import org.jproggy.snippetory.spi.Link;
 
 public class ConditionalRegionAdapter implements Template {
     private final ConditionalRegion target;
-    private final Template parentNode;
+    private final Region parentNode;
 
-    public ConditionalRegionAdapter(ConditionalRegion target, Template parentNode) {
+    public ConditionalRegionAdapter(ConditionalRegion target, Region parentNode) {
         this.target = target;
         this.parentNode = parentNode;
     }
@@ -20,12 +19,11 @@ public class ConditionalRegionAdapter implements Template {
     @Override
     public Template get(String... path) {
         if (path.length == 0) {
-            return new ConditionalRegionAdapter(target.cleanCopy(
-                    target.getPlaceholder().getParent()), parentNode);
+            return new ConditionalRegionAdapter(target.cleanCopy(target.getPlaceholder().getParent()), parentNode);
         }
-        Link child = target.getChild(path[0]);
+        Reference child = target.getChild(path[0]);
         if (child == null) return Template.NONE;
-        Template childTpl = child.getContents(parentNode, path[0]);
+        Template childTpl = child.resolve(parentNode);
         if (childTpl == null) return Template.NONE;
         for (int i = 1; i < path.length; i++) {
             childTpl = childTpl.get(path[i]);
@@ -54,24 +52,18 @@ public class ConditionalRegionAdapter implements Template {
 
     @Override
     public void render(Template parent, String name) {
-        if (target.appendMe()) {
-            parent.append(name, target.format());
-        }
+        parent.append(name, target.format());
     }
 
     @Override
     public void render(Writer out) throws IOException {
-        if (target.appendMe()) {
-            target.appendTo(out);
-        }
+        target.appendTo(out);
         out.flush();
     }
 
     @Override
     public void render(PrintStream out) {
-        if (target.appendMe()) {
-            target.appendTo(out);
-        }
+        target.appendTo(out);
         out.flush();
     }
 
@@ -103,5 +95,10 @@ public class ConditionalRegionAdapter implements Template {
     @Override
     public CharSequence toCharSequence() {
         return target.toCharSequence();
+    }
+
+    @Override
+    public String toString() {
+        return target.toString();
     }
 }

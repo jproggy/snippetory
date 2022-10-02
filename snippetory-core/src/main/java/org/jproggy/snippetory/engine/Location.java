@@ -26,7 +26,6 @@ import org.jproggy.snippetory.engine.chars.CharSequences;
 import org.jproggy.snippetory.spi.CharDataSupport;
 import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Format;
-import org.jproggy.snippetory.spi.Link;
 import org.jproggy.snippetory.spi.Metadata;
 import org.jproggy.snippetory.spi.TemplateNode;
 import org.jproggy.snippetory.spi.VoidFormat;
@@ -206,7 +205,7 @@ public class Location implements DataSink, TemplateNode {
   }
 
   @Override
-  public Link getChild(String name) {
+  public Reference getChild(String name) {
     if (Objects.equals(name, md.name) && md.link != null) return md.link;
     return null;
   }
@@ -233,9 +232,6 @@ public class Location implements DataSink, TemplateNode {
     if (md.link == null) {
       return Template.NONE;
     }
-    Template parentNode = parent == null ? Template.NONE : parent.region();
-    Template r = md.link.getContents(parentNode.isPresent() ? parentNode : null, md.name);
-    if (r == null) return Template.NONE;
-    return r;
+    return md.link.resolve(null).get();
   }
 }

@@ -25,5 +25,5 @@ import org.jproggy.snippetory.engine.LinkRegistry;
 public interface Link {
   LinkRegistry REGISTRY = LinkRegistry.INSTANCE;
 
-  Template getContents(Template parentNode, String nodeName);
+  Template getContents(Template parentNode, Metadata nodeMetadata);
 }

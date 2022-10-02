@@ -4,7 +4,8 @@ import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.engine.SnippetoryException;
 import org.jproggy.snippetory.spi.Link;
-import org.jproggy.snippetory.spi.TemplateWrapper;
+import org.jproggy.snippetory.spi.LinkedWrapper;
+import org.jproggy.snippetory.spi.Metadata;
 
 public class AliasLink implements Link {
     private String file;
@@ -40,8 +41,8 @@ public class AliasLink implements Link {
     }
 
     @Override
-    public Template getContents(Template parent, String name) {
-        return new LinkedWrapper(navigate(rootNode(parent), definition.split("/")), parent, name);
+    public Template getContents(Template parent, Metadata node) {
+        return new LinkedWrapper(navigate(rootNode(parent), definition.split("/")), parent, node);
     }
 
     private Template navigate(Template node, String[] levels) {
@@ -59,31 +60,5 @@ public class AliasLink implements Link {
            }
         }
         return node;
-    }
-
-    private static class LinkedWrapper extends TemplateWrapper {
-        private final Template parent;
-        private final String name;
-
-        public LinkedWrapper(Template linked, Template parent, String name) {
-            super(linked);
-            this.parent = parent;
-            this.name = name;
-        }
-
-        @Override
-        protected Template wrap(Template toBeWrapped) {
-            return toBeWrapped;
-        }
-
-        @Override
-        public void render() {
-            render(name);
-        }
-
-        @Override
-        public Template getParent() {
-            return parent;
-        }
     }
 }

@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.jproggy.snippetory.engine.chars.CharSequences;
-import org.jproggy.snippetory.spi.Link;
 
 public class DataSinks extends CharSequences implements DataSink {
   protected final DataSink[] parts;
@@ -117,7 +116,7 @@ public class DataSinks extends CharSequences implements DataSink {
   }
 
   @Override
-  public Link getChild(String name) {
+  public Reference getChild(String name) {
     for (DataSink v : parts) {
       if (v.regionNames().contains(name)) return v.getChild(name);
     }

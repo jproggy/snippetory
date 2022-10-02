@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.jproggy.snippetory.engine.chars.SelfAppender;
-import org.jproggy.snippetory.spi.Link;
 
 public class TemplateFragment implements DataSink, CharSequence, SelfAppender {
   private final CharSequence data;
@@ -46,7 +45,7 @@ public class TemplateFragment implements DataSink, CharSequence, SelfAppender {
   }
 
   @Override
-  public Link getChild(String name) {
+  public Reference getChild(String name) {
     return null;
   }
 
