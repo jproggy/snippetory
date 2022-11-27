@@ -15,11 +15,13 @@
 package org.jproggy.snippetory.engine.spi;
 
 import java.math.BigDecimal;
+import java.util.concurrent.atomic.DoubleAccumulator;
+import java.util.concurrent.atomic.DoubleAdder;
 
 public class DecimalFormatter extends NumFormatter {
 
   public DecimalFormatter() {
-    super(Float.class, Double.class, BigDecimal.class);
+    super(Float.class, Double.class, BigDecimal.class, DoubleAccumulator.class, DoubleAdder.class);
   }
 
 }
