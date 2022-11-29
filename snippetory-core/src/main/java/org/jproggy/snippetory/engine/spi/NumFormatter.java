@@ -33,7 +33,7 @@ public class NumFormatter implements FormatFactory {
   }
 
   public NumFormatter() {
-    types = null;
+    this(Number.class);
   }
 
   @Override
@@ -41,19 +41,14 @@ public class NumFormatter implements FormatFactory {
     if (("".equals(definition) && isTechLocale(ctx)) || "tostring".equalsIgnoreCase(definition)) {
       return new ToStringFormat();
     }
-    if (types == null) {
-      return new DecimalFormatWrapper(definition, ctx.getLocale());
-    } else {
-      return new TypedDecimalFormatWrapper(definition, ctx.getLocale(), types);
-    }
-
+    return new DecimalFormatWrapper(definition, ctx.getLocale());
   }
 
   private boolean isTechLocale(TemplateContext ctx) {
     return ctx.getLocale().equals(TemplateContext.TECH);
   }
 
-  public static class ToStringFormat extends SimpleFormat {
+  public class ToStringFormat extends SimpleFormat {
 
     public ToStringFormat() {}
 
@@ -64,11 +59,11 @@ public class NumFormatter implements FormatFactory {
 
     @Override
     public boolean supports(Object value) {
-      return value instanceof Number;
+      return types.isSupported(value);
     }
   }
 
-  public static class DecimalFormatWrapper extends SimpleFormat {
+  public class DecimalFormatWrapper extends SimpleFormat {
     private final NumberFormat impl;
 
     public DecimalFormatWrapper(String definition, Locale l) {
@@ -84,30 +79,16 @@ public class NumFormatter implements FormatFactory {
 
     @Override
     public boolean supports(Object value) {
-      return value instanceof Number;
+      return types.isSupported(value);
     }
 
-    private static NumberFormat toFormat(String definition, Locale l) {
+    private NumberFormat toFormat(String definition, Locale l) {
       if ("".equals(definition)) return NumberFormat.getNumberInstance(l);
       if ("currency".equals(definition)) return NumberFormat.getCurrencyInstance(l);
       if ("int".equals(definition)) return NumberFormat.getIntegerInstance(l);
       if ("percent".equals(definition)) return NumberFormat.getPercentInstance(l);
       if ("JS".equals(definition)) return NumberFormat.getNumberInstance(Locale.US);
       return new DecimalFormat(definition, DecimalFormatSymbols.getInstance(l));
-    }
-  }
-
-  public static class TypedDecimalFormatWrapper extends DecimalFormatWrapper {
-    private final SupportedTypes types;
-
-    public TypedDecimalFormatWrapper(String definition, Locale l, SupportedTypes types) {
-      super(definition, l);
-      this.types = types;
-    }
-
-    @Override
-    public boolean supports(Object value) {
-      return types.isSupported(value);
     }
   }
 }

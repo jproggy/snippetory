@@ -71,7 +71,13 @@ public class TemplateContext implements Cloneable {
   private static final Map<String, String> DEFAULT_ATTRIBUTES;
 
   static {
-    DEFAULT_ATTRIBUTES = Map.of("date", "", "int", "", "decimal", "", "null", "");
+    Map<String, String> map = new LinkedHashMap<>();
+    map.put("date", "");
+    map.put("int", "");
+    map.put("decimal", "");
+    map.put("null", "");
+    DEFAULT_ATTRIBUTES = unmodifiableMap(map);
+
     TemplateBuilder.init();
   }
 
