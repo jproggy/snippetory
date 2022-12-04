@@ -4,8 +4,9 @@ import static org.jproggy.snippetory.Syntaxes.FLUYT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-import org.jproggy.snippetory.Template;
 import org.junit.jupiter.api.Test;
+
+import org.jproggy.snippetory.Template;
 
 class VoidFormatTest {
     @Test
@@ -16,7 +17,9 @@ class VoidFormatTest {
 
     @Test
     void propertyTest() {
-        Template val = FLUYT.parse("$(property='gibberish' null='not found')");
+        Template val = FLUYT.parse("$(property='gibberish' default='not found')");
+        assertEquals("not found", val.toString());
+        val = FLUYT.parse("$(property='gibberish' null='not found')");
         assertEquals("not found", val.toString());
         val = FLUYT.parse("$(property='user.name' default='abc')");
         assertEquals(System.getProperty("user.name"), val.toString());

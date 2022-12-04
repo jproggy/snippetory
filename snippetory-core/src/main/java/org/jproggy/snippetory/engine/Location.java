@@ -20,13 +20,13 @@ import static java.util.Collections.singleton;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.engine.chars.CharSequences;
 import org.jproggy.snippetory.spi.CharDataSupport;
 import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Format;
-import org.jproggy.snippetory.spi.Metadata;
 import org.jproggy.snippetory.spi.TemplateNode;
 import org.jproggy.snippetory.spi.VoidFormat;
 
@@ -36,7 +36,6 @@ public class Location implements DataSink, TemplateNode {
   private final Location parent;
 
   // caches -> are initialized lazily -> do not access directly!
-  private VoidFormat voidformat = null;
   private Format[] formats = null;
 
   public Location(Location parent, MetaDescriptor metadata) {
@@ -55,13 +54,23 @@ public class Location implements DataSink, TemplateNode {
       if (md.suffix != null) return target + md.suffix;
       return target;
     }
-    Object value = getVoidFormat().formatVoid(this);
-    if (getVoidFormat() instanceof Metadata) {
-      return value.toString();
+
+    Object value = null;
+    VoidFormat v = null;
+    for (Format f : getFormats()) {
+      if (f instanceof VoidFormat) {
+        v = (VoidFormat) f;
+        value = ((VoidFormat) f).formatVoid(this);
+        if (!CharDataSupport.isNull(value)) break;
+      }
+    }
+
+    if (v == null) {
+      return md.getFallback();
     }
     value = toCharData(this, value);
     for (Format format : getFormats()) {
-      if (format != getVoidFormat() && format.supports(value)) {
+      if (format != v && format.supports(value)) {
         value = format.format(this, value);
       }
     }
@@ -154,17 +163,12 @@ public class Location implements DataSink, TemplateNode {
     return value;
   }
 
-  public VoidFormat getVoidFormat() {
-    if (voidformat == null) {
-      for (Format f : getFormats()) {
-        if (f instanceof VoidFormat) {
-          voidformat = ((VoidFormat)f);
-          return voidformat;
-        }
+  public void withVoidFormats(Consumer<VoidFormat> converter) {
+    for (Format f : getFormats()) {
+      if (f instanceof VoidFormat) {
+        converter.accept((VoidFormat)f);
       }
-      voidformat = md;
     }
-    return voidformat;
   }
 
   public String getName() {
@@ -184,13 +188,13 @@ public class Location implements DataSink, TemplateNode {
   @Override
   public void set(String name, Object value) {
     if (mine(name)) set(value);
-    getVoidFormat().set(name, value);
+    withVoidFormats(v -> v.set(name, value));
   }
 
   @Override
   public void append(String name, Object value) {
     if (mine(name)) append(value);
-    getVoidFormat().append(name, value);
+    withVoidFormats(v -> v.append(name, value));
   }
 
   protected boolean mine(String name) {
@@ -211,7 +215,8 @@ public class Location implements DataSink, TemplateNode {
 
   @Override
   public Set<String> names() {
-    Set<String> result = new HashSet<>(getVoidFormat().names());
+    Set<String> result = new HashSet<>();
+    withVoidFormats(v -> result.addAll(v.names()));
     if (getName() != null) result.add(getName());
     return result;
   }

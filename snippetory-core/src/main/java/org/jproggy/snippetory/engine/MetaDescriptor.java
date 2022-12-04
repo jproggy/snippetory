@@ -24,9 +24,8 @@ import org.jproggy.snippetory.spi.Link;
 import org.jproggy.snippetory.spi.Metadata;
 import org.jproggy.snippetory.spi.TemplateNode;
 import org.jproggy.snippetory.spi.Transcoding;
-import org.jproggy.snippetory.spi.VoidFormat;
 
-public class MetaDescriptor implements VoidFormat, Metadata {
+public class MetaDescriptor implements Metadata {
   final String name;
   final FormatConfiguration[] formats;
   final Encoding enc;
@@ -84,15 +83,6 @@ public class MetaDescriptor implements VoidFormat, Metadata {
     }
     return false;
   }
-
-  @Override
-  public void clear(TemplateNode location) {}
-
-  @Override
-  public Object formatVoid(TemplateNode node) {
-    return getFallback();
-  }
-
 
   @Override
   public String getName() {
