@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.UriResolver;
+import org.jproggy.snippetory.spi.Metadata;
 
 public class LinkTest {
     private static final String LIB = "$lib{$parts{\n" +
@@ -65,4 +66,15 @@ public class LinkTest {
         t = FLUYT.context().uriResolver(repo).getTemplate("nested");
         assertEquals("here goes some stuff", t.get("target", "x").toString());
     }
-}
+
+    @Test
+    void annotations() {
+        Metadata.registerAnnotation("test");
+        Template t = XML_ALIKE.parse("{v:test alias='best'}<t:best test='x'>The very best</t:>");
+        assertEquals("x", t.get("test").metadata().annotation("test").get());
+        t = XML_ALIKE.parse("{v:test alias='best' test='x'}<t:best>The very best</t:>");
+        assertEquals("x", t.get("test").metadata().annotation("test").get());
+        t = XML_ALIKE.parse("{v:test alias='best' test='x'}<t:best test='y'>The very best</t:>");
+        assertEquals("x", t.get("test").metadata().annotation("test").get());
+    }
+ }
