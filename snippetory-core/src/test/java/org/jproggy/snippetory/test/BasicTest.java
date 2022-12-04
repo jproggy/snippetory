@@ -14,6 +14,8 @@
 
 package org.jproggy.snippetory.test;
 
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.jproggy.snippetory.Syntaxes.FLUYT;
 import static org.jproggy.snippetory.Syntaxes.FLUYT_CC;
 import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
@@ -26,6 +28,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Method;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matcher;
+import org.junit.jupiter.api.Test;
 
 import org.jproggy.snippetory.Repo;
 import org.jproggy.snippetory.Template;
@@ -33,7 +40,6 @@ import org.jproggy.snippetory.engine.ParseError;
 import org.jproggy.snippetory.engine.SnippetoryException;
 import org.jproggy.snippetory.spi.Metadata;
 import org.jproggy.snippetory.spi.Metadata.Annotation;
-import org.junit.jupiter.api.Test;
 
 class BasicTest {
   static {
@@ -166,7 +172,7 @@ class BasicTest {
     assertEquals("<a href='x+s/xy%2Bz/tesst.html'>Here</a> ", t.toString());
 
     ParseError e = assertThrows(ParseError.class, () -> XML_ALIKE.parse("lsdfkjsdfl {v:x backward='test'}"));
-    assertTrue(e.getMessage().contains("target not found"), e.getMessage());
+    assertTrue(e.getMessage().contains("Target not found"), e.getMessage());
     assertTrue(e.getMessage().contains("test"), e.getMessage());
     assertTrue(e.getMessage().contains("{v:x backward='test'}"), e.getMessage());
 
@@ -178,50 +184,67 @@ class BasicTest {
     e = assertThrows(ParseError.class, () -> XML_ALIKE.parse(
             "Hello world{v:x backward='world' default='Welt'}{v:x backward='Hello' default='Liahallo'}"
     ));
-    assertTrue(e.getMessage().contains("target not found"), e.getMessage());
-    assertTrue(e.getMessage().contains("Hello"), e.getMessage());
-    assertTrue(e.getMessage().contains("{v:x backward='Hello' default='Liahallo'}"), e.getMessage());
+    assertThat(e.getMessage(), containsStrings(
+            "Target not found",
+            "<Hello>",
+            "{v:x backward='Hello' default='Liahallo'}"
+    ));
 
     e = assertThrows(ParseError.class, () -> XML_ALIKE.parse(
             "Hello world{v:x backward='(Hello)(v)' default='Liahallo'}{v:x backward='world' default='Welt'}"
     ));
-    assertTrue(e.getMessage().contains("target not found: (Hello)(v)"), e.getMessage());
-    assertTrue(e.getMessage().contains("{v:x backward='(Hello)(v)' default='Liahallo'}"), e.getMessage());
+    assertThat(e.getMessage(), containsStrings(
+            "Target not found",
+            "<(Hello)(v)>",
+            "{v:x backward='(Hello)(v)' default='Liahallo'}"
+    ));
 
     e = assertThrows(ParseError.class, () -> XML_ALIKE.parse(
             "Hello Hello world{v:x backward='(Hello)' default='Liahallo'}{v:x backward='world' default='Welt'}"
     ));
-    assertTrue(e.getMessage().contains("backward target ambigous: (Hello)"), e.getMessage());
-    assertTrue(e.getMessage().contains("{v:x backward='(Hello)' default='Liahallo'}"), e.getMessage());
+    assertThat(e.getMessage(), containsStrings(
+            "Backward target ambiguous",
+            "<(Hello)>",
+            "{v:x backward='(Hello)' default='Liahallo'}"
+    ));
 
     e = assertThrows(ParseError.class, () -> XML_ALIKE.parse(
             "Hello world{v:x backward='(Hel)(lo)' default='Liahallo'}{v:x backward='world' default='Welt'}"
     ));
-    assertTrue(e.getMessage().contains("only one match group allowed: (Hel)(lo)"), e.getMessage());
-    assertTrue(e.getMessage().contains("{v:x backward='(Hel)(lo)' default='Liahallo'}"), e.getMessage());
+    assertThat(e.getMessage(), containsStrings(
+            "Only one match group allowed",
+            "<(Hel)(lo)>",
+            "{v:x backward='(Hel)(lo)' default='Liahallo'}"
+    ));
+  }
+
+  private Matcher<String> containsStrings(String... v) {
+    return allOf(Stream.of(v).map(CoreMatchers::containsString).collect(Collectors.toList()));
   }
 
   @Test
   void errors() {
     ParseError e = assertThrows(ParseError.class, () -> XML_ALIKE.parse("before<t:>startend</t:>after"));
-    assertEquals(
-            "Conditional region needs to contain at least one named location, or will never be rendered  Error while parsing </t:> at line 1 character 18",
-            e.getMessage()
-    );
+    assertThat(e.getMessage(), containsStrings(
+            "Conditional region needs to contain at least one named location, or will never be rendered",
+            "</t:>"
+    ));
     e = assertThrows(ParseError.class, () -> XML_ALIKE.parse("before\n<t:>\rstartend\r\n</t:end>\r\nafter"));
-    assertEquals("1 unclosed conditional regions detected  Error while parsing </t:end>\r\n at line 4 character 1",
-            e.getMessage());
+    assertThat(e.getMessage(), containsStrings(
+            "<end> found but <null> expected.",
+            "</t:end>"
+    ));
     e = assertThrows(ParseError.class, () -> XML_ALIKE.parse("before<t:start>startend</t:end>after"));
-    assertEquals("end found but start expected  Error while parsing </t:end> at line 1 character 23", e.getMessage());
+    assertEquals("<end> found but <start> expected.\nError while parsing </t:end> at line 1 character 23", e.getMessage());
 
     e = assertThrows(ParseError.class, () -> XML_ALIKE.parse("before<t:x>startend</tx>after"));
-    assertEquals("No end element for x  Error while parsing startend</tx>after at line 1 character 11", e.getMessage());
+    assertEquals("No end element for <x>.\nError while parsing startend</tx>after at line 1 character 11", e.getMessage());
 
     e = assertThrows(ParseError.class, () -> XML_ALIKE.parse("before<tx>startend</t:x>after"));
-    assertEquals("x found but file end expected  Error while parsing </t:x> at line 1 character 18", e.getMessage());
+    assertEquals("<x> found but <file end> expected.\nError while parsing </t:x> at line 1 character 18", e.getMessage());
 
     e = assertThrows(ParseError.class, () -> XML_ALIKE.parse("before<tx>startend</t:x>after"));
-    assertEquals("x found but file end expected  Error while parsing </t:x> at line 1 character 18", e.getMessage());
+    assertEquals("<x> found but <file end> expected.\nError while parsing </t:x> at line 1 character 18", e.getMessage());
   }
 
   @Test

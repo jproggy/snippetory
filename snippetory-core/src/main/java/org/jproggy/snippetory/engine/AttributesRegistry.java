@@ -32,6 +32,7 @@ import org.jproggy.snippetory.engine.spi.NumFormatter;
 import org.jproggy.snippetory.engine.spi.PadFormat;
 import org.jproggy.snippetory.engine.spi.PropertyFormat;
 import org.jproggy.snippetory.engine.spi.ToggleFormatter;
+import org.jproggy.snippetory.engine.spi.ValuesFormat;
 import org.jproggy.snippetory.spi.Configurer;
 
 public class AttributesRegistry {
@@ -71,6 +72,7 @@ public class AttributesRegistry {
         FormatRegistry.INSTANCE.register("default", DefaultFormat::create);
         FormatRegistry.INSTANCE.register("null", NullFormat::create);
         FormatRegistry.INSTANCE.register("property", PropertyFormat::create);
+        FormatRegistry.INSTANCE.register("values", ValuesFormat::create);
         LinkRegistry.INSTANCE.register("alias", AliasLink::new);
         for (Encodings e : Encodings.values()) {
             EncodingRegistry.INSTANCE.register(e);

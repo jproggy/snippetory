@@ -45,6 +45,7 @@ public class DataSinks extends CharSequences implements DataSink {
     for (DataSink v : parts) {
       v.set(name, value);
     }
+    placeHolder.set(name, value);
   }
 
   @Override
@@ -52,10 +53,11 @@ public class DataSinks extends CharSequences implements DataSink {
     for (DataSink v : parts) {
       v.append(name, value);
     }
+    placeHolder.append(name, value);
   }
 
   @Override
-  public final Set<String> names() {
+  public Set<String> names() {
     Set<String> result = new TreeSet<>();
     for (DataSink part : parts) {
       result.addAll(part.names());

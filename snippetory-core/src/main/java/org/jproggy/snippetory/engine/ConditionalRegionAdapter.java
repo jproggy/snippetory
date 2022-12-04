@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Writer;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.jproggy.snippetory.Template;
 
@@ -34,19 +35,25 @@ public class ConditionalRegionAdapter implements Template {
 
     @Override
     public Template set(String name, Object value) {
-        target.set(name, value);
+        for (DataSink part: target.parts) {
+          part.set(name, value);
+        }
         return this;
     }
 
     @Override
     public Template append(String name, Object value) {
-        target.append(name, value);
+        for (DataSink part: target.parts) {
+            part.append(name, value);
+        }
         return this;
     }
 
     @Override
     public Template clear() {
-        target.clear();
+        for (DataSink part: target.parts) {
+            part.clear();
+        }
         return this;
     }
 
@@ -69,7 +76,11 @@ public class ConditionalRegionAdapter implements Template {
 
     @Override
     public Set<String> names() {
-        return target.names();
+        Set<String> result = new TreeSet<>();
+        for (DataSink part : target.parts) {
+            result.addAll(part.names());
+        }
+        return result;
     }
 
     @Override

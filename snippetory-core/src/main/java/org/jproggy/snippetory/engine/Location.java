@@ -145,7 +145,6 @@ public class Location implements DataSink, TemplateNode {
     for (Format f : getFormats()) {
       f.clear(node);
     }
-    if (getParent() != null) parent.clearFormats(node);
   }
 
   private Object format(Location node, Object value) {
@@ -200,7 +199,7 @@ public class Location implements DataSink, TemplateNode {
 
   @Override
   public Set<String> regionNames() {
-    if (md.link != null) return singleton(md.name);
+    if (md.link != null && !md.controlsRegion()) return singleton(md.name);
     return emptySet();
   }
 
@@ -229,7 +228,7 @@ public class Location implements DataSink, TemplateNode {
 
   @Override
   public Template region() {
-    if (md.link == null) {
+    if (md.link == null || !md.controlsRegion()) {
       return Template.NONE;
     }
     return md.link.resolve(null).get();

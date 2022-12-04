@@ -134,9 +134,9 @@ public abstract class RegExSyntax implements Syntax {
           token = new Token(m.group(4), matcher.group(), type, matcher.start(), this);
           if (m.group(4) != null) continue;
         }
-        if (m.group(4) != null) throw new ParseError("don't understand " + varDef, token);
+        if (m.group(4) != null) throw new ParseError("Don't understand " + varDef + ".", token);
         if (AttributesRegistry.INSTANCE.type(m.group(1)) == null) {
-          throw new ParseError("unknown attribute name " + m.group(1), token);
+          throw new ParseError("Unknown attribute name " + m.group(1) + ".", token);
         }
         String value = m.group(2);
         if (value == null) value = m.group(3);
@@ -182,7 +182,7 @@ public abstract class RegExSyntax implements Syntax {
             break;
 
           default:
-            throw new ParseError("Unknown escaped character. " + val.charAt(i), t);
+            throw new ParseError("Unknown escaped character." + val.charAt(i), t);
           }
           bsFound = false;
         } else {

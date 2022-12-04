@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,7 +45,7 @@ public class RegionBuilder {
   public void checkNameUnique(Token t) {
     if (t.getName() == null) return;
     if (children.containsKey(t.getName())) {
-      throw new ParseError("duplicate child template " + t.getName(), t);
+      throw new ParseError("Duplicate child template <" + t.getName() + ">.", t);
     }
   }
 
@@ -55,32 +56,33 @@ public class RegionBuilder {
       TemplateFragment value = (TemplateFragment) parts.get(parts.size() - 1);
       Matcher m = Pattern.compile(target).matcher(value);
       if (!m.find()) {
-        throw new ParseError("target not found: " + target, t);
+        throw new ParseError("Target not found: <" + target + ">.", t);
       }
       int group = m.groupCount();
       if (group > 1) {
-        throw new ParseError("only one match group allowed: " + target, t);
+        throw new ParseError("Only one match group allowed: <" + target + ">.", t);
       }
       parts.set(parts.size() - 1, value.start(m.start(group)));
       end = value.end(m.end(group));
-      if (m.find()) throw new ParseError("backward target ambigous: " + target, t);
+      if (m.find()) throw new ParseError("Backward target ambiguous: <" + target + ">.", t);
       t.getAttributes().remove(BACKWARD);
     }
     return end;
   }
 
   public void verifyName(Token t) {
-    if (placeHolder.getName() == null || !(empty(t.getName()) || sameName(placeHolder, t))) {
-      throw new ParseError(t.getName() + " found but " + name(placeHolder) + " expected", t);
+    if (!empty(t.getName()) && !sameName(placeHolder, t)) {
+      throw new ParseError("<" + t.getName() + "> found but <" + name(placeHolder) + "> expected.", t);
     }
   }
 
   private String name(Location parent) {
-    return parent.getName() == null ? "file end" : parent.getName();
+    return parent.getParent() == null ? "file end" : parent.getName();
   }
 
   private boolean sameName(Location parent, Token t) {
-    return parent.getName().equals(t.getName());
+    if (empty(parent.getName()) && empty(t.getName())) return true;
+    return Objects.equals(parent.getName(), t.getName());
   }
 
   private boolean empty(String val) {

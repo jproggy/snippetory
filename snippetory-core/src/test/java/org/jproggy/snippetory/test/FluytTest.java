@@ -21,10 +21,9 @@ import static org.jproggy.snippetory.Syntaxes.__SCORY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.jproggy.snippetory.Repo;
-import org.jproggy.snippetory.Syntaxes;
-import org.jproggy.snippetory.Template;
 import org.junit.jupiter.api.Test;
+
+import org.jproggy.snippetory.Template;
 
 class FluytTest {
   @Test
@@ -316,63 +315,6 @@ class FluytTest {
     t = FLUYT.parse("$outer{in$test{ and $test}test$ and around}outer$").get("outer");
     t.get("test").append("test", "hallo").render();
     assertEquals("in and hallo and around", t.toString());
-  }
-
-  @Test
-  void conditionalRegionsSimple() {
-    Template t = FLUYT.parse("before$t1{${->${$test}$<-}$}t1$after");
-    t.get("t1").render();
-    assertEquals("beforeafter", t.toString());
-    t.get("t1").set("test", "blub").render();
-    assertEquals("before->blub<-after", t.toString());
-    t = FLUYT.parse("before$(default='-'){->$test<-}$after");
-    assertEquals("before-after", t.toString());
-    t.set("test", "blub");
-    assertEquals("before->blub<-after", t.toString());
-    t = FLUYT.parse("before$(number='000'){->${$test(number='000')}$<-}$after");
-    assertEquals("beforeafter", t.toString());
-    t.set("test", 5);
-    assertEquals("before->005<-after", t.toString());
-    t = FLUYT.parse("$test(number='000'){before${->${$test$}$<-}$after}$");
-    assertEquals("", t.toString());
-    t.get("test").append("test", 5).render();
-    assertEquals("before->005<-after", t.toString());
-    t = FLUYT.parse("before${->$test(null='null' delimiter=' ')<-}$after");
-    assertEquals("beforeafter", t.toString());
-    t.set("test", "blub");
-    assertEquals("before->blub<-after", t.toString());
-  }
-
-  @Test
-  void conditionalRegions() {
-    Template t = Repo.read("before$(default='nothing'){$test{ start$(pad='10'){$tust$middle}$$test$end }$}$after")
-            .syntax(Syntaxes.FLUYT).parse();
-    assertEquals("beforenothingafter", t.toString());
-    Template test = t.get("test");
-    assertEquals(" start$test$end ", test.toString());
-    test.set("test", "<value>");
-    assertEquals(" start<value>end ", test.toString());
-    test.render();
-    assertEquals("before start<value>end after", t.toString());
-    test.clear();
-    assertEquals(" start$test$end ", test.toString());
-    assertEquals("before start<value>end after", t.toString());
-    test.set("test", "xxx");
-    assertEquals(" startxxxend ", test.toString());
-    Template test2 = t.get("test");
-    assertEquals(" start$test$end ", test2.toString());
-    test2.set("tust", "222");
-    assertEquals(" start222middle $test$end ", test2.toString());
-    assertEquals(" startxxxend ", test.toString());
-    test2.append("tust", "s");
-    assertEquals(" start222smiddle$test$end ", test2.toString());
-    assertEquals(" startxxxend ", test.toString());
-    test2.append("test", ".s.");
-    assertEquals(" start222smiddle.s.end ", test2.toString());
-    test2.set("tust", "s");
-    assertEquals(" startsmiddle   .s.end ", test2.toString());
-    test2.render();
-    assertEquals("before start<value>end  startsmiddle   .s.end after", t.toString());
   }
 
   @Test

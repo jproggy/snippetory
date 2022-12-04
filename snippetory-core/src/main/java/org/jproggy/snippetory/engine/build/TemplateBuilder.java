@@ -72,7 +72,7 @@ public class TemplateBuilder {
           reg.checkNameUnique(t);
           TemplateFragment end = reg.handleBackward(t);
           Location placeHolder = placeHolder(reg.placeHolder, t);
-          if (t.getName() == null) {
+          if (t.getName() == null || placeHolder.metadata().controlsRegion()) {
             regionStack.push(reg);
             reg = new RegionBuilder(placeHolder);
           } else {
@@ -84,20 +84,17 @@ public class TemplateBuilder {
           break;
         }
         case BlockEnd:
-          if (t.getName() == null && !regionStack.isEmpty()) {
+          reg.verifyName(t);
+          if (!regionStack.isEmpty() ) {
             ConditionalRegion r = buildConditional(reg.placeHolder, reg.parts, reg.children);
-            if (r.names().isEmpty() && reg.placeHolder.getVoidFormat() instanceof MetaDescriptor) {
+            if (r.names().isEmpty() && !reg.placeHolder.metadata().controlsRegion()) {
               throw new ParseError(
-                  "Conditional region needs to contain at least one named location, or will never be rendered", t);
+                  "Conditional region needs to contain at least one named location, or will never be rendered.", t);
             }
             reg = regionStack.pop();
             reg.addPart(r);
             break;
           }
-          if (!regionStack.isEmpty()) {
-            throw new ParseError(regionStack.size() + " unclosed conditional regions detected", t);
-          }
-          reg.verifyName(t);
           return build(reg.placeHolder, reg.parts, reg.children);
         case Field:
           TemplateFragment end = reg.handleBackward(t);
@@ -130,8 +127,8 @@ public class TemplateBuilder {
     return build(reg.placeHolder, reg.parts, reg.children);
   }
 
-  protected ConditionalRegion
-      buildConditional(Location placeHolder, List<DataSink> parts, Map<String, Region> children) {
+  protected ConditionalRegion buildConditional(Location placeHolder, List<DataSink> parts,
+                                               Map<String, Region> children) {
     ConditionalRegion region = new ConditionalRegion(placeHolder, parts, children);
     placeHolder.metadata().linkConditionalRegion(region);
     return region;
@@ -148,7 +145,7 @@ public class TemplateBuilder {
   }
 
   private void verifyRootNode(Location parent, Token t) {
-    if (parent.getName() != null) throw new ParseError("No end element for " + parent.getName(), t);
+    if (parent.getName() != null) throw new ParseError("No end element for <" + parent.getName() + ">.", t);
   }
 
   protected Location location(Location parent, Token t) {

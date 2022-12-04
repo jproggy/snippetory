@@ -64,6 +64,16 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
   }
 
   @Override
+  public final Set<String> names() {
+    Set<String> result = super.names();
+    if (getPlaceholder().metadata().name != null) {
+      result.add(getPlaceholder().metadata().name);
+    }
+
+    return result;
+  }
+
+  @Override
   public Reference getChild(String name) {
     Region child = children.get(name);
     if (child != null) child = child.cleanCopy(getPlaceholder());
@@ -85,7 +95,7 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
   @Override
   public CharSequence format() {
     Location placeholder = getPlaceholder();
-    if (appendMe()) {
+    if (appendMe() && !placeholder.metadata().controlsRegion()) {
       placeholder.set(this);
     }
     return placeholder.format();

@@ -78,6 +78,13 @@ public class MetaDescriptor implements VoidFormat, Metadata {
     return result;
   }
 
+  public boolean controlsRegion() {
+    for (FormatConfiguration f : formats) {
+      if (f.controlsRegion()) return true;
+    }
+    return false;
+  }
+
   @Override
   public void clear(TemplateNode location) {}
 

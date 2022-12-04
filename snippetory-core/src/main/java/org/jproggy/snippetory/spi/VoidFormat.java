@@ -94,5 +94,4 @@ public interface VoidFormat extends Format {
   default boolean supports(Object value) {
     return false;
   }
-
 }

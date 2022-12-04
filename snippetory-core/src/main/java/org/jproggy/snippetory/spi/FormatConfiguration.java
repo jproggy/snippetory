@@ -35,4 +35,8 @@ public interface FormatConfiguration {
    * @see StateContainer
    */
   Format getFormat(TemplateNode node);
+
+  default boolean controlsRegion() {
+    return false;
+  }
 }

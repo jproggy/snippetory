@@ -17,8 +17,9 @@ package org.jproggy.snippetory.test;
 import static org.jproggy.snippetory.Syntaxes.HIDDEN_BLOCKS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.jproggy.snippetory.Template;
 import org.junit.jupiter.api.Test;
+
+import org.jproggy.snippetory.Template;
 
 class HiddenBloxTest {
   @Test
@@ -80,7 +81,7 @@ class HiddenBloxTest {
   }
 
   @Test
-  void childTempates() {
+  void childTemplates() {
     Template t1 = HIDDEN_BLOCKS.parse("in/*t:test*/ and out/*!t:test*/ and around");
     assertEquals("in and around", t1.toString());
     t1.append("test", t1.get("test"));

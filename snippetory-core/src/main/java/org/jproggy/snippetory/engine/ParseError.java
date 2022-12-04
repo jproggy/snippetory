@@ -21,7 +21,7 @@ public class ParseError extends SnippetoryException {
   private static final long serialVersionUID = 1L;
 
   public ParseError(String message, Token at) {
-    super(message + "  " + toMessage(at));
+    super(message + "\n" + toMessage(at));
   }
 
   public ParseError(Throwable cause, Token at) {
