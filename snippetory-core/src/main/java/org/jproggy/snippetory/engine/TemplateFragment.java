@@ -18,9 +18,8 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.jproggy.snippetory.engine.chars.CharSequences;
-import org.jproggy.snippetory.engine.chars.SelfAppender;
 
-public class TemplateFragment extends CharSequences implements DataSink, CharSequence, SelfAppender {
+public class TemplateFragment extends CharSequences implements DataSink {
   private final CharSequence data;
 
   public TemplateFragment(CharSequence data) {
@@ -90,6 +89,6 @@ public class TemplateFragment extends CharSequences implements DataSink, CharSeq
 
   @Override
   public CharSequence format() {
-    return this;
+    return data;
   }
 }
