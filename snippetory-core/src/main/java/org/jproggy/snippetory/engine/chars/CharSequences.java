@@ -79,19 +79,20 @@ public abstract class CharSequences implements CharSequence, SelfAppender {
     return this.toString().substring(start, end);
   }
 
-  public static void append(Appendable target, Object value) {
+  public static <T extends Appendable> T append(T target, Object value) {
+      return append(target, CharDataSupport.toCharSequence(value));
+  }
+
+  public static <T extends Appendable> T append(T target, CharSequence value) {
     try {
-      append(target, CharDataSupport.toCharSequence(value));
+      if (value instanceof SelfAppender) {
+        ((SelfAppender)value).appendTo(target);
+      } else {
+        target.append(value);
+      }
     } catch (IOException e) {
       throw new SnippetoryException(e);
     }
-  }
-
-  public static void append(Appendable target, CharSequence value) throws IOException {
-    if (value instanceof SelfAppender) {
-      ((SelfAppender)value).appendTo(target);
-    } else {
-      target.append(value);
-    }
+    return target;
   }
 }

@@ -14,17 +14,17 @@
 
 package org.jproggy.snippetory.engine;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Set;
 
+import org.jproggy.snippetory.engine.chars.CharSequences;
 import org.jproggy.snippetory.engine.chars.SelfAppender;
 
-public class TemplateFragment implements DataSink, CharSequence, SelfAppender {
+public class TemplateFragment extends CharSequences implements DataSink, CharSequence, SelfAppender {
   private final CharSequence data;
 
-  public TemplateFragment(CharSequence data2) {
-    this.data = data2;
+  public TemplateFragment(CharSequence data) {
+    this.data = data;
   }
 
   @Override
@@ -55,28 +55,18 @@ public class TemplateFragment implements DataSink, CharSequence, SelfAppender {
   }
 
   @Override
+  protected CharSequence part(int index) {
+    return data;
+  }
+
+  @Override
+  protected int partCount() {
+    return 1;
+  }
+
+  @Override
   public <T extends Appendable> T appendTo(T to) {
-    try {
-      to.append(data);
-      return to;
-    } catch (IOException e) {
-      throw new SnippetoryException(e);
-    }
-  }
-
-  @Override
-  public int length() {
-    return data.length();
-  }
-
-  @Override
-  public char charAt(int index) {
-    return data.charAt(index);
-  }
-
-  @Override
-  public CharSequence subSequence(int start, int end) {
-    return data.subSequence(start, end);
+    return CharSequences.append(to, data);
   }
 
   public TemplateFragment start(int start) {

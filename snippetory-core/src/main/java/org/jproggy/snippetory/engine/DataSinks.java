@@ -14,7 +14,6 @@
 
 package org.jproggy.snippetory.engine;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -93,12 +92,8 @@ public class DataSinks extends CharSequences implements DataSink {
 
   @Override
   public <T extends Appendable> T appendTo(T to) {
-    try {
-      for (DataSink part : parts) {
-        CharSequences.append(to, part.format());
-      }
-    } catch (IOException e) {
-      throw new SnippetoryException(e);
+    for (DataSink part : parts) {
+      CharSequences.append(to, part.format());
     }
     return to;
   }

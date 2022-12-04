@@ -14,9 +14,6 @@
 
 package org.jproggy.snippetory.engine.chars;
 
-import java.io.IOException;
-
-import org.jproggy.snippetory.engine.SnippetoryException;
 import org.jproggy.snippetory.spi.EncodedData;
 
 public class EncodedContainer implements EncodedData, CharSequence, SelfAppender {
@@ -30,12 +27,8 @@ public class EncodedContainer implements EncodedData, CharSequence, SelfAppender
 
   @Override
   public <T extends Appendable> T appendTo(T to) {
-    try {
       CharSequences.append(to, data);
       return to;
-    } catch (IOException e) {
-      throw new SnippetoryException(e);
-    }
   }
 
   @Override

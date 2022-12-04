@@ -224,7 +224,7 @@ public enum Encodings implements Encoding {
    */
   plain {
     @Override
-    public void escape(Appendable target, CharSequence val) throws IOException {
+    public void escape(Appendable target, CharSequence val) {
       CharSequences.append(target, val);
     }
   },
@@ -236,12 +236,12 @@ public enum Encodings implements Encoding {
    */
   NULL {
     @Override
-    public void escape(Appendable target, CharSequence val) throws IOException {
+    public void escape(Appendable target, CharSequence val) {
       CharSequences.append(target, val);
     }
 
     @Override
-    public void transcode(Appendable target, CharSequence value, String encodingName) throws IOException {
+    public void transcode(Appendable target, CharSequence value, String encodingName) {
       escape(target, value);
     }
   };
