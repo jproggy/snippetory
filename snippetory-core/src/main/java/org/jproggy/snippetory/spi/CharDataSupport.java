@@ -15,6 +15,7 @@
 package org.jproggy.snippetory.spi;
 
 import org.jproggy.snippetory.Encodings;
+import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.engine.chars.EncodedContainer;
 
 /**
@@ -34,6 +35,11 @@ public class CharDataSupport {
    */
   public static boolean isCharData(Object value) {
     return value instanceof EncodedData || value instanceof CharSequence;
+  }
+
+  public static boolean isNull(Object value) {
+    if (value == null) return true;
+    return (value instanceof Template && !((Template) value).isPresent());
   }
 
   /**

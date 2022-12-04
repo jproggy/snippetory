@@ -16,6 +16,7 @@ package org.jproggy.snippetory.engine.spi;
 
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.engine.chars.EncodedContainer;
+import org.jproggy.snippetory.spi.CharDataSupport;
 import org.jproggy.snippetory.spi.SimpleFormat;
 import org.jproggy.snippetory.spi.TemplateNode;
 
@@ -33,7 +34,7 @@ public class NullFormat extends SimpleFormat {
 
   @Override
   public boolean supports(Object value) {
-    return value == null;
+    return CharDataSupport.isNull(value);
   }
 
   public static NullFormat create(String definition, TemplateContext ctx) {

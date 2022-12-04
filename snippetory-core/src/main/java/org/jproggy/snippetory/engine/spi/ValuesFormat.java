@@ -21,6 +21,7 @@ import java.util.function.Predicate;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.engine.SnippetoryException;
+import org.jproggy.snippetory.spi.CharDataSupport;
 import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.FormatConfiguration;
 import org.jproggy.snippetory.spi.StateContainer;
@@ -58,7 +59,7 @@ public class ValuesFormat implements VoidFormat {
     public void set(String name, Object value) {
         if (region.names().contains(name)) {
             region.set(name, value);
-            if (value != null) usedNames.add(name);
+            if (!CharDataSupport.isNull(value)) usedNames.add(name);
         }
     }
 
@@ -66,7 +67,7 @@ public class ValuesFormat implements VoidFormat {
     public void append(String name, Object value) {
         if (region.names().contains(name)) {
             region.append(name, value);
-            if (value != null) usedNames.add(name);
+            if (!CharDataSupport.isNull(value)) usedNames.add(name);
         }
     }
 

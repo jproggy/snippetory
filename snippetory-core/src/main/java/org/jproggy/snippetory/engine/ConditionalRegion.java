@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jproggy.snippetory.spi.CharDataSupport;
 import org.jproggy.snippetory.spi.EncodedData;
 
 public class ConditionalRegion extends DataSinks implements EncodedData {
@@ -46,7 +47,7 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
   public void set(String name, Object value) {
     if (names.contains(name)) {
       super.set(name, value);
-      if (value != null) appendMe = true;
+      if (!CharDataSupport.isNull(value)) appendMe = true;
     }
   }
 
@@ -54,7 +55,7 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
   public void append(String name, Object value) {
     if (names.contains(name)) {
       super.append(name, value);
-      if (value != null) appendMe = true;
+      if (!CharDataSupport.isNull(value)) appendMe = true;
     }
   }
 

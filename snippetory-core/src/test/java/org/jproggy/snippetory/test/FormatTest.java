@@ -18,8 +18,9 @@ import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.jproggy.snippetory.Template;
 import org.junit.jupiter.api.Test;
+
+import org.jproggy.snippetory.Template;
 
 class FormatTest {
   @Test
@@ -43,7 +44,19 @@ class FormatTest {
   }
 
   @Test
-  void formatDefaultLocaion() {
+  void formatNull() {
+    Template t = XML_ALIKE.parse("{v:test null='nothing'}");
+    assertEquals("{v:test null='nothing'}", t.toString());
+    t.set("test", null);
+    assertEquals("nothing", t.toString());
+    t.set("test", "test");
+    assertEquals("test", t.toString());
+    t.set("test", Template.NONE);
+    assertEquals("nothing", t.toString());
+  }
+
+  @Test
+  void formatDefaultLocation() {
     Template t = XML_ALIKE.parse("{v:test default='not set'}");
     assertEquals("not set", t.toString());
     t.set("test", "test");
@@ -52,10 +65,16 @@ class FormatTest {
 
   @Test
   void formatDefaultRegion() {
-    Template t = XML_ALIKE.parse("<t:test default='not set'></t:test>");
+    Template t = XML_ALIKE.parse("<t:test default='not set'>Allua Abebe</t:test>");
     assertEquals("not set", t.toString());
     t.set("test", "test");
     assertEquals("test", t.toString());
+    t.get("test").render();
+    assertEquals("testAllua Abebe", t.toString());
+    t.clear();
+    assertEquals("not set", t.toString());
+    t.get("test").render();
+    assertEquals("Allua Abebe", t.toString());
   }
 
   @Test
