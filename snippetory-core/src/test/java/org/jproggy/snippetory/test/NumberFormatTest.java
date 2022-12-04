@@ -34,7 +34,7 @@ class NumberFormatTest {
     number.set("test", 1.6);
     assertEquals("1,6", number.toString());
     number.set("test", 1001.6333);
-    assertEquals("1001,633", number.toString());
+    assertEquals("1.001,633", number.toString());
 
     number = XML_ALIKE.parse("{v:test}", Locale.US);
     number.set("test", "x");
