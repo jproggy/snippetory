@@ -23,6 +23,11 @@ public class LinkedWrapper extends TemplateWrapper {
     }
 
     @Override
+    public void render(String siblingName) {
+        render(getParent(), siblingName);
+    }
+
+    @Override
     public Template getParent() {
         return parent;
     }

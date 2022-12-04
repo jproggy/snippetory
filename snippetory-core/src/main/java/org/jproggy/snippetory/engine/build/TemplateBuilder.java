@@ -34,9 +34,9 @@ import org.jproggy.snippetory.engine.TemplateFragment;
 import org.jproggy.snippetory.engine.Token;
 import org.jproggy.snippetory.spi.Syntax;
 
-/** Builds a template tree from the token stream provided by the tokenizer.
- *
- * @author B. Ebertz */
+/**
+ * Builds a template tree from the token stream provided by the tokenizer.
+ **/
 public class TemplateBuilder {
   private Syntax tempSyntax;
   private Syntax.Tokenizer parser;

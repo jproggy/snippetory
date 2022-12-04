@@ -41,7 +41,7 @@ public class MetaDescriptor implements Metadata {
     this.name = name;
     this.formats = attribs.formats.values().toArray(new FormatConfiguration[0]);
     this.enc = attribs.enc;
-    this.fragment = fragment;
+    this.fragment = attribs.link != null ? "" : fragment;
     this.delimiter = attribs.delimiter;
     this.prefix = attribs.prefix;
     this.suffix = attribs.suffix;
