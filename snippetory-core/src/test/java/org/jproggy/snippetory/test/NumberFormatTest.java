@@ -18,33 +18,35 @@ import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Locale;
+import org.junit.jupiter.api.Test;
 
 import org.jproggy.snippetory.Template;
-import org.junit.jupiter.api.Test;
 
 class NumberFormatTest {
 
   @Test
   void formatNumber() {
-    Template number = XML_ALIKE.parse("{v:test number=\"0.00#\"}", Locale.GERMAN);
+    Template number = XML_ALIKE.parse("{v:test}", Locale.GERMAN);
     number.set("test", "x");
     assertEquals("x", number.toString());
     number.set("test", "123456");
     assertEquals("123456", number.toString());
     number.set("test", 1.6);
-    assertEquals("1,60", number.toString());
-    number.set("test", 1.6333);
-    assertEquals("1,633", number.toString());
+    assertEquals("1,6", number.toString());
+    number.set("test", 1001.6333);
+    assertEquals("1001,633", number.toString());
 
     number = XML_ALIKE.parse("{v:test}", Locale.US);
     number.set("test", "x");
     assertEquals("x", number.toString());
     number.set("test", "123456");
     assertEquals("123456", number.toString());
+    number.set("test", 123456);
+    assertEquals("123456", number.toString());
     number.set("test", 1.6);
     assertEquals("1.6", number.toString());
-    number.set("test", 1.6333);
-    assertEquals("1.633", number.toString());
+    number.set("test", 1001.6333);
+    assertEquals("1,001.633", number.toString());
 
     number = XML_ALIKE.parse("{v:test number='0.00#'}", Locale.GERMANY);
     number.set("test", 1.55);
@@ -82,8 +84,8 @@ class NumberFormatTest {
     assertEquals("123456", number.toString());
     number.set("test", 1);
     assertEquals("1,00", number.toString());
-    number.set("test", 1.6);
-    assertEquals("1,6", number.toString());
+    number.set("test", 1001.6);
+    assertEquals("1.001,6", number.toString());
     number.set("test", 1.6333);
     assertEquals("1,633", number.toString());
 
