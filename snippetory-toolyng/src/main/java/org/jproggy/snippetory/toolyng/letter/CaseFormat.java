@@ -5,9 +5,10 @@ import static java.util.stream.Collectors.joining;
 import static org.jproggy.snippetory.TemplateContext.TECH;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 public enum CaseFormat {
     LOWER_CAMEL {
@@ -17,7 +18,7 @@ public enum CaseFormat {
         }
 
         @Override
-        public String join(List<String> parts) {
+        public String join(Collection<String> parts) {
             return camelize(parts, true);
         }
     }
@@ -28,27 +29,27 @@ public enum CaseFormat {
         }
 
         @Override
-        public String join(List<String> parts) {
+        public String join(Collection<String> parts) {
             return camelize(parts, false);
         }
     }, UPPER_UNDERSCORE(String::toUpperCase, "_"),
     LOWER_HYPHEN(String::toLowerCase, "-") ,
     LOWER_UNDERSCORE(String::toLowerCase, "_");
 
-    private final Function<String, String> adaptCase;
+    private final UnaryOperator<String> adaptCase;
     private final String separator;
 
     CaseFormat() {
-        this.adaptCase = null;
-        this.separator = null;
+        this.adaptCase = t -> t;
+        this.separator = "";
     }
 
-    CaseFormat(Function<String, String> adaptCase, String separator) {
+    CaseFormat(UnaryOperator<String> adaptCase, String separator) {
         this.adaptCase = adaptCase;
         this.separator = separator;
     }
 
-    private static String camelize(List<String> parts, boolean lower) {
+    private static String camelize(Collection<String> parts, boolean lower) {
         StringBuilder result = new StringBuilder();
         for (String val : parts) {
             if (val.length() == 0) continue;
@@ -86,7 +87,7 @@ public enum CaseFormat {
     public List<String> segments(String val) {
         return asList(val.split(separator));
     }
-    public String join(List<String> val) {
+    public String join(Collection<String> val) {
         return val.stream().map(adaptCase).collect(joining(separator));
     }
 }

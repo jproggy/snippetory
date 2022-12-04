@@ -120,6 +120,8 @@ class FormatTest {
     assertEquals("TestTest", t.toString());
     t.set("test", "TEST_TEST");
     assertEquals("TestTest", t.toString());
+    t.set("test", "TEST");
+    assertEquals("Test", t.toString());
   }
 
   @Test
