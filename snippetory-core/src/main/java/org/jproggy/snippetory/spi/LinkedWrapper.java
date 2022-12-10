@@ -14,7 +14,18 @@ public class LinkedWrapper extends TemplateWrapper {
 
     @Override
     protected Template wrap(Template toBeWrapped) {
-        return toBeWrapped;
+        throw new UnsupportedOperationException("use wrap method with parent parameter instead");
+    }
+
+    protected Template wrap(Template toBeWrapped, Template parent) {
+        return new LinkedWrapper(toBeWrapped, parent, toBeWrapped.metadata());
+    }
+
+    @Override
+    public Template get(String... name) {
+        if (name.length == 0) return wrap(wrapped.get(), parent);
+        if (name.length == 1) return wrap(wrapped.get(name), this);
+        return super.get(name);
     }
 
     @Override
