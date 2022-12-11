@@ -26,7 +26,7 @@
 	</description>
 	<url>https://www.jproggy.org/snippetory/best-pratice/</url>
 	<organization>
-		<url>https://gitlab.com/jproggy</url>
+		<url>https://www.jproggy.org/plugabley.html</url>
 		<name>JProggy</name>
 	</organization>
 	<licenses>
@@ -44,6 +44,9 @@
 			<url>https://rotnworld.blogspot.com</url>
 		</developer>
 	</developers>
+	<scm>
+		<url>https://gitlab.com/jproggy/Snippetory/</url>
+	</scm>
 	<issueManagement>
 		<url>https://github.com/jproggy/Snippetory/issues</url>
 	</issueManagement>

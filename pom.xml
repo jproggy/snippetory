@@ -26,7 +26,7 @@
         Snippetory is a code generation platform for Java. Most importantly it supports intact templates,
         as well as handling of prepared statements on JDBC and tight integrations in other JVM languages
     </description>
-    <url>https://www.jproggy.org/snippetory/intact-templates</url>
+    <url>https://www.jproggy.org/snippetory/</url>
     <organization>
         <url>https://www.jproggy.org</url>
         <name>JProggy</name>
@@ -70,7 +70,7 @@
     <properties>
         <gpg.keyname>Templa Project</gpg.keyname>
         <!-- versions -->
-        <junit-jupiter.version>5.8.2</junit-jupiter.version>
+        <junit-jupiter.version>5.9.0</junit-jupiter.version>
         <junit.version>4.13.2</junit.version>
         <!-- Sonar -->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
