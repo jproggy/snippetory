@@ -45,8 +45,8 @@ import org.jproggy.snippetory.engine.IncompatibleEncodingException;
  * are less technical and rather work in the problem domain of the template.
  * </p>
  *
- * @author B. Ebertz
- *
+ * @see <a href="https://www.jproggy.org/snippetory/encodings/">Official documentation on encodings</a>
+ * @see <a href="https://www.jproggy.org/snippetory/tutorial/ExtensionExample.html">Extending the platform</a>
  */
 public interface Encoding {
   /**
@@ -67,7 +67,7 @@ public interface Encoding {
 	 * <p>
 	 * In other cases no action will be needed. String encoded data can be added
 	 * to HTML as this is a container format and is able to carry string
-	 * definition within script- section for instance.
+	 * definition within script-section for instance.
 	 * </p>
 	 * <p>
 	 * However, some combinations of encodings are illegal. Especially the plain

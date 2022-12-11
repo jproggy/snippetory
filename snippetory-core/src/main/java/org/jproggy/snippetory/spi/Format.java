@@ -46,6 +46,7 @@ import org.jproggy.snippetory.engine.FormatRegistry;
  * call of {@link FormatConfiguration#getFormat} will do the job.
  *
  * @see <a href="https://www.jproggy.org/snippetory/formats/">Official documentation on formats</a>
+ * @see <a href="https://www.jproggy.org/snippetory/tutorial/ExtensionExample.html">Extending the platform</a>
  * @see FormatFactory
  * @see FormatConfiguration
  * @see SimpleFormat

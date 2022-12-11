@@ -273,9 +273,9 @@ public interface Template extends EncodedData {
   Template getParent();
 
   /**
-   * Check whether this instance represents a real template and not the 'null' template.
-   *
-   * @return {@code false} if this instance isn't a real template but rather a null object, also called absent
+   * The Template implements a <a href="https://www.oodesign.com/null-object-pattern">null object</a>. This method
+   * determines whether this template node is an actual node, or an absent node, i.e. the null object.
+   * Absent nodes are explicitly handled like null inside the Snippetory platform.
    */
   boolean isPresent();
 

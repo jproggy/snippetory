@@ -20,9 +20,7 @@ import org.jproggy.snippetory.engine.chars.SelfAppender;
 /**
  * Combines character data as pay load with information about it's encoding
  * as additional metadata.
- *
- * @author B. Ebertz
- *
+ * @see <a href="https://www.jproggy.org/snippetory/encodings/">Official documentation</a>
  */
 public interface EncodedData {
   /**

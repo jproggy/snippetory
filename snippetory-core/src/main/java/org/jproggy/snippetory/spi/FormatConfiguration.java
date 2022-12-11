@@ -14,6 +14,8 @@
 
 package org.jproggy.snippetory.spi;
 
+import org.jproggy.snippetory.Template;
+
 /**
  * The FormatConfiguration allows Snippetory to support complex state handling approaches
  * like counting invocations on several nodes. However, most Formats are state less and such
@@ -36,6 +38,28 @@ public interface FormatConfiguration {
    */
   Format getFormat(TemplateNode node);
 
+  /**
+   * If this method returns true, a number of features is turned on for any format created from this
+   * FormatConfiguration:
+   * <ul>
+   *     <li>the format will be able to access {@link TemplateNode#region()}</li>
+   *     <li>If denoted on a nameless region
+   *     (aka <a href="https://www.jproggy.org/snippetory/syntax/#ConditionalRegion">Conditional Region</a>)
+   *     will turn off the triggering, if one attribute is set. Instead, the format can decide on the triggering rules.
+   *     If there are several {@link VoidFormat} denoted on the same node, the first triggering will win.<br>
+   *     <strong>Be aware, that triggering only works with VoidFormats. On conditional region other formats only kick
+   *     in <u>after</u> the triggering.</strong>
+   *     </li>
+   *     <li>If denoted on named regions
+   *     <ul>
+   *         <li>the region can't be acquired via {@link Template#get(String...)}.</li>
+   *         <li>the regions name doesn't appear in {@link Template#regionNames()}.</li>
+   *     </ul>
+   *     The region in under control of the format, not under the control of the process using the template.
+   *     </li>
+   *     <li></li>
+   * </ul>
+   */
   default boolean controlsRegion() {
     return false;
   }

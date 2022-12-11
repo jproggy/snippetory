@@ -17,9 +17,6 @@ package org.jproggy.snippetory.spi;
 /**
  * The interface can be implemented by {@link FormatConfiguration FormatConfigurations} that
  * do not know their exact attributes at compile time.
- *
- * @author B. Ebertz
- *
  */
 public interface DynamicAttributes {
   /**
