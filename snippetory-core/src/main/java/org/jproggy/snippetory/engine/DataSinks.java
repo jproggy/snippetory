@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.jproggy.snippetory.engine.chars.CharSequences;
+import org.jproggy.snippetory.util.CharSequences;
 
 public class DataSinks extends CharSequences implements DataSink {
   protected final DataSink[] parts;

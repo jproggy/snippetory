@@ -24,10 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.jproggy.snippetory.SnippetoryException;
 import org.jproggy.snippetory.engine.Location;
 import org.jproggy.snippetory.engine.Region;
-import org.jproggy.snippetory.engine.SnippetoryException;
 import org.jproggy.snippetory.sql.Cursor;
+import org.jproggy.snippetory.sql.ResultCountException;
 import org.jproggy.snippetory.sql.Statement;
 import org.jproggy.snippetory.sql.spi.ConnectionProvider;
 import org.jproggy.snippetory.sql.spi.RowProcessor;

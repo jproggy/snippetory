@@ -19,8 +19,8 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.jproggy.snippetory.TemplateContext;
-import org.jproggy.snippetory.engine.RegExSyntax;
-import org.jproggy.snippetory.engine.Token.TokenType;
+import org.jproggy.snippetory.util.RegExSyntax;
+import org.jproggy.snippetory.util.Token.TokenType;
 
 public class FluytSyntax extends RegExSyntax {
   protected static final String PLAIN_ATTRIBS = "\\s*" + ATTRIBUTE + "(?:\\s+" + ATTRIBUTE + ")*\\s*";

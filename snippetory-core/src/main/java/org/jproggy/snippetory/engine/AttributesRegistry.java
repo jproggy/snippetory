@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 
 import org.jproggy.snippetory.Encodings;
+import org.jproggy.snippetory.SnippetoryException;
 import org.jproggy.snippetory.engine.Attributes.Types;
 import org.jproggy.snippetory.engine.spi.AliasLink;
 import org.jproggy.snippetory.engine.spi.CaseFormatter;
@@ -36,7 +37,7 @@ import org.jproggy.snippetory.engine.spi.ValuesFormat;
 import org.jproggy.snippetory.spi.Configurer;
 
 public class AttributesRegistry {
-    static final AttributesRegistry INSTANCE = new AttributesRegistry();
+    public static final AttributesRegistry INSTANCE = new AttributesRegistry();
     private final Map<String, Types> attribs = new HashMap<>();
 
     AttributesRegistry() {

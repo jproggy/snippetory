@@ -12,13 +12,14 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-package org.jproggy.snippetory.spi;
+package org.jproggy.snippetory.util;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.engine.spi.ToggleFormatter;
+import org.jproggy.snippetory.spi.Format;
 
 /**
  * Simplifies handling based on TemplateNode. The problem with this is, that the state is not

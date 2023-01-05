@@ -25,8 +25,8 @@ import org.jproggy.snippetory.engine.Location;
 import org.jproggy.snippetory.engine.MetaDescriptor;
 import org.jproggy.snippetory.engine.Region;
 import org.jproggy.snippetory.engine.TemplateFragment;
-import org.jproggy.snippetory.engine.Token;
 import org.jproggy.snippetory.engine.build.TemplateBuilder;
+import org.jproggy.snippetory.util.Token;
 
 public class StatementBuilder extends TemplateBuilder {
   private final TemplateContext ctx;

@@ -23,12 +23,12 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import org.jproggy.snippetory.Template;
-import org.jproggy.snippetory.engine.chars.CharSequences;
-import org.jproggy.snippetory.spi.CharDataSupport;
 import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Format;
-import org.jproggy.snippetory.spi.TemplateNode;
 import org.jproggy.snippetory.spi.VoidFormat;
+import org.jproggy.snippetory.util.CharDataSupport;
+import org.jproggy.snippetory.util.CharSequences;
+import org.jproggy.snippetory.util.TemplateNode;
 
 public class Location implements DataSink, TemplateNode {
   protected final MetaDescriptor md;

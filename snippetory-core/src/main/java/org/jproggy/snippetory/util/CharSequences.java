@@ -12,12 +12,12 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-package org.jproggy.snippetory.engine.chars;
+package org.jproggy.snippetory.util;
 
 import java.io.IOException;
 
-import org.jproggy.snippetory.engine.SnippetoryException;
-import org.jproggy.snippetory.spi.CharDataSupport;
+import org.jproggy.snippetory.SnippetoryException;
+import org.jproggy.snippetory.spi.SelfAppender;
 
 /**
  * CharSequences is a helper class to implement 'CompoundCharSequences' i.e.

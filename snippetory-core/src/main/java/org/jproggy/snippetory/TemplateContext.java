@@ -30,12 +30,12 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.jproggy.snippetory.engine.NoDataException;
-import org.jproggy.snippetory.engine.SnippetoryException;
+import org.jproggy.snippetory.engine.SyntaxRegistry;
 import org.jproggy.snippetory.engine.build.TemplateBuilder;
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Syntax;
 import org.jproggy.snippetory.spi.SyntaxID;
+import org.jproggy.snippetory.util.NoDataException;
 
 /**
  * <p>The TemplateContext represents the configuration how templates are parsed. It
@@ -59,7 +59,7 @@ import org.jproggy.snippetory.spi.SyntaxID;
 public class TemplateContext implements Cloneable {
   public static final Locale TECH = new Locale("en", "US", "tech");
   private Locale locale = TECH;
-  private Syntax syntax = Syntax.REGISTRY.getDefault();
+  private Syntax syntax = SyntaxRegistry.REGISTRY.getDefault();
   private UriResolver uriResolver;
 
   /**
@@ -93,7 +93,7 @@ public class TemplateContext implements Cloneable {
   }
 
   public TemplateContext syntax(SyntaxID syntax) {
-    return syntax(Syntax.REGISTRY.byName(syntax.getName()));
+    return syntax(SyntaxRegistry.REGISTRY.byName(syntax.getName()));
   }
 
   public TemplateContext syntax(Syntax syntax) {

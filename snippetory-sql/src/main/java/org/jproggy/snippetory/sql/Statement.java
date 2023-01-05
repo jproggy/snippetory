@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jproggy.snippetory.Template;
-import org.jproggy.snippetory.sql.impl.ResultCountException;
 import org.jproggy.snippetory.sql.spi.RowProcessor;
 import org.jproggy.snippetory.sql.spi.RowTransformer;
 

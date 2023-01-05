@@ -15,7 +15,6 @@
 package org.jproggy.snippetory.spi;
 
 import org.jproggy.snippetory.engine.EncodingRegistry;
-import org.jproggy.snippetory.engine.chars.SelfAppender;
 
 /**
  * Combines character data as pay load with information about it's encoding

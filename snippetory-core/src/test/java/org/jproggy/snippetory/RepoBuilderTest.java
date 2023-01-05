@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.URL;
 
-import org.jproggy.snippetory.engine.SnippetoryException;
 import org.junit.jupiter.api.Test;
 
 class RepoBuilderTest {

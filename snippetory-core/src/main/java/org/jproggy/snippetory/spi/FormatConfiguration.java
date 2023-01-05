@@ -15,6 +15,8 @@
 package org.jproggy.snippetory.spi;
 
 import org.jproggy.snippetory.Template;
+import org.jproggy.snippetory.util.StateContainer;
+import org.jproggy.snippetory.util.TemplateNode;
 
 /**
  * The FormatConfiguration allows Snippetory to support complex state handling approaches

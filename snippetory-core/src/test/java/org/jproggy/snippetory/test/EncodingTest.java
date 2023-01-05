@@ -21,7 +21,7 @@ import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.Syntaxes;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.TemplateContext;
-import org.jproggy.snippetory.engine.IncompatibleEncodingException;
+import org.jproggy.snippetory.util.IncompatibleEncodingException;
 import org.junit.jupiter.api.Test;
 
 public class EncodingTest {

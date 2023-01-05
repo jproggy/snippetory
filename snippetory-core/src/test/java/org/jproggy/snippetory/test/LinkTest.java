@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.UriResolver;
-import org.jproggy.snippetory.spi.LinkedWrapper;
+import org.jproggy.snippetory.util.LinkedWrapper;
 import org.jproggy.snippetory.spi.Metadata;
 
 public class LinkTest {

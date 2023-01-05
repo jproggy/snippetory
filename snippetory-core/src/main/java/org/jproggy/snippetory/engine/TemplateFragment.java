@@ -17,7 +17,7 @@ package org.jproggy.snippetory.engine;
 import java.util.Collections;
 import java.util.Set;
 
-import org.jproggy.snippetory.engine.chars.CharSequences;
+import org.jproggy.snippetory.util.CharSequences;
 
 public class TemplateFragment extends CharSequences implements DataSink {
   private final CharSequence data;

@@ -18,7 +18,7 @@ import java.io.IOException;
 
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.engine.EncodingRegistry;
-import org.jproggy.snippetory.engine.IncompatibleEncodingException;
+import org.jproggy.snippetory.util.IncompatibleEncodingException;
 
 /**
  * <p>
@@ -49,12 +49,16 @@ import org.jproggy.snippetory.engine.IncompatibleEncodingException;
  * @see <a href="https://www.jproggy.org/snippetory/tutorial/ExtensionExample.html">Extending the platform</a>
  */
 public interface Encoding {
-  /**
-   * Register Encodings here.
-   */
-  EncodingRegistry REGISTRY = EncodingRegistry.INSTANCE;
 
-  	/**
+	static void register(Encoding value) {
+		EncodingRegistry.INSTANCE.register(value);
+	}
+
+	static void registerOverwite(Encoding target, Transcoding overwrite) {
+		EncodingRegistry.INSTANCE.registerOverwite(target, overwrite);
+	}
+
+	/**
 	 * <p>
 	 * Sometimes it's possible to combine data encoded in different ways after
 	 * applying a special action to one of the strings. This action might be a

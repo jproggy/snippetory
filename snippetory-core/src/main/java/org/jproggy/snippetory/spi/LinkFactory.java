@@ -15,6 +15,7 @@
 package org.jproggy.snippetory.spi;
 
 import org.jproggy.snippetory.TemplateContext;
+import org.jproggy.snippetory.util.TemplateNode;
 
 /**
  * A LinkFactory is registered to create a new linking attribute.
@@ -27,7 +28,7 @@ import org.jproggy.snippetory.TemplateContext;
  * <p>
  * To be able to use a link in Snippetory one has to register LinkFactory able to create
  * it. The creation process of a {@link Link} consists of three steps. First an instance of
- * {@code FormatFactory} is registered at {@link Format#REGISTRY}. The FormatFactory
+ * {@code FormatFactory} is registered at {@link Format#register(String, FormatFactory)}. The FormatFactory
  * creates a {@link FormatConfiguration}. The  FormatConfiguration in turn will get the
  * sub-attributes provided via setter-methods. The FormatConfiguration is stored, and
  * every time a new Location is copied the configuration will be asked for a format instance.

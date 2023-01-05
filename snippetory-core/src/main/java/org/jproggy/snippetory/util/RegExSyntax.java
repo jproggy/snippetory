@@ -12,7 +12,7 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-package org.jproggy.snippetory.engine;
+package org.jproggy.snippetory.util;
 
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -20,8 +20,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.jproggy.snippetory.TemplateContext;
-import org.jproggy.snippetory.engine.Token.TokenType;
+import org.jproggy.snippetory.engine.AttributesRegistry;
 import org.jproggy.snippetory.spi.Syntax;
+import org.jproggy.snippetory.util.Token.TokenType;
 
 public abstract class RegExSyntax implements Syntax {
   protected static final String LINE_END = "[ \\t]*(?>(?>\\r\\n?)|\\n|\\u0085|\\u2028|\\u2029|\\Z)";

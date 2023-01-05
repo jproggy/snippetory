@@ -17,7 +17,7 @@ package org.jproggy.snippetory.engine.spi;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.jproggy.snippetory.engine.Token.TokenType;
+import org.jproggy.snippetory.util.Token.TokenType;
 
 public class XMLAlikeSyntax extends JBSyntax {
   public static final String NAMESPACE_URI = " xmlns:t=\"http://www.jproggy.org/snippetory/xml_alike.xsd\"";

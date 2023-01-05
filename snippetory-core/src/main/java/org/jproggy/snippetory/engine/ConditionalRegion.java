@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jproggy.snippetory.spi.CharDataSupport;
+import org.jproggy.snippetory.util.CharDataSupport;
 import org.jproggy.snippetory.spi.EncodedData;
 
 public class ConditionalRegion extends DataSinks implements EncodedData {

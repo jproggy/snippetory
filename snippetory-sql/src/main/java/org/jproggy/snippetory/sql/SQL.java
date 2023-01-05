@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.jproggy.snippetory.engine.IncompatibleEncodingException;
-import org.jproggy.snippetory.engine.chars.EncodedContainer;
 import org.jproggy.snippetory.spi.Configurer;
 import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Encoding;
@@ -35,6 +33,8 @@ import org.jproggy.snippetory.spi.Syntax;
 import org.jproggy.snippetory.spi.SyntaxID;
 import org.jproggy.snippetory.sql.impl.SqlSyntax;
 import org.jproggy.snippetory.sql.spi.RowTransformer;
+import org.jproggy.snippetory.util.EncodedContainer;
+import org.jproggy.snippetory.util.IncompatibleEncodingException;
 
 /**
  * Small helper class to execute very simple stuff like
@@ -56,12 +56,12 @@ public class SQL implements Encoding, Configurer {
   static {
     SqlSyntax s = new SqlSyntax();
     SYNTAX = s;
-    Syntax.REGISTRY.register(SYNTAX, s);
+    Syntax.register(SYNTAX, s);
   }
 
   public static final SQL ENCODING = new SQL();
   static {
-    Encoding.REGISTRY.register(ENCODING);
+    Encoding.register(ENCODING);
   }
 
   public SQL () {
@@ -74,7 +74,7 @@ public class SQL implements Encoding, Configurer {
 
   @Override
   public void transcode(Appendable target, CharSequence value, String encodingName) throws IOException,
-      IncompatibleEncodingException {
+          IncompatibleEncodingException {
     if (value.length() == 1 && value.charAt(0) == '?') {
       target.append('?');
     } else {

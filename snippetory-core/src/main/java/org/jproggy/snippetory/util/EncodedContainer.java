@@ -12,9 +12,10 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-package org.jproggy.snippetory.engine.chars;
+package org.jproggy.snippetory.util;
 
 import org.jproggy.snippetory.spi.EncodedData;
+import org.jproggy.snippetory.spi.SelfAppender;
 
 public class EncodedContainer implements EncodedData, CharSequence, SelfAppender {
   private final CharSequence data;

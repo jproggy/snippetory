@@ -20,10 +20,10 @@ import java.io.Reader;
 import java.util.Locale;
 
 import org.jproggy.snippetory.TemplateContext.ToString;
-import org.jproggy.snippetory.engine.NoDataException;
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Syntax;
 import org.jproggy.snippetory.spi.SyntaxID;
+import org.jproggy.snippetory.util.NoDataException;
 
 /**
  * Whenever you work with Snippetory things start here. The Repo(sitory)

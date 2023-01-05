@@ -22,8 +22,8 @@ import java.util.Locale;
 
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.spi.FormatFactory;
-import org.jproggy.snippetory.spi.SimpleFormat;
-import org.jproggy.snippetory.spi.TemplateNode;
+import org.jproggy.snippetory.util.SimpleFormat;
+import org.jproggy.snippetory.util.TemplateNode;
 
 public class NumFormatter implements FormatFactory {
   private final SupportedTypes types;

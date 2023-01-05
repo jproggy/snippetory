@@ -20,6 +20,7 @@ import java.util.Set;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.engine.spi.DefaultFormat;
 import org.jproggy.snippetory.engine.spi.ToggleFormatter;
+import org.jproggy.snippetory.util.TemplateNode;
 
 /**
  * <p>

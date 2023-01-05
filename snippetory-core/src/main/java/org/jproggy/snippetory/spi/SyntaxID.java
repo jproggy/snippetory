@@ -14,10 +14,12 @@
 
 package org.jproggy.snippetory.spi;
 
+import org.jproggy.snippetory.engine.SyntaxRegistry;
+
 /**
  * SyntaxID is typically implemented by an enum used to identify a named {@link Syntax}.
  * However, to be able to use a Syntax it has to be registered via the
- * {@link Syntax.Registry#register(SyntaxID, Syntax) Syntax.REGISTRY.register} method.
+ * {@link SyntaxRegistry#register(SyntaxID, Syntax) Syntax.REGISTRY.register} method.
  */
 public interface SyntaxID {
   /**

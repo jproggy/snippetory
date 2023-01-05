@@ -12,21 +12,23 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-package org.jproggy.snippetory.spi;
+package org.jproggy.snippetory.util;
 
-/**
- * Simplifies creation of new Formats by unifying the concepts of {@link Format}
- * and {@link FormatConfiguration}. This only works as long as no sophisticated
- * state management is needed. So it's fine for all state less Formats.
- */
-public abstract class SimpleFormat implements Format, FormatConfiguration {
+public class TextPosition {
+  private final int line;
+  private final int position;
 
-  @Override
-  public Format getFormat(TemplateNode node) {
-    return this;
+  public TextPosition(int line, int position) {
+    super();
+    this.line = line;
+    this.position = position;
   }
 
-  @Override
-  public void clear(TemplateNode location) {}
+  public int getLine() {
+    return line;
+  }
 
+  public int getPosition() {
+    return position;
+  }
 }

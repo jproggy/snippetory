@@ -14,22 +14,12 @@
 
 package org.jproggy.snippetory.spi;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.jproggy.snippetory.Syntaxes;
 import org.jproggy.snippetory.TemplateContext;
-import org.jproggy.snippetory.engine.RegExSyntax;
-import org.jproggy.snippetory.engine.SnippetoryException;
-import org.jproggy.snippetory.engine.TextPosition;
-import org.jproggy.snippetory.engine.Token;
+import org.jproggy.snippetory.engine.SyntaxRegistry;
 import org.jproggy.snippetory.engine.build.TemplateBuilder;
-import org.jproggy.snippetory.engine.spi.FluytCCSyntax;
-import org.jproggy.snippetory.engine.spi.FluytSyntax;
-import org.jproggy.snippetory.engine.spi.FluytXSyntax;
-import org.jproggy.snippetory.engine.spi.HiddenBlocksSyntax;
-import org.jproggy.snippetory.engine.spi.UnderUnderScorySyntax;
-import org.jproggy.snippetory.engine.spi.XMLAlikeSyntax;
+import org.jproggy.snippetory.util.RegExSyntax;
+import org.jproggy.snippetory.util.TextPosition;
+import org.jproggy.snippetory.util.Token;
 
 /**
  * A syntax defines the way how Snippetory markup is determined and understood.
@@ -39,32 +29,8 @@ import org.jproggy.snippetory.engine.spi.XMLAlikeSyntax;
  * @see RegExSyntax
  */
 public interface Syntax {
-  final class Registry {
-    private final Map<String, Syntax> reg = new HashMap<>();
-
-    private Registry() {
-      register(Syntaxes.HIDDEN_BLOCKS, new HiddenBlocksSyntax());
-      register(Syntaxes.XML_ALIKE, new XMLAlikeSyntax());
-      register(Syntaxes.FLUYT, new FluytSyntax());
-      register(Syntaxes.FLUYT_CC, new FluytCCSyntax());
-      register(Syntaxes.FLUYT_X, new FluytXSyntax());
-      register(Syntaxes.__SCORY, new UnderUnderScorySyntax());
-    }
-
-    public void register(SyntaxID name, Syntax syntax) {
-      reg.put(name.getName(), syntax);
-    }
-
-    public Syntax byName(String name) {
-      if (!reg.containsKey(name)) {
-        throw new SnippetoryException("Unknown syntax: " + name);
-      }
-      return reg.get(name);
-    }
-
-    public Syntax getDefault() {
-      return new XMLAlikeSyntax();
-    }
+  static void register(SyntaxID name, Syntax syntax) {
+    SyntaxRegistry.REGISTRY.register(name, syntax);
   }
 
   interface Tokenizer {
@@ -126,11 +92,5 @@ public interface Syntax {
    * @return a tokenizer providing the token stream
    */
   Tokenizer takeOver(Tokenizer data);
-
-  /**
-   * To be able to select a syntax via the <a href="/snippetory/Syntax.html#Syntax">syntax selector</a>
-   * it has to be registered.
-   */
-  Registry REGISTRY = new Registry();
 
 }

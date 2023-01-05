@@ -12,10 +12,12 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-package org.jproggy.snippetory.engine;
+package org.jproggy.snippetory.util;
 
 import java.util.Collections;
 import java.util.List;
+
+import org.jproggy.snippetory.SnippetoryException;
 
 /**
  * Parsing failed, because no data was found to begin with. Snippetory does support complex structures where the right

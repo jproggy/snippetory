@@ -12,10 +12,11 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-package org.jproggy.snippetory.spi;
+package org.jproggy.snippetory.util;
 
 import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.Template;
+import org.jproggy.snippetory.spi.EncodedData;
 
 /**
  * The Snippetory templating solution works with two different form of character data:

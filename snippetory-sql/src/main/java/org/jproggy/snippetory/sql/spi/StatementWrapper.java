@@ -14,16 +14,16 @@
 
 package org.jproggy.snippetory.sql.spi;
 
-import org.jproggy.snippetory.Template;
-import org.jproggy.snippetory.spi.TemplateWrapper;
-import org.jproggy.snippetory.sql.Cursor;
-import org.jproggy.snippetory.sql.Statement;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+
+import org.jproggy.snippetory.Template;
+import org.jproggy.snippetory.sql.Cursor;
+import org.jproggy.snippetory.sql.Statement;
+import org.jproggy.snippetory.util.TemplateWrapper;
 
 public abstract class StatementWrapper extends TemplateWrapper implements Statement {
 

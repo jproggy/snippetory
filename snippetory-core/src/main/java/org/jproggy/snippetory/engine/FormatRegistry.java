@@ -17,6 +17,7 @@ package org.jproggy.snippetory.engine;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jproggy.snippetory.SnippetoryException;
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.engine.Attributes.Types;
 import org.jproggy.snippetory.spi.FormatConfiguration;
@@ -35,7 +36,7 @@ public final class FormatRegistry {
   public FormatConfiguration get(String name, String definition, TemplateContext ctx) {
     FormatFactory f = formats.get(name);
     if (f == null) {
-      return null;
+      throw new SnippetoryException(name + " isn't a format.");
     }
     FormatConfiguration created = f.create(definition, ctx);
     if (created == null) {

@@ -19,6 +19,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 
+import org.jproggy.snippetory.SnippetoryException;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.engine.Attributes;
@@ -27,12 +28,12 @@ import org.jproggy.snippetory.engine.DataSink;
 import org.jproggy.snippetory.engine.DataSinks;
 import org.jproggy.snippetory.engine.Location;
 import org.jproggy.snippetory.engine.MetaDescriptor;
-import org.jproggy.snippetory.engine.ParseError;
 import org.jproggy.snippetory.engine.Region;
-import org.jproggy.snippetory.engine.SnippetoryException;
+import org.jproggy.snippetory.engine.SyntaxRegistry;
 import org.jproggy.snippetory.engine.TemplateFragment;
-import org.jproggy.snippetory.engine.Token;
 import org.jproggy.snippetory.spi.Syntax;
+import org.jproggy.snippetory.util.ParseError;
+import org.jproggy.snippetory.util.Token;
 
 /**
  * Builds a template tree from the token stream provided by the tokenizer.
@@ -105,7 +106,7 @@ public class TemplateBuilder {
           reg.addPart(buildFragment(t));
           break;
         case Syntax:
-          setSyntax(Syntax.REGISTRY.byName(t.getName()));
+          setSyntax(SyntaxRegistry.REGISTRY.byName(t.getName()));
           parser = getSyntax().takeOver(parser);
           break;
         case Comment:
@@ -163,7 +164,7 @@ public class TemplateBuilder {
   }
 
   private Syntax getSyntax() {
-    if (tempSyntax == null) return Syntax.REGISTRY.getDefault();
+    if (tempSyntax == null) return SyntaxRegistry.REGISTRY.getDefault();
     return tempSyntax;
   }
 }

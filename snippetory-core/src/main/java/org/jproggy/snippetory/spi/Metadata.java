@@ -20,8 +20,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+import org.jproggy.snippetory.SnippetoryException;
 import org.jproggy.snippetory.engine.AnnotationRegistry;
-import org.jproggy.snippetory.engine.SnippetoryException;
 
 /**
  * @author B.Ebertz

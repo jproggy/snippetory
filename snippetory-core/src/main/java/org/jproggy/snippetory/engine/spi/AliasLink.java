@@ -1,10 +1,10 @@
 package org.jproggy.snippetory.engine.spi;
 
+import org.jproggy.snippetory.SnippetoryException;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.TemplateContext;
-import org.jproggy.snippetory.engine.SnippetoryException;
 import org.jproggy.snippetory.spi.Link;
-import org.jproggy.snippetory.spi.LinkedWrapper;
+import org.jproggy.snippetory.util.LinkedWrapper;
 import org.jproggy.snippetory.spi.Metadata;
 
 public class AliasLink implements Link {

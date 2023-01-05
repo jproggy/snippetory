@@ -12,17 +12,21 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-package org.jproggy.snippetory.engine;
+package org.jproggy.snippetory;
 
-import org.jproggy.snippetory.spi.Transcoding;
-
-/**
- * Transcoding is not supported. This can be solved by registering a matching {@link Transcoding}
- */
-public class IncompatibleEncodingException extends SnippetoryException {
+public class SnippetoryException extends RuntimeException {
   private static final long serialVersionUID = 1L;
 
-  public IncompatibleEncodingException(String message) {
+  public SnippetoryException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+  public SnippetoryException(String message) {
     super(message);
   }
+
+  public SnippetoryException(Throwable cause) {
+    super(cause);
+  }
+
 }

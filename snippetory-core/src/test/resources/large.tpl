@@ -37,7 +37,7 @@ $bean.java{
 package $package;
 
 import org.jproggy.snippetory.Template;
-import org.jproggy.snippetory.spi.TemplateWrapper;
+import org.jproggy.snippetory.spi.util.TemplateWrapper;
 $class{
 
 $i$public class $name(case="camelizeUpper") extends TemplateWrapper {
@@ -82,7 +82,7 @@ $footer
 package /* $package( */org.jproggy.snippetory.toolyng.beanery/* ) */;
 
 import org.jproggy.snippetory.Template;
-import org.jproggy.snippetory.spi.TemplateWrapper;
+import org.jproggy.snippetory.spi.util.TemplateWrapper;
 // $class{
 
 /*$i*/public class /*$name( case="camelizeUpper"*/Bean/*)*/ extends TemplateWrapper {

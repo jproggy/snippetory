@@ -34,8 +34,8 @@ import java.util.TreeMap;
 
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.spi.FormatFactory;
-import org.jproggy.snippetory.spi.SimpleFormat;
-import org.jproggy.snippetory.spi.TemplateNode;
+import org.jproggy.snippetory.util.SimpleFormat;
+import org.jproggy.snippetory.util.TemplateNode;
 
 public class DateFormatter implements FormatFactory {
   private static final Map<String, FormatStyle> LENGTHS = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);

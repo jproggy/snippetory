@@ -22,8 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.jproggy.snippetory.TemplateContext.ToString;
-import org.jproggy.snippetory.engine.NoDataException;
-import org.jproggy.snippetory.engine.SnippetoryException;
+import org.jproggy.snippetory.util.NoDataException;
 
 /**
  * <p>

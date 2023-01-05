@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jproggy.snippetory.UriResolver;
-import org.jproggy.snippetory.engine.SnippetoryException;
+import org.jproggy.snippetory.SnippetoryException;
 import org.jproggy.snippetory.sql.spi.ConnectionProvider;
 import org.jproggy.snippetory.sql.spi.VariantResolver;
 import org.junit.jupiter.api.BeforeAll;

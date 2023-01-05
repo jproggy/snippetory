@@ -12,23 +12,22 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-package org.jproggy.snippetory.engine;
+package org.jproggy.snippetory.sql;
 
-public class TextPosition {
-  private final int line;
-  private final int position;
+import org.jproggy.snippetory.SnippetoryException;
 
-  public TextPosition(int line, int position) {
-    super();
-    this.line = line;
-    this.position = position;
+public class ResultCountException extends SnippetoryException {
+  private static final long serialVersionUID = 1L;
+
+  public ResultCountException(int numRows) {
+    super(text(numRows));
   }
 
-  public int getLine() {
-    return line;
+  private static String text(int numRows) {
+    if (numRows == 0) {
+      return "No rows found";
+    }
+    return numRows + " rows found";
   }
 
-  public int getPosition() {
-    return position;
-  }
 }

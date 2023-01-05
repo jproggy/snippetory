@@ -15,10 +15,10 @@
 package org.jproggy.snippetory.engine.spi;
 
 import org.jproggy.snippetory.TemplateContext;
-import org.jproggy.snippetory.engine.chars.EncodedContainer;
-import org.jproggy.snippetory.spi.CharDataSupport;
-import org.jproggy.snippetory.spi.SimpleFormat;
-import org.jproggy.snippetory.spi.TemplateNode;
+import org.jproggy.snippetory.util.EncodedContainer;
+import org.jproggy.snippetory.util.CharDataSupport;
+import org.jproggy.snippetory.util.SimpleFormat;
+import org.jproggy.snippetory.util.TemplateNode;
 
 public class NullFormat extends SimpleFormat {
   private final String value;

@@ -17,6 +17,7 @@ package org.jproggy.snippetory.engine;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jproggy.snippetory.SnippetoryException;
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.engine.Attributes.Types;
 import org.jproggy.snippetory.spi.Link;

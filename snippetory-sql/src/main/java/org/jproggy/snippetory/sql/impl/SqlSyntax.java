@@ -17,9 +17,9 @@ package org.jproggy.snippetory.sql.impl;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.jproggy.snippetory.engine.Token.TokenType;
 import org.jproggy.snippetory.engine.spi.FluytSyntax;
 import org.jproggy.snippetory.spi.SyntaxID;
+import org.jproggy.snippetory.util.Token.TokenType;
 
 public class SqlSyntax extends FluytSyntax implements SyntaxID {
   @Override

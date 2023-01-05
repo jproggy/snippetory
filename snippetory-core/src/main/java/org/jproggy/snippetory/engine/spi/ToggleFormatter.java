@@ -15,11 +15,11 @@
 package org.jproggy.snippetory.engine.spi;
 
 import org.jproggy.snippetory.TemplateContext;
-import org.jproggy.snippetory.engine.chars.EncodedContainer;
+import org.jproggy.snippetory.util.EncodedContainer;
 import org.jproggy.snippetory.spi.FormatConfiguration;
 import org.jproggy.snippetory.spi.FormatFactory;
-import org.jproggy.snippetory.spi.StateContainer;
-import org.jproggy.snippetory.spi.TemplateNode;
+import org.jproggy.snippetory.util.StateContainer;
+import org.jproggy.snippetory.util.TemplateNode;
 import org.jproggy.snippetory.spi.VoidFormat;
 
 public class ToggleFormatter implements FormatFactory {

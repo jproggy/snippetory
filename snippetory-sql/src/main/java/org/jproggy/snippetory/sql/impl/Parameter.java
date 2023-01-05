@@ -35,8 +35,8 @@ import org.jproggy.snippetory.engine.Location;
 import org.jproggy.snippetory.engine.MetaDescriptor;
 import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Format;
-import org.jproggy.snippetory.spi.TemplateWrapper;
 import org.jproggy.snippetory.sql.SQL;
+import org.jproggy.snippetory.util.TemplateWrapper;
 
 public class Parameter extends Location implements StatementBinder {
   private List<Object> values = new ArrayList<>();

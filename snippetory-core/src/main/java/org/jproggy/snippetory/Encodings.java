@@ -18,11 +18,11 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-import org.jproggy.snippetory.engine.IncompatibleEncodingException;
-import org.jproggy.snippetory.engine.chars.CharSequences;
-import org.jproggy.snippetory.engine.chars.EncodedContainer;
 import org.jproggy.snippetory.spi.EncodedData;
 import org.jproggy.snippetory.spi.Encoding;
+import org.jproggy.snippetory.util.CharSequences;
+import org.jproggy.snippetory.util.EncodedContainer;
+import org.jproggy.snippetory.util.IncompatibleEncodingException;
 
 /**
  * <p>

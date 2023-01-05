@@ -12,20 +12,24 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-package org.jproggy.snippetory.spi;
+package org.jproggy.snippetory.util;
 
-import org.jproggy.snippetory.Template;
+import org.jproggy.snippetory.spi.Format;
+import org.jproggy.snippetory.spi.FormatConfiguration;
 
-public interface TemplateNode {
-  TemplateNode getParent();
+/**
+ * Simplifies creation of new Formats by unifying the concepts of {@link Format}
+ * and {@link FormatConfiguration}. This only works as long as no sophisticated
+ * state management is needed. So it's fine for all state less Formats.
+ */
+public abstract class SimpleFormat implements Format, FormatConfiguration {
 
-  String getEncoding();
+  @Override
+  public Format getFormat(TemplateNode node) {
+    return this;
+  }
 
-  Metadata metadata();
+  @Override
+  public void clear(TemplateNode location) {}
 
-  /**
-   * If the node represents neither a region nor a link, the returned region will be absent.
-   * This template will be clean and detached, i.e. it has no parent template.
-   */
-  Template region();
 }

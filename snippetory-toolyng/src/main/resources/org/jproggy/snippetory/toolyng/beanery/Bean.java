@@ -2,7 +2,7 @@
 package /*$package(*/org.jproggy.snippetory.toolyng.beanery/*)*/;
 
 import org.jproggy.snippetory.Template;
-import org.jproggy.snippetory.spi.TemplateWrapper;
+import org.jproggy.snippetory.util.TemplateWrapper;
 // $class{
 
 /*$i*/public class $RegionTpl$ extends TemplateWrapper {

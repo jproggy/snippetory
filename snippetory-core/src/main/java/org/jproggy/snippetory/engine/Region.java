@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jproggy.snippetory.Template;
-import org.jproggy.snippetory.engine.chars.SelfAppender;
+import org.jproggy.snippetory.spi.SelfAppender;
 import org.jproggy.snippetory.spi.Metadata;
 
 public class Region implements Template, CharSequence, SelfAppender {
@@ -125,7 +125,7 @@ public class Region implements Template, CharSequence, SelfAppender {
 
   @Override
   public String getEncoding() {
-    return data.getPlaceholder().md.enc.getName();
+    return data.getPlaceholder().getEncoding();
   }
 
   @Override

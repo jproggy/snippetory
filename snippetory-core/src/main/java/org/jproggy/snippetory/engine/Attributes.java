@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.jproggy.snippetory.Encodings;
+import org.jproggy.snippetory.SnippetoryException;
 import org.jproggy.snippetory.TemplateContext;
 import org.jproggy.snippetory.spi.DynamicAttributes;
 import org.jproggy.snippetory.spi.Encoding;
@@ -123,7 +124,7 @@ public class Attributes {
     return PropertyEditorManager.findEditor(type);
   }
 
-  enum Types {
+  public enum Types {
     FORMAT {
       @Override
       void handle(Attributes target, String key, String value) {

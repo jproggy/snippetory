@@ -15,6 +15,8 @@
 package org.jproggy.snippetory.spi;
 
 import org.jproggy.snippetory.engine.FormatRegistry;
+import org.jproggy.snippetory.util.SimpleFormat;
+import org.jproggy.snippetory.util.TemplateNode;
 
 /**
  * The format allows one to encapsulate and reuse portions of view logic in a simple and generic
@@ -55,10 +57,10 @@ import org.jproggy.snippetory.engine.FormatRegistry;
  * @author B. Ebertz
  */
 public interface Format {
-  /**
-   * Register {@link FormatFactory FormatFactories} here.
-   */
-  FormatRegistry REGISTRY = FormatRegistry.INSTANCE;
+
+  static void register(String name, FormatFactory value) {
+    FormatRegistry.INSTANCE.register(name, value);
+  }
 
   /**
    * Will only be called for supported values.

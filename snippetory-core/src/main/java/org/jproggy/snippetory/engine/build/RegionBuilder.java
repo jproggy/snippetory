@@ -25,10 +25,10 @@ import java.util.regex.Pattern;
 import org.jproggy.snippetory.engine.Attributes;
 import org.jproggy.snippetory.engine.DataSink;
 import org.jproggy.snippetory.engine.Location;
-import org.jproggy.snippetory.engine.ParseError;
 import org.jproggy.snippetory.engine.Region;
 import org.jproggy.snippetory.engine.TemplateFragment;
-import org.jproggy.snippetory.engine.Token;
+import org.jproggy.snippetory.util.ParseError;
+import org.jproggy.snippetory.util.Token;
 
 public class RegionBuilder {
   private static final String BACKWARD = Attributes.BACKWARD;

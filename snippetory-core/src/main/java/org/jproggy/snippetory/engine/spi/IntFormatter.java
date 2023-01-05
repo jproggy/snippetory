@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.LongAccumulator;
 import java.util.concurrent.atomic.LongAdder;
 
 import org.jproggy.snippetory.TemplateContext;
-import org.jproggy.snippetory.spi.SimpleFormat;
+import org.jproggy.snippetory.util.SimpleFormat;
 
 public class IntFormatter extends NumFormatter {
 

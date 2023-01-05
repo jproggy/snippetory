@@ -1,6 +1,7 @@
-package org.jproggy.snippetory.spi;
+package org.jproggy.snippetory.util;
 
 import org.jproggy.snippetory.Template;
+import org.jproggy.snippetory.spi.Metadata;
 
 public class LinkedWrapper extends TemplateWrapper {
     private final Template parent;

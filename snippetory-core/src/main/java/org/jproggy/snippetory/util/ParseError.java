@@ -12,22 +12,27 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-package org.jproggy.snippetory.sql.impl;
+package org.jproggy.snippetory.util;
 
-import org.jproggy.snippetory.engine.SnippetoryException;
+import org.jproggy.snippetory.SnippetoryException;
 
-public class ResultCountException extends SnippetoryException {
+/**
+ * Something went wrong during parsing.
+ */
+public class ParseError extends SnippetoryException {
   private static final long serialVersionUID = 1L;
 
-  public ResultCountException(int numRows) {
-    super(text(numRows));
+  public ParseError(String message, Token at) {
+    super(message + "\n" + toMessage(at));
   }
 
-  private static String text(int numRows) {
-    if (numRows == 0) {
-      return "No rows found";
-    }
-    return numRows + " rows found";
+  public ParseError(Throwable cause, Token at) {
+    super(toMessage(at), cause);
   }
 
+  private static String toMessage(Token at) {
+    if (at == null) return "Error at end";
+    TextPosition tPos = at.getTextPosition();
+    return "Error while parsing " + at.getContent() + " at line " + tPos.getLine() + " character " + tPos.getPosition();
+  }
 }

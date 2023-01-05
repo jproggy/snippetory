@@ -18,14 +18,14 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.jproggy.snippetory.SnippetoryException;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.TemplateContext;
-import org.jproggy.snippetory.engine.SnippetoryException;
-import org.jproggy.snippetory.spi.CharDataSupport;
+import org.jproggy.snippetory.util.CharDataSupport;
 import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.FormatConfiguration;
-import org.jproggy.snippetory.spi.StateContainer;
-import org.jproggy.snippetory.spi.TemplateNode;
+import org.jproggy.snippetory.util.StateContainer;
+import org.jproggy.snippetory.util.TemplateNode;
 import org.jproggy.snippetory.spi.VoidFormat;
 
 public class ValuesFormat implements VoidFormat {

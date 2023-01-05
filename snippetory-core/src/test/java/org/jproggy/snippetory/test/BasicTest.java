@@ -36,8 +36,8 @@ import org.junit.jupiter.api.Test;
 
 import org.jproggy.snippetory.Repo;
 import org.jproggy.snippetory.Template;
-import org.jproggy.snippetory.engine.ParseError;
-import org.jproggy.snippetory.engine.SnippetoryException;
+import org.jproggy.snippetory.util.ParseError;
+import org.jproggy.snippetory.SnippetoryException;
 import org.jproggy.snippetory.spi.Metadata;
 import org.jproggy.snippetory.spi.Metadata.Annotation;
 

@@ -12,7 +12,7 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
-package org.jproggy.snippetory.spi;
+package org.jproggy.snippetory.util;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -20,6 +20,7 @@ import java.io.Writer;
 import java.util.Set;
 
 import org.jproggy.snippetory.Template;
+import org.jproggy.snippetory.spi.Metadata;
 
 /**
  * A TemplateWrapper is a utility class for conveniently implementing decorators

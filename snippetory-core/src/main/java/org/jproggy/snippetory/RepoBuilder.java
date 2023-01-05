@@ -19,7 +19,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jproggy.snippetory.engine.NoDataException;
+import org.jproggy.snippetory.util.NoDataException;
 
 /**
  * To provide a maximum of flexibility out of the box the RepoBuilder allows
@@ -33,7 +33,7 @@ import org.jproggy.snippetory.engine.NoDataException;
 public class RepoBuilder implements UriResolver {
   private List<UriResolver> parts = new ArrayList<>();
 
-  public RepoBuilder addDirectories(final String... dirs) {
+  public RepoBuilder addDirectories(String... dirs) {
     return add(UriResolver.directories(dirs));
   }
 
@@ -42,7 +42,7 @@ public class RepoBuilder implements UriResolver {
    * a file that's represented by the uri and returns the content of the first
    * match.
    */
-  public RepoBuilder addDirectories(final File... dirs) {
+  public RepoBuilder addDirectories(File... dirs) {
     return add(UriResolver.directories(dirs));
   }
 
@@ -74,7 +74,7 @@ public class RepoBuilder implements UriResolver {
   /**
    * resolves uris relative to the base URL
    */
-  public RepoBuilder addUrl(final URL base) {
+  public RepoBuilder addUrl(URL base) {
     return add(UriResolver.url(base));
   }
 

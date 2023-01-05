@@ -17,12 +17,13 @@ package org.jproggy.snippetory.engine;
 import java.io.IOException;
 import java.util.Map;
 
+import org.jproggy.snippetory.SnippetoryException;
 import org.jproggy.snippetory.spi.Encoding;
 import org.jproggy.snippetory.spi.Format;
 import org.jproggy.snippetory.spi.FormatConfiguration;
 import org.jproggy.snippetory.spi.Link;
 import org.jproggy.snippetory.spi.Metadata;
-import org.jproggy.snippetory.spi.TemplateNode;
+import org.jproggy.snippetory.util.TemplateNode;
 import org.jproggy.snippetory.spi.Transcoding;
 
 public class MetaDescriptor implements Metadata {
