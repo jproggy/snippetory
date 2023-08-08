@@ -231,5 +231,10 @@ class DBAccessTest {
         throw new SnippetoryException(e);
       }
     }
+
+    @Override
+    public String toString() {
+      return url.substring(5);
+    }
   }
 }
