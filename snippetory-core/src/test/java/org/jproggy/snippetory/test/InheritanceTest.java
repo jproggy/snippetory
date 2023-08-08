@@ -18,23 +18,24 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.TimeZone;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.TemplateContext;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
 
 class InheritanceTest {
   static {
     TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
   }
 
-  private static final java.sql.Date D2 = java.sql.Date.valueOf("2011-10-06");
-  private static final java.sql.Date D1 = java.sql.Date.valueOf("2011-10-15");
-  private static final Date D1_TIME = new Date(D1.getTime() + 3_915_000L);
+  private static final ZonedDateTime D1 = ZonedDateTime.parse("2011-10-15T00:00:00Z[GMT]");
+  private static final ZonedDateTime D2 = ZonedDateTime.parse("2011-10-06T00:00:00Z[GMT]");
+
+  private static final ZonedDateTime D1_TIME = ZonedDateTime.parse("2011-10-15T01:05:15Z[GMT]");
 
   @Nested
   class FromRoot {

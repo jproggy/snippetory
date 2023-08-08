@@ -17,20 +17,22 @@ package org.jproggy.snippetory.test;
 import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.TimeZone;
+import org.junit.jupiter.api.Test;
 
 import org.jproggy.snippetory.Template;
-import org.junit.jupiter.api.Test;
 
 class DateFormatTest {
   static {
     TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
   }
 
-  private static final java.sql.Date D1 = java.sql.Date.valueOf("2011-10-15");
-  private static final Date D1_TIME = new Date(D1.getTime() + 3915000L);
+  private static final ZonedDateTime D1 = LocalDate.parse("2011-10-15").atStartOfDay(ZoneId.of("GMT"));
+  private static final ZonedDateTime D1_TIME = ZonedDateTime.parse("2011-10-15T01:05:15Z[GMT]");
 
   @Test
   void jsDate() {
