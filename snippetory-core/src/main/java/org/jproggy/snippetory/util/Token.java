@@ -55,7 +55,9 @@ public class Token {
 
   private final LinkedHashMap<String, String> attributes = new LinkedHashMap<>();
   private final String name;
-  private final String content;
+  private String content;
+
+  private boolean overwritten;
   private final TokenType type;
   private final int position;
   private final Syntax.Tokenizer locator;
@@ -104,6 +106,15 @@ public class Token {
    */
   public String getContent() {
     return content;
+  }
+
+  public void overwriteContent(String value) {
+    content = value;
+    overwritten = true;
+  }
+
+  public boolean isOverwritten() {
+    return overwritten;
   }
 
   /**

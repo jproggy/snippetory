@@ -64,7 +64,9 @@ public class RegionBuilder {
       }
       parts.set(parts.size() - 1, value.start(m.start(group)));
       end = value.end(m.end(group));
+      String overwrite = value.subSequence(m.start(group), m.end(group));
       if (m.find()) throw new ParseError("Backward target ambiguous: <" + target + ">.", t);
+      t.overwriteContent(overwrite);
       t.getAttributes().remove(BACKWARD);
     }
     return end;

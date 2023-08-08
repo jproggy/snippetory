@@ -35,11 +35,11 @@ import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 
 import org.jproggy.snippetory.Repo;
-import org.jproggy.snippetory.Template;
-import org.jproggy.snippetory.util.ParseError;
 import org.jproggy.snippetory.SnippetoryException;
+import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.spi.Metadata;
 import org.jproggy.snippetory.spi.Metadata.Annotation;
+import org.jproggy.snippetory.util.ParseError;
 
 class BasicTest {
   static {
@@ -164,61 +164,7 @@ class BasicTest {
     assertEquals("\f123xx", t.toString());
   }
 
-  @Test
-  void backward() {
-    Template t = XML_ALIKE.parse("<a href='test.html'>Here</a> " + "<t:test_bw backward=\"href='(.*)'\" enc=\"url\">"
-            + "{v:path delimiter='/'}/{v:file}.html" + "</t:test_bw>");
-    t.get("test_bw").append("path", "x s").append("path", "xy+z").set("file", "tesst").render();
-    assertEquals("<a href='x+s/xy%2Bz/tesst.html'>Here</a> ", t.toString());
-
-    ParseError e = assertThrows(ParseError.class, () -> XML_ALIKE.parse("lsdfkjsdfl {v:x backward='test'}"));
-    assertTrue(e.getMessage().contains("Target not found"), e.getMessage());
-    assertTrue(e.getMessage().contains("test"), e.getMessage());
-    assertTrue(e.getMessage().contains("{v:x backward='test'}"), e.getMessage());
-
-    Template t2 = XML_ALIKE.parse(
-            "Hello world{v:x backward='Hello' default='Liahallo'}{v:x backward='world' default='Welt'}"
-    );
-    assertEquals("Liahallo Welt", t2.toString());
-
-    e = assertThrows(ParseError.class, () -> XML_ALIKE.parse(
-            "Hello world{v:x backward='world' default='Welt'}{v:x backward='Hello' default='Liahallo'}"
-    ));
-    assertThat(e.getMessage(), containsStrings(
-            "Target not found",
-            "<Hello>",
-            "{v:x backward='Hello' default='Liahallo'}"
-    ));
-
-    e = assertThrows(ParseError.class, () -> XML_ALIKE.parse(
-            "Hello world{v:x backward='(Hello)(v)' default='Liahallo'}{v:x backward='world' default='Welt'}"
-    ));
-    assertThat(e.getMessage(), containsStrings(
-            "Target not found",
-            "<(Hello)(v)>",
-            "{v:x backward='(Hello)(v)' default='Liahallo'}"
-    ));
-
-    e = assertThrows(ParseError.class, () -> XML_ALIKE.parse(
-            "Hello Hello world{v:x backward='(Hello)' default='Liahallo'}{v:x backward='world' default='Welt'}"
-    ));
-    assertThat(e.getMessage(), containsStrings(
-            "Backward target ambiguous",
-            "<(Hello)>",
-            "{v:x backward='(Hello)' default='Liahallo'}"
-    ));
-
-    e = assertThrows(ParseError.class, () -> XML_ALIKE.parse(
-            "Hello world{v:x backward='(Hel)(lo)' default='Liahallo'}{v:x backward='world' default='Welt'}"
-    ));
-    assertThat(e.getMessage(), containsStrings(
-            "Only one match group allowed",
-            "<(Hel)(lo)>",
-            "{v:x backward='(Hel)(lo)' default='Liahallo'}"
-    ));
-  }
-
-  private Matcher<String> containsStrings(String... v) {
+  public static Matcher<String> containsStrings(String... v) {
     return allOf(Stream.of(v).map(CoreMatchers::containsString).collect(Collectors.toList()));
   }
 
