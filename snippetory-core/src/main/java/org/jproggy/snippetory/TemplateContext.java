@@ -59,7 +59,7 @@ import org.jproggy.snippetory.util.NoDataException;
 public class TemplateContext implements Cloneable {
   public static final Locale TECH = new Locale("en", "US", "tech");
   private Locale locale = TECH;
-  private Syntax syntax = SyntaxRegistry.REGISTRY.getDefault();
+  private Syntax syntax = SyntaxRegistry.INSTANCE.getDefault();
   private UriResolver uriResolver;
 
   /**
@@ -93,7 +93,7 @@ public class TemplateContext implements Cloneable {
   }
 
   public TemplateContext syntax(SyntaxID syntax) {
-    return syntax(SyntaxRegistry.REGISTRY.byName(syntax.getName()));
+    return syntax(SyntaxRegistry.INSTANCE.byName(syntax.getName()));
   }
 
   public TemplateContext syntax(Syntax syntax) {

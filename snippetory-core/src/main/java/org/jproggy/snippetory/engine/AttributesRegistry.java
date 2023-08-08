@@ -35,6 +35,9 @@ import org.jproggy.snippetory.engine.spi.PropertyFormat;
 import org.jproggy.snippetory.engine.spi.ToggleFormatter;
 import org.jproggy.snippetory.engine.spi.ValuesFormat;
 import org.jproggy.snippetory.spi.Configurer;
+import org.jproggy.snippetory.spi.Encoding;
+import org.jproggy.snippetory.spi.Format;
+import org.jproggy.snippetory.spi.Link;
 
 public class AttributesRegistry {
     public static final AttributesRegistry INSTANCE = new AttributesRegistry();
@@ -62,26 +65,30 @@ public class AttributesRegistry {
         INSTANCE.register("prefix", Types.PREFIX);
         INSTANCE.register("suffix", Types.SUFFIX);
         INSTANCE.register(Attributes.BACKWARD, Types.BACKWARD);
-        FormatRegistry.INSTANCE.register("pad", PadFormat::create);
-        FormatRegistry.INSTANCE.register("crop", CropFormat::create);
-        FormatRegistry.INSTANCE.register("number", new NumFormatter());
-        FormatRegistry.INSTANCE.register("int", new IntFormatter());
-        FormatRegistry.INSTANCE.register("decimal", new DecimalFormatter());
-        FormatRegistry.INSTANCE.register("date", new DateFormatter());
-        FormatRegistry.INSTANCE.register("toggle", new ToggleFormatter());
-        FormatRegistry.INSTANCE.register("case", new CaseFormatter());
-        FormatRegistry.INSTANCE.register("default", DefaultFormat::create);
-        FormatRegistry.INSTANCE.register("null", NullFormat::create);
-        FormatRegistry.INSTANCE.register("property", PropertyFormat::create);
-        FormatRegistry.INSTANCE.register("values", ValuesFormat::create);
-        LinkRegistry.INSTANCE.register("alias", AliasLink::new);
+        Format.register("pad", PadFormat::create);
+        Format.register("crop", CropFormat::create);
+        Format.register("number", new NumFormatter());
+        Format.register("int", new IntFormatter());
+        Format.register("decimal", new DecimalFormatter());
+        Format.register("date", new DateFormatter());
+        Format.register("toggle", new ToggleFormatter());
+        Format.register("case", new CaseFormatter());
+        Format.register("default", DefaultFormat::create);
+        Format.register("null", NullFormat::create);
+        Format.register("property", PropertyFormat::create);
+        Format.register("values", ValuesFormat::create);
+        Link.register("alias", AliasLink::new);
         for (Encodings e : Encodings.values()) {
-            EncodingRegistry.INSTANCE.register(e);
+            Encoding.register(e);
         }
         for (Configurer c : ServiceLoader.load(Configurer.class)) {
             // avoid optimize this loop, as iterating is necessary to load the classes
             // i.e. to initialize the extensions
             c.getClass();
         }
+    }
+
+    public static void init() {
+        // noop -> just called to ensure initializer is called.
     }
 }

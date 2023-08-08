@@ -22,15 +22,7 @@ import java.util.Map;
 import org.jproggy.snippetory.SnippetoryException;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.TemplateContext;
-import org.jproggy.snippetory.engine.Attributes;
-import org.jproggy.snippetory.engine.ConditionalRegion;
-import org.jproggy.snippetory.engine.DataSink;
-import org.jproggy.snippetory.engine.DataSinks;
-import org.jproggy.snippetory.engine.Location;
-import org.jproggy.snippetory.engine.MetaDescriptor;
-import org.jproggy.snippetory.engine.Region;
-import org.jproggy.snippetory.engine.SyntaxRegistry;
-import org.jproggy.snippetory.engine.TemplateFragment;
+import org.jproggy.snippetory.engine.*;
 import org.jproggy.snippetory.spi.Syntax;
 import org.jproggy.snippetory.util.ParseError;
 import org.jproggy.snippetory.util.Token;
@@ -51,7 +43,7 @@ public class TemplateBuilder {
 
   /** Initialize Snippetory templating platform as a whole. Includes initialization of plug-ins. */
   public static void init() {
-    Attributes.init();
+    AttributesRegistry.init();
   }
 
   public static Template parse(TemplateContext ctx, CharSequence data) {
@@ -106,7 +98,7 @@ public class TemplateBuilder {
           reg.addPart(buildFragment(t));
           break;
         case Syntax:
-          setSyntax(SyntaxRegistry.REGISTRY.byName(t.getName()));
+          setSyntax(SyntaxRegistry.INSTANCE.byName(t.getName()));
           parser = getSyntax().takeOver(parser);
           break;
         case Comment:
@@ -164,7 +156,7 @@ public class TemplateBuilder {
   }
 
   private Syntax getSyntax() {
-    if (tempSyntax == null) return SyntaxRegistry.REGISTRY.getDefault();
+    if (tempSyntax == null) return SyntaxRegistry.INSTANCE.getDefault();
     return tempSyntax;
   }
 }

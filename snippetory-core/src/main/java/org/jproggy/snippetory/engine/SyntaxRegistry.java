@@ -45,5 +45,5 @@ public final class SyntaxRegistry {
      * To be able to select a syntax via the <a href="/snippetory/Syntax.html#Syntax">syntax selector</a>
      * it has to be registered.
      */
-    public static SyntaxRegistry REGISTRY = new SyntaxRegistry();
+    public static final SyntaxRegistry INSTANCE = new SyntaxRegistry();
 }

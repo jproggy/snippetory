@@ -30,7 +30,7 @@ import org.jproggy.snippetory.util.Token;
  */
 public interface Syntax {
   static void register(SyntaxID name, Syntax syntax) {
-    SyntaxRegistry.REGISTRY.register(name, syntax);
+    SyntaxRegistry.INSTANCE.register(name, syntax);
   }
 
   interface Tokenizer {
