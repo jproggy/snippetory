@@ -16,13 +16,18 @@ package org.jproggy.snippetory.engine.build;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.List;
-import java.util.Map;
 
 import org.jproggy.snippetory.SnippetoryException;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.TemplateContext;
-import org.jproggy.snippetory.engine.*;
+import org.jproggy.snippetory.engine.Attributes;
+import org.jproggy.snippetory.engine.AttributesRegistry;
+import org.jproggy.snippetory.engine.ConditionalRegion;
+import org.jproggy.snippetory.engine.Location;
+import org.jproggy.snippetory.engine.MetaDescriptor;
+import org.jproggy.snippetory.engine.Region;
+import org.jproggy.snippetory.engine.SyntaxRegistry;
+import org.jproggy.snippetory.engine.TemplateFragment;
 import org.jproggy.snippetory.spi.Syntax;
 import org.jproggy.snippetory.util.ParseError;
 import org.jproggy.snippetory.util.Token;
@@ -33,12 +38,12 @@ import org.jproggy.snippetory.util.Token;
 public class TemplateBuilder {
   private Syntax tempSyntax;
   private Syntax.Tokenizer parser;
-  private final TemplateContext ctx;
+  private  final NodeFactory nodes;
 
-  protected TemplateBuilder(TemplateContext ctx, CharSequence data) {
-    this.ctx = ctx;
+  protected TemplateBuilder(TemplateContext ctx, CharSequence data, NodeFactory nodes) {
     tempSyntax = ctx.getSyntax();
     parser = getSyntax().parse(data, ctx);
+    this.nodes = nodes;
   }
 
   /** Initialize Snippetory templating platform as a whole. Includes initialization of plug-ins. */
@@ -47,107 +52,85 @@ public class TemplateBuilder {
   }
 
   public static Template parse(TemplateContext ctx, CharSequence data) {
-    TemplateBuilder builder = new TemplateBuilder(ctx.clone(), data);
-    Location root = new Location(null, new MetaDescriptor(null, "", Attributes.parse(null, ctx.getBaseAttribs(), ctx)));
+    TemplateContext cloned = ctx.clone();
+    TemplateBuilder builder = new TemplateBuilder(cloned, data, new NodeFactory(cloned));
+    Location root = new Location(null, new MetaDescriptor(null, "", Attributes.parse(null, cloned.getBaseAttribs(), cloned)));
     return builder.parse(root);
   }
 
   protected Region parse(Location parent) {
     RegionBuilder reg = new RegionBuilder(parent);
-    Deque<RegionBuilder> regionStack = new ArrayDeque<>();
-    Token t = null;
-    while (parser.hasNext()) {
-      t = parser.next();
-
-      try {
-        switch (t.getType()) {
-        case BlockStart: {
-          reg.checkNameUnique(t);
-          TemplateFragment end = reg.handleBackward(t);
-          Location placeHolder = placeHolder(reg.placeHolder, t);
-          if (t.getName() == null || placeHolder.metadata().controlsRegion()) {
-            regionStack.push(reg);
-            reg = new RegionBuilder(placeHolder);
-          } else {
-            reg.addPart(placeHolder);
-            Region template = parse(placeHolder);
-            reg.children.put(placeHolder.getName(), template);
-          }
-          if (end != null) reg.addPart(end);
-          break;
-        }
-        case BlockEnd:
-          reg.verifyName(t);
-          if (!regionStack.isEmpty() ) {
-            ConditionalRegion r = buildConditional(reg.placeHolder, reg.parts, reg.children);
-            if (r.names().isEmpty() && !reg.placeHolder.metadata().controlsRegion()) {
-              throw new ParseError(
-                  "Conditional region needs to contain at least one named location, or will never be rendered.", t);
+    try {
+      Deque<RegionBuilder> regionStack = new ArrayDeque<>();
+      Token last = null;
+      while (parser.hasNext()) {
+        Token t = parser.next();
+        last = t;
+        try {
+          switch (t.getType()) {
+            case BlockStart: {
+              reg.checkNameUnique(t);
+              TemplateFragment end = reg.handleBackward(t);
+              Location placeHolder = nodes.placeHolder(reg.placeHolder, t);
+              if (t.getName() == null || placeHolder.metadata().controlsRegion()) {
+                regionStack.push(reg);
+                reg = new RegionBuilder(placeHolder);
+              } else {
+                reg.addPart(placeHolder);
+                Region template = parse(placeHolder);
+                reg.children.put(placeHolder.getName(), template);
+              }
+              if (end != null) reg.addPart(end);
+              break;
             }
-            reg = regionStack.pop();
-            reg.addPart(r);
-            break;
+            case BlockEnd:
+              reg.verifyName(t);
+              if (!regionStack.isEmpty()) {
+                ConditionalRegion r = nodes.buildConditional(reg.placeHolder, reg.parts, reg.children);
+                if (r.names().isEmpty() && !reg.placeHolder.metadata().controlsRegion()) {
+                  throw new ParseError(
+                          "Conditional region needs to contain at least one named location, or will never be rendered.", t);
+                }
+                reg.close();
+                reg = regionStack.pop();
+                reg.addPart(r);
+                break;
+              }
+              return nodes.buildRegion(reg.placeHolder, reg.parts, reg.children);
+            case Field:
+              reg.handleDislocations(t, r -> nodes.location(r.placeHolder, t));
+              break;
+            case TemplateData:
+              reg.addFragment(nodes.buildFragment(t));
+              break;
+            case Syntax:
+              setSyntax(SyntaxRegistry.INSTANCE.byName(t.getName()));
+              parser = getSyntax().takeOver(parser);
+              break;
+            case Comment:
+              // comments are simply ignored.
+              break;
+            default:
+              throw new SnippetoryException("Unknown token type: " + t.getType());
           }
-          return build(reg.placeHolder, reg.parts, reg.children);
-        case Field:
-          TemplateFragment end = reg.handleBackward(t);
-          reg.addPart(location(reg.placeHolder, t));
-          if (end != null) reg.addPart(end);
-          break;
-        case TemplateData:
-          reg.addPart(buildFragment(t));
-          break;
-        case Syntax:
-          setSyntax(SyntaxRegistry.INSTANCE.byName(t.getName()));
-          parser = getSyntax().takeOver(parser);
-          break;
-        case Comment:
-          // comments are simply ignored.
-          break;
-        default:
-          throw new SnippetoryException("Unknown token type: " + t.getType());
+        } catch (ParseError e) {
+          throw e;
+        } catch (RuntimeException e) {
+          throw new ParseError(e, t);
         }
-      } catch (ParseError e) {
-        throw e;
-      } catch (RuntimeException e) {
-        throw new ParseError(e, t);
       }
+      if (!regionStack.isEmpty()) {
+        throw new ParseError(regionStack.size() + " unclosed conditional regions detected", last);
+      }
+      verifyRootNode(parent, last);
+      return nodes.buildRegion(reg.placeHolder, reg.parts, reg.children);
+    }finally {
+      reg.close();
     }
-    if (!regionStack.isEmpty()) {
-      throw new ParseError(regionStack.size() + " unclosed conditional regions detected", t);
-    }
-    verifyRootNode(parent, t);
-    return build(reg.placeHolder, reg.parts, reg.children);
-  }
-
-  protected ConditionalRegion buildConditional(Location placeHolder, List<DataSink> parts,
-                                               Map<String, Region> children) {
-    ConditionalRegion region = new ConditionalRegion(placeHolder, parts, children);
-    placeHolder.metadata().linkConditionalRegion(region);
-    return region;
-  }
-
-  protected TemplateFragment buildFragment(Token t) {
-    return new TemplateFragment(t.getContent());
-  }
-
-  protected Region build(Location placeHolder, List<DataSink> parts, Map<String, Region> children) {
-    Region region = new Region(new DataSinks(parts, placeHolder), children);
-    placeHolder.metadata().linkRegion(region);
-    return region;
   }
 
   private void verifyRootNode(Location parent, Token t) {
     if (parent.getName() != null) throw new ParseError("No end element for <" + parent.getName() + ">.", t);
-  }
-
-  protected Location location(Location parent, Token t) {
-    return new Location(parent, new MetaDescriptor(t.getName(), t.getContent(), Attributes.parse(parent, t.getAttributes(),
-            ctx)));
-  }
-
-  protected Location placeHolder(Location parent, Token t) {
-    return new Location(parent, new MetaDescriptor(t.getName(), "", Attributes.parse(parent, t.getAttributes(), ctx)));
   }
 
   private void setSyntax(Syntax s) {

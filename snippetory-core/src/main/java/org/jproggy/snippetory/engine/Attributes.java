@@ -34,6 +34,7 @@ import org.jproggy.snippetory.spi.Link;
 
 public class Attributes {
   public static final String BACKWARD = "backward";
+  public static final String FORWARD = "forward";
 
   public static Attributes parse(Location parent, Map<String, String> attribs, TemplateContext ctx) {
     Attributes result = new Attributes(parent, ctx);
@@ -174,6 +175,12 @@ public class Attributes {
       @Override
       void handle(Attributes target, String key, String value) {
         throw new SnippetoryException("Internal error: BACKWARD is not expected here");
+      }
+    },
+    FORWARD {
+      @Override
+      void handle(Attributes target, String key, String value) {
+        throw new SnippetoryException("Internal error: FORWARD is not expected here");
       }
     },
     ANNOTATION {

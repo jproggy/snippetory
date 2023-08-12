@@ -65,6 +65,7 @@ public class AttributesRegistry {
         INSTANCE.register("prefix", Types.PREFIX);
         INSTANCE.register("suffix", Types.SUFFIX);
         INSTANCE.register(Attributes.BACKWARD, Types.BACKWARD);
+        INSTANCE.register(Attributes.FORWARD, Types.FORWARD);
         Format.register("pad", PadFormat::create);
         Format.register("crop", CropFormat::create);
         Format.register("number", new NumFormatter());
@@ -79,7 +80,7 @@ public class AttributesRegistry {
         Format.register("values", ValuesFormat::create);
         Link.register("alias", AliasLink::new);
         for (Encodings e : Encodings.values()) {
-            Encoding.register(e);
+            EncodingRegistry.INSTANCE.register(e);
         }
         for (Configurer c : ServiceLoader.load(Configurer.class)) {
             // avoid optimize this loop, as iterating is necessary to load the classes
