@@ -59,6 +59,24 @@ public class DislocationTest {
             assertThat(e.getMessage(), containsStrings("not found", "<3>"));
             e = assertThrows(ParseError.class, () -> FLUYT_CC.parse("12345 // $test(backward='1(3)')"));
             assertThat(e.getMessage(), containsStrings("not found", "<1(3)>"));
+
+            e = assertThrows(ParseError.class, () -> XML_ALIKE.parse(
+                    "Hello world{v:x backward='(Hello)(v)' default='Liahallo'}{v:x backward='world' default='Welt'}"
+            ));
+            assertThat(e.getMessage(), containsStrings(
+                    "Target not found",
+                    "<(Hello)(v)>",
+                    "{v:x backward='(Hello)(v)' default='Liahallo'}"
+            ));
+
+            e = assertThrows(ParseError.class, () -> XML_ALIKE.parse(
+                    "Hello world{v:x backward='world' default='Welt'}{v:x backward='Hello' default='Liahallo'}"
+            ));
+            assertThat(e.getMessage(), containsStrings(
+                    "Target not found",
+                    "<Hello>",
+                    "{v:x backward='Hello' default='Liahallo'}"
+            ));
         }
     }
 }

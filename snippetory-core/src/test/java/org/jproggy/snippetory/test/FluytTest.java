@@ -153,6 +153,16 @@ class FluytTest {
     t = FLUYT_CC.parse("/*\t$test$\t*/bla");
     t.set("test", "xy");
     assertEquals("xybla", t.toString());
+
+    t = FLUYT_CC.parse("// $test(default='')$\nbla");
+    assertEquals("\nbla", t.toString());
+    t.set("test", "xy");
+    assertEquals("xy\nbla", t.toString());
+
+    t = FLUYT_CC.parse("// $test(default='')\nbla");
+    assertEquals("\nbla", t.toString());
+    t.set("test", "xy");
+    assertEquals("xy\nbla", t.toString());
   }
 
   @Test
