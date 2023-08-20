@@ -25,50 +25,58 @@ import org.jproggy.snippetory.engine.Location;
 import org.jproggy.snippetory.engine.MetaDescriptor;
 import org.jproggy.snippetory.engine.Region;
 import org.jproggy.snippetory.engine.TemplateFragment;
+import org.jproggy.snippetory.engine.build.NodeFactory;
 import org.jproggy.snippetory.engine.build.TemplateBuilder;
 import org.jproggy.snippetory.util.Token;
 
 public class StatementBuilder extends TemplateBuilder {
-  private final TemplateContext ctx;
   protected StatementBuilder(TemplateContext ctx, CharSequence data) {
-    super(ctx, data);
-    this.ctx = ctx;
+    super(ctx, data, new SqlNodeFactory(ctx));
   }
 
   public static StatementImpl parse(TemplateContext ctx, CharSequence data) {
-    StatementBuilder builder = new StatementBuilder(ctx.clone(), data);
+    TemplateContext cloned = ctx.clone();
+    StatementBuilder builder = new StatementBuilder(cloned, data);
     Parameter root = new Parameter(null, new MetaDescriptor(null, "", Attributes.parse(null, ctx.getBaseAttribs(), ctx)));
-    return (StatementImpl)builder.parse(root);
+    return (StatementImpl) builder.parse(root);
   }
 
-  @Override
-  protected Location location(Location parent, Token t) {
-    return new Parameter(parent, new MetaDescriptor(t.getName(), t.getContent(), Attributes.parse(parent, t.getAttributes(),
-            ctx)));
-  }
+  private static class SqlNodeFactory extends NodeFactory {
+    private SqlNodeFactory(TemplateContext ctx) {
+      super(ctx);
+    }
 
-  @Override
-  protected Location placeHolder(Location parent, Token t) {
-    return new Parameter(parent, new MetaDescriptor(t.getName(), "", Attributes.parse(parent, t.getAttributes(), ctx)));
-  }
+    @Override
+    protected Location location(Location parent, Token t) {
+      return new Parameter(parent, new MetaDescriptor(t.getName(), t.getContent(),
+              Attributes.parse(parent, t.getAttributes(), ctx)));
+    }
 
-  @Override
-  protected StatementImpl build(Location placeHolder, List<DataSink> parts, Map<String, Region> children) {
-    StatementImpl statement = new StatementImpl(new SqlSinks(parts, placeHolder), children);
-    placeHolder.metadata().linkRegion(statement);
-    return statement;
-  }
+    @Override
+    protected Location placeHolder(Location parent, Token t) {
+      String fragment = t.isOverwritten() ? t.getContent() : "";
+      return new Parameter(parent, new MetaDescriptor(t.getName(), fragment,
+              Attributes.parse(parent, t.getAttributes(), ctx)));
+    }
 
-  @Override
-  protected TemplateFragment buildFragment(Token t) {
-    return new StatementFragment(t.getContent());
-  }
+    @Override
+    protected StatementImpl buildRegion(Location placeHolder, List<DataSink> parts, Map<String, Region> children) {
+      StatementImpl statement = new StatementImpl(new SqlSinks(parts, placeHolder), children);
+      placeHolder.metadata().linkRegion(statement);
+      return statement;
+    }
 
-  @Override
-  protected ConditionalRegion
-      buildConditional(Location placeHolder, List<DataSink> parts, Map<String, Region> children) {
-    ConditionalSqlRegion region = new ConditionalSqlRegion(placeHolder, parts, children);
-    placeHolder.metadata().linkConditionalRegion(region);
-    return region;
+    @Override
+    protected TemplateFragment buildFragment(Token t) {
+      return new StatementFragment(t.getContent());
+    }
+
+    @Override
+    protected ConditionalRegion
+    buildConditional(Location placeHolder, List<DataSink> parts, Map<String, Region> children) {
+      ConditionalSqlRegion region = new ConditionalSqlRegion(placeHolder, parts, children);
+      placeHolder.metadata().linkConditionalRegion(region);
+      return region;
+    }
   }
 }
