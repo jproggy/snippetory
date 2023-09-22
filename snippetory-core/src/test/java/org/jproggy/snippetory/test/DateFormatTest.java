@@ -18,6 +18,7 @@ import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
+import java.time.Year;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Locale;
@@ -53,6 +54,13 @@ class DateFormatTest {
     Template date = XML_ALIKE.parse("{v:test date='JS_JS'}", Locale.GERMAN);
     date.set("test", D1_TIME);
     assertEquals("new Date(2011, 10, 15, 01, 05, 15)", date.toString());
+  }
+
+  @Test
+  void year() {
+    Template date = XML_ALIKE.parse("{v:test date='yy'}", Locale.GERMAN);
+    date.set("test", Year.of(2000));
+    assertEquals("00", date.toString());
   }
 
   @Test

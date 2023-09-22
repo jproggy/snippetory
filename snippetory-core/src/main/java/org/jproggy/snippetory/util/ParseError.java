@@ -27,7 +27,7 @@ public class ParseError extends SnippetoryException {
   }
 
   public ParseError(Throwable cause, Token at) {
-    super(toMessage(at), cause);
+    super(cause.getMessage() + "\n" + toMessage(at), cause);
   }
 
   private static String toMessage(Token at) {

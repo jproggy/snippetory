@@ -17,6 +17,7 @@ package org.jproggy.snippetory.test;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.jproggy.snippetory.Syntaxes.FLUYT;
+import static org.jproggy.snippetory.test.BasicTest.containsStrings;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -98,14 +99,28 @@ public class ConditionalRegionTest {
     }
 
     @Test
+    void aliasError() {
+        SnippetoryException e = assertThrows(SnippetoryException.class, () ->
+                FLUYT.parse("before$(alias='ball'){->$test<-}$after")
+        );
+        assertThat(e.getMessage(), containsStrings(
+                "A conditional region must not have a link"
+        ));
+    }
+
+    @Test
     void valuesError() {
         Template t = FLUYT.parse("before$(values='ball'){->$test<-}$after");
         SnippetoryException e = assertThrows(SnippetoryException.class, t::toString);
         assertThat(e.getMessage(), containsString("ball"));
         t = FLUYT.parse("before$(values='1.0'){->$test<-}$after");
         e = assertThrows(SnippetoryException.class, t::toString);
-        assertThat(e.getMessage(), containsString("1.0"));
-        FLUYT.parse("before$x(values='0'){->$x<-}$after");
+        assertThat(e.getMessage(), containsStrings(
+                "1.0",
+                "Don't understand"
+                ));
+        t = FLUYT.parse("before$x(values='0'){->$x<-}$after");
+        assertEquals("before->$x<-after", t.toString());
     }
 
     @Test

@@ -191,6 +191,18 @@ class BasicTest {
 
     e = assertThrows(ParseError.class, () -> XML_ALIKE.parse("before<tx>startend</t:x>after"));
     assertEquals("<x> found but <file end> expected.\nError while parsing </t:x> at line 1 character 18", e.getMessage());
+
+    e = assertThrows(ParseError.class, () -> XML_ALIKE.parse("before<t:x>startend</t:x>after<t:x></t:x>"));
+    assertEquals("Duplicate child template <x>.\n" +
+            "Error while parsing <t:x> at line 1 character 30", e.getMessage());
+
+    e = assertThrows(ParseError.class, () -> XML_ALIKE.parse("before<t:x><t:>startend</t:x>after"));
+    assertEquals("<x> found but <null> expected.\n" +
+            "Error while parsing </t:x> at line 1 character 23", e.getMessage());
+
+    e = assertThrows(ParseError.class, () -> XML_ALIKE.parse("before<<t:>startend</t>after"));
+    assertEquals("1 unclosed conditional regions detected\n" +
+            "Error while parsing startend</t>after at line 1 character 11", e.getMessage());
   }
 
   @Test
