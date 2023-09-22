@@ -27,7 +27,6 @@ import org.jproggy.snippetory.engine.Location;
 import org.jproggy.snippetory.engine.MetaDescriptor;
 import org.jproggy.snippetory.engine.Region;
 import org.jproggy.snippetory.engine.SyntaxRegistry;
-import org.jproggy.snippetory.engine.TemplateFragment;
 import org.jproggy.snippetory.spi.Syntax;
 import org.jproggy.snippetory.util.ParseError;
 import org.jproggy.snippetory.util.Token;
@@ -59,7 +58,7 @@ public class TemplateBuilder {
   }
 
   protected Region parse(Location parent) {
-    RegionBuilder reg = new RegionBuilder(parent);
+    RegionBuilder reg = new RegionBuilder(parent, nodes);
     Deque<RegionBuilder> regionStack = new ArrayDeque<>();
     Token last = null;
     while (parser.hasNext()) {
@@ -69,18 +68,7 @@ public class TemplateBuilder {
       try {
         switch (t.getType()) {
         case BlockStart: {
-          reg.checkNameUnique(t);
-          TemplateFragment end = reg.handleBackward(t);
-          Location placeHolder = nodes.placeHolder(reg.placeHolder, t);
-          if (t.getName() == null || placeHolder.metadata().controlsRegion()) {
-            regionStack.push(reg);
-            reg = new RegionBuilder(placeHolder);
-          } else {
-            reg.addPart(placeHolder);
-            Region template = parse(placeHolder);
-            reg.children.put(placeHolder.getName(), template);
-          }
-          if (end != null) reg.addPart(end);
+          reg = reg.handleBlockStart(t, regionStack, this);
           break;
         }
         case BlockEnd:
@@ -97,9 +85,8 @@ public class TemplateBuilder {
           }
           return nodes.buildRegion(reg.placeHolder, reg.parts, reg.children);
         case Field:
-          TemplateFragment end = reg.handleBackward(t);
-          reg.addPart(nodes.location(reg.placeHolder, t));
-          if (end != null) reg.addPart(end);
+          RegionBuilder.Delocation hit = reg.handleBackward(t);
+          reg.addPart(hit, nodes.location(reg.placeHolder, t));
           break;
         case TemplateData:
           reg.addPart(nodes.buildFragment(t));
