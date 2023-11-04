@@ -124,7 +124,8 @@ class SqlSyntaxTest {
     t.set("test", "xy");
     assertEquals("xybla", t.toString());
 
-    t = SYNTAX.parse("/*\t$test(*/test/*)*/bla");
+    t = SYNTAX.parse("/*\t$test(default='test'*/test/*)*/bla");
+    assertEquals("testbla", t.toString());
     t.set("test", "xy");
     assertEquals("xybla", t.toString());
 

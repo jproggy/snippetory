@@ -9,7 +9,7 @@ import org.jproggy.snippetory.util.RegExSyntax;
 import org.jproggy.snippetory.util.Token.TokenType;
 
 public class JBSyntax extends RegExSyntax {
-    protected static final String START_TOKEN = ":((?:" + NAME + ")?" + ATTRIBUTES + ")\\s*";
+    protected static final String START_TOKEN = ":((?:" + NAME + ")?" + ATTRIBUTES + ")";
     protected static final String END_TOKEN = ":(" + NAME + ")?";
 
     @Override
@@ -26,10 +26,10 @@ public class JBSyntax extends RegExSyntax {
     }
 
     private void addLocations(Map<Pattern, TokenType> patterns) {
-        Pattern field = Pattern.compile("\\{" + loc() +":(" + NAME + ATTRIBUTES + ")[ \\t]*}", Pattern.MULTILINE);
+        Pattern field = Pattern.compile("\\{" + loc() +":(" + NAME + ATTRIBUTES + ")[ \\t]*+}", Pattern.MULTILINE);
         patterns.put(field, TokenType.Field);
 
-        Pattern nameless = Pattern.compile("\\{" + loc() + ":\\s*(" + ATTRIBUTE + ATTRIBUTES + ")\\s*}", Pattern.MULTILINE);
+        Pattern nameless = Pattern.compile("\\{" + loc() + ":\\s*+(" + ATTRIBUTE + ATTRIBUTES + ")\\s*+}", Pattern.MULTILINE);
         patterns.put(nameless, TokenType.Field);
     }
 

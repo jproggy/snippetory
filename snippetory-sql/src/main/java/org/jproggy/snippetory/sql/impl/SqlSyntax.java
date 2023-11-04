@@ -32,11 +32,11 @@ public class SqlSyntax extends FluytSyntax implements SyntaxID {
     field = ":(" + NAME + ")" ;
     createFieldPattern(patterns, SyntaxVariant.Named, field);
 
-    field = "/\\*[ \t]*" + NAMED_LOC + "[ \t]*\\*/" ;
+    field = "/\\*[ \t]*+" + NAMED_LOC + "[ \t]*+\\*/" ;
     createFieldPattern(patterns, SyntaxVariant.Named, field);
 
-    String mock = "[ \t]*\\*/([^/\\*]*)/\\*[ \t]*";
-    field = "/\\*[ \t]*\\$(" + NAME + "\\((?:" + PLAIN_ATTRIBS + ")?)" + mock + "\\)[ \t]*\\*/";
+    String mock = "[ \t]*+\\*/([^/\\*]*+)/\\*[ \t]*+";
+    field = "/\\*[ \t]*+\\$(" + NAME + "\\((?:" + PLAIN_ATTRIBS + ")?)" + mock + "\\)[ \t]*+\\*/";
     createFieldPattern(patterns, SyntaxVariant.Named, field);
 
     return patterns;

@@ -25,26 +25,26 @@ import org.jproggy.snippetory.spi.Syntax;
 import org.jproggy.snippetory.util.Token.TokenType;
 
 public abstract class RegExSyntax implements Syntax {
-  protected static final String LINE_END = "[ \\t]*(?>(?>\\r\\n?)|\\n|\\u0085|\\u2028|\\u2029|\\Z)";
-  protected static final String LINE_START = "^[ \\t]*";
+  protected static final String LINE_END = "[ \\t]*+(?>(?>\\r\\n?)|\\n|\\u0085|\\u2028|\\u2029|\\Z)";
+  protected static final String LINE_START = "^[ \\t]*+";
 
   protected static final String NAME_START_CHAR = "[\\p{javaJavaIdentifierStart}&&[^$]]";
   protected static final String NAME_CHAR = "[\\p{javaJavaIdentifierPart}.\\-&&[^$]]";
-  protected static final String NAME = NAME_START_CHAR + NAME_CHAR + "*";
+  protected static final String NAME = NAME_START_CHAR + NAME_CHAR + "*+";
 
   protected static final String ESCAPES = "\\\\\\\\|\\\\'|\\\\\"|\\\\n|\\\\r|\\\\b|\\\\t|\\\\f";
   private static final String QUOTE_VALUE = "\\\"(?:" + ESCAPES + "|[^\\\\\"])*\\\"";
   private static final String APOS_VALUE = "\\'(?:" + ESCAPES + "|[^\\\\'])*\\'";
   protected static final String ATTRIBUTE = NAME + "=(?:" + APOS_VALUE + "|" + QUOTE_VALUE + ")";
-  protected static final String ATTRIBUTES = "(?:\\s+" + ATTRIBUTE + ")*";
+  protected static final String ATTRIBUTES = "(?:\\s++" + ATTRIBUTE + ")*+";
 
-  private static final String QUOTE_CONTENT = "\"((?>" + ESCAPES + "|[^\\\\\"])*)\")";
-  private static final String APOS_CONTENT = "'((?>" + ESCAPES + "|[^'])*)'";
+  private static final String QUOTE_CONTENT = "\"((?>" + ESCAPES + "|[^\\\\\"])*+)\")";
+  private static final String APOS_CONTENT = "'((?>" + ESCAPES + "|[^'])*+)'";
   private static final String CONTENT = "(" + NAME + ")=(?>" + APOS_CONTENT + "|" + QUOTE_CONTENT + "|(" + NAME + ")";
 
   private static final String REM_START = "(?://|/\\*|<!--|--|#|'|rem)";
   protected static final Pattern SYNTAX_SELECTOR = Pattern.compile(LINE_START + "(?:" + REM_START
-          + "[ \\t]*Syntax|<s):(" + NAME + ")(?:\\*/|-|/|>| |\\t)*" + LINE_END, Pattern.MULTILINE);
+          + "[ \\t]*+Syntax|<s):(" + NAME + ")(?:\\*/|-|/|>| |\\t)*" + LINE_END, Pattern.MULTILINE);
 
   @Override
   public abstract RegexParser parse(CharSequence data, TemplateContext ctx);

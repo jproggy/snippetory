@@ -22,7 +22,7 @@ public class HiddenBlocksSyntax extends JBSyntax {
 
   @Override
   protected String regionSuffix() {
-    return "[ \\t]*(?:-->|\\*/)";
+    return "(?:[ \\t]++-->|[ \\t]*+\\*/)";
   }
 
   @Override
