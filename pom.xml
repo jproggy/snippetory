@@ -12,11 +12,6 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>9</version>
-    </parent>
     <groupId>org.jproggy</groupId>
     <artifactId>snippetory</artifactId>
     <version>1.0.0-SNAPSHOT</version>
@@ -71,7 +66,7 @@
         <gpg.keyname>Templa Project</gpg.keyname>
         <gpg.passphraseServerId>gpg</gpg.passphraseServerId>
         <!-- versions -->
-        <junit-jupiter.version>5.9.0</junit-jupiter.version>
+        <junit-jupiter.version>5.10.1</junit-jupiter.version>
         <junit.version>4.13.2</junit.version>
         <!-- Sonar -->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -86,7 +81,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
-                <version>5.4.0</version>
+                <version>5.7.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -102,7 +97,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.8.2</version>
+                <version>3.1.1</version>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
@@ -110,7 +105,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.11.0</version>
                 <configuration>
                     <source>11</source>
                     <target>11</target>
@@ -120,7 +115,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M5</version>
+                <version>3.2.2</version>
                 <configuration>
                     <useModulePath>false</useModulePath>  <!-- tests use classpath -->
                 </configuration>
@@ -128,7 +123,7 @@
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.8</version>
+                <version>1.6.13</version>
                 <extensions>true</extensions>
                 <configuration>
                     <serverId>ossrh</serverId>
@@ -139,7 +134,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.7</version>
+				<version>0.8.11</version>
 				<configuration>
 					<append>true</append>
 				</configuration>

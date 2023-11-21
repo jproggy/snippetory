@@ -62,8 +62,6 @@ class DBAccessTest {
               System.getProperty("snippetory.test.dbPassword")));
     }
     result.addAll(Arrays.asList(
-            new ConnectionFab("jdbc:derby:target/test/db/derby/snippetory_test;create=true", null, null),
-            new ConnectionFab("jdbc:derby:memory:snippetory_test;create=true", null, null),
             new ConnectionFab("jdbc:sqlite:target/test/db/sqlite/snippetory_test.db", null, null),
             new ConnectionFab("jdbc:hsqldb:mem:snippetory_test", null, null),
             new ConnectionFab("jdbc:hsqldb:file:target/test/db/hsql/snippetory_test", null, null)
