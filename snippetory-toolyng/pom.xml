@@ -3,10 +3,10 @@
     <parent>
         <groupId>org.jproggy</groupId>
         <artifactId>snippetory</artifactId>
-        <version>0.9.7</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>snippetory-toolyng</artifactId>
-    <version>0.9.7</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Snippetory Toolyng</name>
     <description>Tool support for Snippetory code generation platform</description>
     <url>https://www.jproggy.org/snippetory/intact-templates</url>
