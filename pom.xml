@@ -235,6 +235,9 @@
                             <goals>deploy</goals>
                             <tagNameFormat>v${project.version}</tagNameFormat>
                             <updateBranchVersions>true</updateBranchVersions>
+                            <updateWorkingCopyVersions>false</updateWorkingCopyVersions>
+                            <suppressCommitBeforeBranch>true</suppressCommitBeforeBranch>
+                            <remoteTagging>false</remoteTagging>
                         </configuration>
                     </plugin>
                 </plugins>
