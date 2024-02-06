@@ -15,7 +15,7 @@
 	<parent>
 		<groupId>org.jproggy</groupId>
 		<artifactId>snippetory</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>0.9.7</version>
 	</parent>
 	<artifactId>snippetory-sql</artifactId>
 	<name>Snippetory SQL Repository</name>
@@ -45,7 +45,8 @@
 	</developers>
 	<scm>
 		<url>https://gitlab.com/jproggy/Snippetory/</url>
-	</scm>
+	  <tag>v0.9.7</tag>
+  </scm>
 	<issueManagement>
 		<url>https://github.com/jproggy/Snippetory/issues</url>
 	</issueManagement>

@@ -14,7 +14,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jproggy</groupId>
     <artifactId>snippetory</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>0.9.7</version>
     <packaging>pom</packaging>
     <name>Snippetory Code Generation Platform</name>
     <description>
@@ -50,7 +50,8 @@
         <url>https://gitlab.com/jproggy/Snippetory</url>
         <developerConnection>scm:git:git@gitlab.com:jproggy/Snippetory.git</developerConnection>
         <connection>scm:git:git@gitlab.com:jproggy/Snippetory.git</connection>
-    </scm>
+      <tag>v0.9.7</tag>
+  </scm>
     <issueManagement>
         <url>https://github.com/jproggy/Snippetory/issues</url>
     </issueManagement>
@@ -78,7 +79,7 @@
             <dependency>
                 <groupId>org.jproggy</groupId>
                 <artifactId>snippetory-core</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>0.9.7</version>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
