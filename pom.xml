@@ -48,6 +48,8 @@
     </modules>
     <scm>
         <url>https://gitlab.com/jproggy/Snippetory</url>
+        <developerConnection>scm:git:git@gitlab.com:jproggy/Snippetory.git</developerConnection>
+        <connection>scm:git:git@gitlab.com:jproggy/Snippetory.git</connection>
     </scm>
     <issueManagement>
         <url>https://github.com/jproggy/Snippetory/issues</url>
@@ -161,6 +163,20 @@
                   </execution>
                 </executions>
 			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <index>true</index>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <profiles>
@@ -217,6 +233,8 @@
                             <useReleaseProfile>false</useReleaseProfile>
                             <releaseProfiles>release</releaseProfiles>
                             <goals>deploy</goals>
+                            <tagNameFormat>v${project.version}</tagNameFormat>
+                            <updateBranchVersions>true</updateBranchVersions>
                         </configuration>
                     </plugin>
                 </plugins>
