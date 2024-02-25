@@ -73,6 +73,9 @@ public class TemplateBuilder {
         }
         case BlockEnd:
           reg.verifyName(t);
+          if (parent.getParent() == null && regionStack.isEmpty()) {
+            throw new ParseError("No start region tag found.", t);
+          }
           if (!regionStack.isEmpty()) {
             ConditionalRegion r = nodes.buildConditional(reg.placeHolder, reg.parts, reg.children);
             if (r.names().isEmpty() && !reg.placeHolder.metadata().controlsRegion()) {

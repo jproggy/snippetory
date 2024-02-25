@@ -32,7 +32,7 @@ class HiddenBloxTest {
     assertEquals(" i++; ", t3.get("test").toString());
     Template t4 = HIDDEN_BLOCKS.parse("<!--t:test --> i++; <!--!t:test -->");
     assertEquals(" i++; ", t4.get("test").toString());
-    Template t5 = HIDDEN_BLOCKS.parse("/*t:test pad=\"10\"*/ i++; /*!t:test*/");
+    Template t5 = HIDDEN_BLOCKS.parse("/*t:test pad=\"10\" */ i++; /*!t:test\t*/");
     t5.get("test").render();
     assertEquals(" i++;     ", t5.toString());
     Template t6 = HIDDEN_BLOCKS.parse("<!--t:test date=''*/ i++; /*!t:test -->");
@@ -45,13 +45,13 @@ class HiddenBloxTest {
     Template t1 = HIDDEN_BLOCKS.parse("  /*t:test*/  \n i++; \n   /*!t:test*/  \n");
     t1.append("test", t1.get("test"));
     assertEquals(" i++; \n", t1.toString());
-    t1 = HIDDEN_BLOCKS.parse("/*t:test*/\n i++; \n/*!t:test*/\n");
+    t1 = HIDDEN_BLOCKS.parse("/*t:test*/\n i++; \n/*!t:test */\n");
     t1.append("test", t1.get("test"));
     assertEquals(" i++; \n", t1.toString());
     t1 = HIDDEN_BLOCKS.parse("/*t:test*/  \n i++; \n   /*!t:test*/\n");
     t1.append("test", t1.get("test"));
     assertEquals(" i++; \n", t1.toString());
-    t1 = HIDDEN_BLOCKS.parse("  /*t:test*/\n i++; \n/*!t:test*/  ");
+    t1 = HIDDEN_BLOCKS.parse("  /*t:test*/\n i++; \n/*!t:test */  ");
     t1.append("test", t1.get("test"));
     assertEquals(" i++; \n", t1.toString());
     Template t7 = HIDDEN_BLOCKS.parse("  /*t:test crop='4' crop.mark='-' -->  \n i++; \n   <!--!t:test*/  \n");

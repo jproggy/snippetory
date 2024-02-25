@@ -18,6 +18,7 @@ import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.jproggy.snippetory.Syntaxes.FLUYT;
 import static org.jproggy.snippetory.Syntaxes.FLUYT_CC;
+import static org.jproggy.snippetory.Syntaxes.FLUYT_X;
 import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -202,7 +203,11 @@ class BasicTest {
 
     e = assertThrows(ParseError.class, () -> XML_ALIKE.parse("before<<t:>startend</t>after"));
     assertEquals("1 unclosed conditional regions detected\n" +
-            "Error while parsing startend</t>after at line 1 character 11", e.getMessage());
+        "Error while parsing startend</t>after at line 1 character 11", e.getMessage());
+
+    e = assertThrows(ParseError.class, () -> XML_ALIKE.parse("before<t>startend</t:>after"));
+    assertEquals("No start region tag found.\n" +
+        "Error while parsing </t:> at line 1 character 17", e.getMessage());
   }
 
   @Test
@@ -277,8 +282,8 @@ class BasicTest {
 
   @Test
   void conditionalRegions() {
-    Template t = XML_ALIKE.read(
-            "before-><t:test><t: pad='30' pad.align='right'><t: pad='12' pad.fill='.'>start{v:test}</t:><middle>{v:test}end</t:></t:test><-after"
+    Template t = FLUYT_X.read(
+            "before-><t:test><t: pad='30' pad.align='right' ><t: pad='12' pad.fill='.' >start$test$</t:><middle>$test$end</t:></t:test><-after"
     ).parse();
     assertEquals("before-><-after", t.toString());
     Template test = t.get("test");

@@ -51,7 +51,7 @@ public class JBSyntax extends RegExSyntax {
     }
 
     protected String regionSuffix() {
-        return ">";
+        return "[ \\t]*+>";
     }
 
     protected String endSign() {

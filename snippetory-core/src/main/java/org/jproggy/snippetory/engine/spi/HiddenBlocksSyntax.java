@@ -22,6 +22,7 @@ public class HiddenBlocksSyntax extends JBSyntax {
 
   @Override
   protected String regionSuffix() {
+    // require whitespace before --> because - is a valid name character.
     return "(?:[ \\t]++-->|[ \\t]*+\\*/)";
   }
 

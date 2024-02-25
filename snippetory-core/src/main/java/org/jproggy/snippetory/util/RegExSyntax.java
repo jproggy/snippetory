@@ -56,7 +56,7 @@ public abstract class RegExSyntax implements Syntax {
     return p;
   }
 
-  protected static class RegexParser implements Syntax.Tokenizer {
+  public static class RegexParser implements Syntax.Tokenizer {
     private final Map<Pattern, TokenType> patterns;
     private final Matcher matcher;
     private final CharSequence data;
