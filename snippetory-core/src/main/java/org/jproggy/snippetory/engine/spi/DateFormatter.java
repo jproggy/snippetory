@@ -61,7 +61,7 @@ public class DateFormatter implements FormatFactory {
     // sql
     if ("iso".equals(definition)) return DateTimeFormatter.ISO_DATE;
     if ("_iso".equals(definition)) return DateTimeFormatter.ISO_TIME;
-    if ("iso_iso".equals(definition)) return DateTimeFormatter.ISO_DATE_TIME;
+    if ("iso_iso".equals(definition)) return DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
     // iso
     if ("sql".equals(definition)) return DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US);

@@ -14,6 +14,7 @@
 
 package org.jproggy.snippetory.test;
 
+import static org.jproggy.snippetory.Syntaxes.FLUYT_X;
 import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -21,11 +22,21 @@ import java.time.LocalDate;
 import java.time.Year;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.Temporal;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Test;
 
 import org.jproggy.snippetory.Template;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.junit.jupiter.params.provider.ArgumentsSources;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class DateFormatTest {
   static {
@@ -35,53 +46,52 @@ class DateFormatTest {
   private static final ZonedDateTime D1 = LocalDate.parse("2011-10-15").atStartOfDay(ZoneId.of("GMT"));
   private static final ZonedDateTime D1_TIME = ZonedDateTime.parse("2011-10-15T01:05:15Z[GMT]");
 
-  @Test
-  void jsDate() {
-    Template date = XML_ALIKE.parse("{v:test date='JS'}");
-    date.set("test", D1);
-    assertEquals("new Date(2011, 10, 15)", date.toString());
+  @ParameterizedTest
+  @CsvSource(value = {
+      "{v:test date='JS'}|Asia/Kolkata|new Date(2011, 10, 15)|new Date(2011, 10, 15)",
+      "{v:test date='JS_JS'}|Europe/Paris|new Date(2011, 10, 15, 00, 00, 00)|new Date(2011, 10, 15, 01, 05, 15)",
+      "{v:test date='_JS'}|America/New_York|new Date(0, 0, 0, 00, 00, 00)|new Date(0, 0, 0, 01, 05, 15)",
+  }, delimiter = '|')
+  void jsDate(String template, ZoneId z, String result, String result_time) {
+    Template date = XML_ALIKE.parse(template);
+    assertEquals(result, date.set("test", D1.withZoneSameLocal(z)).toString());
+    assertEquals(result_time, date.set("test", D1_TIME.withZoneSameLocal(z)).toString());
   }
 
-  @Test
-  void jsTime() {
-    Template date = XML_ALIKE.parse("{v:test date='_JS'}");
-    date.set("test", D1_TIME);
-    assertEquals("new Date(0, 0, 0, 01, 05, 15)", date.toString());
+  public static Stream<Temporal> yearRepresentations() {
+    Year y = Year.of(2011);
+    return Stream.of(y, y.atMonth(10), y.atDay(200), y.atMonth(10).atDay(10), D1, D1_TIME);
   }
-
-  @Test
-  void js() {
-    Template date = XML_ALIKE.parse("{v:test date='JS_JS'}", Locale.GERMAN);
-    date.set("test", D1_TIME);
-    assertEquals("new Date(2011, 10, 15, 01, 05, 15)", date.toString());
-  }
-
-  @Test
-  void year() {
+  @ParameterizedTest
+  @MethodSource("yearRepresentations")
+  void year(Temporal y) {
     Template date = XML_ALIKE.parse("{v:test date='yy'}", Locale.GERMAN);
-    date.set("test", Year.of(2000));
-    assertEquals("00", date.toString());
+    assertEquals("11", date.set("test", y).toString());
   }
 
-  @Test
-  void sqlDate() {
-    Template date = XML_ALIKE.parse("{v:test date='sql'}");
-    date.set("test", D1);
-    assertEquals("2011-10-15", date.toString());
+  @ParameterizedTest
+  @CsvSource(value = {
+      "$test(date='sql')|2011-10-15|2011-10-15",
+      "$test(date='sql_sql')|2011-10-15 00:00:00|2011-10-15 01:05:15",
+      "$test(date='_sql')|00:00:00|01:05:15",
+  }, delimiter = '|')
+  void sqlDate(String template, String result, String result_time) {
+    Template date = FLUYT_X.parse(template);
+    assertEquals(result, date.set("test", D1).toString());
+    assertEquals(result_time, date.set("test", D1_TIME).toString());
   }
 
-  @Test
-  void sql() {
-    Template date = XML_ALIKE.parse("{v:test date='sql_sql'}", Locale.GERMAN);
-    date.set("test", D1_TIME);
-    assertEquals("2011-10-15 01:05:15", date.toString());
-  }
-
-  @Test
-  void sqlTime() {
-    Template date = XML_ALIKE.parse("{v:test date='_sql'}");
-    date.set("test", D1_TIME);
-    assertEquals("01:05:15", date.toString());
+  @ParameterizedTest
+  @CsvSource(value = {
+      "$test(date='iso')|Asia/Kolkata|2011-10-15+05:30|2011-10-15+05:30",
+      "$test(date='iso')|UTC|2011-10-15Z|2011-10-15Z",
+      "$test(date='iso_iso')|Etc/GMT+10|2011-10-15T00:00:00-10:00|2011-10-15T01:05:15-10:00",
+      "$test(date='_iso')|+01:00|00:00:00+01:00|01:05:15+01:00",
+  }, delimiter = '|')
+  void isoDate(String template, ZoneId z, String result, String result_time) {
+    Template date = FLUYT_X.context().parse(template);
+    assertEquals(result, date.set("test", D1.withZoneSameLocal(z)).toString());
+    assertEquals(result_time, date.set("test", D1_TIME.withZoneSameLocal(z)).toString());
   }
 
   @Test
@@ -91,11 +101,14 @@ class DateFormatTest {
     assertEquals("15. Oktober 2011", date.toString());
   }
 
-  @Test
-  void germanFullShort() {
-    Template date = XML_ALIKE.parse("{v:test date='full_short'}", Locale.GERMAN);
+  @ParameterizedTest
+  @CsvSource(value = { "de|Samstag, 15. Oktober 2011, 00:00", "en_GB|2011 Oct 15, Sat 00:00",
+      "en_US|2011 Oct 15, Sat 00:00", "ko|2011년 10월 15일 토요일 오전 12:00", "fr_CH|2011 Oct 15, Sat 00:00" },
+      delimiter = '|')
+  void localFullShort(Locale l, String result) {
+    Template date = XML_ALIKE.parse("{v:test date='full_short'}", l);
     date.set("test", D1);
-    assertEquals("Samstag, 15. Oktober 2011, 00:00", date.toString());
+    assertEquals(result, date.toString());
   }
 
   @Test
@@ -196,30 +209,10 @@ class DateFormatTest {
     assertEquals("2011. 10. 15.", date.toString());
   }
 
-  @Test
-  void defaultGerman1() {
-    Template date = XML_ALIKE.parse("{v:test}", Locale.GERMAN);
-    date.set("test", D1);
-    assertEquals("15.10.2011", date.toString());
-  }
-
-  @Test
-  void defaultGerman2() {
-    Template date = XML_ALIKE.parse("{v:test date=\"\"}", Locale.GERMAN);
-    date.set("test", D1);
-    assertEquals("15.10.2011", date.toString());
-  }
-
-  @Test
-  void defaultGerman3() {
-    Template date = XML_ALIKE.parse("<t:test date=''></t:test>", Locale.GERMAN);
-    date.set("test", D1);
-    assertEquals("15.10.2011", date.toString());
-  }
-
-  @Test
-  void defaultGerman4() {
-    Template date = XML_ALIKE.parse("<t:test date=\"\"></t:test>", Locale.GERMAN);
+  @ParameterizedTest
+  @CsvSource({"{v:test}", "{v:test date=\"\"}", "<t:test date=''></t:test>", "<t:test date=\"\"></t:test>"} )
+  void defaultGerman(String template) {
+    Template date = XML_ALIKE.parse(template, Locale.GERMAN);
     date.set("test", D1);
     assertEquals("15.10.2011", date.toString());
   }
