@@ -25,7 +25,7 @@ public class JBSyntax extends RegExSyntax {
         return new RegexParser(data, ctx, patterns);
     }
 
-    private void addLocations(Map<Pattern, TokenType> patterns) {
+    protected void addLocations(Map<Pattern, TokenType> patterns) {
         Pattern field = Pattern.compile("\\{" + loc() +":(" + NAME + ATTRIBUTES + ")[ \\t]*+}", Pattern.MULTILINE);
         patterns.put(field, TokenType.Field);
 

@@ -14,18 +14,21 @@
 
 package org.jproggy.snippetory.engine.spi;
 
+import org.jproggy.snippetory.util.Token.TokenType;
+
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.jproggy.snippetory.util.Token.TokenType;
-
-public class XMLAlikeSyntax extends JBSyntax {
+public class FluytXASyntax extends FluytSyntax {
   public static final Pattern NAMESPACE_URI = Pattern.compile(
       " xmlns:t=\"http://www\\.jproggy\\.org/snippetory/[a-zA-Z_]++\\.xsd\"");
 
   @Override
-  protected void addComments(Map<Pattern, TokenType> patterns) {
-    super.addComments(patterns);
+  protected Map<Pattern, TokenType> createPatterns() {
+    Map<Pattern, TokenType> patterns = super.createPatterns();
+    new XMLAlikeSyntax().addRegions(patterns);
+    new XMLAlikeSyntax().addLocations(patterns);
     patterns.put(NAMESPACE_URI, TokenType.Comment);
+    return patterns;
   }
 }

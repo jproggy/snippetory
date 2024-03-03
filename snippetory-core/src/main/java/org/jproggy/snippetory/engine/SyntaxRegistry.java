@@ -7,6 +7,7 @@ import org.jproggy.snippetory.SnippetoryException;
 import org.jproggy.snippetory.Syntaxes;
 import org.jproggy.snippetory.engine.spi.FluytCCSyntax;
 import org.jproggy.snippetory.engine.spi.FluytSyntax;
+import org.jproggy.snippetory.engine.spi.FluytXASyntax;
 import org.jproggy.snippetory.engine.spi.FluytXSyntax;
 import org.jproggy.snippetory.engine.spi.HiddenBlocksSyntax;
 import org.jproggy.snippetory.engine.spi.UnderUnderScorySyntax;
@@ -23,6 +24,7 @@ public final class SyntaxRegistry {
         register(Syntaxes.FLUYT, new FluytSyntax());
         register(Syntaxes.FLUYT_CC, new FluytCCSyntax());
         register(Syntaxes.FLUYT_X, new FluytXSyntax());
+        register(Syntaxes.FLUYT_XA, new FluytXASyntax());
         register(Syntaxes.__SCORY, new UnderUnderScorySyntax());
     }
 

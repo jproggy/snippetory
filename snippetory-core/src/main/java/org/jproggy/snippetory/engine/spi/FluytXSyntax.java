@@ -20,12 +20,14 @@ import java.util.regex.Pattern;
 import org.jproggy.snippetory.util.Token.TokenType;
 
 public class FluytXSyntax extends FluytSyntax {
+  public static final Pattern NAMESPACE_URI = Pattern.compile(
+      " xmlns:t=\"http://www\\.jproggy\\.org/snippetory/[a-zA-Z_]++\\.xsd\"");
 
   @Override
   protected Map<Pattern, TokenType> createPatterns() {
     Map<Pattern, TokenType> patterns = super.createPatterns();
     new XMLAlikeSyntax().addRegions(patterns);
+    patterns.put(NAMESPACE_URI, TokenType.Comment);
     return patterns;
   }
-
 }

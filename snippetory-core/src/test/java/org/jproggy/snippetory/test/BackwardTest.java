@@ -3,6 +3,7 @@ package org.jproggy.snippetory.test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.jproggy.snippetory.Syntaxes.FLUYT;
 import static org.jproggy.snippetory.Syntaxes.FLUYT_CC;
+import static org.jproggy.snippetory.Syntaxes.FLUYT_XA;
 import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
 import static org.jproggy.snippetory.test.BasicTest.containsStrings;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,7 +33,7 @@ public class BackwardTest {
 
     @Test
     void condRegionHop() {
-        Template t = FLUYT.parse("before$(default='-'){->$x<-}$after$test(backward='before')");
+        Template t = FLUYT_XA.parse("before$(default='-'){->$x<-}$after$test(backward='before')");
         assertEquals("before-after", t.toString());
         t.set("test", "blub");
         assertEquals("blub-after", t.toString());
@@ -52,7 +53,7 @@ public class BackwardTest {
         t.set("x", "x");
         assertEquals("blub->x<-after", t.toString());
         ParseError e = assertThrows(ParseError.class, () ->
-                FLUYT.parse("before-after$(backward='-'){->$test<-}$"));
+                FLUYT_XA.parse("before-after$(backward='-'){->$test<-}$"));
         assertThat(e.getMessage(), containsStrings( "not supported"));
     }
 
@@ -102,7 +103,7 @@ public class BackwardTest {
         e = assertThrows(ParseError.class, () -> FLUYT_CC.parse("12345 // $test(backward='1(3)')"));
         assertThat(e.getMessage(), containsStrings("not found", "<1(3)>"));
 
-        e = assertThrows(ParseError.class, () -> XML_ALIKE.parse(
+        e = assertThrows(ParseError.class, () -> FLUYT_XA.parse(
                 "Hello world{v:x backward='(Hello)(v)' default='Liahallo'}{v:x backward='world' default='Welt'}"
         ));
         assertThat(e.getMessage(), containsStrings(
@@ -111,7 +112,7 @@ public class BackwardTest {
                 "{v:x backward='(Hello)(v)' default='Liahallo'}"
         ));
 
-        e = assertThrows(ParseError.class, () -> XML_ALIKE.parse(
+        e = assertThrows(ParseError.class, () -> FLUYT_XA.parse(
                 "Hello Hello world{v:x backward='Hello'}"
         ));
         assertThat(e.getMessage(), containsStrings(

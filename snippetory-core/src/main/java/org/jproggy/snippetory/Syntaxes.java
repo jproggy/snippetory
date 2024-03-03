@@ -123,6 +123,18 @@ public enum Syntaxes implements SyntaxID {
   FLUYT_X,
 
   /**
+   * If fully compatible wit FLUYT and XML_ALIKE
+   * <pre>
+   * &lt;t:region&gt;
+   * <b>&lt;div</b> ${<b>title="</b>$optional-title<b>"</b>}$ ${<b>style="</b>$optional-style<b>"</b>}$&gt;
+   * <b>&lt;a href="../</b>{v:}productId enc="url"}<b>/details.html"&gt;</b>$(msg="view_details")<b>&lt;/a&gt;</b>
+   * <b>&lt;/div&gt;</b>
+   * &lt;/t:region&gt;
+   * </pre>
+   */
+  FLUYT_XA,
+
+  /**
    * This syntax allows template markup, that is invisible to the parser
    * of many output formats. There are variants based on &lt;!-- --&gt; and on
    * &#47;* *&#47; that can be mixed freely as needed:
