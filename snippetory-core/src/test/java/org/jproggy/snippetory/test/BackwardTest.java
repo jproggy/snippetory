@@ -9,7 +9,6 @@ import static org.jproggy.snippetory.test.BasicTest.containsStrings;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import org.jproggy.snippetory.Template;

@@ -14,6 +14,10 @@
 
 package org.jproggy.snippetory.sql;
 
+import static java.util.Collections.emptyIterator;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
+
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Writer;
@@ -21,7 +25,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,8 +34,6 @@ import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.sql.spi.RowProcessor;
 import org.jproggy.snippetory.sql.spi.RowTransformer;
-
-import static java.util.Collections.emptySet;
 
 /**
  * Represents the template of a statement and methods to bind data as well as to tailor this statement
@@ -64,7 +66,7 @@ public interface Statement extends Template {
 
     @Override
     public PreparedStatement getStatement(Connection conn) throws SQLException {
-      return null;
+      throw new SQLException();
     }
 
     @Override
@@ -74,17 +76,27 @@ public interface Statement extends Template {
 
     @Override
     public <K, V> Map<K, V> map(RowTransformer<K> key, RowTransformer<V> value) {
-      return null;
+      return emptyMap();
     }
 
     @Override
     public <T> T one(RowTransformer<T> transformer) throws ResultCountException {
-      return null;
+      throw new ResultCountException(0);
     }
 
     @Override
     public <T> Cursor<T> cursor(RowTransformer<T> transformer) {
-      return null;
+      return new Cursor<T>() {
+        @Override
+        public Iterator<T> iterator() {
+          return emptyIterator();
+        }
+
+        @Override
+        public void close() {
+
+        }
+      };
     }
 
     @Override

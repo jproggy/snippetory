@@ -28,7 +28,7 @@ public class Repository {
   }
 
   public Statement get(String... name) {
-    return (Statement)repo.get(name);
+    return repo.get(name);
   }
 
   /**
