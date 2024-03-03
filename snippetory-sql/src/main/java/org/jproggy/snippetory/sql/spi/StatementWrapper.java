@@ -36,6 +36,10 @@ public abstract class StatementWrapper extends TemplateWrapper implements Statem
   }
 
   @Override
+  public Statement get(String... name) {
+    return wrapped().get(name);
+  }
+  @Override
   public Statement set(String name, Object value) {
     return wrapped().set(name, value);
   }

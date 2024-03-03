@@ -14,16 +14,24 @@
 
 package org.jproggy.snippetory.sql;
 
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.Writer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.jproggy.snippetory.Encodings;
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.sql.spi.RowProcessor;
 import org.jproggy.snippetory.sql.spi.RowTransformer;
+
+import static java.util.Collections.emptySet;
 
 /**
  * Represents the template of a statement and methods to bind data as well as to tailor this statement
@@ -38,12 +46,112 @@ import org.jproggy.snippetory.sql.spi.RowTransformer;
  * @author B.Ebertz
  */
 public interface Statement extends Template {
+  Statement NO_STATEMENT = new Statement() {
+    @Override
+    public Statement set(String name, Object value) {
+      return this;
+    }
+
+    @Override
+    public Statement append(String name, Object value) {
+      return this;
+    }
+
+    @Override
+    public Statement clear() {
+      return this;
+    }
+
+    @Override
+    public PreparedStatement getStatement(Connection conn) throws SQLException {
+      return null;
+    }
+
+    @Override
+    public void forEach(RowProcessor proc) {
+
+    }
+
+    @Override
+    public <K, V> Map<K, V> map(RowTransformer<K> key, RowTransformer<V> value) {
+      return null;
+    }
+
+    @Override
+    public <T> T one(RowTransformer<T> transformer) throws ResultCountException {
+      return null;
+    }
+
+    @Override
+    public <T> Cursor<T> cursor(RowTransformer<T> transformer) {
+      return null;
+    }
+
+    @Override
+    public long executeUpdate() {
+      return 0;
+    }
+
+    @Override
+    public Statement get(String... name) {
+      return this;
+    }
+
+    @Override
+    public void render(Template target, String name) {
+
+    }
+
+    @Override
+    public void render(Writer out) throws IOException {
+
+    }
+
+    @Override
+    public void render(PrintStream out) throws IOException {
+
+    }
+
+    @Override
+    public Set<String> names() {
+      return emptySet();
+    }
+
+    @Override
+    public Set<String> regionNames() {
+      return emptySet();
+    }
+
+    @Override
+    public Template getParent() {
+      return null;
+    }
+
+    @Override
+    public boolean isPresent() {
+      return false;
+    }
+
+    @Override
+    public String getEncoding() {
+      return Encodings.NULL.name();
+    }
+
+    @Override
+    public CharSequence toCharSequence() {
+      return "";
+    }
+  };
+
   @Override
   Statement set(String name, Object value);
   @Override
   Statement append(String name, Object value);
   @Override
   Statement clear();
+
+  @Override
+  Statement get(String... name);
 
   /**
    * Create a prepared statement from the provided connection and bind the data, provided via the statements

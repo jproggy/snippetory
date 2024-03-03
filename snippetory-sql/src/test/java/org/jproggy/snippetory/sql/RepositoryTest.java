@@ -15,6 +15,7 @@
 package org.jproggy.snippetory.sql;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -62,6 +63,14 @@ class RepositoryTest {
     statement.forEach(null);
     verify(stmt).setString(1, "test1");
     verify(stmt).setString(2, "test2");
+  }
+
+  @Test
+  public void notFound() throws Exception {
+    ConnectionProvider cp = connectionProvider();
+    repo = ctx.connections(cp).getRepository("TestRepo.sql");
+    Statement statement = repo.get("bla");
+    assertFalse(statement.isPresent());
   }
 
   @Test

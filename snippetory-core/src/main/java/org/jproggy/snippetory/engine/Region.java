@@ -61,12 +61,16 @@ public class Region implements Template, CharSequence, SelfAppender {
   public Template get(String... path) {
     if (path.length == 0) return cleanCopy();
     Template t = getChild(path[0]);
-    if (t == null) return Template.NONE;
+    if (t == null) return none();
     for (int i = 1; i < path.length; i++) {
       t = t.get(path[i]);
-      if (t == null) return Template.NONE;
+      if (t == null) return none();
     }
     return t;
+  }
+
+  protected Template none() {
+    return Template.NONE;
   }
 
   protected Region cleanCopy() {

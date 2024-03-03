@@ -45,9 +45,9 @@ public class VariantResolver extends StatementWrapper {
   }
 
   @Override
-  public Template get(String... names) {
+  public Statement get(String... names) {
     if (names.length == 1) {
-      Template statement = super.get(names);
+      Statement statement = super.get(names);
       if (statement.regionNames().contains(variant)) {
         statement = statement.get(variant);
       }

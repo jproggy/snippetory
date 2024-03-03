@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.jproggy.snippetory.SnippetoryException;
+import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.engine.Location;
 import org.jproggy.snippetory.engine.Region;
 import org.jproggy.snippetory.sql.Cursor;
@@ -50,8 +51,8 @@ public class StatementImpl extends Region implements Statement, StatementBinder 
   }
 
   @Override
-  public StatementImpl get(String... path) {
-    return (StatementImpl)super.get(path);
+  public Statement get(String... path) {
+    return (Statement)super.get(path);
   }
 
   @Override
@@ -159,6 +160,11 @@ public class StatementImpl extends Region implements Statement, StatementBinder 
   @Override
   public int bindTo(PreparedStatement stmt, int offset) throws SQLException {
     return ((StatementBinder)data).bindTo(stmt, offset);
+  }
+
+  @Override
+  protected Statement none() {
+    return Statement.NO_STATEMENT;
   }
 
   private class DirectCursor<T> implements Cursor<T>, Iterator<T> {
