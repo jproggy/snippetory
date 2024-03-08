@@ -66,6 +66,8 @@
         </repository>
     </distributionManagement>
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <gpg.keyname>Templa Project</gpg.keyname>
         <gpg.passphraseServerId>gpg</gpg.passphraseServerId>
         <!-- versions -->
@@ -112,7 +114,6 @@
                 <configuration>
                     <source>11</source>
                     <target>11</target>
-					<encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
             <plugin>
