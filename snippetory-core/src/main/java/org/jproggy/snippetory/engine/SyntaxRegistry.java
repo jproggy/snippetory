@@ -40,7 +40,7 @@ public final class SyntaxRegistry {
     }
 
     public Syntax getDefault() {
-        return new XMLAlikeSyntax();
+        return byName(Syntaxes.FLUYT_XA.getName());
     }
 
     /**
