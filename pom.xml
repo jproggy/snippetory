@@ -45,6 +45,7 @@
         <module>snippetory-sql</module>
         <module>snippetory-toolyng</module>
         <module>snippetory-groovy</module>
+        <module>snippetory-cypher</module>
     </modules>
     <scm>
         <url>https://gitlab.com/jproggy/Snippetory</url>
