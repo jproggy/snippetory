@@ -15,6 +15,7 @@
 package org.jproggy.snippetory.spi;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import org.jproggy.snippetory.Template;
 import org.jproggy.snippetory.engine.EncodingRegistry;
@@ -95,4 +96,8 @@ public interface Encoding {
    * The identifier for registering and retrieval of this Encoding
    */
   String getName();
+
+  default boolean is(String name) {
+	  return Objects.equals(getName(), name);
+  }
 }

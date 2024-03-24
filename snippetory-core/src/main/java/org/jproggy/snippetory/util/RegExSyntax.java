@@ -14,6 +14,7 @@
 
 package org.jproggy.snippetory.util;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,9 +39,9 @@ public abstract class RegExSyntax implements Syntax {
   protected static final String ATTRIBUTE = NAME + "=(?:" + APOS_VALUE + "|" + QUOTE_VALUE + ")";
   protected static final String ATTRIBUTES = "(?:\\s++" + ATTRIBUTE + ")*+";
 
-  private static final String QUOTE_CONTENT = "\"((?>" + ESCAPES + "|[^\\\\\"])*+)\")";
+  private static final String QUOTE_CONTENT = "\"((?>" + ESCAPES + "|[^\\\\\"])*+)\"";
   private static final String APOS_CONTENT = "'((?>" + ESCAPES + "|[^'])*+)'";
-  private static final String CONTENT = "(" + NAME + ")=(?>" + APOS_CONTENT + "|" + QUOTE_CONTENT + "|(" + NAME + ")";
+  private static final String CONTENT = "(" + NAME + ")=(?>" + APOS_CONTENT + "|" + QUOTE_CONTENT + ")|(" + NAME + ")";
 
   private static final String REM_START = "(?://|/\\*|<!--|--|#|'|rem)";
   protected static final Pattern SYNTAX_SELECTOR = Pattern.compile(LINE_START + "(?:" + REM_START
@@ -130,6 +131,7 @@ public abstract class RegExSyntax implements Syntax {
     protected Token createToken(String varDef, TokenType type) {
       Matcher m = VARI.matcher(varDef);
       Token token = null;
+      Map<String, String> attibs = prepareAttribs(matcher.group());
       while (m.find()) {
         if (token == null) {
           token = new Token(m.group(4), matcher.group(), type, matcher.start(), this);
@@ -142,13 +144,19 @@ public abstract class RegExSyntax implements Syntax {
         String value = m.group(2);
         if (value == null) value = m.group(3);
         value = decode(value, token);
-        token.getAttributes().put(m.group(1), value);
+        attibs.put(m.group(1), value);
       }
       if (token == null) {
         // no name, no attributes
-        return new Token(null, matcher.group(), type, matcher.start(), this);
+        token = new Token(null, matcher.group(), type, matcher.start(), this);
       }
+      token.getAttributes().putAll(attibs);
       return token;
+    }
+
+    @SuppressWarnings({"java:S1162", "unsued"})
+    protected Map<String, String> prepareAttribs(String match) {
+      return new LinkedHashMap<>();
     }
 
     private String decode(String val, Token t) {
