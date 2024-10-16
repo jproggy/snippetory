@@ -69,7 +69,10 @@ public class CypherBuilder extends TemplateBuilder {
     @Override
     protected ConditionalRegion
     buildConditional(Location placeHolder, List<DataSink> parts, Map<String, Region> children) {
-      return new CypherConditionalRegion(placeHolder, parts, children);
+      var region =  new CypherConditionalRegion(placeHolder, parts, children);
+      placeHolder.metadata().linkConditionalRegion(region);
+      region.finish();
+      return region;
     }
   }
 }

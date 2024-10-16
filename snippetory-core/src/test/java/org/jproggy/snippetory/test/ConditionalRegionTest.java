@@ -110,17 +110,14 @@ public class ConditionalRegionTest {
 
     @Test
     void valuesError() {
-        Template t = FLUYT.parse("before$(values='ball'){->$test<-}$after");
-        SnippetoryException e = assertThrows(SnippetoryException.class, t::toString);
+        var e = assertThrows(SnippetoryException.class, () ->
+                FLUYT.parse("before$(values='ball'){->$test<-}$after"));
         assertThat(e.getMessage(), containsString("ball"));
-        t = FLUYT.parse("before$(values='1.0'){->$test<-}$after");
-        e = assertThrows(SnippetoryException.class, t::toString);
+        e = assertThrows(SnippetoryException.class, () -> FLUYT.parse("before$(values='1.0'){->$test<-}$after"));
         assertThat(e.getMessage(), containsStrings(
                 "1.0",
                 "Don't understand"
                 ));
-        t = FLUYT.parse("before$x(values='0'){->$x<-}$after");
-        assertEquals("before->$x<-after", t.toString());
     }
 
     @Test

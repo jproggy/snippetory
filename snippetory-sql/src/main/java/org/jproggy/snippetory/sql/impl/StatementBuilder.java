@@ -76,6 +76,7 @@ public class StatementBuilder extends TemplateBuilder {
     buildConditional(Location placeHolder, List<DataSink> parts, Map<String, Region> children) {
       ConditionalSqlRegion region = new ConditionalSqlRegion(placeHolder, parts, children);
       placeHolder.metadata().linkConditionalRegion(region);
+      region.finish();
       return region;
     }
   }

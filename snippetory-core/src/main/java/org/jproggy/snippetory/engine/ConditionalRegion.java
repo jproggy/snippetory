@@ -15,32 +15,44 @@
 package org.jproggy.snippetory.engine;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jproggy.snippetory.SnippetoryException;
 import org.jproggy.snippetory.util.CharDataSupport;
 import org.jproggy.snippetory.spi.EncodedData;
 
 public class ConditionalRegion extends DataSinks implements EncodedData {
-  private final Set<String> names;
+  private Set<String> names;
   private final Map<String, Region> children;
   private boolean appendMe;
 
   public ConditionalRegion(Location formatter, List<DataSink> parts, Map<String, Region> children) {
     super(parts, formatter);
-    names = names();
     this.children = new HashMap<>(children);
   }
 
   protected ConditionalRegion(ConditionalRegion template, Location parent) {
     super(template, template.getPlaceholder().cleanCopy(parent));
-    names = names();
+    names = template.names();
     this.children = new HashMap<>();
     for (Map.Entry<String, Region> entry : template.children.entrySet()) {
       this.children.put(entry.getKey(), entry.getValue().cleanCopy(super.getPlaceholder()));
     }
     appendMe = false;
+  }
+
+  public void finish() {
+    if (names != null) {
+      throw new SnippetoryException("Already finished");
+    }
+    names = super.names();
+    if (getPlaceholder().metadata().name != null) {
+      names.add(getPlaceholder().metadata().name);
+    }
+    names.addAll(getPlaceholder().names());
   }
 
   @Override
@@ -66,12 +78,10 @@ public class ConditionalRegion extends DataSinks implements EncodedData {
 
   @Override
   public final Set<String> names() {
-    Set<String> result = super.names();
-    if (getPlaceholder().metadata().name != null) {
-      result.add(getPlaceholder().metadata().name);
+    if (names == null) {
+      throw new SnippetoryException("Not yet finished");
     }
-
-    return result;
+    return new HashSet<>(names);
   }
 
   @Override

@@ -25,6 +25,7 @@ public class NodeFactory {
                                                  Map<String, Region> children) {
         ConditionalRegion region = new ConditionalRegion(placeHolder, parts, children);
         placeHolder.metadata().linkConditionalRegion(region);
+        region.finish();
         return region;
     }
 
