@@ -1,8 +1,4 @@
-# This file is a template, and might need editing before it works on your project.
-# This file is a template, and might need editing before it works on your project.
-
 # Build JAVA applications using Apache Maven (http://maven.apache.org)
-# For docker image tags see https://hub.docker.com/_/maven/
 #
 # For general lifecycle information see https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
 
@@ -22,7 +18,7 @@ variables:
   # Avoid shallow clone
   GIT_DEPTH: 0
 
-# This template uses jdk8 for verifying and deploying images
+# This template uses jdk for verifying and deploying images
 image: maven:3.9.5-eclipse-temurin-17
 
 # Cache downloaded dependencies and plugins between builds.
@@ -40,15 +36,15 @@ cache:
   except:
     - master
 
-# Verify merge requests using JDK1
-verify:jdk11:
+# Verify merge requests using JDK
+verify:jdk:
   <<: *verify
 
 # To deploy packages from CI, create a ci_settings.xml file
 # For deploying packages to GitLab's Maven Repository: See https://docs.gitlab.com/ee/user/project/packages/maven_repository.html#creating-maven-packages-with-gitlab-cicd for more details.
 # Please note: The GitLab Maven Repository is currently only available in GitLab Premium / Ultimate.
 # For `master` branch run `mvn deploy` automatically.
-deploy:jdk11:
+deploy:jdk:
   stage: deploy
   script:
     - if [ ! -f ci_settings.xml ];
