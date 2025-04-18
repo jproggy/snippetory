@@ -17,10 +17,14 @@ package org.jproggy.snippetory.test;
 import static org.jproggy.snippetory.Syntaxes.XML_ALIKE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Locale;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 import org.jproggy.snippetory.Template;
+import org.jproggy.snippetory.TemplateContext;
 
 class NumberFormatTest {
 
@@ -115,6 +119,7 @@ class NumberFormatTest {
   @Test
   void formatNumberInheritance() {
     Template t = XML_ALIKE.parse("before<t: number='000'>->{v:test}<-</t:>after", Locale.GERMAN);
+    assertEquals(t.names(), Set.of("test"));
     assertEquals("beforeafter", t.toString());
     t.set("test", 5.1);
     assertEquals("before->005<-after", t.toString());
@@ -122,5 +127,61 @@ class NumberFormatTest {
     assertEquals("beforeafter", t.toString());
     t.set("test", 5);
     assertEquals("before->005<-after", t.toString());
+    t = XML_ALIKE.context()
+            .attrib("number", "000")
+            .locale(Locale.US)
+            .parse("before<t:>-><t:>{v:test}</t:><-</t:>after");
+    assertEquals(t.names(), Set.of("test"));
+    assertEquals("beforeafter", t.toString());
+    t.set("test", 5);
+    assertEquals("before->005<-after", t.toString());
+  }
+  @Test
+  void decimalFormatOverridesContextNumberFormat() {
+    // Set up a TemplateContext with a number format attribute
+    TemplateContext context = XML_ALIKE.context()
+            .attrib("number", "000")
+            .locale(Locale.US);
+
+    // Parse a template without any format attributes - should inherit from context
+    Template template = context.parse("{v:test}");
+    template.set("test", 5);
+    assertEquals("005", template.toString());
+    template.set("test", 5.11);
+    assertEquals("005", template.toString());
+
+    // Parse a template with decimal format - should override the context's number format
+    Template templateWithDecimal = context.parse("{v:test decimal='#.0#'}");
+    templateWithDecimal.set("test", 5.678);
+    assertEquals("5.68", templateWithDecimal.toString());
+    templateWithDecimal.set("test", BigDecimal.valueOf(5.0));
+    assertEquals("5.0", templateWithDecimal.toString());
+    templateWithDecimal.set("test", BigInteger.valueOf(5));
+    assertEquals("005", templateWithDecimal.toString());
+
+    // Test with integer value in the template with decimal format
+    templateWithDecimal.set("test", 5);
+    assertEquals("005", templateWithDecimal.toString());
+
+    // Test with a template that explicitly overrides the number format too
+    Template templateWithBoth = context.parse("{v:test decimal='#.0#'}");
+    templateWithBoth.set("test", 5);
+    assertEquals("005", templateWithBoth.toString());
+    templateWithBoth.set("test", 5.678);
+    assertEquals("5.68", templateWithBoth.toString());
+    templateWithBoth.set("test", BigDecimal.valueOf(5.0));
+    assertEquals("5.0", templateWithBoth.toString());
+
+    // Test with German locale
+    TemplateContext contextDE = XML_ALIKE.context()
+            .attrib("decimal", "#.##")
+            .attrib("number", "000")
+            .locale(Locale.GERMAN);
+
+    Template templateDE = contextDE.parse("{v:test}");
+    templateDE.set("test", 5);
+    assertEquals("005", templateDE.toString());
+    templateDE.set("test", 5.678);
+    assertEquals("5,68", templateDE.toString());
   }
 }

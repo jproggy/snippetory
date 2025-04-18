@@ -85,7 +85,7 @@ public class TemplateContext implements Cloneable {
   public TemplateContext clone() {
     try {
       TemplateContext result = (TemplateContext)super.clone();
-      if (baseAttribs != null) result.baseAttribs = new HashMap<>(baseAttribs);
+      if (baseAttribs != null) result.baseAttribs = new LinkedHashMap<>(baseAttribs);
       return result;
     } catch (CloneNotSupportedException e) {
       throw new SnippetoryException(e);
@@ -148,12 +148,15 @@ public class TemplateContext implements Cloneable {
     if (baseAttribs == null) {
       initBaseAttribs();
     }
-    this.baseAttribs.put(name, value);
+    synchronized (baseAttribs) {
+      baseAttribs.remove(name);
+      this.baseAttribs.put(name, value);
+    }
     return this;
   }
 
   protected void initBaseAttribs() {
-    baseAttribs = new LinkedHashMap<>(DEFAULT_ATTRIBUTES);
+    baseAttribs = new LinkedHashMap<>();
   }
 
   /**
@@ -164,11 +167,15 @@ public class TemplateContext implements Cloneable {
    */
   public Map<String, String> getBaseAttribs() {
     if (baseAttribs == null) return DEFAULT_ATTRIBUTES;
-    return unmodifiableMap(baseAttribs);
+    LinkedHashMap<String, String> result = new LinkedHashMap<>(baseAttribs);
+    for (Map.Entry<String, String> entry : DEFAULT_ATTRIBUTES.entrySet()) {
+      result.putIfAbsent(entry.getKey(), entry.getValue());
+    }
+    return unmodifiableMap(result);
   }
 
   public void setBaseAttribs(Map<String, String> baseAttribs) {
-    this.baseAttribs = new HashMap<>(baseAttribs);
+    this.baseAttribs = new LinkedHashMap<>(baseAttribs);
   }
 
   /**
