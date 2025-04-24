@@ -39,9 +39,11 @@ public class DBAccessTest {
   @BeforeAll
   public static void prepare() throws Exception {
     try {
-      driver = GraphDatabase.driver("bolt://[::1]", AuthTokens.basic("neo4j", "GH1mSpasw0rt"));
+      driver = GraphDatabase.driver(System.getProperty("NEO4J_URL"),
+              AuthTokens.basic("neo4j", System.getProperty("DB_PASSWORD")));
     } catch (Exception e) {
       // ignore
+      e.printStackTrace();
     }
   }
 

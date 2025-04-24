@@ -15,8 +15,19 @@ variables:
   # when running from the command line.
   # `installAtEnd` and `deployAtEnd` are only effective with recent version of the corresponding plugins.
   MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
+
+  NEO4J_OPTS: "-DNEO4J_URL=bolt://neoj4 -DDB_PASSWORD=$DB_PASSWORD"
   # Avoid shallow clone
   GIT_DEPTH: 0
+
+  DB_PASSWORD: $DB_PASSWORD
+  NEO4J_ACCEPT_LICENSE_AGREEMENT: yes
+  NEO4J_AUTH: "neo4j/$DB_PASSWORD"
+  NEO4J_dbms_connector_bolt_advertised__address: "localhost:7687"
+
+services:
+  - neo4j:5.5.0
+
 
 # This template uses jdk for verifying and deploying images
 image: maven:3.9.5-eclipse-temurin-17
@@ -32,7 +43,7 @@ cache:
 .verify: &verify
   stage: test
   script:
-    - 'mvn $MAVEN_CLI_OPTS verify'
+    - 'mvn $NEO4J_OPTS $MAVEN_CLI_OPTS verify'
   except:
     - master
 
@@ -48,7 +59,7 @@ deploy:jdk:
   stage: deploy
   script:
     - if [ ! -f ci_settings.xml ];
-        then echo "CI settings missing\! If deploying to GitLab Maven Repository, please see https://docs.gitlab.com/ee/user/project/packages/maven_repository.html#creating-maven-packages-with-gitlab-cicd for instructions.";
+      then echo "CI settings missing\! If deploying to GitLab Maven Repository, please see https://docs.gitlab.com/ee/user/project/packages/maven_repository.html#creating-maven-packages-with-gitlab-cicd for instructions.";
       fi
     - 'mvn $MAVEN_CLI_OPTS deploy -s ci_settings.xml sonar:sonar -Dsonar.projectKey=jproggy_Snippetory -Dsonar.organization=jproggy -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_LOGIN'
   only:
